@@ -2,8 +2,13 @@
   <div>
     <div class="mt-6 font-splatoon2" aria-hidden="true">
       <div class="font-splatoon2 text-center space-y-2">
-        <div class="text-gray-300">releases in</div>
-        <div class="text-gray-100 text-2xl">{{ days(remainingTime) }}!</div>
+        <div v-if="isReleased">
+          <div class="text-gray-100 text-2xl">is out now!</div>
+        </div>
+        <div v-else>
+          <div class="text-gray-300">releases in</div>
+          <div class="text-gray-100 text-2xl">{{ days(remainingTime) }}!</div>
+        </div>
       </div>
       <div class="bg-blue-pattern rounded-full overflow-hidden my-4">
         <div class="h-10 bg-yellow-pattern rounded-full" :style="`width: ${percent}%`"></div>
@@ -12,7 +17,7 @@
         <div class="text-splatoon-yellow -rotate-3" :title="formatDate(announceDate)">
           Announced
         </div>
-        <div class="text-splatoon-blue text-right rotate-3" :title="formatDate(releaseDate)">
+        <div class="text-right rotate-3" :class="isReleased ? 'text-splatoon-yellow' : 'text-splatoon-blue'" :title="formatDate(releaseDate)">
           Released
         </div>
       </div>
@@ -48,6 +53,7 @@ const remainingTime = computed(() => {
 })
 const completedTime = computed(() => totalTime - remainingTime.value);
 const percent = computed(() => Math.min(100, 100 * completedTime.value / totalTime));
+const isReleased = computed(() => remainingTime.value <= 0);
 
 function days(ms) {
   let days = Math.max(0, Math.ceil(ms / 1000 / 60 / 60 / 24));
