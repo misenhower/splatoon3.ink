@@ -14,6 +14,8 @@ dist-ssr
 coverage
 *.local
 
+docker-compose.override.yml
+
 /cypress/videos/
 /cypress/screenshots/
 

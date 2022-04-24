@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  app:
+    image: node:18
+    restart: unless-stopped
+    volumes:
+      - ./:/app
+
+  nginx:
+    image: nginx
+    restart: unless-stopped
+    volumes:
+      - ./dist:/usr/share/nginx/html:ro

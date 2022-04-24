@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  nginx:
+    environment:
+      VIRTUAL_HOST: splatoon3.ink,www.splatoon3.ink
+
+    networks:
+      - default
+      - nginx-proxy
+
+networks:
+  nginx-proxy:
+    external:
+      name: nginxproxy_default
