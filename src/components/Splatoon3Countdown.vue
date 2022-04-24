@@ -1,16 +1,17 @@
 <template>
   <div>
 <div>
-  <div class="mt-6" aria-hidden="true">
-    <div class="text-center">
-      releases in 123 days!
+  <div class="mt-6 font-splatoon2" aria-hidden="true">
+    <div class="font-splatoon2 text-center space-y-2">
+      <div class="text-gray-300">releases in</div>
+      <div class="text-gray-100 text-2xl">123 days!</div>
     </div>
     <div class="bg-blue-pattern rounded-full overflow-hidden my-4">
       <div class="h-10 bg-yellow-pattern rounded-full" style="width: 75%"></div>
     </div>
-    <div class="grid grid-cols-2 text-sm font-medium">
-      <div class="text-splatoon-yellow">Announced</div>
-      <div class="text-splatoon-blue text-right">Released</div>
+    <div class="flex justify-between text-sm font-medium">
+      <div class="text-splatoon-yellow -rotate-3">Announced</div>
+      <div class="text-splatoon-blue text-right rotate-3">Released</div>
     </div>
   </div>
 </div>

@@ -2,7 +2,7 @@
   <main class="min-h-screen flex flex-col">
     <div class="grow flex items-center justify-center">
       <div class="w-full max-w-2xl m-4">
-        <div class="text-4xl text-center">Splatoon 3</div>
+        <div class="font-splatoon1 text-5xl text-center">Splatoon 3</div>
 
         <Splatoon3Countdown />
       </div>
