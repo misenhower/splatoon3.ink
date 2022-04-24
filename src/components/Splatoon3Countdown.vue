@@ -11,7 +11,7 @@
         </div>
       </div>
       <div class="bg-blue-pattern rounded-full overflow-hidden my-4">
-        <div class="h-10 bg-yellow-pattern rounded-full" :style="`width: ${percent}%`"></div>
+        <div class="h-10 bg-yellow-pattern bg-animated rounded-full" :style="`width: ${percent}%`"></div>
       </div>
       <div class="flex justify-between text-sm font-medium">
         <div class="text-splatoon-yellow -rotate-3" :title="formatDate(announceDate)">
@@ -82,5 +82,17 @@ function formatDate(date) {
   @apply bg-splatoon-yellow;
   background-image: url("@/assets/battle-bg-pattern-yellow.jpg");
   background-size: 190px;
+}
+
+.bg-animated {
+  animation-name: bg-keyframes;
+  animation-duration: 30s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes bg-keyframes {
+   from { background-position: 0; }
+   to { background-position: 190px; }
 }
 </style>
