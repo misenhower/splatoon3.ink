@@ -4,7 +4,14 @@ module.exports = {
     './src/**/*.{vue,js}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        splatoon: {
+          yellow: '#eefe65',
+          blue: '#5b3df5',
+        }
+      }
+    },
   },
   plugins: [],
 }
