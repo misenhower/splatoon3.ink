@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  @apply text-slate-100;
+  @apply text-gray-100;
   @apply bg-black;
   background-image: url('@/assets/information-bg.jpg');
   background-size: 50%;
