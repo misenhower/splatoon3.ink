@@ -6,7 +6,8 @@ body {
   @apply text-gray-100;
   @apply bg-black;
   background-image: url('@/assets/information-bg.jpg');
-  background-size: 50%;
+  background-size: 400px;
+  background-position: center;
 }
 
 @font-face {
