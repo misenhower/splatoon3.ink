@@ -1,14 +1,8 @@
 # splatoon3.ink
 
-This template should help get you started developing with Vue 3 in Vite.
+When Splatoon 3 is released, this site will show its current and upcoming map schedules.
 
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.vscode-typescript-vue-plugin).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+Until then, check out [splatoon2.ink](https://splatoon2.ink)!
 
 ## Project Setup
 
