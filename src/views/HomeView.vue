@@ -24,6 +24,10 @@
         <a href="https://splatoon2.ink" target="_blank">
           <span>splatoon2.ink</span>
         </a>
+        &ndash;
+        <a href="https://github.com/misenhower/splatoon3.ink" target="_blank">
+          <span>GitHub</span>
+        </a>
       </div>
     </div>
   </main>
