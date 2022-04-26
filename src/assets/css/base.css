@@ -5,7 +5,7 @@
 body {
   @apply text-gray-100;
   @apply bg-black;
-  background-image: url('@/assets/information-bg.jpg');
+  background-image: url('@/assets/img/information-bg.jpg');
   background-size: 400px;
   background-position: center;
 }

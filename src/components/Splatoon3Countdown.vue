@@ -74,13 +74,13 @@ function formatDate(date) {
 <style scoped>
 .bg-blue-pattern {
   @apply bg-splatoon-blue;
-  background-image: url("@/assets/battle-bg-pattern-blue.jpg");
+  background-image: url("@/assets/img/battle-bg-pattern-blue.jpg");
   background-size: 190px;
 }
 
 .bg-yellow-pattern {
   @apply bg-splatoon-yellow;
-  background-image: url("@/assets/battle-bg-pattern-yellow.jpg");
+  background-image: url("@/assets/img/battle-bg-pattern-yellow.jpg");
   background-size: 190px;
 }
 

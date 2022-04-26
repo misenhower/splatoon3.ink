@@ -10,14 +10,14 @@
 
     <div class="m-2 text-center text-xs text-gray-500">
       <div>
-        <img src="@/assets/little-buddy.png" class="mx-auto mb-4" width="50" />
+        <img src="@/assets/img/little-buddy.png" class="mx-auto mb-4" width="50" />
       </div>
       <div>
         This website is not affiliated with Nintendo. All product names, logos, and brands are property of their respective owners.
       </div>
       <div class="footer-links">
         <a href="https://twitter.com/splatoon2inkbot" target="_blank">
-          <img src="@/assets/twitter-white.png" width="20" height="20" class="inline" />
+          <img src="@/assets/img/twitter-white.png" width="20" height="20" class="inline" />
           <span>@splatoon2inkbot</span>
         </a>
         &ndash;
