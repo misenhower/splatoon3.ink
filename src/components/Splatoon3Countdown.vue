@@ -26,30 +26,22 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted } from 'vue';
+import { useTimeStore } from '../stores/time';
 
 const announceDate = new Date('2021-02-17');
 const releaseDate = new Date('2022-09-09');
-const now = ref(new Date);
+const time = useTimeStore();
 
-let timer;
-
-onMounted(() => {
-  timer = setInterval(() => {
-    now.value = new Date;
-  }, 200);
-})
-
-onUnmounted(() => clearInterval(timer))
+onMounted(() => time.startUpdatingNow());
+onUnmounted(() => time.stopUpdatingNow());
 
 const totalTime = releaseDate - announceDate;
 const remainingTime = computed(() => {
-  let time = now.value.getTime();
+  // Adjust the time based on midnight local time
+  let adjustment = (new Date).getTimezoneOffset() * 60 * 1000;
 
-  // Compare the time based on midnight local time
-  time -= (new Date).getTimezoneOffset() * 60 * 1000;
-
-  return releaseDate - time;
+  return releaseDate - time.now + adjustment;
 })
 const completedTime = computed(() => totalTime - remainingTime.value);
 const percent = computed(() => Math.min(100, 100 * completedTime.value / totalTime));
