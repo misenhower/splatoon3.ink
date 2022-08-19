@@ -11,4 +11,5 @@ services:
     image: nginx
     restart: unless-stopped
     volumes:
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d:ro
       - ./dist:/usr/share/nginx/html:ro
