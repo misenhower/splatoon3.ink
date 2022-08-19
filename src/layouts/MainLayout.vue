@@ -11,6 +11,10 @@
         respective owners.
       </div>
       <div class="footer-links">
+        <a href="/faq">
+          <span>FAQ</span>
+        </a>
+        &ndash;
         <a href="https://twitter.com/splatoon3ink" target="_blank">
           <img src="@/assets/img/twitter-white.png" width="20" height="20" class="inline" />
           <span>@splatoon3ink</span>

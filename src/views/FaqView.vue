@@ -85,6 +85,10 @@
                       questions!
                     </p>
                   </div>
+
+                  <div>
+                    <a href="/">&laquo; Splatoon 3 Countdown</a>
+                  </div>
                 </div>
 
                 <img class="absolute -top-10 right-10 w-48 -rotate-3" src="@/assets/img/tape/tape-1.png" />
