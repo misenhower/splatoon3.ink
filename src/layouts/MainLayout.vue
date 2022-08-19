@@ -11,9 +11,9 @@
         respective owners.
       </div>
       <div class="footer-links">
-        <a href="https://twitter.com/splatoon2inkbot" target="_blank">
+        <a href="https://twitter.com/splatoon3ink" target="_blank">
           <img src="@/assets/img/twitter-white.png" width="20" height="20" class="inline" />
-          <span>@splatoon2inkbot</span>
+          <span>@splatoon3ink</span>
         </a>
         &ndash;
         <a href="https://splatoon2.ink" target="_blank">
