@@ -1,5 +1,5 @@
 <template>
-  <main class="min-h-screen flex flex-col">
+  <MainLayout>
     <div class="grow flex items-center justify-center">
       <div class="w-full max-w-2xl m-4">
         <div class="font-splatoon1 text-5xl text-center">Splatoon 3</div>
@@ -7,42 +7,10 @@
         <Splatoon3Countdown />
       </div>
     </div>
-
-    <div class="m-2 text-center text-xs text-gray-500">
-      <div>
-        <img src="@/assets/img/little-buddy.png" class="mx-auto mb-4" width="50" />
-      </div>
-      <div>
-        This website is not affiliated with Nintendo. All product names, logos, and brands are property of their respective owners.
-      </div>
-      <div class="footer-links">
-        <a href="https://twitter.com/splatoon2inkbot" target="_blank">
-          <img src="@/assets/img/twitter-white.png" width="20" height="20" class="inline" />
-          <span>@splatoon2inkbot</span>
-        </a>
-        &ndash;
-        <a href="https://splatoon2.ink" target="_blank">
-          <span>splatoon2.ink</span>
-        </a>
-        &ndash;
-        <a href="https://github.com/misenhower/splatoon3.ink" target="_blank">
-          <span>GitHub</span>
-        </a>
-      </div>
-    </div>
-  </main>
+  </MainLayout>
 </template>
 
 <script setup>
+import MainLayout from '@/layouts/MainLayout.vue'
 import Splatoon3Countdown from '@/components/Splatoon3Countdown.vue'
 </script>
-
-<style scoped>
-.footer-links a span {
-  @apply text-gray-300;
-}
-
-.footer-links a:hover span {
-  @apply text-white underline;
-}
-</style>
