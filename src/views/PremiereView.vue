@@ -68,18 +68,18 @@ onUnmounted(() => time.stopUpdatingNow());
 const dates = [
   {
     name: 'Europe',
-    start: new Date('2022-08-27 08:00:00 +0000'),
-    end: new Date('2022-08-27 20:00:00 +0000'),
+    start: new Date('27 Aug 2022 08:00:00 +0000'),
+    end: new Date('27 Aug 2022 20:00:00 +0000'),
   },
   {
     name: 'The Americas',
-    start: new Date('2022-08-27 16:00:00 +0000'),
-    end: new Date('2022-08-28 04:00:00 +0000'),
+    start: new Date('27 Aug 2022 16:00:00 +0000'),
+    end: new Date('28 Aug 2022 04:00:00 +0000'),
   },
   {
     name: 'Japan/Australia/New Zealand/Hong Kong/S. Korea',
-    start: new Date('2022-08-28 00:00:00 +0000'),
-    end: new Date('2022-08-28 12:00:00 +0000'),
+    start: new Date('28 Aug 2022 00:00:00 +0000'),
+    end: new Date('28 Aug 2022 12:00:00 +0000'),
   },
 ];
 
