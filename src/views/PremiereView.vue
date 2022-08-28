@@ -35,6 +35,18 @@
                       Splatfest starts in {{ duration(date.start) }}
                     </div>
                   </div>
+
+                  <div class="font-splatoon2">
+                    <div class="text-3xl font-splatoon1 text-white">Results</div>
+                    <div v-if="isPast(results)">
+                      Results are now available in game!
+                    </div>
+                    <div v-else>
+                      Results will be available in-game
+                      at {{ formatTime(results) }}
+                      (in {{ duration(results) }})
+                    </div>
+                  </div>
                 </div>
 
                 <img class="absolute -top-10 right-10 w-48 -rotate-3" src="@/assets/img/tape/tape-1.png" />
@@ -82,6 +94,8 @@ const dates = [
     end: new Date('28 Aug 2022 12:00:00 +0000'),
   },
 ];
+
+const results = new Date('28 Aug 2022 14:00:00 +0000');
 
 function isPast(date) {
   return time.now >= date;
