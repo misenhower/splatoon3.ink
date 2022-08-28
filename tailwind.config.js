@@ -7,8 +7,13 @@ module.exports = {
     extend: {
       colors: {
         splatoon: {
-          yellow: '#eefe65',
-          blue: '#5b3df5',
+          blue: '#603bff',
+          purple: '#af50ff',
+          yellow: '#eaff3d',
+          green: '#6af7ce',
+          orange: '#ff9750',
+          red: '#ff505e',
+          brown: '#7f413f',
         },
       },
       fontFamily: {
