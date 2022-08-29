@@ -6,9 +6,9 @@
           <Splat2 class="absolute -top-32 -left-24 w-64" />
           <Splat5 class="absolute -right-28 -bottom-24 w-64" />
 
-          <ProductContainer class="rotate-1">
+          <ProductContainer class="relative md:rotate-1">
             <div class="relative">
-              <div class="faq text-gray-300 px-6 py-8">
+              <div class="faq text-gray-300 px-10">
                 <div class="space-y-6">
                   <h1>FAQ</h1>
 
@@ -91,11 +91,10 @@
                   </div>
                 </div>
 
-                <img class="absolute -top-10 right-10 w-48 -rotate-3" src="@/assets/img/tape/tape-1.png" />
-                <img class="absolute -bottom-14 left-4 w-44 rotate-6" src="@/assets/img/tape/tape-3.png" />
-                <img class="absolute top-20 -right-28 w-32 rotate-6" src="@/assets/img/stickers/sticker-4.png" />
-                <img class="absolute -bottom-10 right-32 w-44 -rotate-3" src="@/assets/img/stickers/sticker-10.png" />
-
+                <img class="absolute hidden sm:block -top-16 right-14 w-48 -rotate-3" src="@/assets/img/tape/tape-1.png" />
+                <img class="absolute -bottom-20 left-8 w-44 rotate-6" src="@/assets/img/tape/tape-3.png" />
+                <img class="absolute top-20 -right-24 w-32 rotate-6" src="@/assets/img/stickers/sticker-4.png" />
+                <img class="absolute hidden sm:block -bottom-14 right-32 w-44 -rotate-3" src="@/assets/img/stickers/sticker-10.png" />
               </div>
             </div>
           </ProductContainer>
