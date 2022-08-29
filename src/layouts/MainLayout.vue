@@ -11,9 +11,9 @@
         respective owners.
       </div>
       <div class="footer-links">
-        <a href="/faq">
+        <router-link to="/faq">
           <span>FAQ</span>
-        </a>
+        </router-link>
         &ndash;
         <a href="https://twitter.com/splatoon3ink" target="_blank">
           <img src="@/assets/img/twitter-white.png" width="20" height="20" class="inline" />

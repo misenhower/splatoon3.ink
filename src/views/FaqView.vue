@@ -87,7 +87,7 @@
                   </div>
 
                   <div>
-                    <a href="/">&laquo; Splatoon 3 Countdown</a>
+                    <router-link to="/">&laquo; Splatoon 3 Countdown</router-link>
                   </div>
                 </div>
 
