@@ -1,3 +1,4 @@
+import { resolve } from 'path'
 import { fileURLToPath, URL } from 'url'
 
 import { defineConfig } from 'vite'
@@ -9,6 +10,14 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
+    }
+  },
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html'),
+        screenshots: resolve(__dirname, 'screenshots/index.html')
+      }
     }
   }
 })
