@@ -4,6 +4,7 @@ services:
   app:
     image: node:18
     restart: unless-stopped
+    working_dir: /app
     volumes:
       - ./:/app
 
