@@ -3,21 +3,21 @@
     <div class="mt-6 font-splatoon2" aria-hidden="true">
       <div class="font-splatoon2 text-center space-y-2">
         <div v-if="isReleased">
-          <div class="text-gray-100 text-2xl">is out now!</div>
+          <div class="text-gray-100 text-2xl ss:text-5xl">is out now!</div>
         </div>
         <div v-else>
-          <div class="text-gray-300">releases in</div>
-          <div class="text-gray-100 text-2xl">{{ days(remainingTime) }}!</div>
+          <div class="text-gray-300 ss:text-3xl ss:mb-2">releases in</div>
+          <div class="text-gray-100 text-2xl ss:text-5xl">{{ days(remainingTime) }}!</div>
         </div>
       </div>
       <div class="bg-blue-pattern rounded-full overflow-hidden my-4">
         <div class="h-10 bg-yellow-pattern bg-animated rounded-full" :style="`width: ${percent}%`"></div>
       </div>
       <div class="flex justify-between text-sm font-medium">
-        <div class="text-splatoon-yellow -rotate-3" :title="formatDate(announceDate)">
+        <div class="text-splatoon-yellow ss:text-3xl -rotate-3" :title="formatDate(announceDate)">
           Announced
         </div>
-        <div class="text-right rotate-3" :class="isReleased ? 'text-splatoon-yellow' : 'text-splatoon-blue'" :title="formatDate(releaseDate)">
+        <div class="text-right ss:text-3xl rotate-3" :class="isReleased ? 'text-splatoon-yellow' : 'text-splatoon-blue'" :title="formatDate(releaseDate)">
           Released
         </div>
       </div>

@@ -1,3 +1,5 @@
+const plugin = require("tailwindcss/plugin");
+
 module.exports = {
   content: [
     './index.html',
@@ -22,5 +24,9 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    plugin(function({ addVariant }) {
+      addVariant('ss', 'body.for-screenshots &')
+    })
+  ]
 }
