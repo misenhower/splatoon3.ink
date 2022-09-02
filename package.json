@@ -6,9 +6,11 @@
     "build": "vite build",
     "preview": "vite preview --port 5050",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
+    "cron": "node app/index.mjs cron",
     "twitter": "node app/index.mjs twitter"
   },
   "dependencies": {
+    "cron": "^2.1.0",
     "dotenv": "^16.0.2",
     "ecstatic": "^4.1.4",
     "pinia": "^2.0.13",
