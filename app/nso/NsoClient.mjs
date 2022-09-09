@@ -18,7 +18,12 @@ export default class NsoClient
     initializeNxapi();
 
     this.nintendoToken = nintendoToken || process.env.NINTENDO_TOKEN;
-    this.coralCache = new ValueCache('coral');
+  }
+
+  get _cachePrefix() {
+    let token = this.nintendoToken.slice(-8);
+
+    return `nso.${token}`;
   }
 
   _calculateCacheExpiry(expiresIn) {
@@ -28,8 +33,14 @@ export default class NsoClient
     return expires - 5 * 60 * 1000;
   }
 
+  // Coral API
+
+  _getCoralCache() {
+    return new ValueCache(`${this._cachePrefix}.coral`);
+  }
+
   async getCoralApi() {
-    let data = await this.coralCache.getData();
+    let data = await this._getCoralCache().getData();
 
     if (!data) {
       data = await this._createCoralSession();
@@ -44,13 +55,19 @@ export default class NsoClient
 
     let expires = this._calculateCacheExpiry(data.credential.expiresIn);
     console.debug(`Caching Coral session until: ${expires}`);
-    await this.coralCache.setData(data, expires);
+    await this._getCoralCache().setData(data, expires);
 
     return data;
   }
 
+  // Web service tokens
+
+  _getWebServiceTokenCache(id) {
+    return new ValueCache(`${this._cachePrefix}.webservicetoken.${id}`);
+  }
+
   async getWebServiceToken(id) {
-    let tokenCache = new ValueCache(`webservicetoken.${id}`);
+    let tokenCache = this._getWebServiceTokenCache(id);
     let token = await tokenCache.getData();
 
     if (!token) {
