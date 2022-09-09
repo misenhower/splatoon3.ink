@@ -1,5 +1,6 @@
 import fs from 'fs/promises';
-
+import path from 'path';
+import mkdirp from 'mkdirp';
 export default class ValueCache
 {
   constructor(key) {
@@ -7,7 +8,7 @@ export default class ValueCache
   }
 
   get path() {
-    return `storage/${this._key}.json`;
+    return `storage/cache/${this._key}.json`;
   }
 
   async _getRawItem() {
@@ -40,6 +41,7 @@ export default class ValueCache
   async setData(data, expires = null) {
     let serialized = JSON.stringify({ expires, data }, undefined, 2);
 
+    await mkdirp(path.dirname(this.path));
     await fs.writeFile(this.path, serialized);
   }
 }
