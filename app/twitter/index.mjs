@@ -1,10 +1,12 @@
 import CountdownTweet from "./generators/CountdownTweet.mjs";
 import TwitterManager from "./TwitterManager.mjs"
 
-export function sendTweets() {
-  const manager = new TwitterManager([
+export function defaultTwitterManager() {
+  return new TwitterManager([
     new CountdownTweet,
   ]);
+}
 
-  return manager.sendTweets();
+export function sendTweets() {
+  return defaultTwitterManager().sendTweets();
 }
