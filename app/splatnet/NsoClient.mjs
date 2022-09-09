@@ -20,7 +20,7 @@ export default class NsoClient
     this.nintendoToken = nintendoToken || process.env.NINTENDO_TOKEN;
   }
 
-  get _cachePrefix() {
+  get cachePrefix() {
     let token = this.nintendoToken.slice(-8);
 
     return `nso.${token}`;
@@ -36,7 +36,7 @@ export default class NsoClient
   // Coral API
 
   _getCoralCache() {
-    return new ValueCache(`${this._cachePrefix}.coral`);
+    return new ValueCache(`${this.cachePrefix}.coral`);
   }
 
   async getCoralApi() {
@@ -63,7 +63,7 @@ export default class NsoClient
   // Web service tokens
 
   _getWebServiceTokenCache(id) {
-    return new ValueCache(`${this._cachePrefix}.webservicetoken.${id}`);
+    return new ValueCache(`${this.cachePrefix}.webservicetoken.${id}`);
   }
 
   async getWebServiceToken(id) {
