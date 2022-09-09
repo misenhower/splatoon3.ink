@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen grow flex items-center justify-center overflow-hidden">
+  <ScreenshotLayout header="Countdown">
     <div class="grow flex items-center justify-center">
       <div class="relative w-full max-w-2xl m-4 scale-[1.55]">
         <Splat3 class="absolute w-48 -bottom-16 left-28" fill="fill-splatoon-red" />
@@ -14,7 +14,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </ScreenshotLayout>
 </template>
 
 <script setup>
@@ -23,4 +23,5 @@ import Splat2 from '@/components/splats/Splat2.vue';
 import Splat3 from '@/components/splats/Splat3.vue';
 import Splat4 from '@/components/splats/Splat4.vue';
 import Splat1 from '@/components/splats/Splat1.vue';
+import ScreenshotLayout from '../../layouts/ScreenshotLayout.vue';
 </script>
