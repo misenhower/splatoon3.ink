@@ -1,3 +1,4 @@
+import ScreenshotHelper from '../../screenshots/ScreenshotHelper.mjs';
 import Tweet from '../Tweet.mjs';
 
 export default class TweetGenerator
@@ -6,11 +7,12 @@ export default class TweetGenerator
     return true;
   }
 
-  async getTweet() {
+  /** @param {ScreenshotHelper} screenshotHelper */
+  async getTweet(screenshotHelper) {
     const tweet = new Tweet;
     tweet.status = await this._getStatus();
 
-    let media = await this._getMedia();
+    let media = await this._getMedia(screenshotHelper);
     if (media && !Array.isArray(media)) {
       media = [media];
     }
@@ -23,7 +25,8 @@ export default class TweetGenerator
     //
   }
 
-  async _getMedia() {
+  /** @param {ScreenshotHelper} screenshotHelper */
+  async _getMedia(screenshotHelper) {
     //
   }
 }

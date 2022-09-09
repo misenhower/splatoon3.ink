@@ -1,6 +1,6 @@
 import TweetGenerator from "./TweetGenerator.mjs";
-import { captureScreenshot } from "../../screenshots/captureScreenshot.mjs";
 import Media from "../Media.mjs";
+import ScreenshotHelper from "../../screenshots/ScreenshotHelper.mjs";
 
 const releaseDate = new Date('2022-09-09');
 
@@ -25,9 +25,10 @@ export default class CountdownTweet extends TweetGenerator
     }
   }
 
-  async _getMedia() {
+  /** @param {ScreenshotHelper} screenshotHelper */
+  async _getMedia(screenshotHelper) {
     let media = new Media;
-    media.file = await captureScreenshot('countdown');
+    media.file = await screenshotHelper.capture('countdown');
 
     return media;
   }

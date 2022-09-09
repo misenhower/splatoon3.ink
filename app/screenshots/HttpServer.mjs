@@ -10,7 +10,7 @@ export default class HttpServer
     return this.#server.address().port;
   }
 
-  start() {
+  open() {
     return new Promise((resolve, reject) => {
       if (this.#server) {
         return resolve();
@@ -23,7 +23,7 @@ export default class HttpServer
     });
   }
 
-  async stop() {
+  async close() {
     if (this.#server) {
       await this.#server.close();
       this.#server = null;

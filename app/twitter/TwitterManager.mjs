@@ -1,17 +1,22 @@
+import ScreenshotHelper from "../screenshots/ScreenshotHelper.mjs";
 import TweetGenerator from "./generators/TweetGenerator.mjs";
 import TwitterClient from "./TwitterClient.mjs";
 
 export default class TwitterManager
 {
-  /** @var {TweetGenerator[]} */
+  /** @type {TweetGenerator[]} */
   generators;
 
-  /** @var {TwitterClient} */
+  /** @type {TwitterClient} */
   client;
+
+  /** @type {ScreenshotHelper} */
+  screenshotHelper;
 
   constructor(generators = []) {
     this.generators = generators;
     this.client = new TwitterClient;
+    this.screenshotHelper = new ScreenshotHelper;
   }
 
   async sendTweets() {
@@ -20,9 +25,11 @@ export default class TwitterManager
         continue;
       }
 
-      let tweet = await generator.getTweet();
+      let tweet = await generator.getTweet(this.screenshotHelper);
 
       await this.client.send(tweet);
     }
+
+    await this.screenshotHelper.close();
   }
 }
