@@ -1,8 +1,10 @@
+import GearUpdater from "./updaters/GearUpdater.mjs";
 import StageScheduleUpdater from "./updaters/StageScheduleUpdater.mjs";
 
 function updaters() {
   return [
     new StageScheduleUpdater,
+    new GearUpdater,
   ];
 }
 

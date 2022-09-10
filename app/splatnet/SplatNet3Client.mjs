@@ -116,4 +116,8 @@ export default class SplatNet3Client
   getStageScheduleData() {
     return this.getGraphQLPersistedQuery(1, '10e1d424391e78d21670227550b3509f');
   }
+
+  getGesotownData() {
+    return this.getGraphQLPersistedQuery(1, 'd08dbdd29f31471e61daa978feea697a');
+  }
 }
