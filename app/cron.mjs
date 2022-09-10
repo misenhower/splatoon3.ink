@@ -1,6 +1,6 @@
 import { CronJob } from "cron";
-import { sendTweets } from "./twitter/index.mjs";
+import { warmCache } from "./splatnet/index.mjs";
 
 export default function() {
-  new CronJob('1 16 * * *', sendTweets, null, true);
+  new CronJob('5,20,35,50 * * * *', warmCache, null, true);
 }

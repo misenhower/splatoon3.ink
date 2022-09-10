@@ -39,8 +39,10 @@ export default class NsoClient
     return new ValueCache(`${this.cachePrefix}.coral`);
   }
 
-  async getCoralApi() {
-    let data = await this._getCoralCache().getData();
+  async getCoralApi(useCache = true) {
+    let data = useCache
+      ? await this._getCoralCache().getData()
+      : null;
 
     if (!data) {
       data = await this._createCoralSession();
@@ -66,9 +68,11 @@ export default class NsoClient
     return new ValueCache(`${this.cachePrefix}.webservicetoken.${id}`);
   }
 
-  async getWebServiceToken(id) {
+  async getWebServiceToken(id, useCache = true) {
     let tokenCache = this._getWebServiceTokenCache(id);
-    let token = await tokenCache.getData();
+    let token = useCache
+      ? await tokenCache.getData()
+      : null;
 
     if (!token) {
       token = await this._createWebServiceToken(id, tokenCache);

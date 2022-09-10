@@ -1,11 +1,12 @@
 import ValueCache from "../common/ValueCache.mjs";
 import NsoClient from "./NsoClient.mjs";
 
+export const SPLATNET3_WEB_SERVICE_ID = '4834290508791808';
+
 export default class SplatNet3Client
 {
   baseUrl = 'https://api.lp1.av5ja.srv.nintendo.net';
   webViewVersion = '1.0.0-5e2bcdfb';
-  webServiceId = '4834290508791808';
   bulletToken = null;
 
   constructor(nsoClient = null) {
@@ -35,12 +36,15 @@ export default class SplatNet3Client
     }
   }
 
-  async getBulletToken() {
+  async getBulletToken(useCache = true) {
     let bulletTokenCache = new ValueCache(`${this.nsoClient.cachePrefix}.bulletToken`);
-    let bulletToken = await bulletTokenCache.getData();
+
+    let bulletToken = useCache
+      ? await bulletTokenCache.getData()
+      : null;
 
     if (!bulletToken) {
-      let webServiceToken = await this.nsoClient.getWebServiceToken(this.webServiceId);
+      let webServiceToken = await this.nsoClient.getWebServiceToken(SPLATNET3_WEB_SERVICE_ID);
       bulletToken = await this._createBulletToken(webServiceToken, bulletTokenCache);
     }
 
