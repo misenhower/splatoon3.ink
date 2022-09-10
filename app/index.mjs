@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import consoleStamp from 'console-stamp';
 import cron from './cron.mjs';
 import { sendTweets } from './twitter/index.mjs';
+import { updateAll } from './data/index.mjs';
 
 consoleStamp(console);
 dotenv.config();
@@ -9,6 +10,7 @@ dotenv.config();
 const actions = {
   cron,
   twitter: sendTweets,
+  splatnet: updateAll,
 }
 
 const command = process.argv[2];

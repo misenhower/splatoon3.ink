@@ -110,4 +110,10 @@ export default class SplatNet3Client
 
     return await this.getGraphQL(body);
   }
+
+  // Specific queries
+
+  getStageScheduleData() {
+    return this.getGraphQLPersistedQuery(1, '10e1d424391e78d21670227550b3509f');
+  }
 }

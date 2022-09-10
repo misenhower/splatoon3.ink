@@ -7,7 +7,8 @@
     "preview": "vite preview --port 5050",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
     "cron": "node app/index.mjs cron",
-    "twitter": "node app/index.mjs twitter"
+    "twitter": "node app/index.mjs twitter",
+    "splatnet": "node app/index.mjs splatnet"
   },
   "dependencies": {
     "console-stamp": "^3.0.6",
