@@ -1,6 +1,7 @@
 import CoralApi from 'nxapi/coral';
 import { addUserAgent } from "nxapi";
 import ValueCache from '../common/ValueCache.mjs';
+import prefixedConsole from '../common/prefixedConsole.mjs';
 
 let _nxapiInitialized = false;
 
@@ -17,6 +18,7 @@ export default class NsoClient
   constructor(nintendoToken = null) {
     initializeNxapi();
 
+    this.console = prefixedConsole('NSO');
     this.nintendoToken = nintendoToken || process.env.NINTENDO_TOKEN;
   }
 
@@ -52,11 +54,11 @@ export default class NsoClient
   }
 
   async _createCoralSession() {
-    console.debug('Creating Coral session');
+    this.console.info('Creating Coral session...');
     let { data } = await CoralApi.createWithSessionToken(this.nintendoToken);
 
     let expires = this._calculateCacheExpiry(data.credential.expiresIn);
-    console.debug(`Caching Coral session until: ${expires}`);
+    this.console.debug(`Caching Coral session until: ${expires}`);
     await this._getCoralCache().setData(data, expires);
 
     return data;
@@ -84,11 +86,11 @@ export default class NsoClient
   async _createWebServiceToken(id, tokenCache) {
     let coral = await this.getCoralApi();
 
-    console.debug(`Creating web service token for ID ${id}`);
+    this.console.info(`Creating web service token for ID ${id}...`);
     let { result } = await coral.getWebServiceToken(id);
 
     let expires = this._calculateCacheExpiry(result.expiresIn);
-    console.debug(`Caching web service token for ID ${id} until: ${expires}`);
+    this.console.debug(`Caching web service token for ID ${id} until: ${expires}`);
     await tokenCache.setData(result, expires);
 
     return result;

@@ -1,5 +1,6 @@
 import ValueCache from "../common/ValueCache.mjs";
 import NsoClient from "./NsoClient.mjs";
+import prefixedConsole from '../common/prefixedConsole.mjs';
 
 export const SPLATNET3_WEB_SERVICE_ID = '4834290508791808';
 
@@ -10,6 +11,7 @@ export default class SplatNet3Client
   bulletToken = null;
 
   constructor(nsoClient = null) {
+    this.console = prefixedConsole('SplatNet');
     this.nsoClient = nsoClient ?? new NsoClient;
   }
 
@@ -52,7 +54,7 @@ export default class SplatNet3Client
   }
 
   async _createBulletToken(webServiceToken, bulletTokenCache) {
-    console.debug('Creating bullet token');
+    this.console.info('Creating bullet token...');
 
     let response = await fetch(this.baseUrl + '/api/bullet_tokens', {
       method: 'POST',
@@ -73,7 +75,7 @@ export default class SplatNet3Client
     let expiry = this._calculateCacheExpiry(7200);
     await bulletTokenCache.setData(bulletToken, expiry);
 
-    console.debug(`Caching bullet token until: ${expiry}`);
+    this.console.debug(`Caching bullet token until: ${expiry}`);
 
     return bulletToken;
   }

@@ -10,6 +10,7 @@
     "twitter": "node app/index.mjs twitter"
   },
   "dependencies": {
+    "console-stamp": "^3.0.6",
     "cron": "^2.1.0",
     "dotenv": "^16.0.2",
     "ecstatic": "^4.1.4",

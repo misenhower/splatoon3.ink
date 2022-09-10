@@ -1,7 +1,9 @@
 import dotenv from 'dotenv';
+import consoleStamp from 'console-stamp';
 import cron from './cron.mjs';
 import { sendTweets } from './twitter/index.mjs';
 
+consoleStamp(console);
 dotenv.config();
 
 const actions = {

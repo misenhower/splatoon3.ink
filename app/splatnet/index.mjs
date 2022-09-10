@@ -8,7 +8,7 @@ import SplatNet3Client, { SPLATNET3_WEB_SERVICE_ID } from "./SplatNet3Client.mjs
  * even if e.g. the imink API has intermittent downtime.
  */
 export async function warmCache() {
-  console.debug('Warming caches...');
+  console.info('Warming caches...');
 
   let nso = new NsoClient;
   let splatnet = new SplatNet3Client;
