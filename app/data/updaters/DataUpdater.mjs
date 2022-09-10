@@ -1,8 +1,10 @@
 import fs from 'fs/promises';
 import path from 'path';
 import mkdirp from 'mkdirp';
+import jsonpath from 'jsonpath';
 import prefixedConsole from "../../common/prefixedConsole.mjs";
 import SplatNet3Client from "../../splatnet/SplatNet3Client.mjs";
+import ImageProcessor from '../ImageProcessor.mjs';
 
 export default class DataUpdater
 {
@@ -10,8 +12,11 @@ export default class DataUpdater
   filename = null;
   outputDirectory = 'dist/data';
 
+  imagePaths = [];
+
   constructor() {
     this.splatnet = new SplatNet3Client;
+    this.imageProcessor = new ImageProcessor;
   }
 
   /** @type {Console} */
@@ -31,11 +36,16 @@ export default class DataUpdater
     // Retrieve the data
     let data = await this.tryRequest(this.getData());
 
+    // Download any new images
+    await this.downloadImages(data);
+
     // Write the data to disk
     await this.writeData(this.path, data);
 
     this.console.info('Done');
   }
+
+  // Requests
 
   getData() {
     //
@@ -50,6 +60,25 @@ export default class DataUpdater
       throw e;
     }
   }
+
+  // Processing
+
+  async downloadImages(data) {
+    for (let expression of this.imagePaths) {
+      // This JSONPath library is completely synchronous, so we have to
+      // build a mapping here after transforming all URLs.
+      let mapping = {};
+      for (let url of jsonpath.query(data, expression)) {
+        let publicUrl = await this.imageProcessor.process(url);
+        mapping[url] = publicUrl;
+      }
+
+      // Now apply the URL transformations
+      jsonpath.apply(data, expression, url => mapping[url]);
+    }
+  }
+
+  // File handling
 
   formatDataForWrite(data) {
     // If we're running in debug mode, format the JSON output so it's easier to read
