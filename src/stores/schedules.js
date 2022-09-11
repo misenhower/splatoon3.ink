@@ -3,7 +3,7 @@ import { computed } from "vue";
 import { useSchedulesStore } from "./data";
 import { useTimeStore } from "./time";
 
-
+// Schedule store definition (used for each type of schedule)
 function defineScheduleStore(id, options) {
   return defineStore(`schedules/${id}`, () => {
     const transform = node => ({
