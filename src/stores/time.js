@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { acceptHMRUpdate, defineStore } from 'pinia'
 
 function now() {
   let time = (new Date).getTime();
@@ -34,3 +34,7 @@ export const useTimeStore = defineStore('time', {
     },
   },
 });
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useTimeStore, import.meta.hot));
+}
