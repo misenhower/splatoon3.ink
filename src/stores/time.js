@@ -32,6 +32,21 @@ export const useTimeStore = defineStore('time', {
       clearInterval(timer);
       timer = null;
     },
+    isCurrent(endTime) {
+      return endTime
+        ? Date.parse(endTime) > this.now
+        : false;
+    },
+    isActive(startTime, endTime) {
+      return (startTime && endTime)
+        ? Date.parse(startTime) <= this.now && this.isCurrent(endTime)
+        : false;
+    },
+    isUpcoming(startTime) {
+      return startTime
+        ? Date.parse(startTime) > this.now
+        : false;
+    },
   },
 });
 
