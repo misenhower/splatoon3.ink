@@ -8,7 +8,8 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
     "cron": "node app/index.mjs cron",
     "twitter": "node app/index.mjs twitter",
-    "splatnet": "node app/index.mjs splatnet"
+    "splatnet": "node app/index.mjs splatnet",
+    "warmCache": "node app/index.mjs warmCache"
   },
   "dependencies": {
     "console-stamp": "^3.0.6",
