@@ -32,6 +32,16 @@
   </main>
 </template>
 
+<script setup>
+import { onMounted, onUnmounted } from 'vue';
+import { useTimeStore } from '../stores/time';
+
+const time = useTimeStore();
+
+onMounted(() => time.startUpdatingNow());
+onUnmounted(() => time.stopUpdatingNow());
+</script>
+
 <style scoped>
 .footer-links a span {
   @apply text-gray-300;

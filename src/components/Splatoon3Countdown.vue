@@ -26,15 +26,12 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted } from 'vue';
+import { computed } from 'vue';
 import { useTimeStore } from '../stores/time';
 
 const announceDate = new Date('2021-02-17');
 const releaseDate = new Date('2022-09-09');
 const time = useTimeStore();
-
-onMounted(() => time.startUpdatingNow());
-onUnmounted(() => time.stopUpdatingNow());
 
 const totalTime = releaseDate - announceDate;
 const remainingTime = computed(() => {
