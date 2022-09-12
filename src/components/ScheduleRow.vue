@@ -22,6 +22,16 @@
               {{ props.schedule.settings.vsRule.name }}
             </div>
           </div>
+
+          <div class="text-sm text-gray-300">
+            in {{ formatDurationFromNow(props.schedule.startTime) }}
+          </div>
+
+          <div class="text-sm text-gray-300">
+            {{ formatTime(props.schedule.startTime) }}
+            &ndash;
+            {{ formatTime(props.schedule.endTime) }}
+          </div>
         </div>
       </div>
 
@@ -39,6 +49,7 @@
 <script setup>
 import StageImage from './StageImage.vue';
 import RuleIcon from './RuleIcon.vue';
+import { formatTime, formatDurationFromNow } from '../common/time';
 
 const props = defineProps({
   schedule: {

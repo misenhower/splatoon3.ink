@@ -11,10 +11,18 @@
         </div>
       </div>
 
-      <div class="bg-active bg-cover pt-2 pb-6 px-4" v-if="store.activeSchedule">
-        <div class="flex items-center space-x-2 font-splatoon2 text-sm lg:text-lg">
-          <div><RuleIcon :rule="store.activeSchedule.settings.vsRule" class="h-6" /></div>
-          <div>{{ store.activeSchedule.settings.vsRule.name }}</div>
+      <div class="bg-active bg-cover pt-2 pb-6 px-4 space-y-2" v-if="store.activeSchedule">
+        <div class="flex items-center justify-between font-splatoon2">
+          <div class="flex items-center space-x-2 text-sm lg:text-lg">
+            <div><RuleIcon :rule="store.activeSchedule.settings.vsRule" class="h-6" /></div>
+            <div>{{ store.activeSchedule.settings.vsRule.name }}</div>
+          </div>
+
+          <div class="justify-end text-xs lg:text-sm bg-splatoon-green text-black px-2">
+            {{ formatTime(store.activeSchedule.startTime) }}
+            &ndash;
+            {{ formatTime(store.activeSchedule.endTime) }}
+          </div>
         </div>
 
         <div class="flex space-x-1">
@@ -52,6 +60,7 @@ import ScheduleRow from './ScheduleRow.vue';
 import battleRegularSvg from '@/assets/img/modes/regular.svg';
 import battleBankaraSvg from '@/assets/img/modes/bankara.svg';
 import RuleIcon from './RuleIcon.vue';
+import { formatTime } from '../common/time';
 
 const props = defineProps({
   type: {
