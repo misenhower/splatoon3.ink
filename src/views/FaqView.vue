@@ -1,7 +1,7 @@
 <template>
   <MainLayout>
     <div class="grow flex items-center justify-center">
-      <div class="w-full max-w-2xl mt-36 mb-20 mx-4">
+      <div class="w-full max-w-2xl mt-20 mb-20 mx-4">
         <div class="relative">
           <Splat2 class="absolute -top-32 -left-24 w-64" />
           <Splat5 class="absolute -right-28 -bottom-24 w-64" />

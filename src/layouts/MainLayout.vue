@@ -1,5 +1,15 @@
 <template>
   <main class="min-h-screen flex flex-col overflow-hidden">
+    <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 justify-between items-center mx-4 my-4 md:mx-12 z-50">
+      <div class="font-splatoon1 text-5xl text-shadow-lg">
+        <router-link to="/">Splatoon 3</router-link>
+      </div>
+
+      <div class="justify-end font-splatoon2 text-3xl text-gray-200" v-if="props.title">
+        {{ props.title }}
+      </div>
+    </div>
+
     <slot />
 
     <div class="m-2 text-center text-xs text-gray-500">
@@ -35,6 +45,10 @@
 <script setup>
 import { onMounted, onUnmounted } from 'vue';
 import { useTimeStore } from '../stores/time';
+
+const props = defineProps({
+  title: String,
+});
 
 const time = useTimeStore();
 
