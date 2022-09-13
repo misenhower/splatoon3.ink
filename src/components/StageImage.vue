@@ -1,6 +1,9 @@
 <template>
   <div class="relative">
-    <img :src="lowRes" :class="imgClass" />
+    <div class="bg-gray-700 aspect-[2/1] overflow-hidden" :class="imgClass">
+      <img :src="lowRes" v-if="lowRes" />
+      <div class="bg-gray-500 animate-pulse h-full" :class="imgClass" v-else>&nbsp;</div>
+    </div>
 
     <div class="
       absolute
@@ -18,7 +21,7 @@
       lg:text-sm
       px-2
       ss:text-3xl
-    ">{{ stage.name }}</div>
+    ">{{ stage?.name }}</div>
   </div>
 </template>
 
@@ -26,11 +29,9 @@
 import { computed } from '@vue/reactivity';
 
 const props = defineProps({
-  stage: {
-    required: true,
-  },
+  stage: Object,
   imgClass: String,
 });
 
-const lowRes = computed(() => props.stage.image.url);
+const lowRes = computed(() => props.stage?.image.url);
 </script>

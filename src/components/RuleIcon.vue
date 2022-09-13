@@ -1,5 +1,5 @@
 <template>
-  <img :src="img" />
+  <img :src="img" class="aspect-square" />
 </template>
 
 <script setup>

@@ -1,5 +1,5 @@
 <template>
-  <ProductContainer bg="bg-gray-600">
+  <ProductContainer bg="bg-gray-600" class="w-full">
     <div class="space-y-2">
       <div class="flex items-center space-x-2 mx-2">
         <img :src="type.img" />
@@ -11,14 +11,22 @@
         </div>
       </div>
 
-      <div class="bg-active bg-cover pt-2 pb-6 px-4 space-y-2" v-if="store.activeSchedule">
+      <div class="bg-active bg-cover pt-2 pb-6 px-4 space-y-2">
         <div class="flex items-center justify-between font-splatoon2">
           <div class="flex items-center space-x-2 text-sm lg:text-lg">
-            <div><RuleIcon :rule="store.activeSchedule.settings.vsRule" class="h-6" /></div>
-            <div>{{ store.activeSchedule.settings.vsRule.name }}</div>
+            <template v-if="store.activeSchedule">
+              <div>
+                <RuleIcon :rule="store.activeSchedule.settings.vsRule" class="h-5 lg:h-6" />
+              </div>
+              <div>{{ store.activeSchedule.settings.vsRule.name }}</div>
+            </template>
+
+            <template v-else>
+              <div class="w-32 bg-gray-600 rounded animate-pulse">&nbsp;</div>
+            </template>
           </div>
 
-          <div class="justify-end text-xs lg:text-sm bg-splatoon-green text-black px-2">
+          <div class="justify-end text-xs lg:text-sm bg-splatoon-green text-black px-2" v-if="store.activeSchedule">
             {{ formatTime(store.activeSchedule.startTime) }}
             &ndash;
             {{ formatTime(store.activeSchedule.endTime) }}
@@ -29,17 +37,17 @@
           <StageImage
             class="flex-1"
             imgClass="rounded-l-xl"
-            :stage="store.activeSchedule.settings.vsStages[0]"
+            :stage="store.activeSchedule?.settings.vsStages[0]"
             />
           <StageImage
             class="flex-1"
             imgClass="rounded-r-xl"
-            :stage="store.activeSchedule.settings.vsStages[1]"
+            :stage="store.activeSchedule?.settings.vsStages[1]"
             />
         </div>
       </div>
 
-      <div class="mx-2 space-y-2" v-if="nextSchedule">
+      <div class="mx-2 space-y-2">
         <div class="font-splatoon1 bg-splatoon-blue inline-block px-2 rounded-lg drop-shadow">
           Next
         </div>
