@@ -6,6 +6,9 @@
       <div>
         <router-link to="/countdown">Countdown</router-link>
       </div>
+      <div>
+        <router-link to="/schedules">Schedules</router-link>
+      </div>
     </div>
   </div>
 </template>

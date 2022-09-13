@@ -17,6 +17,7 @@
       text-xs
       lg:text-sm
       px-2
+      ss:text-3xl
     ">{{ stage.name }}</div>
   </div>
 </template>

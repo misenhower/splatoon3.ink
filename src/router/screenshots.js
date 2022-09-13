@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import ScreenshotsHomeView from '@/views/screenshots/ScreenshotsHomeView.vue'
 import CountdownView from '@/views/screenshots/CountdownView.vue'
-
+import SchedulesView from '@/views/screenshots/SchedulesView.vue'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL + 'screenshots/'),
@@ -13,6 +13,10 @@ const router = createRouter({
     {
       path: '/countdown',
       component: CountdownView,
+    },
+    {
+      path: '/schedules',
+      component: SchedulesView,
     },
   ]
 })

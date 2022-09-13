@@ -21,9 +21,9 @@
             </div>
           </div>
         </div>
-        <div class="flex justify-end items-center mr-6">
+        <!-- <div class="flex justify-end items-center mr-6">
           {{ formatDateTime(time.now) }}
-        </div>
+        </div> -->
       </div>
     </div>
   </main>
@@ -31,6 +31,7 @@
 
 <script setup>
 import { onMounted, onUnmounted } from 'vue';
+import { useDataStore } from '../stores/data';
 import { useTimeStore } from '../stores/time';
 
 const props = defineProps({
@@ -40,8 +41,10 @@ const props = defineProps({
 })
 
 const time = useTimeStore();
+const data = useDataStore();
 
 onMounted(() => time.startUpdatingNow());
+onMounted(() => data.updateAll());
 onUnmounted(() => time.stopUpdatingNow());
 
 function formatDateTime(date) {
