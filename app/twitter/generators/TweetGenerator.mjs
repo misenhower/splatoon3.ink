@@ -3,6 +3,8 @@ import { createPinia, setActivePinia } from 'pinia';
 import { useGearStore, useSchedulesStore } from '../../../src/stores/data.mjs';
 import prefixedConsole from '../../common/prefixedConsole.mjs';
 import Tweet from '../Tweet.mjs';
+import TwitterClient from '../TwitterClient.mjs';
+import ScreenshotHelper from '../../screenshots/ScreenshotHelper.mjs';
 
 export default class TweetGenerator
 {
@@ -16,14 +18,30 @@ export default class TweetGenerator
   }
 
   async preparePinia() {
+    if (this._piniaInitialized) {
+      return;
+    }
+
     setActivePinia(createPinia());
 
     useSchedulesStore().setData(JSON.parse(await fs.readFile('dist/data/schedules.json')));
     useGearStore().setData(JSON.parse(await fs.readFile('dist/data/gear.json')));
+
+    this._piniaInitialized = true;
   }
 
   async shouldTweet() {
     return true;
+  }
+
+  /**
+   * @param {ScreenshotHelper} screenshotHelper
+   * @param {TwitterClient} twitterClient
+   */
+  async sendTweet(screenshotHelper, twitterClient) {
+    let tweet = await this.getTweet(screenshotHelper);
+
+    await twitterClient.send(tweet);
   }
 
   /** @param {ScreenshotHelper} screenshotHelper */

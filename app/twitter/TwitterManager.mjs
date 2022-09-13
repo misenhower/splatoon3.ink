@@ -25,9 +25,7 @@ export default class TwitterManager
         continue;
       }
 
-      let tweet = await generator.getTweet(this.screenshotHelper);
-
-      await this.client.send(tweet);
+      await generator.sendTweet(this.screenshotHelper, this.client);
     }
 
     await this.screenshotHelper.close();
