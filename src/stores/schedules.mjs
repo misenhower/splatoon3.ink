@@ -1,7 +1,7 @@
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { computed } from "vue";
-import { useSchedulesStore } from "./data";
-import { useTimeStore } from "./time";
+import { useSchedulesStore } from "./data.mjs";
+import { useTimeStore } from "./time.mjs";
 
 // Schedule store definition (used for each type of schedule)
 function defineScheduleStore(id, options) {

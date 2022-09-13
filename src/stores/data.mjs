@@ -21,17 +21,21 @@ function defineEndpointStore(id, endpoint, transform = null) {
 
         let json = await response.json();
 
-        if (transform) {
-          json = transform(json);
-        }
-
-        data.value = json;
+        setData(json);
       } finally {
         isUpdating.value = false;
       }
     }
 
-    return { data, update, isUpdating };
+    function setData(json) {
+      if (transform) {
+        json = transform(json);
+      }
+
+      data.value = json;
+    }
+
+    return { data, update, setData, isUpdating };
   });
 }
 
