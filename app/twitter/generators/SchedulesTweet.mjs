@@ -54,6 +54,17 @@ export default class SchedulesTweet extends TweetGenerator
     let media = new Media;
     media.file = await screenshotHelper.capture('schedules');
 
+    let stages = await this.getStages();
+    let detail = s => `${s.settings.vsRule.name} on ${s.settings.vsStages[0].name} and ${s.settings.vsStages[1].name}`;
+
+    media.altText = [
+      'Splatoon 3 map rotation:',
+      '',
+      `Regular Battle: ${detail(stages.regular)}`,
+      `Anarchy Battle (Series): ${detail(stages.anarchySeries)}`,
+      `Anarchy Battle (Open): ${detail(stages.anarchyOpen)}`,
+    ].join('\n');
+
     return media;
   }
 }
