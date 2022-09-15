@@ -1,6 +1,6 @@
 <template>
-  <ProductContainer bg="bg-gray-600">
-    <div class="space-y-2 -mb-8">
+  <ProductContainer bg="bg-gray-600 pt-10">
+    <div class="space-y-2">
       <div class="flex items-center justify-center space-x-1 mx-2">
         <div class="font-splatoon1 text-4xl">
           {{ type.name }}

@@ -6,8 +6,8 @@
           <Splat2 class="absolute -top-32 -left-24 w-64" />
           <Splat5 class="absolute -right-28 -bottom-24 w-64" />
 
-          <ProductContainer class="relative md:rotate-1">
-            <div class="relative">
+          <div class="relative md:rotate-1">
+            <ProductContainer class="py-12">
               <div class="faq text-gray-300 px-10">
                 <div class="space-y-6">
                   <h1>FAQ</h1>
@@ -80,8 +80,8 @@
                     <h2>My question wasn't answered here!</h2>
                     <p>
                       Please feel free to contact me on Twitter at <a href="https://twitter.com/splatoon3ink"
-                        target="_blank">@Splatoon3ink</a> or via <a href="mailto:matt@isenhower.com"
-                        target="_blank">email</a> if you have any other
+                      target="_blank">@Splatoon3ink</a> or via <a href="mailto:matt@isenhower.com"
+                      target="_blank">email</a> if you have any other
                       questions!
                     </p>
                   </div>
@@ -90,15 +90,14 @@
                     <router-link to="/">&laquo; Splatoon 3 Countdown</router-link>
                   </div>
                 </div>
-
-                <img class="absolute hidden sm:block -top-16 right-14 w-48 -rotate-3" src="@/assets/img/tape/tape-1.png" />
-                <img class="absolute -bottom-20 left-8 w-44 rotate-6" src="@/assets/img/tape/tape-3.png" />
-                <img class="absolute top-20 -right-24 w-32 rotate-6" src="@/assets/img/stickers/sticker-4.png" />
-                <img class="absolute hidden sm:block -bottom-14 right-32 w-44 -rotate-3" src="@/assets/img/stickers/sticker-10.png" />
               </div>
-            </div>
-          </ProductContainer>
+            </ProductContainer>
 
+            <img class="absolute hidden sm:block -top-6 right-14 w-48 -rotate-3" src="@/assets/img/tape/tape-1.png" />
+            <img class="absolute -bottom-10 left-8 w-44 rotate-6" src="@/assets/img/tape/tape-3.png" />
+            <img class="absolute top-40 -right-24 w-32 rotate-6" src="@/assets/img/stickers/sticker-4.png" />
+            <img class="absolute hidden sm:block -bottom-6 right-32 w-44 -rotate-3" src="@/assets/img/stickers/sticker-10.png" />
+          </div>
         </div>
       </div>
     </div>

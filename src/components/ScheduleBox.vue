@@ -1,5 +1,5 @@
 <template>
-  <ProductContainer bg="bg-gray-600" class="w-full">
+  <ProductContainer bg="bg-gray-600 pt-10 pb-8" class="w-full">
     <div class="space-y-2">
       <div class="flex items-center space-x-2 mx-2">
         <img :src="type.img" />
