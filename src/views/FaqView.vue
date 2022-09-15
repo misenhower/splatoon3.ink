@@ -7,7 +7,7 @@
           <Splat5 class="absolute -right-28 -bottom-24 w-64" />
 
           <div class="relative md:rotate-1">
-            <ProductContainer class="py-12">
+            <ProductContainer class="py-12 bg-octoarrow">
               <div class="faq text-gray-300 px-10">
                 <div class="space-y-6">
                   <h1>FAQ</h1>
@@ -112,6 +112,12 @@ import Splat5 from '../components/splats/Splat5.vue';
 </script>
 
 <style scoped>
+.bg-octoarrow {
+  background-image: url('@/assets/img/octoarrow-transparent.png');
+  background-size: 200px;
+  background-position: 75px 50px;
+}
+
 .faq h1 {
   @apply text-gray-50 text-3xl font-bold mb-2;
 }
