@@ -1,6 +1,6 @@
 import DataUpdater from "./DataUpdater.mjs";
 
-export default class StageScheduleUpdater extends DataUpdater
+export default class CoopUpdater extends DataUpdater
 {
   name = 'Co-Op';
   filename = 'coop.json';
