@@ -20,9 +20,13 @@ export default class DataUpdater
     this.imageProcessor = new ImageProcessor;
   }
 
+  get region() {
+    return this.splatnet.nsoClient.region;
+  }
+
   /** @type {Console} */
   get console() {
-    this._console ??= prefixedConsole('Updater', this.splatnet.nsoClient.region, this.name);
+    this._console ??= prefixedConsole('Updater', this.region, this.name);
 
     return this._console;
   }
@@ -78,7 +82,7 @@ export default class DataUpdater
   // File handling
 
   async saveData(data) {
-    let s = this.formatDataForWrite(data);
+    let s = await this.formatDataForWrite(data);
 
     await this.writeFile(this.getPath(this.filename), s);
 
@@ -91,7 +95,7 @@ export default class DataUpdater
     return `${this.outputDirectory}/${filename}.json`;
   }
 
-  formatDataForWrite(data) {
+  async formatDataForWrite(data) {
     // If we're running in debug mode, format the JSON output so it's easier to read
     let debug = !!process.env.DEBUG;
     let space = debug ? 2 : undefined;

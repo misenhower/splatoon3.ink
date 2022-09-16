@@ -124,4 +124,8 @@ export default class SplatNet3Client
   getCoopHistoryData() {
     return this.getGraphQLPersistedQuery(1, '817618ce39bcf5570f52a97d73301b30');
   }
+
+  getFestRecordData() {
+    return this.getGraphQLPersistedQuery(1, '44c76790b68ca0f3da87f2a3452de986');
+  }
 }
