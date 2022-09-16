@@ -120,4 +120,8 @@ export default class SplatNet3Client
   getGesotownData() {
     return this.getGraphQLPersistedQuery(1, 'd08dbdd29f31471e61daa978feea697a');
   }
+
+  getCoopHistoryData() {
+    return this.getGraphQLPersistedQuery(1, '817618ce39bcf5570f52a97d73301b30');
+  }
 }
