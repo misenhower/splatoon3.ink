@@ -3,7 +3,7 @@ import DataUpdater from "./DataUpdater.mjs";
 export default class GearUpdater extends DataUpdater
 {
   name = 'Gear';
-  filename = 'gear.json';
+  filename = 'gear';
 
   imagePaths = [
     '$..image.url',

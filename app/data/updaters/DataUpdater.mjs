@@ -26,10 +26,6 @@ export default class DataUpdater
     return this._console;
   }
 
-  get path() {
-    return `${this.outputDirectory}/${this.filename}`;
-  }
-
   async update() {
     this.console.info('Updating data...');
 
@@ -40,7 +36,7 @@ export default class DataUpdater
     await this.downloadImages(data);
 
     // Write the data to disk
-    await this.writeData(this.path, data);
+    await this.saveData(data);
 
     this.console.info('Done');
   }
@@ -80,17 +76,26 @@ export default class DataUpdater
 
   // File handling
 
+  async saveData(data) {
+    let s = this.formatDataForWrite(data);
+
+    await this.writeFile(this.getPath(this.filename), s);
+
+    // Write a secondary file for backup
+    let filename = `${this.filename}.${Date.now()}`;
+    await this.writeFile(this.getPath(filename), s);
+  }
+
+  getPath(filename) {
+    return `${this.outputDirectory}/${filename}.json`;
+  }
+
   formatDataForWrite(data) {
     // If we're running in debug mode, format the JSON output so it's easier to read
     let debug = !!process.env.DEBUG;
     let space = debug ? 2 : undefined;
 
     return JSON.stringify(data, undefined, space);
-  }
-
-  async writeData(file, data) {
-    let s = this.formatDataForWrite(data);
-    await this.writeFile(file, s);
   }
 
   async writeFile(file, data) {

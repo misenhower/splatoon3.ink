@@ -3,7 +3,7 @@ import DataUpdater from "./DataUpdater.mjs";
 export default class StageScheduleUpdater extends DataUpdater
 {
   name = 'Schedules';
-  filename = 'schedules.json';
+  filename = 'schedules';
 
   imagePaths = [
     '$..image.url',
