@@ -8,7 +8,7 @@ function updaters() {
     new StageScheduleUpdater,
     new GearUpdater,
     new CoopUpdater,
-    new FestivalUpdater('NA'),
+    new FestivalUpdater('US'),
     new FestivalUpdater('EU'),
     new FestivalUpdater('JP'),
     new FestivalUpdater('AP'),

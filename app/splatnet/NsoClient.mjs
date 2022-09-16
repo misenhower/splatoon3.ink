@@ -15,7 +15,7 @@ function initializeNxapi() {
 
 export function regionTokens() {
   return {
-    NA: process.env.NINTENDO_TOKEN_NA,
+    US: process.env.NINTENDO_TOKEN_US,
     EU: process.env.NINTENDO_TOKEN_EU,
     JP: process.env.NINTENDO_TOKEN_JP,
     AP: process.env.NINTENDO_TOKEN_AP,
@@ -33,7 +33,7 @@ export default class NsoClient
   }
 
   static make(region = null) {
-    region ??= 'NA';
+    region ??= 'US';
     let tokens = regionTokens();
 
     if (!Object.keys(tokens).includes(region)) {
