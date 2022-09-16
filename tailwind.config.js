@@ -16,6 +16,12 @@ module.exports = {
           orange: '#ff9750',
           red: '#ff505e',
           brown: '#7f413f',
+
+          battle: {
+            regular: '#19d719',
+            ranked: '#f54910',
+            league: '#f02d7d',
+          },
         },
       },
       fontFamily: {

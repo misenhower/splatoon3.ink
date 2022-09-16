@@ -1,8 +1,8 @@
 <template>
-  <ProductContainer bg="bg-gray-600 pt-10">
+  <ProductContainer :bg="type.bg" class="bg-tapes pt-10">
     <div class="space-y-2">
       <div class="flex items-center justify-center space-x-1 mx-2">
-        <div class="font-splatoon1 text-4xl">
+        <div class="font-splatoon1 text-4xl text-shadow">
           {{ type.name }}
         </div>
       </div>
@@ -13,13 +13,13 @@
             <div>
               <RuleIcon :rule="store.activeSchedule.settings.vsRule" class="h-10" />
             </div>
-            <div>{{ store.activeSchedule.settings.vsRule.name }}</div>
+            <div class="text-shadow">{{ store.activeSchedule.settings.vsRule.name }}</div>
           </div>
 
           <div>
             <div class="flex items-center" v-if="type.badge">
               <img :src="type.img" class="h-10" />
-              <div v-if="type.badge" class="font-splatoon2 text-2xl bg-splatoon-blue px-2 drop-shadow">
+              <div v-if="type.badge" class="font-splatoon2 text-2xl bg-splatoon-blue px-2 drop-shadow rounded">
                 {{ type.badge }}
               </div>
             </div>
@@ -67,21 +67,32 @@ const types = {
     badge: null,
     store: useRegularSchedulesStore(),
     img: battleRegularSvg,
+    bg: 'bg-splatoon-battle-regular',
   },
   anarchySeries: {
     name: 'Anarchy Battle',
     badge: 'Series',
     store: useAnarchySeriesSchedulesStore(),
     img: battleBankaraSvg,
+    bg: 'bg-splatoon-battle-ranked',
   },
   anarchyOpen: {
     name: 'Anarchy Battle',
     badge: 'Open',
     store: useAnarchyOpenSchedulesStore(),
     img: battleBankaraSvg,
+    bg: 'bg-splatoon-battle-ranked',
   },
 };
 
 const type = computed(() => types[props.type]);
 const store = computed(() => type.value.store);
 </script>
+
+<style scoped>
+.bg-tapes {
+  background-image: url('@/assets/img/tapes-transparent.png'),
+    linear-gradient(180deg, rgba(2, 0, 36, 0.10) 0%, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, 0.25) 100%);
+  background-size: contain;
+}
+</style>

@@ -5,7 +5,7 @@
         <div>
           <RuleIcon :rule="props.schedule.settings.vsRule" class="h-5" />
         </div>
-        <div>
+        <div class="text-shadow">
           {{ props.schedule.settings.vsRule.name }}
         </div>
       </div>
@@ -22,16 +22,16 @@
               <div>
                 <RuleIcon :rule="props.schedule.settings.vsRule" class="h-5 lg:h-6" />
               </div>
-              <div class="text-xs lg:text-lg">
+              <div class="text-xs lg:text-lg text-shadow">
                 {{ props.schedule.settings.vsRule.name }}
               </div>
             </div>
 
-            <div class="text-sm text-gray-300">
+            <div class="text-sm text-gray-300 text-shadow">
               in {{ formatDurationFromNow(props.schedule.startTime) }}
             </div>
 
-            <div class="text-sm text-gray-300">
+            <div class="text-sm text-gray-300 text-shadow">
               {{ formatTime(props.schedule.startTime) }}
               &ndash;
               {{ formatTime(props.schedule.endTime) }}
@@ -47,11 +47,11 @@
       </div>
 
       <div class="flex-1">
-        <StageImage class="flex-1" imgClass="rounded-l-xl" :stage="props.schedule?.settings.vsStages[0]" />
+        <StageImage class="flex-1" imgClass="rounded-l-xl" textSize="text-xs" :stage="props.schedule?.settings.vsStages[0]" />
       </div>
 
       <div class="flex-1">
-        <StageImage class="flex-1" imgClass="rounded-r-xl" :stage="props.schedule?.settings.vsStages[1]" />
+        <StageImage class="flex-1" imgClass="rounded-r-xl" textSize="text-xs" :stage="props.schedule?.settings.vsStages[1]" />
       </div>
     </div>
   </div>

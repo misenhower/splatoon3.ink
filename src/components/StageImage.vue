@@ -8,6 +8,7 @@
     <div class="
       absolute
       bg-gray-900
+      rounded
       bottom-0
       left-1/2
       -translate-x-1/2
@@ -17,11 +18,9 @@
       max-w-[85%]
       whitespace-nowrap
       font-splatoon2
-      text-xs
-      lg:text-sm
       px-2
       ss:text-3xl
-    ">{{ stage?.name }}</div>
+    " :class="textSize">{{ stage?.name }}</div>
   </div>
 </template>
 
@@ -31,6 +30,10 @@ import { computed } from '@vue/reactivity';
 const props = defineProps({
   stage: Object,
   imgClass: String,
+  textSize: {
+    type: String,
+    default: 'text-xs lg:text-sm',
+  },
 });
 
 const lowRes = computed(() => props.stage?.image.url);
