@@ -39,13 +39,13 @@ function defineEndpointStore(id, endpoint, transform = null) {
   });
 }
 
-export const useSchedulesStore = defineEndpointStore('schedules', '/data/schedules.json', d => d.data);
-export const useGearStore = defineEndpointStore('gear', '/data/gear.json', d => d.data);
+export const useSchedulesDataStore = defineEndpointStore('schedules', '/data/schedules.json', d => d.data);
+export const useGearDataStore = defineEndpointStore('gear', '/data/gear.json', d => d.data);
 
 export const useDataStore = defineStore('data', () => {
   const stores = {
-    schedules: useSchedulesStore(),
-    gear: useGearStore(),
+    schedules: useSchedulesDataStore(),
+    gear: useGearDataStore(),
   };
 
   function updateAll() {
