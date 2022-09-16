@@ -9,7 +9,7 @@
     "cron": "node app/index.mjs cron",
     "twitter": "node app/index.mjs twitter",
     "splatnet": "node app/index.mjs splatnet",
-    "warmCache": "node app/index.mjs warmCache"
+    "warmCaches": "node app/index.mjs warmCaches"
   },
   "dependencies": {
     "console-stamp": "^3.0.6",

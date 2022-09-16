@@ -13,13 +13,39 @@ function initializeNxapi() {
   _nxapiInitialized = true;
 }
 
+export function regionTokens() {
+  return {
+    NA: process.env.NINTENDO_TOKEN_NA,
+    EU: process.env.NINTENDO_TOKEN_EU,
+    JP: process.env.NINTENDO_TOKEN_JP,
+    AP: process.env.NINTENDO_TOKEN_AP,
+  };
+}
+
 export default class NsoClient
 {
-  constructor(nintendoToken = null) {
+  constructor(region, nintendoToken) {
     initializeNxapi();
 
-    this.console = prefixedConsole('NSO');
-    this.nintendoToken = nintendoToken || process.env.NINTENDO_TOKEN;
+    this.console = prefixedConsole('NSO', region);
+    this.region = region;
+    this.nintendoToken = nintendoToken;
+  }
+
+  static make(region = null) {
+    region ??= 'NA';
+    let tokens = regionTokens();
+
+    if (!Object.keys(tokens).includes(region)) {
+      throw new Error(`Invalid region: ${region}`);
+    }
+
+    let token = tokens[region];
+    if (!token) {
+      throw new Error(`Token not set for region: ${region}`);
+    }
+
+    return new NsoClient(region, token);
   }
 
   get cachePrefix() {

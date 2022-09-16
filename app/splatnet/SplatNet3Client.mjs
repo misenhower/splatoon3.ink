@@ -10,9 +10,9 @@ export default class SplatNet3Client
   webViewVersion = '1.0.0-5e2bcdfb';
   bulletToken = null;
 
-  constructor(nsoClient = null) {
-    this.console = prefixedConsole('SplatNet');
-    this.nsoClient = nsoClient ?? new NsoClient;
+  constructor(nsoClient) {
+    this.console = prefixedConsole('SplatNet', nsoClient.region);
+    this.nsoClient = nsoClient;
   }
 
   get hasSession() {

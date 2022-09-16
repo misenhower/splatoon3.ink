@@ -5,6 +5,7 @@ import jsonpath from 'jsonpath';
 import prefixedConsole from "../../common/prefixedConsole.mjs";
 import SplatNet3Client from "../../splatnet/SplatNet3Client.mjs";
 import ImageProcessor from '../ImageProcessor.mjs';
+import NsoClient from '../../splatnet/NsoClient.mjs';
 
 export default class DataUpdater
 {
@@ -14,14 +15,14 @@ export default class DataUpdater
 
   imagePaths = [];
 
-  constructor() {
-    this.splatnet = new SplatNet3Client;
+  constructor(region = null) {
+    this.splatnet = new SplatNet3Client(NsoClient.make(region));
     this.imageProcessor = new ImageProcessor;
   }
 
   /** @type {Console} */
   get console() {
-    this._console ??= prefixedConsole('Updater', this.name);
+    this._console ??= prefixedConsole('Updater', this.splatnet.nsoClient.region, this.name);
 
     return this._console;
   }
