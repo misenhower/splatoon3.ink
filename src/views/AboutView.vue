@@ -10,7 +10,7 @@
             <ProductContainer class="py-12 bg-octoarrow">
               <div class="faq text-gray-300 px-10">
                 <div class="space-y-6">
-                  <h1>FAQ</h1>
+                  <h1 class="font-splatoon2">About!</h1>
 
                   <div>
                     <h2>What is this?</h2>
@@ -21,63 +21,59 @@
                   </div>
 
                   <div>
-                    <h2>What information will be available here?</h2>
+                    <h2>How was this site made?</h2>
                     <p>
-                      Current map rotations, SplatNet gear, and possibly a lot more depending what data Nintendo
-                      includes in SplatNet 3.
+                      On the front end, this site was built with
+                      <a href="https://vuejs.org/" target="_blank">Vue 3</a>,
+                      <a href="https://pinia.vuejs.org/" target="_blank">Pinia</a>, and
+                      <a href="https://tailwindcss.com/" target="_blank">Tailwind CSS</a>.
+
+                      Static assets are compiled using
+                      <a href="https://vitejs.dev/" target="_blank">Vite</a>.
                     </p>
+
                     <p>
-                      More information will be available once the game is released. Stay tuned!
+                      On the back end, the data updaters and Twitter bot were written using
+                      <a href="https://nodejs.org/" target="_blank">NodeJS</a>.
+
+                      Special thanks to the
+                      <a href="https://github.com/samuelthomas2774/nxapi" target="_blank">nxapi</a>
+                      and
+                      <a href="https://github.com/imink-app/f-API" target="_blank">imink</a>
+                      projects for their work to make automated Nintendo Switch Online logins possible.
+                    </p>
+
+                    <p>
+                      The Twitter bot at
+                      <a href="https://twitter.com/splatoon3ink/" target="_blank">@Splatoon3ink</a>
+                      uses
+                      <a href="https://pptr.dev/" target="_blank">Puppeteer</a>
+                      to automatically generate images for each tweet.
+                    </p>
+
+                    <p>
+                      This site is compltely open source.
+                      You can view the source here on
+                      <a href="https://github.com/misenhower/splatoon3.ink/" target="_blank">GitHub</a>.
                     </p>
                   </div>
 
                   <div>
-                    <h2>When will Splatoon3.ink come online?</h2>
+                    <h2>Can I use data from this site in my own project?</h2>
+
                     <p>
-                      Assuming SplatNet 3 works in a similar way to SplatNet 2, I'm hoping to have the site mostly
-                      functional within a couple weeks after Splatoon 3 is released.
+                      Yes! I love seeing all the creative projects people come up with that use this site's data.
                     </p>
+
                     <p>
-                      I've been a little constrained on time lately, but if everything goes well it shouldn't take too
-                      long to get the data streams up and running.
-                      The website itself (and the Twitter bot) may take a little more time since those require
-                      additional design and layout effort.
+                      Please see the
+                      <a href="https://github.com/misenhower/splatoon3.ink/wiki/Data-Access" target="_blank">Data Access</a>
+                      page for a list of all available endpoints.
                     </p>
                   </div>
 
                   <div>
-                    <h2>What about the pre-release Splatfest World Premiere?</h2>
-                    <p>
-                      Nintendo doesn't usually make SplatNet available for pre-release events, so unfortunately, I don't
-                      expect to be able to provide any data or updates for the Splatfest World Premiere.
-                    </p>
-                  </div>
-
-                  <div>
-                    <h2>Will there be a Twitter bot for Splatoon 3 updates?</h2>
-                    <p>
-                      Yes! <a href="https://twitter.com/splatoon3ink" target="_blank">@Splatoon3ink</a> will continue
-                      posting updates for Splatoon 2 for now, but I expect to switch it over to Splatoon 3 updates
-                      shortly after the game is released.
-                    </p>
-                    <p>
-                      Once that account starts posting Splatoon 3 content, you'll be able to find Splatoon 2 updates at
-                      <a href="https://twitter.com/splatoon2inkbot" target="_blank">@Splatoon2inkbot</a> instead.
-                    </p>
-                  </div>
-
-                  <div>
-                    <h2>What will happen to Splatoon2.ink?</h2>
-                    <p>
-                      <a href="https://splatoon2.ink" target="_blank">Splatoon2.ink</a> will remain online as long as
-                      Nintendo keeps SplatNet 2 online.
-                      Unfortunately, if Nintendo shuts down SplatNet 2, that site's data source will no longer be
-                      available and it may not be possible to keep the site running.
-                    </p>
-                  </div>
-
-                  <div>
-                    <h2>My question wasn't answered here!</h2>
+                    <h2>How can I reach you?</h2>
                     <p>
                       Please feel free to contact me on Twitter at <a href="https://twitter.com/splatoon3ink"
                       target="_blank">@Splatoon3ink</a> or via <a href="mailto:matt@isenhower.com"
@@ -87,7 +83,7 @@
                   </div>
 
                   <div>
-                    <router-link to="/">&laquo; Splatoon 3 Countdown</router-link>
+                    <router-link to="/">&laquo; Splatoon 3 Schedules</router-link>
                   </div>
                 </div>
               </div>

@@ -21,8 +21,8 @@
         respective owners.
       </div>
       <div class="footer-links">
-        <router-link to="/faq">
-          <span>FAQ</span>
+        <router-link to="/about">
+          <span>About</span>
         </router-link>
         &ndash;
         <a href="https://twitter.com/splatoon3ink" target="_blank">
