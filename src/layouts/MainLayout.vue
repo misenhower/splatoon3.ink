@@ -25,6 +25,10 @@
           <span>About</span>
         </router-link>
         &ndash;
+        <a href="https://github.com/misenhower/splatoon3.ink/wiki/Data-Access" target="_blank">
+          <span>Data</span>
+        </a>
+        &ndash;
         <a href="https://twitter.com/splatoon3ink" target="_blank">
           <img src="@/assets/img/twitter-white.png" width="20" height="20" class="inline" />
           <span>@splatoon3ink</span>
