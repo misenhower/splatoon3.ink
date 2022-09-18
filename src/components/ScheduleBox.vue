@@ -48,9 +48,9 @@
       </div>
 
       <div class="mx-2 space-y-2">
-        <div class="font-splatoon1 bg-splatoon-blue inline-block px-2 rounded-lg drop-shadow">
-          Next
-        </div>
+        <SquidTape class="font-splatoon2 text-sm drop-shadow -rotate-6 -mx-2">
+          <div class="px-2">Next</div>
+        </SquidTape>
 
         <ScheduleRow :schedule="nextSchedule" />
       </div>
@@ -69,6 +69,7 @@ import battleRegularSvg from '@/assets/img/modes/regular.svg';
 import battleBankaraSvg from '@/assets/img/modes/bankara.svg';
 import RuleIcon from './RuleIcon.vue';
 import { formatTime } from '../common/time';
+import SquidTape from './SquidTape.vue';
 
 const props = defineProps({
   type: {
