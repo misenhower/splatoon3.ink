@@ -1,5 +1,5 @@
 <template>
-  <ProductContainer :bg="type.bg" class="w-full bg-tapes pt-10 pb-8">
+  <ProductContainer :bg="type.bg" class="w-full pt-10 pb-8">
     <div class="space-y-2">
       <div class="flex items-center space-x-2 mx-2">
         <img :src="type.img" />
@@ -83,21 +83,21 @@ const types = {
     badge: null,
     store: useRegularSchedulesStore(),
     img: battleRegularSvg,
-    bg: 'bg-splatoon-battle-regular',
+    bg: 'bg-splatoon-battle-regular bg-tapes',
   },
   anarchySeries: {
     name: 'Anarchy Battle',
     badge: 'Series',
     store: useAnarchySeriesSchedulesStore(),
     img: battleBankaraSvg,
-    bg: 'bg-splatoon-battle-ranked',
+    bg: 'bg-splatoon-battle-ranked bg-tapes',
   },
   anarchyOpen: {
     name: 'Anarchy Battle',
     badge: 'Open',
     store: useAnarchyOpenSchedulesStore(),
     img: battleBankaraSvg,
-    bg: 'bg-splatoon-battle-ranked',
+    bg: 'bg-splatoon-battle-ranked bg-tapes',
   },
 };
 
@@ -107,7 +107,7 @@ const nextSchedule = computed(() => store.value.upcomingSchedules?.at(0));
 </script>
 
 <style scoped>
-.bg-tapes {
+:deep(.bg-tapes) {
   background-image: url('@/assets/img/tapes-transparent.png'),
     linear-gradient(180deg, rgba(2, 0, 36, 0.10) 0%, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, 0.25) 100%);
   background-size: contain;
