@@ -17,11 +17,7 @@ import MainLayout from '@/layouts/MainLayout.vue'
 import { useDataStore } from '../stores/data';
 import { onMounted } from 'vue';
 import ScheduleBox from '../components/ScheduleBox.vue';
-import { useGearStore } from '../stores/gear.mjs';
 
 const data = useDataStore();
 onMounted(() => data.updateAll());
-
-const gear = useGearStore();
-
 </script>
