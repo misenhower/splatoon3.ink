@@ -3,7 +3,7 @@ import { RouterView } from 'vue-router';
 
 try {
   // Detect mobile browsers
-  if (navigator.userAgent.match(/iPhone|Android/i)) {
+  if (navigator.userAgent.match(/iPhone|iPad|Android/i)) {
     document.body.classList.add('is-mobile');
   }
 } catch (e) {
