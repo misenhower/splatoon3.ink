@@ -10,6 +10,10 @@
       </div>
     </div>
 
+    <div class="flex mx-4 md:mx-12 justify-center md:justify-end mb-4">
+      <NavButtons />
+    </div>
+
     <slot />
 
     <div class="m-2 text-center text-xs text-gray-500">
@@ -49,6 +53,7 @@
 <script setup>
 import { onMounted, onUnmounted } from 'vue';
 import { useTimeStore } from '../stores/time';
+import NavButtons from '../components/NavButtons.vue';
 
 const props = defineProps({
   title: String,
