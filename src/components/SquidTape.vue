@@ -3,7 +3,7 @@
     <div class="relative">
       <div class="absolute squid-tl top-0 left-0" :class="squidBg" :style="squidStyles"></div>
       <div class="absolute squid-br bottom-0 right-0" :class="squidBg" :style="squidStyles"></div>
-      <div class="label border" :style="labelStyles">
+      <div class="label border" :class="props.border" :style="labelStyles">
         <slot />
       </div>
     </div>
@@ -21,7 +21,7 @@ const props = defineProps({
     default: 'bg-white',
   },
   border: {
-    default: 'border border-white',
+    default: 'border-white',
   },
   squidSize: {
     default: '10px',

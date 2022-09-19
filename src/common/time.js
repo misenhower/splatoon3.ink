@@ -1,5 +1,9 @@
 import { useTimeStore } from '../stores/time';
 
+export function formatDateTime(value) {
+  return (new Date(value)).toLocaleString(undefined, { month: 'numeric', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+}
+
 export function formatTime(value) {
   return (new Date(value)).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
 }
@@ -46,4 +50,22 @@ export function formatDurationFromNow(value, hideSeconds = false) {
   let time = useTimeStore();
 
   return formatDuration((Date.parse(value) - time.now) / 1000, hideSeconds);
+}
+
+export function formatShortDuration(value) {
+  let { negative, days, hours, minutes, seconds } = getDurationParts(value);
+
+    if (days)
+      return `${negative}${days} ${days === 1 ? 'day' : 'days'}`;
+    if (hours)
+      return `${negative}${hours} ${hours === 1 ? 'hour' : 'hours'}`;
+    if (minutes)
+      return `${negative}${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`;
+    return `${negative}${seconds} ${seconds === 1 ? 'second' : 'seconds'}`;
+}
+
+export function formatShortDurationFromNow(value) {
+  let time = useTimeStore();
+
+  return formatShortDuration((Date.parse(value) - time.now) / 1000);
 }

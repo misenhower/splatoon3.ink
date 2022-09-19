@@ -21,9 +21,9 @@ export const useGearStore = defineStore('gear', () => {
 
   const dailyDropBrand = computed(() => whenCurrent(gesotown.value?.pickupBrand));
   const dailyDropGear = computed(() => currentNodes(gesotown.value?.pickupBrand.brandGears));
-  const normalGear = computed(() => currentNodes(gesotown.value?.limitedGears));
+  const regularGear = computed(() => currentNodes(gesotown.value?.limitedGears));
 
-  return { dailyDropBrand, dailyDropGear, normalGear };
+  return { dailyDropBrand, dailyDropGear, regularGear };
 });
 
 if (import.meta.hot) {
