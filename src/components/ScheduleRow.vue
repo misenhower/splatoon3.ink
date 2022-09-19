@@ -10,7 +10,7 @@
         </div>
       </div>
     </div>
-    <div class="sm:hidden bg-gray-500 rounded animate-pulse w-32" v-else>
+    <div class="sm:hidden bg-zinc-500 rounded animate-pulse w-32" v-else>
       &nbsp;
     </div>
 
@@ -27,11 +27,11 @@
               </div>
             </div>
 
-            <div class="text-sm text-gray-300 text-shadow">
+            <div class="text-sm text-zinc-300 text-shadow">
               in {{ formatDurationFromNow(props.schedule.startTime) }}
             </div>
 
-            <div class="text-sm text-gray-300 text-shadow">
+            <div class="text-sm text-zinc-300 text-shadow">
               {{ formatTime(props.schedule.startTime) }}
               &ndash;
               {{ formatTime(props.schedule.endTime) }}
@@ -39,9 +39,9 @@
           </template>
 
           <template v-else>
-            <div class="text-xs lg:text-lg bg-gray-500 rounded animate-pulse">&nbsp;</div>
-            <div class="text-sm mx-8 bg-gray-500 rounded animate-pulse">&nbsp;</div>
-            <div class="text-sm mx-4 bg-gray-500 rounded animate-pulse">&nbsp;</div>
+            <div class="text-xs lg:text-lg bg-zinc-500 rounded animate-pulse">&nbsp;</div>
+            <div class="text-sm mx-8 bg-zinc-500 rounded animate-pulse">&nbsp;</div>
+            <div class="text-sm mx-4 bg-zinc-500 rounded animate-pulse">&nbsp;</div>
           </template>
         </div>
       </div>

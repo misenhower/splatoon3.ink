@@ -8,7 +8,7 @@
 
           <div class="relative md:rotate-1">
             <ProductContainer class="py-12 bg-octoarrow">
-              <div class="faq text-gray-300 px-10">
+              <div class="faq text-zinc-300 px-10">
                 <div class="space-y-6">
                   <h1 class="font-splatoon2">About!</h1>
 
@@ -115,11 +115,11 @@ import Splat5 from '../components/splats/Splat5.vue';
 }
 
 .faq h1 {
-  @apply text-gray-50 text-3xl font-bold mb-2;
+  @apply text-zinc-50 text-3xl font-bold mb-2;
 }
 
 .faq h2 {
-  @apply text-gray-100 text-xl font-semibold mb-1;
+  @apply text-zinc-100 text-xl font-semibold mb-1;
 }
 
 .faq p {

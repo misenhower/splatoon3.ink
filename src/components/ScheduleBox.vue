@@ -11,7 +11,7 @@
         </div>
       </div>
 
-      <div class="bg-gray-900 bg-opacity-70 backdrop-blur-sm pt-2 pb-6 px-2 mx-1 rounded-lg space-y-2">
+      <div class="bg-zinc-900 bg-opacity-70 backdrop-blur-sm pt-2 pb-6 px-2 mx-1 rounded-lg space-y-2">
         <div class="flex items-center justify-between font-splatoon2">
           <div class="flex items-center space-x-2 text-sm lg:text-lg">
             <template v-if="store.activeSchedule">
@@ -22,11 +22,11 @@
             </template>
 
             <template v-else>
-              <div class="w-32 bg-gray-600 rounded animate-pulse">&nbsp;</div>
+              <div class="w-32 bg-zinc-600 rounded animate-pulse">&nbsp;</div>
             </template>
           </div>
 
-          <div class="justify-end text-xs lg:text-sm bg-gray-100 bg-opacity-80 rounded text-black px-2" v-if="store.activeSchedule">
+          <div class="justify-end text-xs lg:text-sm bg-zinc-100 bg-opacity-80 rounded text-black px-2" v-if="store.activeSchedule">
             {{ formatTime(store.activeSchedule.startTime) }}
             &ndash;
             {{ formatTime(store.activeSchedule.endTime) }}

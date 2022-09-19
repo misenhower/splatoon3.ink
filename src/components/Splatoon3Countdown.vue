@@ -3,11 +3,11 @@
     <div class="mt-6 font-splatoon2" aria-hidden="true">
       <div class="font-splatoon2 text-center space-y-2">
         <div v-if="isReleased">
-          <div class="text-gray-100 text-2xl ss:text-5xl">is out now!</div>
+          <div class="text-zinc-100 text-2xl ss:text-5xl">is out now!</div>
         </div>
         <div v-else>
-          <div class="text-gray-300 ss:text-3xl ss:mb-2">releases in</div>
-          <div class="text-gray-100 text-2xl ss:text-5xl">{{ days(remainingTime) }}!</div>
+          <div class="text-zinc-300 ss:text-3xl ss:mb-2">releases in</div>
+          <div class="text-zinc-100 text-2xl ss:text-5xl">{{ days(remainingTime) }}!</div>
         </div>
       </div>
       <div class="bg-blue-pattern rounded-full overflow-hidden my-4">

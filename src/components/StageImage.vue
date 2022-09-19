@@ -1,13 +1,13 @@
 <template>
   <div class="relative">
-    <div class="bg-gray-700 aspect-[2/1] overflow-hidden" :class="imgClass">
+    <div class="bg-zinc-700 aspect-[2/1] overflow-hidden" :class="imgClass">
       <img :src="lowRes" v-if="lowRes" />
-      <div class="bg-gray-500 animate-pulse h-full" :class="imgClass" v-else>&nbsp;</div>
+      <div class="bg-zinc-500 animate-pulse h-full" :class="imgClass" v-else>&nbsp;</div>
     </div>
 
     <div class="
       absolute
-      bg-gray-900
+      bg-zinc-900
       rounded
       bottom-0
       left-1/2

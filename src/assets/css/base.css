@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  @apply text-gray-100;
+  @apply text-zinc-100;
   @apply bg-black;
   background-image: url('@/assets/img/information-bg.jpg');
   background-size: 400px;

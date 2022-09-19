@@ -32,7 +32,7 @@
       </div>
       <div class="space-y-4 px-4">
         <GearCardHorizontal
-          class="bg-gray-100 bg-opacity-20 backdrop-blur-sm border border-gray-50 border-opacity-20 rounded-lg"
+          class="bg-zinc-100 bg-opacity-20 backdrop-blur-sm border border-zinc-50 border-opacity-20 rounded-lg"
           v-for="gear in gears"
           :key="gear.id"
           :gear="gear"

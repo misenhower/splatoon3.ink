@@ -3,13 +3,13 @@
     <slot />
 
     <div class="h-12 m-4 bg-black bg-opacity-50 rounded-full">
-      <div class="flex justify-between h-full font-splatoon2 text-sm text-gray-300">
+      <div class="flex justify-between h-full font-splatoon2 text-sm text-zinc-300">
         <div class="flex justify-start items-center space-x-6 ml-4">
           <div>
             <img src="@/assets/img/favicon.svg" class="h-16 -my-8" />
           </div>
           <div class="flex items-center space-x-8">
-            <div class="text-3xl text-gray-50">
+            <div class="text-3xl text-zinc-50">
               {{ header }}
             </div>
             <div>
@@ -59,7 +59,7 @@ function formatDateTime(date) {
 
 <style scoped>
 .footer-links a span {
-  @apply text-gray-300;
+  @apply text-zinc-300;
 }
 
 .footer-links a:hover span {

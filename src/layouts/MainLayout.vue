@@ -5,7 +5,7 @@
         <router-link to="/">Splatoon 3</router-link>
       </div>
 
-      <div class="justify-end font-splatoon2 text-3xl text-gray-200" v-if="props.title">
+      <div class="justify-end font-splatoon2 text-3xl text-zinc-200" v-if="props.title">
         {{ props.title }}
       </div>
     </div>
@@ -16,7 +16,7 @@
 
     <slot />
 
-    <div class="m-2 text-center text-xs text-gray-500">
+    <div class="m-2 text-center text-xs text-zinc-500">
       <div>
         <img src="@/assets/img/little-buddy.png" class="mx-auto mb-4" width="50" />
       </div>
@@ -67,7 +67,7 @@ onUnmounted(() => time.stopUpdatingNow());
 
 <style scoped>
 .footer-links a span {
-  @apply text-gray-300;
+  @apply text-zinc-300;
 }
 
 .footer-links a:hover span {
