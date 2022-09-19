@@ -52,7 +52,7 @@
                     </p>
 
                     <p>
-                      This site is compltely open source.
+                      This site is completely open source.
                       You can view the source here on
                       <a href="https://github.com/misenhower/splatoon3.ink/" target="_blank">GitHub</a>.
                     </p>
