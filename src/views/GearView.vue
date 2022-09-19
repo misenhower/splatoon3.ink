@@ -3,7 +3,7 @@
     <div class="grow flex items-center justify-center">
       <div class="mx-4 md:mx-12 max-w-screen-xl w-full">
         <div class="flex items-center flex-col lg:flex-row space-y-10 lg:space-y-0 lg:space-x-16">
-          <div class="max-w-sm xl:max-w-md">
+          <div class="flex-none max-w-sm xl:max-w-md">
             <DailyDropGear class="md:-rotate-1" />
           </div>
 
