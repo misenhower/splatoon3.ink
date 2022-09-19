@@ -1,5 +1,14 @@
 <script setup>
-import { RouterView } from 'vue-router'
+import { RouterView } from 'vue-router';
+
+try {
+  // Detect mobile browsers
+  if (navigator.userAgent.match(/iPhone|Android/i)) {
+    document.body.classList.add('is-mobile');
+  }
+} catch (e) {
+  //
+}
 </script>
 
 <template>

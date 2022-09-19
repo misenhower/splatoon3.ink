@@ -38,7 +38,7 @@
     <!-- Price/Order button -->
     <div class="flex-none flex flex-col self-stretch items-end">
       <div class="flex-1">
-        <div class="lg:hidden">
+        <div class="hidden mobile:block">
           <a :href="shopUrl">
             <SquidTape
               class="font-splatoon2 text-sm text-black rounded-sm -rotate-2"

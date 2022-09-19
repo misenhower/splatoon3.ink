@@ -56,7 +56,7 @@
 
     <!-- Time left/Order button -->
     <div class="absolute top-1 left-6 space-y-2">
-      <div class="lg:hidden -ml-4">
+      <div class="hidden mobile:block -ml-4">
         <a :href="shopUrl">
           <SquidTape class="font-splatoon2 text-sm text-black rounded-sm -rotate-3" bg="bg-splatoon-yellow" squidBg="bg-black"
             border="border border-black">
