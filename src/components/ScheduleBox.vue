@@ -104,7 +104,7 @@ const types = {
 
 const type = computed(() => types[props.type]);
 const store = computed(() => type.value.store);
-const nextSchedule = computed(() => store.value.upcomingSchedules?.at(0));
+const nextSchedule = computed(() => store.value.upcomingSchedules?.[0]);
 </script>
 
 <style scoped>
