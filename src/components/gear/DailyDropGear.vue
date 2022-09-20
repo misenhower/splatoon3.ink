@@ -21,9 +21,6 @@
               </div>
             </div>
           </div>
-
-          <div class="bg-daily-drop">
-          </div>
         </div>
       </div>
 
@@ -60,12 +57,5 @@ const gears = computed(() => gearStore.dailyDropGear);
   background-image: url('@/assets/img/circles-transparent.png'),
     linear-gradient(180deg, rgba(2, 0, 36, 0.10) 0%, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, 0.25) 100%);
   background-size: contain;
-}
-
-.bg-daily-drop {
-  background-image: url('@/assets/img/gesotown-daily-drop-bg.png');
-  background-repeat: no-repeat;
-  background-size: 420px 73px;
-  background-position: center;
 }
 </style>
