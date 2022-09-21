@@ -71,8 +71,10 @@ export default class ScreenshotHelper
     url.hash = path;
 
     if (this.defaultParams) {
+      // We can't use url.searchParams because they need to come after the hash
+      url.hash += '?';
       for (let key in this.defaultParams) {
-        url.searchParams.set(key, this.defaultParams[key]);
+        url.hash += `${key}=${this.defaultParams[key]}`;
       }
     }
 
