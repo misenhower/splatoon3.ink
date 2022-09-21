@@ -78,8 +78,7 @@ export default class TweetGenerator
     const tweet = new Tweet;
     tweet.status = await this._getStatus();
 
-    await this._prepareScreenshotHelper(screenshotHelper);
-    let media = await this._getMedia(screenshotHelper);
+    let media = await this.getMedia(screenshotHelper);
     if (media && !Array.isArray(media)) {
       media = [media];
     }
@@ -96,6 +95,13 @@ export default class TweetGenerator
 
   async _getStatus () {
     //
+  }
+
+  /** @param {ScreenshotHelper} screenshotHelper */
+  async getMedia(screenshotHelper) {
+    await this._prepareScreenshotHelper(screenshotHelper);
+
+    return await this._getMedia(screenshotHelper);
   }
 
   /** @param {ScreenshotHelper} screenshotHelper */

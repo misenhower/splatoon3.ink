@@ -10,3 +10,7 @@ export function defaultTwitterManager() {
 export function sendTweets() {
   return defaultTwitterManager().sendTweets();
 }
+
+export function testTweets() {
+  return defaultTwitterManager().testTweets();
+}

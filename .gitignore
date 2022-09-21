@@ -17,6 +17,8 @@ coverage
 .env
 docker-compose.override.yml
 
+/temp
+
 /cypress/videos/
 /cypress/screenshots/
 

@@ -8,6 +8,7 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
     "cron": "node app/index.mjs cron",
     "twitter": "node app/index.mjs twitter",
+    "twitter:test": "node app/index.mjs twitterTest",
     "splatnet": "node app/index.mjs splatnet",
     "warmCaches": "node app/index.mjs warmCaches"
   },
