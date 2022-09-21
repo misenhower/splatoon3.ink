@@ -10,7 +10,7 @@ export default class RegularGearTweet extends TweetGenerator
   async getLatestGear() {
     await this.preparePinia();
 
-    return useGearStore().regularGear?.[0];
+    return useGearStore().regularGear?.slice().reverse()[0];
   }
 
   async getDataTime() {
