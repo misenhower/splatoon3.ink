@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import ScreenshotsHomeView from '@/views/screenshots/ScreenshotsHomeView.vue'
 import CountdownView from '@/views/screenshots/CountdownView.vue'
 import SchedulesView from '@/views/screenshots/SchedulesView.vue'
+import RegularGearView from '@/views/screenshots/RegularGearView.vue'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL + 'screenshots/'),
@@ -17,6 +18,10 @@ const router = createRouter({
     {
       path: '/schedules',
       component: SchedulesView,
+    },
+    {
+      path: '/gear/regular',
+      component: RegularGearView,
     },
   ]
 })

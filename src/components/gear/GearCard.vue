@@ -5,7 +5,7 @@
     <div class="absolute inset-0 flex flex-col items-center justify-evenly my-4">
       <!-- Gear Image -->
       <div>
-        <img :src="gear.image.url" class="h-20 w-20 xl:h-28 xl:w-28" />
+        <img :src="gear.image.url" class="h-20 w-20 lg:h-24 lg:w-24 xl:h-28 xl:w-28" />
       </div>
 
       <!-- Powers -->
@@ -27,7 +27,7 @@
           <img src="@/assets/img/gesotown-tape.svg" />
         </div>
         <div class="absolute inset-0 flex items-center justify-center">
-          <div class="font-splatoon2 text-sm xl:text-base text-shadow">
+          <div class="font-splatoon2 text-sm xl:text-base ss:text-lg text-shadow">
             {{ gear.name }}
           </div>
         </div>

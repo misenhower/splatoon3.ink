@@ -9,6 +9,9 @@
       <div>
         <router-link to="/schedules">Schedules</router-link>
       </div>
+      <div>
+        <router-link to="/gear/regular">Gear (Regular)</router-link>
+      </div>
     </div>
   </div>
 </template>
