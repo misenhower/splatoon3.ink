@@ -46,8 +46,8 @@ import GearCard from '@/components/gear/GearCard.vue';
 import SquidTape from '@/components/SquidTape.vue';
 
 const gearStore = useGearStore();
-const gears = computed(() => gearStore.regularGear?.slice(1));
-const latestGear = computed(() => gearStore.regularGear?.[0]);
+const gears = computed(() => gearStore.regularGear?.slice().reverse().slice(1));
+const latestGear = computed(() => gearStore.regularGear?.slice().reverse()[0]);
 </script>
 
 <style scoped>
