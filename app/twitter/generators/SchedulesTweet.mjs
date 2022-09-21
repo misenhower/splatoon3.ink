@@ -1,18 +1,11 @@
 import TweetGenerator from "./TweetGenerator.mjs";
 import Media from "../Media.mjs";
 import { useAnarchyOpenSchedulesStore, useAnarchySeriesSchedulesStore, useRegularSchedulesStore } from "../../../src/stores/schedules.mjs";
-import ValueCache from "../../common/ValueCache.mjs";
 
 export default class SchedulesTweet extends TweetGenerator
 {
   key = 'schedules';
   name = 'Schedules';
-
-  constructor() {
-    super();
-
-    this.tweetCache = new ValueCache('twitter.schedules');
-  }
 
   async getStages() {
     await this.preparePinia();
