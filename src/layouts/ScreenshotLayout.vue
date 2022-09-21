@@ -32,7 +32,8 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted } from 'vue';
+import { onMounted, onUnmounted, watchEffect } from 'vue';
+import { useRoute } from 'vue-router';
 import { useDataStore } from '../stores/data';
 import { useTimeStore } from '../stores/time';
 
@@ -42,12 +43,18 @@ const props = defineProps({
   },
 })
 
+const route = useRoute();
+
 const time = useTimeStore();
 const data = useDataStore();
 
-onMounted(() => time.startUpdatingNow());
 onMounted(() => data.updateAll());
-onUnmounted(() => time.stopUpdatingNow());
+
+watchEffect(() => {
+  if (route.query.time) {
+    time.setNow(route.query.time);
+  }
+});
 
 function formatDateTime(date) {
   date = new Date(date);

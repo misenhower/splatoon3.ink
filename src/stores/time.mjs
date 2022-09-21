@@ -14,6 +14,9 @@ export const useTimeStore = defineStore('time', {
     now: now(),
   }),
   actions: {
+    setNow(value) {
+      this.now = value;
+    },
     updateNow() {
       this.now = now();
     },
