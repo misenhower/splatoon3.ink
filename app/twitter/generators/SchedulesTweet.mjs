@@ -5,6 +5,7 @@ import ValueCache from "../../common/ValueCache.mjs";
 
 export default class SchedulesTweet extends TweetGenerator
 {
+  key = 'schedules';
   name = 'Schedules';
 
   constructor() {
@@ -23,24 +24,12 @@ export default class SchedulesTweet extends TweetGenerator
     }
   }
 
-  async getScheduleTime() {
+  async getDataTime() {
+    await this.preparePinia();
+
     let schedule = (await this.getStages()).regular;
 
     return Date.parse(schedule.startTime);
-  }
-
-  async shouldTweet() {
-    let currentTime = await this.getScheduleTime();
-    let cachedTime = await this.tweetCache.getData();
-
-    return !cachedTime || (currentTime > cachedTime);
-  }
-
-  async sendTweet(screenshotHelper, twitterClient) {
-    await super.sendTweet(screenshotHelper, twitterClient);
-
-    let currentTime = await this.getScheduleTime();
-    await this.tweetCache.setData(currentTime);
   }
 
   async _getStatus() {
