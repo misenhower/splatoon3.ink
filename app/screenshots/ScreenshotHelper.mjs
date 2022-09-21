@@ -1,6 +1,7 @@
 import { URL } from 'url';
 import puppeteer from 'puppeteer';
 import HttpServer from './HttpServer.mjs';
+import timers from 'timers/promises';
 
 const defaultViewport = {
   // Using a 16:9 ratio here by default to match Twitter's image card dimensions
@@ -81,6 +82,9 @@ export default class ScreenshotHelper
     await this.#page.goto(url, {
         waitUntil: 'networkidle0', // Wait until the network is idle
     });
+
+    // Wait an additional 500ms
+    await this.#page.waitForNetworkIdle({ idleTime: 500 });
 
     // Take the screenshot
     return await this.#page.screenshot();
