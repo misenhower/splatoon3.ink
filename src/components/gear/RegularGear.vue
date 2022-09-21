@@ -34,9 +34,9 @@
       </div>
 
       <div class="hidden md:block px-2">
-        <div class="flex flex-wrap justify-center">
+        <div class="flex flex-wrap justify-center max-w-3xl">
           <div class="my-6 w-1/3 flex justify-center" v-for="gear in gears" :key="gear.id">
-            <GearCard class="w-64"  :gear="gear" />
+            <GearCard :gear="gear" />
           </div>
         </div>
       </div>
