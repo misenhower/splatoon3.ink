@@ -20,6 +20,8 @@ export default class ScreenshotHelper
   /** @type {puppeteer.Viewport} */
   #viewport = null;
 
+  defaultParams = null;
+
   get isOpen() {
     return !!this.#browser;
   }
@@ -67,6 +69,13 @@ export default class ScreenshotHelper
     // Navigate to the URL
     let url = new URL(`http://localhost:${this.#httpServer.port}/screenshots/`);
     url.hash = path;
+
+    if (this.defaultParams) {
+      for (let key in this.defaultParams) {
+        url.searchParams.set(key, this.defaultParams[key]);
+      }
+    }
+
     await this.#page.goto(url, {
         waitUntil: 'networkidle0', // Wait until the network is idle
     });
