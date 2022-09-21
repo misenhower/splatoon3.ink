@@ -10,7 +10,9 @@
         <router-link to="/schedules">Schedules</router-link>
       </div>
       <div>
-        <router-link to="/gear/regular">Gear (Regular)</router-link>
+        Gear:
+        <router-link to="/gear/regular">Regular</router-link>&nbsp;
+        <router-link to="/gear/dailydrop">Daily Drop</router-link>
       </div>
     </div>
   </div>

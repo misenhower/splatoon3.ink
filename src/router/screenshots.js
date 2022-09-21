@@ -3,6 +3,7 @@ import ScreenshotsHomeView from '@/views/screenshots/ScreenshotsHomeView.vue'
 import CountdownView from '@/views/screenshots/CountdownView.vue'
 import SchedulesView from '@/views/screenshots/SchedulesView.vue'
 import RegularGearView from '@/views/screenshots/RegularGearView.vue'
+import DailyDropGearView from '@/views/screenshots/DailyDropGearView.vue'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL + 'screenshots/'),
@@ -22,6 +23,10 @@ const router = createRouter({
     {
       path: '/gear/regular',
       component: RegularGearView,
+    },
+    {
+      path: '/gear/dailydrop',
+      component: DailyDropGearView,
     },
   ]
 })
