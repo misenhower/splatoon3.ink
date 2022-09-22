@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center space-x-4 py-2">
+  <div class="flex items-center space-x-4 py-2 relative">
     <!-- Gear Image -->
     <div class="ml-2 shrink-0">
       <img :src="gear.image.url" class="h-20 w-20" />
@@ -24,19 +24,42 @@
         </div>
       </div>
 
-      <div class="flex items-center space-x-px">
-        <div :title="gear.primaryGearPower.name" class="bg-black rounded-full">
-          <img :src="gear.primaryGearPower.image.url" class="h-8" />
+      <div class="flex justify-between">
+        <div class="flex items-center space-x-px">
+          <div :title="gear.primaryGearPower.name" class="bg-black rounded-full">
+            <img :src="gear.primaryGearPower.image.url" class="h-8" />
+          </div>
+
+          <div v-for="(power, i) in gear.additionalGearPowers" :key="i" :title="power.name" class="bg-black rounded-full">
+            <img :src="power.image.url" class="h-6" />
+          </div>
         </div>
 
-        <div v-for="(power, i) in gear.additionalGearPowers" :key="i" :title="power.name" class="bg-black rounded-full">
-          <img :src="power.image.url" class="h-6" />
+        <div class="flex items-center space-x-2 bg-price w-28 pl-2 -mr-px">
+          <div>
+            <img src="@/assets/img/gesotown-coin.svg" />
+          </div>
+          <div class="font-splatoon1">
+            {{ price }}
+          </div>
         </div>
       </div>
     </div>
 
+    <!-- Order button -->
+    <div class="absolute top-0 right-0 hidden mobile:block">
+      <a :href="shopUrl">
+        <SquidTape class="font-splatoon2 text-sm text-black rounded-sm -rotate-2" bg="bg-splatoon-yellow" squidBg="bg-black"
+          border="border border-black">
+          <div class="px-1">
+            Order
+          </div>
+        </SquidTape>
+      </a>
+    </div>
+
     <!-- Price/Order button -->
-    <div class="flex-none flex flex-col self-stretch items-end">
+    <div class="flex-none flex flex-col self-stretch items-end" v-if="false">
       <div class="flex-1">
         <div class="hidden mobile:block">
           <a :href="shopUrl">
