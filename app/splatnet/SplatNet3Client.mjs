@@ -132,4 +132,8 @@ export default class SplatNet3Client
   getFestDetailData(festId) {
     return this.getGraphQLPersistedQuery(1, '2d661988c055d843b3be290f04fb0db9', { festId });
   }
+
+  getCurrentFestData() {
+    return this.getGraphQLPersistedQuery(1, 'c0429fd738d829445e994d3370999764');
+  }
 }

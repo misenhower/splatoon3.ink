@@ -2,6 +2,7 @@ import GearUpdater from "./updaters/GearUpdater.mjs";
 import StageScheduleUpdater from "./updaters/StageScheduleUpdater.mjs";
 import CoopUpdater from "./updaters/CoopUpdater.mjs";
 import FestivalUpdater from "./updaters/FestivalUpdater.mjs";
+import CurrentFestivalUpdater from "./updaters/CurrentFestivalUpdater.mjs";
 
 function updaters() {
   return [
@@ -12,6 +13,10 @@ function updaters() {
     new FestivalUpdater('EU'),
     new FestivalUpdater('JP'),
     new FestivalUpdater('AP'),
+    new CurrentFestivalUpdater('US'),
+    new CurrentFestivalUpdater('EU'),
+    new CurrentFestivalUpdater('JP'),
+    new CurrentFestivalUpdater('AP'),
   ];
 }
 
