@@ -2,10 +2,10 @@
   <ProductContainer class="pt-10 pb-4" bg="bg-splatoon-blue bg-circles">
     <div class="space-y-4">
       <div>
-        <div>
-          <img :src="brand.image.url" v-if="brand" />
+        <div v-if="brand" class="-mb-10">
+          <img :src="brand.image.url" />
         </div>
-        <div class="flex flex-col items-center -mt-10 -space-y-2">
+        <div class="flex flex-col items-center -space-y-2">
           <SquidTape class="font-splatoon2 text-sm text-black rounded-sm -rotate-2 z-10" bg="bg-splatoon-green" squidBg="bg-black"
             border="border border-black">
             <div class="px-1">
@@ -13,28 +13,38 @@
             </div>
           </SquidTape>
 
-          <div class="relative -rotate-2">
+          <div class="relative -rotate-2" v-if="brand">
             <img src="@/assets/img/gesotown-daily-drop-bg.png" class="w-64" />
             <div class="absolute inset-0 flex items-center ml-4">
               <div class="font-splatoon2 text-lg">
-                {{ brand?.brand.name }}
+                {{ brand.brand.name }}
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="text-center font-splatoon2 text-splatoon-yellow">
-        Until {{ formatDateTime(brand?.saleEndTime) }}
-      </div>
-      <div class="space-y-4 px-4">
-        <GearCardHorizontal
-          class="bg-zinc-100 bg-opacity-20 backdrop-blur-sm border border-zinc-50 border-opacity-20 rounded-lg"
-          v-for="gear in gears"
-          :key="gear.id"
-          :gear="gear"
-          />
-      </div>
+      <template v-if="brand">
+        <div class="text-center font-splatoon2 text-splatoon-yellow">
+          Until {{ formatDateTime(brand?.saleEndTime) }}
+        </div>
+        <div class="space-y-4 px-4">
+          <GearCardHorizontal
+            class="bg-zinc-100 bg-opacity-20 backdrop-blur-sm border border-zinc-50 border-opacity-20 rounded-lg"
+            v-for="gear in gears"
+            :key="gear.id"
+            :gear="gear"
+            />
+        </div>
+      </template>
+
+      <template v-else>
+        <div class="h-24 flex items-center justify-center">
+          <div class="font-splatoon2 text-splatoon-yellow">
+            Check back soon!
+          </div>
+        </div>
+      </template>
     </div>
   </ProductContainer>
 </template>

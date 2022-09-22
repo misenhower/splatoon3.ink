@@ -27,19 +27,29 @@
         </SquidTape>
       </div>
 
-      <div class="md:hidden px-2">
-        <div class="bg-horiz-card" v-for="gear in gears" :key="gear.id">
-          <GearCardHorizontal :gear="gear" />
-        </div>
-      </div>
-
-      <div class="hidden md:block px-2">
-        <div class="flex flex-wrap justify-center max-w-3xl">
-          <div class="my-6 w-1/3 flex justify-center" v-for="gear in gears" :key="gear.id">
-            <GearCard :gear="gear" />
+      <template v-if="gears && gears.length">
+        <div class="md:hidden px-2">
+          <div class="bg-horiz-card" v-for="gear in gears" :key="gear.id">
+            <GearCardHorizontal :gear="gear" />
           </div>
         </div>
-      </div>
+
+        <div class="hidden md:block px-2">
+          <div class="flex flex-wrap justify-center max-w-3xl">
+            <div class="my-6 w-1/3 flex justify-center" v-for="gear in gears" :key="gear.id">
+              <GearCard :gear="gear" />
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <template v-else>
+        <div class="h-24 flex items-center justify-center">
+          <div class="font-splatoon2 text-black">
+            Check back soon!
+          </div>
+        </div>
+      </template>
     </div>
   </div>
 </template>
