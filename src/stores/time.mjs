@@ -12,13 +12,18 @@ let timer;
 export const useTimeStore = defineStore('time', {
   state: () => ({
     now: now(),
+    offset: 0,
   }),
   actions: {
     setNow(value) {
       this.now = value;
     },
+    setOffset(value) {
+      this.offset = value;
+      this.updateNow();
+    },
     updateNow() {
-      this.now = now();
+      this.now = now() + this.offset;
     },
     startUpdatingNow() {
       if (!timer) {

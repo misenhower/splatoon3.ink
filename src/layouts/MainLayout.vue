@@ -47,6 +47,8 @@
         </a>
       </div>
     </div>
+
+    <TimeOffsetSelector v-if="isDev" class="mb-4" />
   </main>
 </template>
 
@@ -54,6 +56,7 @@
 import { onMounted, onUnmounted } from 'vue';
 import { useTimeStore } from '../stores/time';
 import NavButtons from '../components/NavButtons.vue';
+import TimeOffsetSelector from '@/components/Debug/TimeOffsetSelector.vue';
 
 const props = defineProps({
   title: String,
@@ -63,6 +66,8 @@ const time = useTimeStore();
 
 onMounted(() => time.startUpdatingNow());
 onUnmounted(() => time.stopUpdatingNow());
+
+const isDev = import.meta.env.DEV;
 </script>
 
 <style scoped>
