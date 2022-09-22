@@ -14,10 +14,5 @@
 
 <script setup>
 import MainLayout from '@/layouts/MainLayout.vue'
-import { useDataStore } from '../stores/data';
-import { onMounted } from 'vue';
 import ScheduleBox from '../components/ScheduleBox.vue';
-
-const data = useDataStore();
-onMounted(() => data.updateAll());
 </script>

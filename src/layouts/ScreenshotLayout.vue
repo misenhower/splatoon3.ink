@@ -12,7 +12,7 @@
           </div>
           <div class="flex items-center space-x-8">
             <div class="text-3xl text-zinc-50">
-              {{ header }}
+              {{ props.header }}
             </div>
             <div>
               <img src="@/assets/img/twitter-white.png" width="20" height="20" class="inline" />
@@ -32,9 +32,8 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, watchEffect } from 'vue';
+import { watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
-import { useDataStore } from '../stores/data';
 import { useTimeStore } from '../stores/time';
 
 const props = defineProps({
@@ -44,14 +43,11 @@ const props = defineProps({
 })
 
 const route = useRoute();
-
 const time = useTimeStore();
-const data = useDataStore();
-
-onMounted(() => data.updateAll());
 
 watchEffect(() => {
   if (route.query.time) {
+    time.stopUpdatingNow();
     time.setNow(route.query.time);
   }
 });

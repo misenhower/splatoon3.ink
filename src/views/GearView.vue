@@ -18,11 +18,6 @@
 
 <script setup>
 import MainLayout from '@/layouts/MainLayout.vue'
-import { useDataStore } from '../stores/data';
-import { onMounted } from 'vue';
 import DailyDropGear from '../components/gear/DailyDropGear.vue';
 import RegularGear from '../components/gear/RegularGear.vue';
-
-const data = useDataStore();
-onMounted(() => data.updateAll());
 </script>
