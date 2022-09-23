@@ -27,7 +27,7 @@
         </div>
       </div>
 
-      <div class="font-splatoon2 text-splatoon-yellow text-center mx-2">
+      <div class="font-splatoon2 text-splatoon-yellow text-center mx-2 ss:hidden">
         {{ formatDateTime(festival.startTime) }}
         &ndash;
         {{ formatDateTime(festival.endTime) }}
