@@ -28,15 +28,22 @@ export const useRegularSchedulesStore = defineScheduleStore('regular', {
   settings: node => node.regularMatchSetting,
 });
 
-// Anarchy Battle
+// Anarchy Battle (Series)
 export const useAnarchySeriesSchedulesStore = defineScheduleStore('anarchy/series', {
   nodes: () => useSchedulesDataStore().data?.bankaraSchedules.nodes,
   settings: node => node.bankaraMatchSettings?.find(s => s.mode === 'CHALLENGE'),
 });
 
+// Anarchy Battle (Open)
 export const useAnarchyOpenSchedulesStore = defineScheduleStore('anarchy/open', {
   nodes: () => useSchedulesDataStore().data?.bankaraSchedules.nodes,
   settings: node => node.bankaraMatchSettings?.find(s => s.mode === 'OPEN'),
+});
+
+// Splatfest Battle
+export const useSplatfestSchedulesStore = defineScheduleStore('splatfest', {
+  nodes: () => useSchedulesDataStore().data?.festSchedules.nodes,
+  settings: node => node.festMatchSetting,
 });
 
 // Salmon Run
@@ -49,5 +56,6 @@ if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useRegularSchedulesStore, import.meta.hot));
   import.meta.hot.accept(acceptHMRUpdate(useAnarchySeriesSchedulesStore, import.meta.hot));
   import.meta.hot.accept(acceptHMRUpdate(useAnarchyOpenSchedulesStore, import.meta.hot));
+  import.meta.hot.accept(acceptHMRUpdate(useSplatfestSchedulesStore, import.meta.hot));
   import.meta.hot.accept(acceptHMRUpdate(useSalmonRunSchedulesStore, import.meta.hot));
 }

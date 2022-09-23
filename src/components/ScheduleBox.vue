@@ -60,7 +60,7 @@
 
 <script setup>
 import { computed } from '@vue/reactivity';
-import { useAnarchyOpenSchedulesStore, useAnarchySeriesSchedulesStore, useRegularSchedulesStore } from '../stores/schedules';
+import { useAnarchyOpenSchedulesStore, useAnarchySeriesSchedulesStore, useRegularSchedulesStore, useSplatfestSchedulesStore } from '../stores/schedules';
 import ProductContainer from './ProductContainer.vue';
 import StageImage from './StageImage.vue';
 import ScheduleRow from './ScheduleRow.vue';
@@ -99,6 +99,13 @@ const types = {
     store: useAnarchyOpenSchedulesStore(),
     img: battleBankaraSvg,
     bg: 'bg-splatoon-battle-ranked bg-tapes',
+  },
+  splatfest: {
+    name: 'Splatfest Battle',
+    badge: null,
+    store: useSplatfestSchedulesStore(),
+    img: battleRegularSvg,
+    bg: 'bg-splatoon-battle-regular bg-tapes',
   },
 };
 
