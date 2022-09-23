@@ -28,6 +28,10 @@
         </div> -->
       </div>
     </div>
+
+    <div class="fixed bottom-0 right-4 z-50">
+      <TimeOffsetSelector v-if="isDev" class="mb-4" />
+    </div>
   </main>
 </template>
 
@@ -35,6 +39,7 @@
 import { watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
 import { useTimeStore } from '../stores/time';
+import TimeOffsetSelector from '../components/Debug/TimeOffsetSelector.vue';
 
 const props = defineProps({
   header: {
@@ -60,6 +65,8 @@ function formatDateTime(date) {
     timeStyle: 'short',
   })
 }
+
+const isDev = import.meta.env.DEV;
 </script>
 
 <style scoped>
