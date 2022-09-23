@@ -14,7 +14,7 @@
       <div class="bg-zinc-900 bg-opacity-70 backdrop-blur-sm pt-2 pb-6 px-2 mx-1 rounded-lg space-y-2">
         <div class="flex items-center justify-between font-splatoon2">
           <div class="flex items-center space-x-2 text-sm lg:text-lg">
-            <template v-if="store.activeSchedule">
+            <template v-if="store.activeSchedule && store.activeSchedule.settings">
               <div>
                 <RuleIcon :rule="store.activeSchedule.settings.vsRule" class="h-5 lg:h-6" />
               </div>
@@ -37,17 +37,17 @@
           <StageImage
             class="flex-1"
             imgClass="rounded-l-xl"
-            :stage="store.activeSchedule?.settings.vsStages[0]"
+            :stage="store.activeSchedule?.settings?.vsStages[0]"
             />
           <StageImage
             class="flex-1"
             imgClass="rounded-r-xl"
-            :stage="store.activeSchedule?.settings.vsStages[1]"
+            :stage="store.activeSchedule?.settings?.vsStages[1]"
             />
         </div>
       </div>
 
-      <div class="mx-2 space-y-2">
+      <div class="mx-2 space-y-2" v-if="nextSchedule && nextSchedule.settings">
         <SquidTape class="font-splatoon2 text-sm drop-shadow -rotate-6 -mx-2">
           <div class="px-2">Next</div>
         </SquidTape>
