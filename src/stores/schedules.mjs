@@ -31,12 +31,12 @@ export const useRegularSchedulesStore = defineScheduleStore('regular', {
 // Anarchy Battle
 export const useAnarchySeriesSchedulesStore = defineScheduleStore('anarchy/series', {
   nodes: () => useSchedulesDataStore().data?.bankaraSchedules.nodes,
-  settings: node => node.bankaraMatchSettings.find(s => s.mode === 'CHALLENGE'),
+  settings: node => node.bankaraMatchSettings?.find(s => s.mode === 'CHALLENGE'),
 });
 
 export const useAnarchyOpenSchedulesStore = defineScheduleStore('anarchy/open', {
   nodes: () => useSchedulesDataStore().data?.bankaraSchedules.nodes,
-  settings: node => node.bankaraMatchSettings.find(s => s.mode === 'OPEN'),
+  settings: node => node.bankaraMatchSettings?.find(s => s.mode === 'OPEN'),
 });
 
 // Salmon Run
