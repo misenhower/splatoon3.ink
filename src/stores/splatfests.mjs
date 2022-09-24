@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { computed } from "vue";
-import { useFestivalsDataStore } from "./data.mjs";
+import { useFestivalsDataStore, useSchedulesDataStore } from "./data.mjs";
 import { useTimeStore } from "./time.mjs";
 
 export const STATUS_PAST = 'past';
@@ -32,9 +32,23 @@ function defineSplatfestRegionStore(region) {
 
     const previousFestivals = computed(() => festivals.value?.filter(f => f.status === STATUS_PAST));
     const activeFestival = computed(() => festivals.value?.find(f => f.status === STATUS_ACTIVE));
-    const upcomingFestival = computed(() => festivals.value?.find(f => f.status === STATUS_UPCOMING))
+    const upcomingFestival = computed(() => festivals.value?.find(f => f.status === STATUS_UPCOMING));
 
-    return { festivals, previousFestivals, activeFestival, upcomingFestival };
+    // TODO: Eventually this needs to be handled on a per-region basis.
+    const tricolor = computed(() => {
+      let fest = useSchedulesDataStore().data?.currentFest;
+
+      if (!fest) {
+        return null;
+      }
+
+      return {
+        ...fest,
+        isTricolorActive: time.isActive(fest.midtermTime, fest.endTime),
+      };
+    });
+
+    return { festivals, previousFestivals, activeFestival, upcomingFestival, tricolor };
   });
 }
 

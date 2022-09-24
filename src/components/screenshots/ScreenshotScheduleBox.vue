@@ -38,6 +38,14 @@
             imgClass="rounded-2xl"
             :stage="store.activeSchedule.settings.vsStages[1]"
             />
+
+          <div class="flex-1 relative" v-if="tricolor?.isTricolorActive">
+            <StageImage imgClass="rounded-2xl" :stage="tricolor?.tricolorStage" />
+
+            <div class="absolute top-0 right-0 rounded-full bg-black p-1">
+              <img src="@/assets/img/rules/tricolor.svg" class="h-12 w-12" />
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -47,6 +55,7 @@
 <script setup>
 import { computed } from '@vue/reactivity';
 import { useAnarchyOpenSchedulesStore, useAnarchySeriesSchedulesStore, useRegularSchedulesStore, useSplatfestSchedulesStore } from '@/stores/schedules';
+import { useUSSplatfestsStore } from '@/stores/splatfests';
 import ProductContainer from '../ProductContainer.vue';
 import StageImage from '../StageImage.vue';
 
@@ -94,6 +103,7 @@ const types = {
 
 const type = computed(() => types[props.type]);
 const store = computed(() => type.value.store);
+const tricolor = computed(() => useUSSplatfestsStore().tricolor);
 </script>
 
 <style scoped>

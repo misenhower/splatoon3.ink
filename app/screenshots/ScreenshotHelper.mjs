@@ -18,8 +18,6 @@ export default class ScreenshotHelper
   #browser = null;
   /** @type {puppeteer.Page} */
   #page = null;
-  /** @type {puppeteer.Viewport} */
-  #viewport = null;
 
   defaultParams = null;
 
@@ -49,14 +47,15 @@ export default class ScreenshotHelper
 
     // Create a new page and set the viewport
     this.#page = await this.#browser.newPage();
-    await this.setViewport();
+    await this.applyViewport();
   }
 
-  async setViewport(viewport = {}) {
-    this.#viewport = { ...defaultViewport, viewport };
-
+  async applyViewport(viewport = {}) {
     if (this.#page) {
-      await this.#page.setViewport(this.#viewport);
+      await this.#page.setViewport({
+        ...defaultViewport,
+        ...viewport,
+      });
     }
   }
 
@@ -65,7 +64,7 @@ export default class ScreenshotHelper
       await this.open();
     }
 
-    await this.setViewport(options.viewport);
+    await this.applyViewport(options.viewport);
 
     // Navigate to the URL
     let url = new URL(`http://localhost:${this.#httpServer.port}/screenshots/`);
