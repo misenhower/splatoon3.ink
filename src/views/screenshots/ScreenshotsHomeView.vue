@@ -14,6 +14,9 @@
         <router-link to="/gear/regular">Regular</router-link>&nbsp;
         <router-link to="/gear/dailydrop">Daily Drop</router-link>
       </div>
+      <div>
+        <router-link to="/splatfest">Splatfest</router-link>
+      </div>
     </div>
   </div>
 </template>

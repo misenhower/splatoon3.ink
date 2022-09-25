@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import { createPinia, setActivePinia } from 'pinia';
-import { useGearDataStore, useSchedulesDataStore } from '../../../src/stores/data.mjs';
+import { useFestivalsDataStore, useGearDataStore, useSchedulesDataStore } from '../../../src/stores/data.mjs';
 import prefixedConsole from '../../common/prefixedConsole.mjs';
 import Tweet from '../Tweet.mjs';
 import TwitterClient from '../TwitterClient.mjs';
@@ -38,6 +38,7 @@ export default class TweetGenerator
 
     useSchedulesDataStore().setData(JSON.parse(await fs.readFile('dist/data/schedules.json')));
     useGearDataStore().setData(JSON.parse(await fs.readFile('dist/data/gear.json')));
+    useFestivalsDataStore().setData(JSON.parse(await fs.readFile('dist/data/festivals.json')));
 
     this._piniaInitialized = true;
   }
@@ -52,7 +53,7 @@ export default class TweetGenerator
     let currentTime = await this.getDataTime();
     let cachedTime = await this.lastTweetCache.getData();
 
-    return !cachedTime || (currentTime > cachedTime);
+    return currentTime && (!cachedTime || (currentTime > cachedTime));
   }
 
   async updateLastTweetCache() {
