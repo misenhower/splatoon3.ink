@@ -32,7 +32,7 @@ export default class SplatfestResultsTweet extends TweetGenerator
 
     let winningTeam = festival.teams.find(t => t.result.isWinner);
 
-    return `Global Splatfest results: Team ${winningTeam.teamName} wins! #splatfest #splatoon3`;
+    return `Splatfest results: Team ${winningTeam.teamName} wins! #splatfest #splatoon3`;
   }
 
   /** @param {ScreenshotHelper} screenshotHelper */
