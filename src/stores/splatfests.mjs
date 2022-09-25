@@ -27,12 +27,19 @@ function defineSplatfestRegionStore(region) {
       return {
         ...node,
         status: getStatus(node),
+        hasResults: node.teams.some(t => t.result),
       };
     }));
 
     const previousFestivals = computed(() => festivals.value?.filter(f => f.status === STATUS_PAST));
     const activeFestival = computed(() => festivals.value?.find(f => f.status === STATUS_ACTIVE));
     const upcomingFestival = computed(() => festivals.value?.find(f => f.status === STATUS_UPCOMING));
+
+    // A "recent festival" is one that ended within the past 3 days
+    const recentFestival = computed(() => festivals.value?.find(f =>
+      f.status === STATUS_PAST &&
+      time.now - Date.parse(f.endTime) < 3 * 24 * 60 * 60 * 1000
+    ));
 
     // TODO: Eventually this needs to be handled on a per-region basis.
     const tricolor = computed(() => {
@@ -48,7 +55,7 @@ function defineSplatfestRegionStore(region) {
       };
     });
 
-    return { festivals, previousFestivals, activeFestival, upcomingFestival, tricolor };
+    return { festivals, previousFestivals, activeFestival, upcomingFestival, recentFestival, tricolor };
   });
 }
 

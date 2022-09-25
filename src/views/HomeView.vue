@@ -20,6 +20,19 @@
             class="flex-1 max-w-md md:-rotate-1"
             />
         </div>
+
+        <div class="flex items-center justify-center flex-col space-y-6 md:flex-row md:space-x-6 md:space-y-0" v-if="usSplatfests.recentFestival">
+          <SplatfestBox
+            :festival="usSplatfests.recentFestival"
+            class="max-w-md md:-rotate-1"
+            />
+
+          <SplatfestResultsBox
+            v-if="usSplatfests.recentFestival.hasResults"
+            :festival="usSplatfests.recentFestival"
+            class="max-w-md md:rotate-1"
+            />
+        </div>
       </div>
     </div>
   </MainLayout>
@@ -31,5 +44,6 @@ import ScheduleBox from '../components/ScheduleBox.vue';
 
 import { useUSSplatfestsStore } from '@/stores/splatfests';
 import SplatfestBox from '../components/SplatfestBox.vue';
+import SplatfestResultsBox from '../components/SplatfestResultsBox.vue';
 const usSplatfests = useUSSplatfestsStore();
 </script>

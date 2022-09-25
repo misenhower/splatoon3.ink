@@ -1,6 +1,6 @@
 <template>
   <div class="relative">
-    <div class="absolute inset-0 product-mask rounded-2xl -z-10" :class="props.bg"></div>
+    <div class="absolute inset-0 product-mask rounded-2xl -z-10" :class="props.bg" :style="bgStyle"></div>
     <slot />
   </div>
 </template>
@@ -11,6 +11,7 @@ const props = defineProps({
     type: String,
     default: 'bg-splatoon-blue',
   },
+  bgStyle: String,
 })
 </script>
 
