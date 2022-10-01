@@ -6,8 +6,12 @@
         &ndash;
         {{ formatDateTime(props.schedule.endTime) }}
       </div>
-      <div class="text-shadow text-zinc-300 ss:text-white ss:text-xl">
+      <div class="text-shadow text-zinc-300 ss:hidden">
         {{ formatDurationFromNow(props.schedule.endTime) }}
+        remaining
+      </div>
+      <div class="hidden ss:block text-shadow text-white text-xl">
+        {{ formatDurationHoursFromNow(props.schedule.endTime) }}
         remaining
       </div>
     </div>
@@ -32,7 +36,7 @@
 </template>
 
 <script setup>
-import { formatDateTime, formatDurationFromNow } from '@/common/time';
+import { formatDateTime, formatDurationFromNow, formatDurationHoursFromNow } from '@/common/time';
 import StageImage from '../StageImage.vue';
 import SalmonRunWeapons from './SalmonRunWeapons.vue';
 

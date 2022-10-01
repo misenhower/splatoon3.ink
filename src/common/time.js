@@ -69,3 +69,17 @@ export function formatShortDurationFromNow(value) {
 
   return formatShortDuration((Date.parse(value) - time.now) / 1000);
 }
+
+export function formatDurationHours(value) {
+  let { negative, days, hours } = getDurationParts(value);
+
+  hours += 24 * days;
+
+  return `${negative}${hours} ${hours === 1 ? 'hour' : 'hours'}`;
+}
+
+export function formatDurationHoursFromNow(value) {
+  let time = useTimeStore();
+
+  return formatDurationHours((Date.parse(value) - time.now) / 1000);
+}
