@@ -1,12 +1,12 @@
 <template>
   <div class="font-splatoon2 space-y-1" v-if="props.schedule">
     <div>
-      <div class="text-lg text-shadow text-zinc-200">
+      <div class="text-lg text-shadow text-zinc-200 ss:hidden">
         {{ formatDateTime(props.schedule.startTime) }}
         &ndash;
         {{ formatDateTime(props.schedule.endTime) }}
       </div>
-      <div class="text-shadow text-zinc-300">
+      <div class="text-shadow text-zinc-300 ss:text-white ss:text-xl">
         {{ formatDurationFromNow(props.schedule.endTime) }}
         remaining
       </div>

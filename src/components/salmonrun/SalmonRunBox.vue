@@ -19,7 +19,7 @@
             <ExpandedSalmonRunRow :schedule="store.activeSchedule" />
           </div>
 
-          <div class="py-1 bg-zinc-900 bg-opacity-70 rounded-lg backdrop-blur-sm">
+          <div class="ss:hidden py-1 bg-zinc-900 bg-opacity-70 rounded-lg backdrop-blur-sm">
             <SquidTape class="font-splatoon2 text-sm drop-shadow -rotate-6 -mx-2">
               <div class="px-2">Soon!</div>
             </SquidTape>
@@ -50,7 +50,7 @@ const store = useSalmonRunSchedulesStore();
 .bg-character {
   background-image: url('@/assets/img/salmon-character.png'), url('@/assets/img/salmon-character-bg.png');
   background-size: cover;
-  background-position: center;
+  background-position: top, center;
   background-repeat: no-repeat;
 }
 

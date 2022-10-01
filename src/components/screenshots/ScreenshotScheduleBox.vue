@@ -32,11 +32,13 @@
             class="flex-1"
             imgClass="rounded-2xl"
             :stage="store.activeSchedule.settings.vsStages[0]"
+            textSize="text-3xl"
             />
           <StageImage
             class="flex-1"
             imgClass="rounded-2xl"
             :stage="store.activeSchedule.settings.vsStages[1]"
+            textSize="text-3xl"
             />
 
           <div class="flex-1 relative" v-if="tricolor?.isTricolorActive">

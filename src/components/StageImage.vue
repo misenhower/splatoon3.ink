@@ -19,7 +19,6 @@
       whitespace-nowrap
       font-splatoon2
       px-2
-      ss:text-3xl
     " :class="textSize" v-if="!hideLabel">{{ stage?.name }}</div>
   </div>
 </template>
