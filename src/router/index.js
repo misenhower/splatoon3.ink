@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import SalmonRunView from '../views/SalmonRunView.vue'
 import GearView from '../views/GearView.vue'
 import AboutView from '../views/AboutView.vue'
 
@@ -10,6 +11,11 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView
+    },
+    {
+      path: '/salmonrun',
+      name: 'salmonrun',
+      component: SalmonRunView
     },
     {
       path: '/gear',

@@ -20,7 +20,7 @@
       font-splatoon2
       px-2
       ss:text-3xl
-    " :class="textSize">{{ stage?.name }}</div>
+    " :class="textSize" v-if="!hideLabel">{{ stage?.name }}</div>
   </div>
 </template>
 
@@ -34,6 +34,7 @@ const props = defineProps({
     type: String,
     default: 'text-xs lg:text-sm',
   },
+  hideLabel: Boolean,
 });
 
 const lowRes = computed(() => props.stage?.image.url);

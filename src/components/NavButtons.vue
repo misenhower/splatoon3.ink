@@ -3,6 +3,9 @@
     <router-link to="/" class="router-link">
       Schedules
     </router-link>
+    <router-link to="/salmonrun" class="router-link">
+      Salmon Run
+    </router-link>
     <router-link to="/gear" class="router-link">
       Gear
     </router-link>

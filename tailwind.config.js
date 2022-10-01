@@ -22,6 +22,8 @@ module.exports = {
             ranked: '#f54910',
             league: '#f02d7d',
           },
+
+          salmonRun: '#ff5600',
         },
       },
       fontFamily: {
