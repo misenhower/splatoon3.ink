@@ -1,6 +1,7 @@
 import TweetGenerator from "./TweetGenerator.mjs";
 import Media from "../Media.mjs";
 import { useGearStore } from "../../../src/stores/gear.mjs";
+import { getGearIcon } from "../../common/util.mjs";
 
 export default class DailyDropGearTweet extends TweetGenerator
 {
@@ -26,15 +27,9 @@ export default class DailyDropGearTweet extends TweetGenerator
     let { brand, gears } = await this.getData();
 
     let formattedGears = gears.map(gear => {
+      let icon = getGearIcon(gear);
       let name = gear.gear.name;
       let power = gear.gear.primaryGearPower.name;
-
-      let icon;
-      switch (gear.gear.__typename) {
-        case 'HeadGear': icon = '🧢'; break;
-        case 'ClothingGear': icon = '👕'; break;
-        case 'ShoesGear': icon = '👟'; break;
-      }
 
       return `${icon} ${name} with ${power}`;
     }).join('\n');

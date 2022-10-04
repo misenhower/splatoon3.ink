@@ -1,6 +1,7 @@
 import TweetGenerator from "./TweetGenerator.mjs";
 import Media from "../Media.mjs";
 import { useGearStore } from "../../../src/stores/gear.mjs";
+import { getGearIcon } from "../../common/util.mjs";
 
 export default class RegularGearTweet extends TweetGenerator
 {
@@ -23,11 +24,12 @@ export default class RegularGearTweet extends TweetGenerator
   async _getStatus() {
     let gear = await this.getLatestGear();
 
+    let icon = getGearIcon(gear);
     let name = gear.gear.name;
     let power = gear.gear.primaryGearPower.name;
     let url = `https://splatoon3.ink/nso/g/${gear.id}`;
 
-    return `Up now on SplatNet: ${name} with ${power} #splatnet3\n\n🛒 Order: ${url}`;
+    return `Up now on SplatNet: ${icon} ${name} with ${power} #splatnet3\n\n🛒 Order: ${url}`;
   }
 
   /** @param {ScreenshotHelper} screenshotHelper */
