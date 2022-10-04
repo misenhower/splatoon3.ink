@@ -23,9 +23,23 @@ export default class DailyDropGearTweet extends TweetGenerator
   }
 
   async _getStatus() {
-    let { brand } = await this.getData();
+    let { brand, gears } = await this.getData();
 
-    return `The Daily Drop: Today's featured brand is ${brand.brand.name}! #dailydrop`
+    let formattedGears = gears.map(gear => {
+      let name = gear.gear.name;
+      let power = gear.gear.primaryGearPower.name;
+
+      let icon;
+      switch (gear.gear.__typename) {
+        case 'HeadGear': icon = '🧢'; break;
+        case 'ClothingGear': icon = '👕'; break;
+        case 'ShoesGear': icon = '👟'; break;
+      }
+
+      return `${icon} ${name} with ${power}`;
+    }).join('\n');
+
+    return `The Daily Drop: Today's featured brand is ${brand.brand.name}! #dailydrop\n\n${formattedGears}\n\n🛒 Order: https://splatoon3.ink/nso/g/`;
   }
 
   /** @param {ScreenshotHelper} screenshotHelper */
