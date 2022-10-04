@@ -23,9 +23,11 @@ export default class RegularGearTweet extends TweetGenerator
   async _getStatus() {
     let gear = await this.getLatestGear();
 
+    let name = gear.gear.name;
+    let power = gear.gear.primaryGearPower.name;
     let url = `https://splatoon3.ink/nso/g/${gear.id}`;
 
-    return `Up now on SplatNet: ${gear.gear.name} with ${gear.gear.primaryGearPower.name}. Order: ${url} #splatnet3`;
+    return `Up now on SplatNet: ${name} with ${power} #splatnet3\n\n🛒 Order: ${url}`;
   }
 
   /** @param {ScreenshotHelper} screenshotHelper */
