@@ -2,7 +2,7 @@
   <ProductContainer bg="bg-splatoon-salmonRun bg-monsters" class="pt-8 overflow-hidden rounded-2xl">
     <div class="space-y-2">
       <div class="font-splatoon1 text-3xl mx-4 text-shadow">
-        Salmon Run
+        {{ $t('salmonrun.title') }}
       </div>
 
       <div class="flex">
@@ -13,7 +13,7 @@
         <div class="md:w-2/3 mx-2 pb-2">
           <div class="mb-6 space-y-2" v-if="store.activeSchedule">
             <SquidTape class="font-splatoon2 text-sm drop-shadow -rotate-6 -mx-2">
-              <div class="px-2">Now Open!</div>
+              <div class="px-2">{{ $t('time.now') }}</div>
             </SquidTape>
 
             <ExpandedSalmonRunRow :schedule="store.activeSchedule" />
@@ -21,7 +21,7 @@
 
           <div class="ss:hidden py-1 bg-zinc-900 bg-opacity-70 rounded-lg backdrop-blur-sm">
             <SquidTape class="font-splatoon2 text-sm drop-shadow -rotate-6 -mx-2">
-              <div class="px-2">Soon!</div>
+              <div class="px-2">{{ $t('time.soon') }}</div>
             </SquidTape>
 
             <div class="mx-2 divide-y-2 divide-dashed divide-zinc-400">

@@ -23,12 +23,12 @@
                 <RuleIcon :rule="props.schedule.settings.vsRule" class="h-5 lg:h-6" />
               </div>
               <div class="text-xs lg:text-lg text-shadow">
-                {{ props.schedule.settings.vsRule.name }}
+                {{ $t('schedule.modes.' + props.schedule.settings.vsRule.name) }}
               </div>
             </div>
 
             <div class="text-sm text-zinc-300 text-shadow">
-              in {{ formatDurationFromNow(props.schedule.startTime) }}
+              {{ $t('time.in') }} {{ formatDurationFromNow(props.schedule.startTime) }}
             </div>
 
             <div class="text-sm text-zinc-300 text-shadow">

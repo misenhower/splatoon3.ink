@@ -9,7 +9,7 @@
           <SquidTape class="font-splatoon2 text-sm text-black rounded-sm -rotate-2 z-10" bg="bg-splatoon-green" squidBg="bg-black"
             border="border border-black">
             <div class="px-1">
-              The Daily Drop
+              {{ $t('gear.dailydrop') }}
             </div>
           </SquidTape>
 
@@ -26,7 +26,7 @@
 
       <template v-if="brand">
         <div class="text-center font-splatoon2 text-splatoon-yellow">
-          Until {{ formatDateTime(brand?.saleEndTime) }}
+          {{ $t('time.until') }} {{ formatDateTime(brand?.saleEndTime) }}
         </div>
         <div class="space-y-4 px-4">
           <GearCardHorizontal
@@ -41,7 +41,7 @@
       <template v-else>
         <div class="h-24 flex items-center justify-center">
           <div class="font-splatoon2 text-splatoon-yellow">
-            Check back soon!
+            {{ $t('time.checkback') }}
           </div>
         </div>
       </template>

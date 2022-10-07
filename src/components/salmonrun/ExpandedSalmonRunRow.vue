@@ -7,12 +7,10 @@
         {{ formatDateTime(props.schedule.endTime) }}
       </div>
       <div class="text-shadow text-zinc-300 ss:hidden">
-        {{ formatDurationFromNow(props.schedule.endTime) }}
-        remaining
+        {{ formatDurationFromNow(props.schedule.endTime) }} {{ $t('time.remaining') }}
       </div>
       <div class="hidden ss:block text-shadow text-white text-xl">
-        {{ formatDurationHoursFromNow(props.schedule.endTime) }}
-        remaining
+        {{ formatDurationHoursFromNow(props.schedule.endTime) }} {{ $t('time.remaining') }}
       </div>
     </div>
 
@@ -21,7 +19,7 @@
 
       <div class="flex flex-col items-center space-y-1">
         <div class="text-sm text-center text-shadow text-zinc-200">
-          Supplied Weapons
+          {{ $t('salmonrun.weapons') }}
         </div>
 
         <div class="bg-zinc-900 bg-opacity-30 rounded-full backdrop-blur-sm px-2">

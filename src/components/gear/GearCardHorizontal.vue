@@ -52,7 +52,7 @@
         <SquidTape class="font-splatoon2 text-sm text-black rounded-sm -rotate-2" bg="bg-splatoon-yellow" squidBg="bg-black"
           border="border border-black">
           <div class="px-1">
-            Order
+            {{ $t('gear.order') }}
           </div>
         </SquidTape>
       </a>
@@ -70,7 +70,7 @@
               border="border border-black"
               >
               <div class="px-1">
-                Order
+                {{ $t('gear.order') }}
               </div>
             </SquidTape>
           </a>
