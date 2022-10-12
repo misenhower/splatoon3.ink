@@ -61,7 +61,7 @@
           <SquidTape class="font-splatoon2 text-sm text-black rounded-sm -rotate-3" bg="bg-splatoon-yellow" squidBg="bg-black"
             border="border border-black">
             <div class="px-1">
-              Order
+              {{ $t('gear.order') }}
             </div>
           </SquidTape>
         </a>
@@ -69,7 +69,7 @@
 
       <div class="inline-block text-xs bg-zinc-200 bg-opacity-30 rounded px-1 py-px font-semibold">
         {{ formatShortDurationFromNow(props.gear.saleEndTime) }}
-        left
+        {{ $t('time.left') }}
       </div>
     </div>
   </div>

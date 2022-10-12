@@ -1,13 +1,13 @@
 <template>
   <div class="flex font-splatoon2 space-x-2">
     <router-link to="/" class="router-link">
-      Schedules
+      {{ $t('schedule.subtitle') }}
     </router-link>
     <router-link to="/salmonrun" class="router-link">
-      Salmon Run
+      {{ $t('salmonrun.title') }}
     </router-link>
     <router-link to="/gear" class="router-link">
-      Gear
+      {{ $t('gear.title') }}
     </router-link>
   </div>
 </template>

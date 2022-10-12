@@ -10,80 +10,60 @@
             <ProductContainer class="py-12 bg-octoarrow">
               <div class="faq text-zinc-300 px-10">
                 <div class="space-y-6">
-                  <h1 class="font-splatoon2">About!</h1>
+                  <h1 class="font-splatoon2">{{ $t('about.title') }}</h1>
 
                   <div>
-                    <h2>What is this?</h2>
-                    <p>
-                      This site is a fan-made, unofficial source of information for Nintendo's Splatoon 3.
-                      You might remember me from <a href="https://splatoon2.ink" target="_blank">Splatoon2.ink</a>!
-                    </p>
+                    <h2>{{ $t('about.subtitle-1') }}</h2>
+                    <i18n-t keypath="about.text-1" tag="p">
+                      <a href="https://splatoon2.ink" target="_blank">Splatoon2.ink</a>
+                    </i18n-t>
                   </div>
 
                   <div>
-                    <h2>How was this site made?</h2>
-                    <p>
-                      On the front end, this site was built with
-                      <a href="https://vuejs.org/" target="_blank">Vue 3</a>,
-                      <a href="https://pinia.vuejs.org/" target="_blank">Pinia</a>, and
-                      <a href="https://tailwindcss.com/" target="_blank">Tailwind CSS</a>.
+                    <h2>{{ $t('about.subtitle-2') }}</h2>
+                    <i18n-t keypath="about.text-2" tag="p">
+                      <a href="https://vuejs.org/" target="_blank">Vue 3</a>
+                      <a href="https://pinia.vuejs.org/" target="_blank">Pinia</a>
+                      <a href="https://tailwindcss.com/" target="_blank">Tailwind CSS</a>
+                      <a href="https://vitejs.dev/" target="_blank">Vite</a>
+                    </i18n-t>
 
-                      Static assets are compiled using
-                      <a href="https://vitejs.dev/" target="_blank">Vite</a>.
-                    </p>
-
-                    <p>
-                      On the back end, the data updaters and Twitter bot were written using
-                      <a href="https://nodejs.org/" target="_blank">NodeJS</a>.
-
-                      Special thanks to the
+                    <i18n-t keypath="about.text-3" tag="p">
+                      <a href="https://nodejs.org/" target="_blank">NodeJS</a>
                       <a href="https://github.com/samuelthomas2774/nxapi" target="_blank">nxapi</a>
-                      and
                       <a href="https://github.com/imink-app/f-API" target="_blank">imink</a>
-                      projects for their work to make automated Nintendo Switch Online logins possible.
-                    </p>
+                    </i18n-t>
 
-                    <p>
-                      The Twitter bot at
+                    <i18n-t keypath="about.text-4" tag="p">
                       <a href="https://twitter.com/splatoon3ink/" target="_blank">@Splatoon3ink</a>
-                      uses
                       <a href="https://pptr.dev/" target="_blank">Puppeteer</a>
-                      to automatically generate images for each tweet.
-                    </p>
+                    </i18n-t>
 
-                    <p>
-                      This site is completely open source.
-                      You can view the source here on
+                    <i18n-t keypath="about.text-5" tag="p">
                       <a href="https://github.com/misenhower/splatoon3.ink/" target="_blank">GitHub</a>.
-                    </p>
+                    </i18n-t>
                   </div>
 
                   <div>
-                    <h2>Can I use data from this site in my own project?</h2>
+                    <h2>{{ $t('about.subtitle-3') }}</h2>
 
-                    <p>
-                      Yes! I love seeing all the creative projects people come up with that use this site's data.
-                    </p>
+                    <p>{{ $t('about.text-6') }}</p>
 
-                    <p>
-                      Please see the
+                    <i18n-t keypath="about.text-7" tag="p">
                       <a href="https://github.com/misenhower/splatoon3.ink/wiki/Data-Access" target="_blank">Data Access</a>
-                      page for a list of all available endpoints.
-                    </p>
+                    </i18n-t>
                   </div>
 
                   <div>
-                    <h2>How can I reach you?</h2>
-                    <p>
-                      Please feel free to contact me on Twitter at <a href="https://twitter.com/splatoon3ink"
-                      target="_blank">@Splatoon3ink</a> or via <a href="mailto:matt@isenhower.com"
-                      target="_blank">email</a> if you have any other
-                      questions!
-                    </p>
+                    <h2>{{ $t('about.subtitle-4') }}</h2>
+                    <i18n-t keypath="about.text-8" tag="p">
+                      <a href="https://twitter.com/splatoon3ink" target="_blank">@Splatoon3ink</a>
+                      <a href="mailto:matt@isenhower.com" target="_blank">{{ $t('about.email') }}</a>
+                    </i18n-t>
                   </div>
 
                   <div>
-                    <router-link to="/">&laquo; Splatoon 3 Schedules</router-link>
+                    <router-link to="/">&laquo; {{ $t('about.schedules') }}</router-link>
                   </div>
                 </div>
               </div>

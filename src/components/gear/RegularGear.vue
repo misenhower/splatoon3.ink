@@ -22,7 +22,7 @@
           squidSize="15px"
           >
           <div class="px-1">
-            Gear on Sale Now
+            {{ $t("gear.sale") }}
           </div>
         </SquidTape>
       </div>

@@ -1,0 +1,92 @@
+{
+  "time": {
+    "in": "dans",
+    "next": "Suivant",
+    "now": "En cours !",
+    "soon": "Prochains !",
+    "remaining": "restant",
+    "until": "Jusqu'au",
+    "left": "restantes",
+    "checkback": "Revenez voir plus tard !",
+    "d": "j",
+    "day": "jour",
+    "days": "jours",
+    "h": "h",
+    "hour": "heure",
+    "hours": "heures",
+    "m": "m",
+    "minute": "minute",
+    "minutes": "minutes",
+    "s": "s",
+    "second": "seconde",
+    "seconds": "secondes"
+  },
+  "maps": {
+    "Scorch Gorge": "Canyon aux colonnes",
+    "Wahoo World": "Parc Carapince",
+    "Hagglefish Market": "Marché Grefin",
+    "Undertow Spillway": "Réservoir Rigadelle",
+    "MakoMart": "Supermarché Cétacé",
+    "Museum dAlfonsino": "Galeries Guppy",
+    "Sturgeon Shipyard": "Chantier Narval",
+    "Mincemeat Metalworks": "Casse Rascasse",
+    "Mahi-Mahi Resort": "Club Ca$halot",
+    "Hammerhead Bridge": "Pont Esturgeon",
+    "Eeltail Alley": "Banlieu Balibot",
+    "Inkblot Art Academy": "Institut Calam'arts",
+    "Spawning Grounds": "Barrage samonoïde",
+    "Sockeye Station": "Bastion colimaçon",
+    "Gone Fission Hydroplant": "Centrale Anguilla"
+  },
+  "schedule": {
+    "title": "Planning",
+    "subtitle": "Planning",
+    "modes": {
+      "Turf War": "Guerre de territoire",
+      "Rainmaker": "Mission Bazookarpe",
+      "Splat Zones": "Défense de zone",
+      "Clam Blitz": "Pluie de palourde",
+      "Tower Control": "Expédition risquée"
+    },
+    "types": {
+      "Series": "Série",
+      "Open": "Ouvert",
+      "Regular Battle": "Match Classique",
+      "Anarchy Battle": "Match Anarchie",
+      "Splatfest Battle": "Match Splatfest"
+    }
+  },
+  "salmonrun": {
+    "title": "Salmon Run",
+    "weapons": "Armes fournies"
+  },
+  "gear": {
+    "title": "Équipement",
+    "sale": "Équipement en solde",
+    "splatnet-gear": "Équipement SplatNet",
+    "dailydrop": "Chouchou du jour",
+    "order": "Acheter"
+  },
+  "about": {
+    "title": "À propos !",
+    "subtitle-1": "Qu'est-ce que c'est ?",
+    "text-1": "Ce site est une source d'informations non officielle, créée par un fan, sur le jeu Splatoon 3 de Nintendo. Vous vous souvenez peut-être de moi pour {0}!",
+    "subtitle-2": "Comment ce site a-t-il été créé ?",
+    "text-2": "Côté front, ce site a été conçu avec {0}, {1} et {2}. Les ressources statiques sont compilées en utilisant {3}.",
+    "text-3": "Côté back, les modules de mise à jour des données et le bot Twitter ont été développés à l'aide de {0}. Remerciements spécials pour les projets {1} et {2} pour leur travail visant à rendre possible la connexion automatique au Nintendo Switch Online.",
+    "text-4": "Le bot Twitter {0} utilise {1} pour générer automatiquement des images pour chaque tweet.",
+    "text-5": "Ce site est entièrement open source. Vous pouvez consulter les sources ici sur {0}.",
+    "subtitle-3": "Puis-je utiliser les données de ce site dans mon propre projet ?",
+    "text-6": "Oui ! J'adore voir tous les projets créatifs que les gens imaginent en utilisant les données de ce site.",
+    "text-7": "Veuillez consulter la page {0} pour obtenir une liste de tous les endpoints.",
+    "subtitle-4": "Comment puis-je vous contacter ?",
+    "text-8": "N'hésitez pas à me contacter sur Twitter à {0} ou via {1} si vous avez d'autres questions !",
+    "email": "email",
+    "schedules": "Planning Splatoon 3"
+  },
+  "footer": {
+    "term": "Ce site internet n'est pas affilié à Nintendo. Tous les noms de produits, logos et marques sont la propriété de leurs détenteurs respectifs.",
+    "about": "À propos",
+    "data": "Données"
+  }
+}

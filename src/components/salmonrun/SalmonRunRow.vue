@@ -12,7 +12,7 @@
       </div>
 
       <div class="hidden sm:block text-xs bg-zinc-100 bg-opacity-80 rounded text-black px-2">
-        in
+        {{ $t('time.in') }}
         {{ formatDurationFromNow(props.schedule.startTime, true) }}
       </div>
     </div>
@@ -21,7 +21,7 @@
       <StageImage class="w-1/5" imgClass="rounded" :stage="props.schedule.settings.coopStage" hide-label />
 
       <div class="flex-1 text-sm text-zinc-300 text-shadow">
-        {{ props.schedule.settings.coopStage.name }}
+        {{ $t('maps.' + props.schedule.settings.coopStage.name) }}
       </div>
 
       <div class="flex flex-col items-center space-y-1">
