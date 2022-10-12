@@ -19,7 +19,7 @@
       whitespace-nowrap
       font-splatoon2
       px-2
-    " :class="textSize" v-if="!hideLabel">{{ $t('maps.' + stage?.name.replace("'", '')) }}</div>
+    " :class="textSize" v-if="!hideLabel && stage">{{ $t('maps.' + stage?.name.replace("'", '')) }}</div>
   </div>
 </template>
 

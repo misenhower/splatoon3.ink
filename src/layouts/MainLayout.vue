@@ -6,7 +6,7 @@
       </div>
 
       <div class="justify-end font-splatoon2 text-3xl text-zinc-200" v-if="props.title">
-        {{ $t(props.title + '.title') }}
+        {{ props.title }}
       </div>
     </div>
 

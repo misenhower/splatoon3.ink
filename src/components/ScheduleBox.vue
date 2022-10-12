@@ -4,10 +4,10 @@
       <div class="flex items-center space-x-2 mx-2">
         <img :src="type.img" />
         <div class="font-splatoon1 lg:text-2xl xl:text-3xl text-shadow">
-          {{ $t('schedule.types.' + type.name) }}
+          {{ $t(`schedule.types.${type.name}`) }}
         </div>
         <div v-if="type.badge" class="font-splatoon2 text-xs lg:text-sm xl:text-base bg-splatoon-blue rounded px-1 drop-shadow">
-          {{ $t('schedule.types.' + type.badge) }}
+          {{ $t(`schedule.types.${type.badge}`) }}
         </div>
       </div>
 
@@ -18,7 +18,7 @@
               <div>
                 <RuleIcon :rule="store.activeSchedule.settings.vsRule" class="h-5 lg:h-6" />
               </div>
-              <div class="text-shadow">{{ $t('schedule.modes.' + store.activeSchedule.settings.vsRule.name) }}</div>
+              <div class="text-shadow">{{ $t(`schedule.modes.${store.activeSchedule.settings.vsRule.name}`) }}</div>
             </template>
 
             <template v-else>

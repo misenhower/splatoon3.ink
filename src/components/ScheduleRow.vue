@@ -23,7 +23,7 @@
                 <RuleIcon :rule="props.schedule.settings.vsRule" class="h-5 lg:h-6" />
               </div>
               <div class="text-xs lg:text-lg text-shadow">
-                {{ $t('schedule.modes.' + props.schedule.settings.vsRule.name) }}
+                {{ $t(`schedule.modes.${props.schedule.settings.vsRule.name}`) }}
               </div>
             </div>
 

@@ -1,5 +1,5 @@
 <template>
-  <MainLayout title="schedule">
+  <MainLayout :title="$t('schedule.title')">
     <div class="grow flex items-center justify-center">
       <div class="mx-4 md:mx-12 max-w-screen-2xl w-full space-y-10">
         <div class="flex flex-col space-y-6 md:flex-row md:space-x-6 md:space-y-0 justify-center" v-if="usSplatfests.activeFestival">
