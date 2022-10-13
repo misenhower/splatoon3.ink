@@ -1,7 +1,8 @@
 { 
   "locales": {
     "en-US": "🇺🇸 English",
-    "fr-FR": "🇫🇷 Français"
+    "fr-FR": "🇫🇷 Français",
+    "de-DE": "🇩🇪 Deutsch"
   },
   "time": {
     "in": "in",

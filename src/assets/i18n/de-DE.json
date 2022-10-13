@@ -1,0 +1,92 @@
+{ 
+  "time": {
+    "in": "in",
+    "now": "Jetzt geöffnet!",
+    "next": "Demnächst",
+    "soon": "Bald!",
+    "remaining": "übrig",
+    "until": "Bis",
+    "left": "verbleibend",
+    "checkback": "Schau später vorbei!",
+    "d": "Tg",
+    "day": "Tag",
+    "days": "Tage",
+    "h": "Std",
+    "hour": "Stunde",
+    "hours": "Stunden",
+    "m": "Min",
+    "minute": "Minute",
+    "minutes": "Minuten",
+    "s": "Sek",
+    "second": "Sekunde",
+    "seconds": "Sekunden"
+  },
+  "maps": {
+    "Scorch Gorge": "Sengkluft",
+    "Wahoo World": "Flunder-Funpark",
+    "Hagglefish Market": "Schnapperchen-Basar",
+    "Undertow Spillway": "Schwertmuschel-Reserviour",
+    "MakoMart": "Cetacea-Markt",
+    "Museum dAlfonsino": "Pinakoithek",
+    "Sturgeon Shipyard": "Störwerft",
+    "Mincemeat Metalworks": "Aalstahl-Metallwerk",
+    "Mahi-Mahi Resort": "Mahi-Mahi-Resort",
+    "Hammerhead Bridge": "Makrelenbrücke",
+    "Eeltail Alley": "Steifenaal-Straße",
+    "Inkblot Art Academy": "Perlmutt-Akademie",
+    "Spawning Grounds": "Salmoniden-Damm",
+    "Sockeye Station": "Fort Nautilax",
+    "Gone Fission Hydroplant": "Wasserkraftwerk Stromschnell"
+  },
+  "schedule": {
+    "title": "Arenen-Info",
+    "subtitle": "Arenen",
+    "modes": {
+      "Turf War": "Revierkampf",
+      "Rainmaker": "Operation Goldfisch",
+      "Splat Zones": "Herrschaft",
+      "Clam Blitz": "Muschelchaos",
+      "Tower Control": "Turm-Kommando"
+    },
+    "types": {
+      "Series": "Serie",
+      "Open": "Offen",
+      "Regular Battle": "Standardkampf",
+      "Anarchy Battle": "Anarchie-Kampf",
+      "Splatfest Battle": "Splatfest-Kampf"
+    }
+  },
+  "salmonrun": {
+    "title": "Salmon Run",
+    "weapons": "Verfügbare Waffen"
+  },
+  "gear": {
+    "title": "Ausrüstung",
+    "sale": "Jetzt im Angebot",
+    "splatnet-gear": "TentaWorld",
+    "dailydrop": "Heutige Auswahl",
+    "order": "Bestellen"
+  },
+  "about": {
+    "title": "Über!",
+    "subtitle-1": "Was ist das?",
+    "text-1": "Diese Seite ist eine von Fans erstellte, unoffizielle Quelle für Informationen über Nintendo's Splatoon 3. Du erinnerst dich vielleicht noch an {0}!",
+    "subtitle-2": "Wie wurde diese Seite erstellt?",
+    "text-2": "Das Frontend wurde mit {0}, {1}, und {2} erstellt. Statische Assets wurden mit {3} kompiliert.",
+    "text-3": "Das Backend, der Daten-Updater und der Twitter-Bot wurden mit {0} geschrieben. Besonderer Dank geht an die Projekte {1} und {2} für ihre Arbeit, den automatisierten Login für Nintendo Switch Online möglich zu machen.",
+    "text-4": "Der Twitter-Bot unter {0} benutzt {1} um automatisch Bilder für jeden Tweet zu generieren.",
+    "text-5": "Die Seite ist komplett Open-Source. Du kannst dir den Quellcode auf {0} ansehen.",
+    "subtitle-3": "Darf ich Daten von dieser Seite in meinem eigenen Projekt verwenden?",
+    "text-6": "Ja! Ich liebe es, kreative Projekte zu sehen, die mit den Daten dieser Seite erstellt werden.",
+    "text-7": "Bitte schaue auf der {0} Seite vorbei, um eine Liste mit allen verfügbaren Endpunkten zu erhalten.",
+    "subtitle-4": "Wie kann man dich erreichen?",
+    "text-8": "Du kannst mich gerne auf Twitter unter {0} oder per {1} kontaktieren, wenn du noch weitere Fragen haben solltest!",
+    "email": "E-Mail",
+    "schedules": "Splatoon 3 Arenen-Info"
+  },
+  "footer": {
+    "term": "Diese Website steht in keiner Verbindung zu Nintendo. Alle Produktnamen, Logos und Marken sind Eigentum der jeweiligen Inhaber.",
+    "about": "Über",
+    "data": "Daten"
+  }
+}
