@@ -1,8 +1,6 @@
-# splatoon3.ink
+# Splatoon3.ink
 
-When Splatoon 3 is released, this site will show its current and upcoming map schedules.
-
-Until then, check out [splatoon2.ink](https://splatoon2.ink)!
+[Splatoon3.ink](https://splatoon3.ink) features Splatoon 3 map rotations, Salmon Run schedules, SplatNet gear, and more.
 
 ## Acknowledgements
 
