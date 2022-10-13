@@ -1,17 +1,12 @@
 import { createApp } from 'vue'
-import { createI18n } from 'vue-i18n'
 import { createPinia } from 'pinia'
 
-import languages from './assets/i18n'
+import { initializeI18n } from './common/i18n'
 
 import App from './App.vue'
 import router from './router'
 
-const i18n = createI18n({
-  locale: localStorage.getItem('lang') || navigator.language,
-  fallbackLocale: 'en-US',
-  messages: Object.assign(languages)
-})
+const i18n = initializeI18n();
 
 const app = createApp(App)
 
