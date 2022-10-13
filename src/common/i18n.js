@@ -6,6 +6,7 @@ const LANGUAGE_KEY = 'lang';
 export const locales = [
   { code: 'en-US', flag: '🇺🇸', name: 'English' }, // TODO: Change to "English (US)" when adding en-GB
   { code: 'fr-FR', flag: '🇫🇷', name: 'Français' },
+  { code: 'de-DE', flag: '🇩🇪', name: 'Deutsch' },
 ];
 
 let i18n = null;
