@@ -16,7 +16,7 @@
 
     <slot />
 
-    <div class="m-2 text-center text-xs text-zinc-500 grow">
+    <div class="m-2 text-center text-xs text-zinc-500">
       <div>
         <img src="@/assets/img/little-buddy.png" class="mx-auto mb-4" width="50" />
       </div>
