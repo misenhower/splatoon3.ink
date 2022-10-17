@@ -22,13 +22,22 @@ export default class SalmonRunTweet extends TweetGenerator
   async _getStatus() {
     let schedule = await this.getActiveSchedule();
 
+    let lines = [];
+
     let hasMysteryWeapon = schedule.settings.weapons.some(w => w.name === 'Random');
 
     if (hasMysteryWeapon) {
-      return `Salmon Run is now open on ${schedule.settings.coopStage.name} with MYSTERY WEAPONS! #salmonrun #splatoon3`;
+      lines.push(`Salmon Run is now open on ${schedule.settings.coopStage.name} with MYSTERY WEAPONS! #salmonrun #splatoon3`);
+    } else {
+      lines.push(`Salmon Run is now open on ${schedule.settings.coopStage.name}! #salmonrun #splatoon3`);
     }
 
-    return `Salmon Run is now open on ${schedule.settings.coopStage.name}! #salmonrun #splatoon3`;
+    lines.push('');
+
+    lines.push('Current weapons:');
+    lines.push(...schedule.settings.weapons.map(w => `– ${w.name}`));
+
+    return lines.join('\n');
   }
 
   /** @param {ScreenshotHelper} screenshotHelper */
