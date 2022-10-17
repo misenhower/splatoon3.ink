@@ -11,7 +11,7 @@ export default class StageScheduleUpdater extends DataUpdater
     '$..thumbnailImage.url',
   ];
 
-  getData() {
-    return this.splatnet.getStageScheduleData();
+  getData(locale) {
+    return this.splatnet(locale).getStageScheduleData();
   }
 }

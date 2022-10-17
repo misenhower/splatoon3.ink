@@ -9,7 +9,7 @@ export default class GearUpdater extends DataUpdater
     '$..image.url',
   ];
 
-  getData() {
-    return this.splatnet.getGesotownData();
+  getData(locale) {
+    return this.splatnet(locale).getGesotownData();
   }
 }

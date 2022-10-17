@@ -10,13 +10,13 @@ export default class FestivalUpdater extends DataUpdater
     '$..image.url',
   ];
 
-  async getData() {
-    let result = await this.splatnet.getFestRecordData();
+  async getData(locale) {
+    let result = await this.splatnet(locale).getFestRecordData();
 
     // Get the detailed data for each Splatfest
     // TODO: Implement caching for past Splatfests to reduce the number of requests needed.
     for (let node of result.data.festRecords.nodes) {
-      let detailResult = await this.splatnet.getFestDetailData(node.id);
+      let detailResult = await this.splatnet(locale).getFestDetailData(node.id);
 
       Object.assign(node, detailResult.data.fest);
     }

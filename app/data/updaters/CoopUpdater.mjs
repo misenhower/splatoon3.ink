@@ -9,7 +9,7 @@ export default class CoopUpdater extends DataUpdater
     '$..image.url',
   ];
 
-  getData() {
-    return this.splatnet.getCoopHistoryData();
+  getData(locale) {
+    return this.splatnet(locale).getCoopHistoryData();
   }
 }

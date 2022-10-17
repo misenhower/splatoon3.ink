@@ -6,6 +6,7 @@ import prefixedConsole from "../../common/prefixedConsole.mjs";
 import SplatNet3Client from "../../splatnet/SplatNet3Client.mjs";
 import ImageProcessor from '../ImageProcessor.mjs';
 import NsoClient from '../../splatnet/NsoClient.mjs';
+import { locales } from '../../../src/common/i18n.mjs';
 
 export default class DataUpdater
 {
@@ -16,12 +17,20 @@ export default class DataUpdater
   imagePaths = [];
 
   constructor(region = null) {
-    this.splatnet = new SplatNet3Client(NsoClient.make(region));
+    this.nsoClient = NsoClient.make(region);
     this.imageProcessor = new ImageProcessor;
   }
 
   get region() {
-    return this.splatnet.nsoClient.region;
+    return this.nsoClient.region;
+  }
+
+  get locales() {
+    return locales;
+  }
+
+  get defaultLocale() {
+    return this.locales[0];
   }
 
   /** @type {Console} */
@@ -31,11 +40,17 @@ export default class DataUpdater
     return this._console;
   }
 
+  splatnet(locale = null) {
+    locale ??= this.defaultLocale;
+
+    return new SplatNet3Client(this.nsoClient, locale.code);
+  }
+
   async update() {
     this.console.info('Updating data...');
 
     // Retrieve the data
-    let data = await this.tryRequest(this.getData());
+    let data = await this.tryRequest(this.getData(this.defaultLocale));
 
     // Download any new images
     await this.downloadImages(data);
@@ -48,7 +63,7 @@ export default class DataUpdater
 
   // Requests
 
-  getData() {
+  getData(locale) {
     //
   }
 

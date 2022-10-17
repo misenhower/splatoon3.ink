@@ -10,9 +10,10 @@ export default class SplatNet3Client
   webViewVersion = '1.0.0-63bad6e1';
   bulletToken = null;
 
-  constructor(nsoClient) {
+  constructor(nsoClient, acceptLanguage = 'en-US') {
     this.console = prefixedConsole('SplatNet', nsoClient.region);
     this.nsoClient = nsoClient;
+    this.acceptLanguage = acceptLanguage;
   }
 
   get hasSession() {
@@ -61,7 +62,8 @@ export default class SplatNet3Client
       headers: {
         'X-Web-View-Ver': this.webViewVersion,
         'X-NACOUNTRY': 'US', // TODO
-        'X-GameWebToken': webServiceToken
+        'X-GameWebToken': webServiceToken,
+        'Accept-Language': this.acceptLanguage,
       }
     });
 
@@ -91,6 +93,7 @@ export default class SplatNet3Client
         'Authorization': `Bearer ${this.bulletToken.bulletToken}`,
         'X-Web-View-Ver': this.webViewVersion,
         'Content-Type': 'application/json',
+        'Accept-Language': this.acceptLanguage,
       },
       body: JSON.stringify(body),
     });

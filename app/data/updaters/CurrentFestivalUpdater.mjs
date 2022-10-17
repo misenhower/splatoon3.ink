@@ -15,7 +15,7 @@ export default class CurrentFestivalUpdater extends DataUpdater
     '$..image.url',
   ];
 
-  getData() {
-    return this.splatnet.getCurrentFestData();
+  getData(locale) {
+    return this.splatnet(locale).getCurrentFestData();
   }
 }
