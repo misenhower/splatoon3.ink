@@ -16,7 +16,10 @@ export default class StageScheduleUpdater extends DataUpdater
   localizations = [
     {
       key: 'stages',
-      nodes: '$..vsStages.nodes.*',
+      nodes: [
+        '$..vsStages.nodes.*',
+        '$..coopStage',
+      ],
       id: 'id',
       values: 'name',
     },
