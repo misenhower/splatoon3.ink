@@ -7,6 +7,7 @@ import SplatNet3Client from "../../splatnet/SplatNet3Client.mjs";
 import ImageProcessor from '../ImageProcessor.mjs';
 import NsoClient from '../../splatnet/NsoClient.mjs';
 import { locales } from '../../../src/common/i18n.mjs';
+import { LocalizationProcessor } from '../LocalizationProcessor.mjs';
 
 export default class DataUpdater
 {
@@ -15,6 +16,7 @@ export default class DataUpdater
   outputDirectory = 'dist/data';
 
   imagePaths = [];
+  localizations = [];
 
   constructor(region = null) {
     this.nsoClient = NsoClient.make(region);
@@ -52,6 +54,9 @@ export default class DataUpdater
     // Retrieve the data
     let data = await this.tryRequest(this.getData(this.defaultLocale));
 
+    // Update localizations
+    await this.updateLocalizations(this.defaultLocale, data);
+
     // Download any new images
     await this.downloadImages(data);
 
@@ -78,6 +83,24 @@ export default class DataUpdater
   }
 
   // Processing
+
+  async updateLocalizations(initialLocale, data) {
+    // Save localizations for the initial locale
+    let processor = new LocalizationProcessor(initialLocale, this.localizations);
+    await processor.updateLocalizations(data);
+
+    // Retrieve data for missing languages
+    for (let locale of this.locales.filter(l => l !== initialLocale)) {
+      processor = new LocalizationProcessor(locale, this.localizations);
+
+      if (await processor.hasMissingLocalizations(data)) {
+        this.console.info(`Retrieving localized data for ${locale.code}`);
+
+        let regionalData = await this.getData(locale);
+        await processor.updateLocalizations(regionalData);
+      }
+    }
+  }
 
   async downloadImages(data) {
     for (let expression of this.imagePaths) {

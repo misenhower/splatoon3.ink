@@ -1,3 +1,5 @@
+import path from 'path';
+
 export function getTopOfCurrentHour(date = null) {
     date ??= new Date;
 
@@ -14,4 +16,17 @@ export function getGearIcon(gear) {
         case 'ShoesGear': return '👟';
         default: return null;
     }
+}
+
+export function deriveId(node) {
+    // Unfortunately, SplatNet doesn't return IDs for a lot of gear properties.
+    // Derive IDs from image URLs instead.
+
+    let url = new URL(node.image.url);
+    let id =path.basename(url.pathname, '.png');
+
+    return {
+        '__splatoon3ink_id': id,
+        ...node,
+    };
 }
