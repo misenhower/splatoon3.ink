@@ -16,21 +16,21 @@
 
       <div class="flex items-center space-x-2">
         <div class="bg-white h-6 aspect-square rounded">
-          <img :src="gear.brand.image.url" :title="gear.brand.name" />
+          <img :src="gear.brand.image.url" :title="$t(`splatnet.brands.${gear.brand.id}.name`, gear.brand.name)" />
         </div>
 
         <div class="flex-1 font-splatoon2 text-shadow overflow-hidden overflow-ellipsis whitespace-nowrap">
-          {{ gear.name }}
+          {{ $t(`splatnet.gear.${gear.__splatoon3ink_id}.name`, gear.name) }}
         </div>
       </div>
 
       <div class="flex justify-between">
         <div class="flex items-center space-x-px">
-          <div :title="gear.primaryGearPower.name" class="bg-black rounded-full">
+          <div :title="$t(`splatnet.powers.${gear.primaryGearPower.__splatoon3ink_id}.name`, gear.primaryGearPower.name)" class="bg-black rounded-full">
             <img :src="gear.primaryGearPower.image.url" class="h-8" />
           </div>
 
-          <div v-for="(power, i) in gear.additionalGearPowers" :key="i" :title="power.name" class="bg-black rounded-full">
+          <div v-for="(power, i) in gear.additionalGearPowers" :key="i" :title="$t(`splatnet.powers.${power.__splatoon3ink_id}.name`, power.name)" class="bg-black rounded-full">
             <img :src="power.image.url" class="h-6" />
           </div>
         </div>

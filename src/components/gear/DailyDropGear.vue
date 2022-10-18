@@ -17,7 +17,7 @@
             <img src="@/assets/img/gesotown-daily-drop-bg.png" class="w-64" />
             <div class="absolute inset-0 flex items-center ml-4">
               <div class="font-splatoon2 text-lg">
-                {{ brand.brand.name }}
+                {{ $t(`splatnet.brands.${brand.brand.id}.name`, brand.brand.name) }}
               </div>
             </div>
           </div>

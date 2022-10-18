@@ -3,7 +3,7 @@
     <div v-for="(weapon, i) in props.weapons" :key="i">
       <img
         :src="weapon.image.url"
-        :title="weapon.name"
+        :title="$t(`splatnet.weapons.${weapon.__splatoon3ink_id}.name`, weapon.name)"
         class="aspect-square hover:scale-[1.15] hover:z-10 transition-transform"
         :class="weaponClass"
         />

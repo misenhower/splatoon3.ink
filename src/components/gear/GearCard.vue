@@ -11,11 +11,11 @@
       <!-- Powers -->
       <div>
         <div class="flex items-center space-x-px">
-          <div :title="gear.primaryGearPower.name" class="bg-black rounded-full">
+          <div :title="$t(`splatnet.powers.${gear.primaryGearPower.__splatoon3ink_id}.name`, gear.primaryGearPower.name)" class="bg-black rounded-full">
             <img :src="gear.primaryGearPower.image.url" class="h-8" />
           </div>
 
-          <div v-for="(power, i) in gear.additionalGearPowers" :key="i" :title="power.name" class="bg-black rounded-full">
+          <div v-for="(power, i) in gear.additionalGearPowers" :key="i" :title="$t(`splatnet.powers.${power.__splatoon3ink_id}.name`, power.name)" class="bg-black rounded-full">
             <img :src="power.image.url" class="h-6" />
           </div>
         </div>
@@ -28,7 +28,7 @@
         </div>
         <div class="absolute inset-0 flex items-center justify-center">
           <div class="font-splatoon2 text-sm xl:text-base ss:text-lg text-shadow">
-            {{ gear.name }}
+            {{ $t(`splatnet.gear.${gear.__splatoon3ink_id}.name`, gear.name) }}
           </div>
         </div>
       </div>
@@ -49,7 +49,7 @@
       <div class="relative rotate-2">
         <img src="@/assets/img/gesotown-brand-bg.png" class="w-10" />
         <div class="absolute inset-0 p-2">
-          <img :src="gear.brand.image.url" class="w-full h-full" :title="gear.brand.name" />
+          <img :src="gear.brand.image.url" class="w-full h-full" :title="$t(`splatnet.brands.${gear.brand.id}.name`, gear.brand.name)" />
         </div>
       </div>
     </div>

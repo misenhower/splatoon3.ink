@@ -19,6 +19,8 @@ export function initializeI18n() {
       messages: { ...languages },
     });
 
+    loadLocale();
+
     // Listen for local storage changes
     window.addEventListener('storage', reload);
   }
@@ -28,6 +30,25 @@ export function initializeI18n() {
 
 function reload() {
   i18n.global.locale.value = currentLocale().code;
+  loadLocale();
+}
+
+async function loadLocale() {
+  let locale = currentLocale().code;
+  let response = await fetch(`/data/locale/${locale}.json`);
+
+  if (!response.ok) {
+    console.error(response);
+
+    return;
+  }
+
+  let json = await response.json();
+
+  i18n.global.setLocaleMessage(locale, {
+    ...i18n.global.getLocaleMessage(locale),
+    splatnet: json,
+  });
 }
 
 function currentLocale() {
