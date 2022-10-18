@@ -1,4 +1,4 @@
-import path from 'path';
+import crypto from 'crypto';
 
 export function getTopOfCurrentHour(date = null) {
     date ??= new Date;
@@ -22,8 +22,10 @@ export function deriveId(node) {
     // Unfortunately, SplatNet doesn't return IDs for a lot of gear properties.
     // Derive IDs from image URLs instead.
 
-    let url = new URL(node.image.url);
-    let id =path.basename(url.pathname, '.png');
+    let url = node.image.url;
+
+    let hash = crypto.createHash('shake256', { outputLength: 8 });
+    let id = hash.update(url).digest('hex');
 
     return {
         '__splatoon3ink_id': id,
