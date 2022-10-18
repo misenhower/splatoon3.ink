@@ -21,33 +21,9 @@
     "second": "second",
     "seconds": "seconds"
   },
-  "maps": {
-    "Scorch Gorge": "Scorch Gorge",
-    "Wahoo World": "Wahoo World",
-    "Hagglefish Market": "Hagglefish Market",
-    "Undertow Spillway": "Undertow Spillway",
-    "MakoMart": "MakoMart",
-    "Museum dAlfonsino": "Museum d'Alfonsino",
-    "Sturgeon Shipyard": "Sturgeon Shipyard",
-    "Mincemeat Metalworks": "Mincemeat Metalworks",
-    "Mahi-Mahi Resort": "Mahi-Mahi Resort",
-    "Hammerhead Bridge": "Hammerhead Bridge",
-    "Eeltail Alley": "Eeltail Alley",
-    "Inkblot Art Academy": "Inkblot Art Academy",
-    "Spawning Grounds": "Spawning Grounds",
-    "Sockeye Station": "Sockeye Station",
-    "Gone Fission Hydroplant": "Gone Fission Hydroplant"
-  },
   "schedule": {
     "title": "Map Schedules",
     "subtitle": "Schedules",
-    "modes": {
-      "Turf War": "Turf War",
-      "Rainmaker": "Rainmaker",
-      "Splat Zones": "Splat Zones",
-      "Clam Blitz": "Clam Blitz",
-      "Tower Control": "Tower Control"
-    },
     "types": {
       "Series": "Series",
       "Open": "Open",

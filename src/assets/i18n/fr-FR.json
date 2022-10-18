@@ -21,33 +21,9 @@
     "second": "seconde",
     "seconds": "secondes"
   },
-  "maps": {
-    "Scorch Gorge": "Canyon aux colonnes",
-    "Wahoo World": "Parc Carapince",
-    "Hagglefish Market": "Marché Grefin",
-    "Undertow Spillway": "Réservoir Rigadelle",
-    "MakoMart": "Supermarché Cétacé",
-    "Museum dAlfonsino": "Galeries Guppy",
-    "Sturgeon Shipyard": "Chantier Narval",
-    "Mincemeat Metalworks": "Casse Rascasse",
-    "Mahi-Mahi Resort": "Club Ca$halot",
-    "Hammerhead Bridge": "Pont Esturgeon",
-    "Eeltail Alley": "Banlieu Balibot",
-    "Inkblot Art Academy": "Institut Calam'arts",
-    "Spawning Grounds": "Barrage samonoïde",
-    "Sockeye Station": "Bastion colimaçon",
-    "Gone Fission Hydroplant": "Centrale Anguilla"
-  },
   "schedule": {
     "title": "Planning",
     "subtitle": "Planning",
-    "modes": {
-      "Turf War": "Guerre de territoire",
-      "Rainmaker": "Mission Bazookarpe",
-      "Splat Zones": "Défense de zone",
-      "Clam Blitz": "Pluie de palourde",
-      "Tower Control": "Expédition risquée"
-    },
     "types": {
       "Series": "Série",
       "Open": "Ouvert",

@@ -18,7 +18,7 @@
               <div>
                 <RuleIcon :rule="store.activeSchedule.settings.vsRule" class="h-5 lg:h-6" />
               </div>
-              <div class="text-shadow">{{ $t(`schedule.modes.${store.activeSchedule.settings.vsRule.name}`) }}</div>
+              <div class="text-shadow">{{ $t(`splatnet.rules.${store.activeSchedule.settings.vsRule.id}.name`, store.activeSchedule.settings.vsRule.name) }}</div>
             </template>
 
             <template v-else>

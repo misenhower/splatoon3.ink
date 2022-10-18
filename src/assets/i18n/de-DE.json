@@ -1,4 +1,4 @@
-{ 
+{
   "time": {
     "in": "in",
     "now": "Jetzt geöffnet!",
@@ -21,33 +21,9 @@
     "second": "Sekunde",
     "seconds": "Sekunden"
   },
-  "maps": {
-    "Scorch Gorge": "Sengkluft",
-    "Wahoo World": "Flunder-Funpark",
-    "Hagglefish Market": "Schnapperchen-Basar",
-    "Undertow Spillway": "Schwertmuschel-Reserviour",
-    "MakoMart": "Cetacea-Markt",
-    "Museum dAlfonsino": "Pinakoithek",
-    "Sturgeon Shipyard": "Störwerft",
-    "Mincemeat Metalworks": "Aalstahl-Metallwerk",
-    "Mahi-Mahi Resort": "Mahi-Mahi-Resort",
-    "Hammerhead Bridge": "Makrelenbrücke",
-    "Eeltail Alley": "Steifenaal-Straße",
-    "Inkblot Art Academy": "Perlmutt-Akademie",
-    "Spawning Grounds": "Salmoniden-Damm",
-    "Sockeye Station": "Fort Nautilax",
-    "Gone Fission Hydroplant": "Wasserkraftwerk Stromschnell"
-  },
   "schedule": {
     "title": "Arenen-Info",
     "subtitle": "Arenen",
-    "modes": {
-      "Turf War": "Revierkampf",
-      "Rainmaker": "Operation Goldfisch",
-      "Splat Zones": "Herrschaft",
-      "Clam Blitz": "Muschelchaos",
-      "Tower Control": "Turm-Kommando"
-    },
     "types": {
       "Series": "Serie",
       "Open": "Offen",
