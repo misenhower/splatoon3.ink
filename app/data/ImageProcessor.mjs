@@ -2,6 +2,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import mkdirp from 'mkdirp';
 import prefixedConsole from "../common/prefixedConsole.mjs";
+import { normalizeSplatnetResourcePath } from '../common/util.mjs';
 
 export default class ImageProcessor
 {
@@ -25,19 +26,7 @@ export default class ImageProcessor
   }
 
   normalize(url) {
-    // Parse the URL
-    let u = new URL(url);
-
-    // Get just the pathname (without the host, query string, etc.)
-    let result = u.pathname;
-
-    // Remove "/resources/prod" from the beginning if it exists
-    result = result.replace(/^\/resources\/prod/, '');
-
-    // Remove the leading slash
-    result = result.replace(/^\//, '');
-
-    return result;
+    return normalizeSplatnetResourcePath(url);
   }
 
   localPath(file) {
