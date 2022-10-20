@@ -6,7 +6,7 @@ import prefixedConsole from "../../common/prefixedConsole.mjs";
 import SplatNet3Client from "../../splatnet/SplatNet3Client.mjs";
 import ImageProcessor from '../ImageProcessor.mjs';
 import NsoClient from '../../splatnet/NsoClient.mjs';
-import { locales } from '../../../src/common/i18n.mjs';
+import { locales, defaultLocale } from '../../../src/common/i18n.mjs';
 import { LocalizationProcessor } from '../LocalizationProcessor.mjs';
 
 export default class DataUpdater
@@ -32,7 +32,7 @@ export default class DataUpdater
   }
 
   get defaultLocale() {
-    return this.locales[0];
+    return defaultLocale;
   }
 
   /** @type {Console} */

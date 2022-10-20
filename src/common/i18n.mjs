@@ -4,10 +4,23 @@ import languages from '../assets/i18n/index.mjs'
 const LANGUAGE_KEY = 'lang';
 
 export const locales = [
-  { code: 'en-US', flag: '🇺🇸', name: 'English' }, // TODO: Change to "English (US)" when adding en-GB
-  { code: 'fr-FR', flag: '🇫🇷', name: 'Français' },
   { code: 'de-DE', flag: '🇩🇪', name: 'Deutsch' },
+  { code: 'en-US', flag: '🇺🇸', name: 'English (US)' },
+  { code: 'en-GB', flag: '🇬🇧', name: 'English (GB)' },
+  { code: 'es-ES', flag: '🇪🇸', name: 'Español (ES)' },
+  { code: 'es-MX', flag: '🇲🇽', name: 'Español (MX)' },
+  { code: 'fr-FR', flag: '🇫🇷', name: 'Français (FR)' },
+  { code: 'fr-CA', flag: '🇨🇦', name: 'Français (CA)' },
+  { code: 'it-IT', flag: '🇮🇹', name: 'Italiano' },
+  { code: 'ja-JP', flag: '🇯🇵', name: '日本語' },
+  { code: 'ko-KR', flag: '🇰🇷', name: '한국어' },
+  { code: 'nl-NL', flag: '🇳🇱', name: 'Nederlands' },
+  { code: 'ru-RU', flag: '🇷🇺', name: 'Русский' },
+  { code: 'zh-CN', flag: '🇨🇳', name: '中文(简体)' },
+  { code: 'zh-TW', flag: '🇹🇼', name: '中文(台灣)' },
 ];
+
+export const defaultLocale = locales.find(l => l.code === 'en-US');
 
 let i18n = null;
 
@@ -71,7 +84,8 @@ function detectLocale() {
 
   // Try to find a matching language
   for (let language of languages) {
-    let locale = locales.find(l => l.code.startsWith(language) || l.code.startsWith(language.substring(0, 2)));
+    let locale = locales.find(l => l.code.startsWith(language))
+       || locales.find(l => l.code.startsWith(language.substring(0, 2)));
 
     if (locale) {
       return locale;
@@ -79,5 +93,5 @@ function detectLocale() {
   }
 
   // Fall back to en-US
-  return locales[0];
+  return defaultLocale;
 }
