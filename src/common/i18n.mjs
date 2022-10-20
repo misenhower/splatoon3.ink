@@ -32,10 +32,9 @@ export function initializeI18n() {
       messages: { ...languages },
     });
 
-    loadLocale();
-
     // Listen for local storage changes
     window.addEventListener('storage', reload);
+    reload();
   }
 
   return i18n;
@@ -44,6 +43,23 @@ export function initializeI18n() {
 function reload() {
   i18n.global.locale.value = currentLocale().code;
   loadLocale();
+
+  switch (currentLocale().code) {
+    case 'zh-CN':
+      document.documentElement.style.setProperty("--font-family-s1", "splatoon1, splatoon1chzh, sans-serif");
+      document.documentElement.style.setProperty("--font-family-s2", "splatoon2, splatoon2chzh, sans-serif");
+      break;
+
+    case 'zh-TW':
+      document.documentElement.style.setProperty("--font-family-s1", "splatoon1, splatoon1twzh, sans-serif");
+      document.documentElement.style.setProperty("--font-family-s2", "splatoon2, splatoon2twzh, sans-serif");
+      break;
+
+    default:
+      document.documentElement.style.setProperty("--font-family-s1", "splatoon1, splatoon1jpja, sans-serif");
+      document.documentElement.style.setProperty("--font-family-s2", "splatoon2, splatoon2jpja, sans-serif");
+      break;
+  }
 }
 
 async function loadLocale() {

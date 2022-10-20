@@ -27,8 +27,8 @@ module.exports = {
         },
       },
       fontFamily: {
-        splatoon1: ['Splatoon1', 'sans-serif'],
-        splatoon2: ['Splatoon2', 'sans-serif'],
+        splatoon1: 'var(--font-family-s1)',
+        splatoon2: 'var(--font-family-s2)',
       },
     },
   },
