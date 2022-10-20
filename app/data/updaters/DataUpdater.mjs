@@ -14,6 +14,7 @@ export default class DataUpdater
   name = null;
   filename = null;
   outputDirectory = 'dist/data';
+  archiveOutputDirectory = 'storage/archive';
 
   imagePaths = [];
   localizations = [];
@@ -124,13 +125,17 @@ export default class DataUpdater
 
     await this.writeFile(this.getPath(this.filename), s);
 
-    // Write a secondary file for backup
+    // Write a secondary file for archival
     let filename = `${this.filename}.${Date.now()}`;
-    await this.writeFile(this.getPath(filename), s);
+    await this.writeFile(this.getArchivePath(filename), s);
   }
 
   getPath(filename) {
     return `${this.outputDirectory}/${filename}.json`;
+  }
+
+  getArchivePath(filename) {
+    return `${this.archiveOutputDirectory}/${filename}.json`;
   }
 
   async formatDataForWrite(data) {
