@@ -32,9 +32,9 @@
             </div>
 
             <div class="text-sm text-zinc-300 text-shadow">
-              {{ formatTime(props.schedule.startTime) }}
+              {{ $d(props.schedule.startTime, 'time') }}
               &ndash;
-              {{ formatTime(props.schedule.endTime) }}
+              {{ $d(props.schedule.endTime, 'time') }}
             </div>
           </template>
 
@@ -60,7 +60,7 @@
 <script setup>
 import StageImage from './StageImage.vue';
 import RuleIcon from './RuleIcon.vue';
-import { formatTime, formatDurationFromNow } from '../common/time';
+import { formatDurationFromNow } from '../common/time';
 
 const props = defineProps({
   schedule: {

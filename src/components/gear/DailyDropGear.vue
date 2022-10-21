@@ -26,7 +26,7 @@
 
       <template v-if="brand">
         <div class="text-center font-splatoon2 text-splatoon-yellow">
-          {{ $t('time.until') }} {{ formatDateTime(brand?.saleEndTime) }}
+          {{ $t('time.until') }} {{ $d(brand?.saleEndTime, 'dateTimeShortWeekday') }}
         </div>
         <div class="space-y-4 px-4">
           <GearCardHorizontal
@@ -52,7 +52,6 @@
 <script setup>
 import { useGearStore } from '@/stores/gear.mjs';
 import { computed } from '@vue/reactivity';
-import { formatDateTime } from '@/common/time';
 import GearCardHorizontal from './GearCardHorizontal.vue';
 import ProductContainer from '../ProductContainer.vue';
 import SquidTape from '../SquidTape.vue';

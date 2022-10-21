@@ -22,6 +22,12 @@ export const locales = [
 
 export const defaultLocale = locales.find(l => l.code === 'en-US');
 
+const datetimeFormats = {
+  dateTimeShort: { month: 'numeric', day: 'numeric', hour: 'numeric', minute: '2-digit' },
+  dateTimeShortWeekday: { month: 'numeric', weekday: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' },
+  time: { hour: 'numeric', minute: '2-digit' },
+};
+
 let i18n = null;
 
 export function initializeI18n() {
@@ -30,6 +36,7 @@ export function initializeI18n() {
       locale: currentLocale().code,
       fallbackLocale: 'en-US',
       messages: { ...languages },
+      datetimeFormats: locales.reduce((result, locale) => ({ ...result, [locale.code]: datetimeFormats }), {}),
     });
 
     // Listen for local storage changes

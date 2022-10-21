@@ -28,9 +28,9 @@
       </div>
 
       <div class="font-splatoon2 text-splatoon-yellow text-center mx-2 ss:hidden">
-        {{ formatDateTime(festival.startTime) }}
+        {{ $d(festival.startTime, 'dateTimeShortWeekday') }}
         &ndash;
-        {{ formatDateTime(festival.endTime) }}
+        {{ $d(festival.endTime, 'dateTimeShortWeekday') }}
       </div>
     </div>
   </ProductContainer>
@@ -41,7 +41,6 @@ import { computed } from 'vue';
 import ProductContainer from './ProductContainer.vue';
 import { STATUS_PAST, STATUS_ACTIVE, STATUS_UPCOMING } from '@/stores/splatfests';
 import SquidTape from './SquidTape.vue';
-import { formatDateTime } from '../common/time';
 
 const props = defineProps({
   festival: Object,

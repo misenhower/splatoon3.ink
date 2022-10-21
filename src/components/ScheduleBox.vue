@@ -27,9 +27,9 @@
           </div>
 
           <div class="justify-end text-xs lg:text-sm bg-zinc-100 bg-opacity-80 rounded text-black px-2" v-if="store.activeSchedule">
-            {{ formatTime(store.activeSchedule.startTime) }}
+            {{ $d(store.activeSchedule.startTime, 'time') }}
             &ndash;
-            {{ formatTime(store.activeSchedule.endTime) }}
+            {{ $d(store.activeSchedule.endTime, 'time') }}
           </div>
         </div>
 
@@ -82,7 +82,6 @@ import ScheduleRow from './ScheduleRow.vue';
 import battleRegularSvg from '@/assets/img/modes/regular.svg';
 import battleBankaraSvg from '@/assets/img/modes/bankara.svg';
 import RuleIcon from './RuleIcon.vue';
-import { formatTime } from '../common/time';
 import SquidTape from './SquidTape.vue';
 
 const props = defineProps({

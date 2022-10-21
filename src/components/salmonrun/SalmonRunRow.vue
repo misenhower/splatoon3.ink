@@ -6,9 +6,9 @@
       </div>
 
       <div class="flex-1 text-shadow text-zinc-200">
-        {{ formatDateTime(props.schedule.startTime) }}
+        {{ $d(props.schedule.startTime, 'dateTimeShortWeekday') }}
         &ndash;
-        {{ formatDateTime(props.schedule.endTime) }}
+        {{ $d(props.schedule.endTime, 'dateTimeShort') }}
       </div>
 
       <div class="hidden sm:block text-xs bg-zinc-100 bg-opacity-80 rounded text-black px-2">
@@ -32,7 +32,7 @@
 </template>
 
 <script setup>
-import { formatDateTime, formatDurationFromNow } from '@/common/time';
+import { formatDurationFromNow } from '@/common/time';
 import StageImage from '../StageImage.vue';
 import SalmonRunWeapons from './SalmonRunWeapons.vue';
 

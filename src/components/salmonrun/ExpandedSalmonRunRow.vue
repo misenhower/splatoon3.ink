@@ -2,9 +2,9 @@
   <div class="font-splatoon2 space-y-1" v-if="props.schedule">
     <div>
       <div class="text-lg text-shadow text-zinc-200 ss:hidden">
-        {{ formatDateTime(props.schedule.startTime) }}
+        {{ $d(props.schedule.startTime, 'dateTimeShort') }}
         &ndash;
-        {{ formatDateTime(props.schedule.endTime) }}
+        {{ $d(props.schedule.endTime, 'dateTimeShort') }}
       </div>
       <div class="text-shadow text-zinc-300 ss:hidden">
         {{ formatDurationFromNow(props.schedule.endTime) }} {{ $t('time.remaining') }}
@@ -34,7 +34,7 @@
 </template>
 
 <script setup>
-import { formatDateTime, formatDurationFromNow, formatDurationHoursFromNow } from '@/common/time';
+import { formatDurationFromNow, formatDurationHoursFromNow } from '@/common/time';
 import StageImage from '../StageImage.vue';
 import SalmonRunWeapons from './SalmonRunWeapons.vue';
 

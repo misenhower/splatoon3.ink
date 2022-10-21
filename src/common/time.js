@@ -1,14 +1,6 @@
 import { useI18n } from 'vue-i18n';
 import { useTimeStore } from '../stores/time';
 
-export function formatDateTime(value) {
-  return (new Date(value)).toLocaleString(undefined, { month: 'numeric', day: 'numeric', hour: 'numeric', minute: '2-digit' });
-}
-
-export function formatTime(value) {
-  return (new Date(value)).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
-}
-
 function getDurationParts(value) {
   let negative = (value < 0) ? '-' : '';
   value = Math.abs(value);
