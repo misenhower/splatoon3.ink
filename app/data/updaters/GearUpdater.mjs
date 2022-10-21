@@ -1,6 +1,4 @@
 import DataUpdater from "./DataUpdater.mjs";
-import jsonpath from 'jsonpath';
-import { deriveId } from "../../common/util.mjs";
 
 export default class GearUpdater extends DataUpdater
 {
@@ -9,6 +7,13 @@ export default class GearUpdater extends DataUpdater
 
   imagePaths = [
     '$..image.url',
+  ];
+
+  derivedIds = [
+    '$..gear',
+    '$..usualGearPower',
+    '$..primaryGearPower',
+    '$..additionalGearPowers.*',
   ];
 
   localizations = [
@@ -36,14 +41,7 @@ export default class GearUpdater extends DataUpdater
     },
   ];
 
-  async getData(locale) {
-    let data = await this.splatnet(locale).getGesotownData();
-
-    jsonpath.apply(data, '$..gear', deriveId);
-    jsonpath.apply(data, '$..usualGearPower', deriveId);
-    jsonpath.apply(data, '$..primaryGearPower', deriveId);
-    jsonpath.apply(data, '$..additionalGearPowers.*', deriveId);
-
-    return data;
+  getData(locale) {
+    return this.splatnet(locale).getGesotownData();
   }
 }

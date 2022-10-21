@@ -8,6 +8,7 @@ import ImageProcessor from '../ImageProcessor.mjs';
 import NsoClient from '../../splatnet/NsoClient.mjs';
 import { locales, defaultLocale } from '../../../src/common/i18n.mjs';
 import { LocalizationProcessor } from '../LocalizationProcessor.mjs';
+import { deriveId } from '../../common/util.mjs';
 
 export default class DataUpdater
 {
@@ -17,6 +18,7 @@ export default class DataUpdater
   archiveOutputDirectory = 'storage/archive';
 
   imagePaths = [];
+  derivedIds = [];
   localizations = [];
 
   constructor(region = null) {
@@ -55,6 +57,9 @@ export default class DataUpdater
     // Retrieve the data
     let data = await this.tryRequest(this.getData(this.defaultLocale));
 
+    // Derive node IDs where needed
+    this.deriveIds(data);
+
     // Update localizations
     await this.updateLocalizations(this.defaultLocale, data);
 
@@ -85,6 +90,12 @@ export default class DataUpdater
 
   // Processing
 
+  deriveIds(data) {
+    for (let expression of this.derivedIds) {
+      jsonpath.apply(data, expression, deriveId);
+    }
+  }
+
   async updateLocalizations(initialLocale, data) {
     // Save localizations for the initial locale
     let processor = new LocalizationProcessor(initialLocale, this.localizations);
@@ -98,6 +109,7 @@ export default class DataUpdater
         this.console.info(`Retrieving localized data for ${locale.code}`);
 
         let regionalData = await this.getData(locale);
+        this.deriveIds(regionalData);
         await processor.updateLocalizations(regionalData);
       }
     }

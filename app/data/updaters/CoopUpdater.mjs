@@ -1,5 +1,3 @@
-import jsonpath from 'jsonpath';
-import { deriveId } from "../../common/util.mjs";
 import DataUpdater from "./DataUpdater.mjs";
 
 export default class CoopUpdater extends DataUpdater
@@ -11,6 +9,10 @@ export default class CoopUpdater extends DataUpdater
     '$..image.url',
   ];
 
+  derivedIds = [
+    '$..monthlyGear',
+  ];
+
   localizations = [
     {
       key: 'gear',
@@ -20,11 +22,7 @@ export default class CoopUpdater extends DataUpdater
     },
   ];
 
-  async getData(locale) {
-    let data = await this.splatnet(locale).getCoopHistoryData();
-
-    jsonpath.apply(data, '$..monthlyGear', deriveId);
-
-    return data;
+  getData(locale) {
+    return this.splatnet(locale).getCoopHistoryData();
   }
 }

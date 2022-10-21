@@ -1,6 +1,4 @@
 import DataUpdater from "./DataUpdater.mjs";
-import jsonpath from 'jsonpath';
-import { deriveId } from "../../common/util.mjs";
 
 export default class StageScheduleUpdater extends DataUpdater
 {
@@ -11,6 +9,10 @@ export default class StageScheduleUpdater extends DataUpdater
     '$..image.url',
     '$..originalImage.url',
     '$..thumbnailImage.url',
+  ];
+
+  derivedIds = [
+    '$..weapons.*',
   ];
 
   localizations = [
@@ -37,11 +39,7 @@ export default class StageScheduleUpdater extends DataUpdater
     },
   ];
 
-  async getData(locale) {
-    let data = await this.splatnet(locale).getStageScheduleData();
-
-    jsonpath.apply(data, '$..weapons.*', deriveId);
-
-    return data;
+  getData(locale) {
+    return this.splatnet(locale).getStageScheduleData();
   }
 }
