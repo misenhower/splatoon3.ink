@@ -1,0 +1,22 @@
+{
+  "schedule": {
+    "title": "Calendario",
+    "types": {
+      "series": "Serie",
+      "open": "Aperta",
+      "regular": "Partita amichevole",
+      "anarchy": "Partita anarchica",
+      "splatfest": "Partita tematica"
+    }
+  },
+  "salmonrun": {
+    "title": "Salmon Run",
+    "weapons": "Armi fornite"
+  },
+  "gear": {
+    "title": "Oggetti",
+    "sale": "Articoli in offerta",
+    "dailydrop": "Selezione del giorno",
+    "order": "Ordina"
+  }
+}

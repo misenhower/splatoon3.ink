@@ -1,0 +1,22 @@
+{
+  "schedule": {
+    "title": "Schedule",
+    "types": {
+      "series": "Series",
+      "open": "Open",
+      "regular": "Regular Battle",
+      "anarchy": "Anarchy Battle",
+      "splatfest": "Splatfest Battle"
+    }
+  },
+  "salmonrun": {
+    "title": "Salmon Run",
+    "weapons": "Supplied Weapons"
+  },
+  "gear": {
+    "title": "Gear",
+    "sale": "Gear on Sale Now",
+    "dailydrop": "The Daily Drop",
+    "order": "Order"
+  }
+}

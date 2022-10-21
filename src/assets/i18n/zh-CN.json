@@ -1,0 +1,22 @@
+{
+  "schedule": {
+    "title": "日程",
+    "types": {
+      "series": "挑战",
+      "open": "开放",
+      "regular": "一般比赛",
+      "anarchy": "蛮颓比赛",
+      "splatfest": "祭典比赛"
+    }
+  },
+  "salmonrun": {
+    "title": "鲑鱼跑",
+    "weapons": "发放武器"
+  },
+  "gear": {
+    "title": "装备",
+    "sale": "目前贩卖的装备",
+    "dailydrop": "今日精选",
+    "order": "预定"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "schedule": {
+    "title": "스케줄",
+    "types": {
+      "series": "챌린지",
+      "open": "오픈",
+      "regular": "레귤러 매치",
+      "anarchy": "카오폴리스 매치",
+      "splatfest": "페스티벌 매치"
+    }
+  },
+  "salmonrun": {
+    "title": "새먼 런",
+    "weapons": "지급 무기"
+  },
+  "gear": {
+    "title": "기어",
+    "sale": "현재 판매 중인 기어",
+    "dailydrop": "오늘의 픽업",
+    "order": "주문하기"
+  }
+}

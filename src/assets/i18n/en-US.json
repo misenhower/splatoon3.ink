@@ -22,14 +22,13 @@
     "seconds": "seconds"
   },
   "schedule": {
-    "title": "Map Schedules",
-    "subtitle": "Schedules",
+    "title": "Schedule",
     "types": {
-      "Series": "Series",
-      "Open": "Open",
-      "Regular Battle": "Regular Battle",
-      "Anarchy Battle": "Anarchy Battle",
-      "Splatfest Battle": "Splatfest Battle"
+      "series": "Series",
+      "open": "Open",
+      "regular": "Regular Battle",
+      "anarchy": "Anarchy Battle",
+      "splatfest": "Splatfest Battle"
     }
   },
   "salmonrun": {
@@ -39,7 +38,6 @@
   "gear": {
     "title": "Gear",
     "sale": "Gear on Sale Now",
-    "splatnet-gear": "SplatNet Gear",
     "dailydrop": "The Daily Drop",
     "order": "Order"
   },

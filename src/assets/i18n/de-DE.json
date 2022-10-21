@@ -22,14 +22,13 @@
     "seconds": "Sekunden"
   },
   "schedule": {
-    "title": "Arenen-Info",
-    "subtitle": "Arenen",
+    "title": "Zeitplan",
     "types": {
-      "Series": "Serie",
-      "Open": "Offen",
-      "Regular Battle": "Standardkampf",
-      "Anarchy Battle": "Anarchie-Kampf",
-      "Splatfest Battle": "Splatfest-Kampf"
+      "series": "Serie",
+      "open": "Offen",
+      "regular": "Standardkampf",
+      "anarchy": "Anarchie-Kampf",
+      "splatfest": "Splatfest-Kampf"
     }
   },
   "salmonrun": {
@@ -39,7 +38,6 @@
   "gear": {
     "title": "Ausrüstung",
     "sale": "Jetzt im Angebot",
-    "splatnet-gear": "TentaWorld",
     "dailydrop": "Heutige Auswahl",
     "order": "Bestellen"
   },

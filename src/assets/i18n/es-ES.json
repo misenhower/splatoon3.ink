@@ -1,0 +1,22 @@
+{
+  "schedule": {
+    "title": "Calendarios",
+    "types": {
+      "series": "Formal",
+      "open": "Informal",
+      "regular": "Combate amistoso",
+      "anarchy": "Combate caótico",
+      "splatfest": "Combate temático"
+    }
+  },
+  "salmonrun": {
+    "title": "Salmon Run",
+    "weapons": "Armas asignadas"
+  },
+  "gear": {
+    "title": "Equipamiento",
+    "sale": "Equipamiento a la venta",
+    "dailydrop": "Sugerencia del día",
+    "order": "Encargar"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "schedule": {
+    "title": "時間表",
+    "types": {
+      "series": "挑戰",
+      "open": "開放",
+      "regular": "一般比賽",
+      "anarchy": "蠻頹比賽",
+      "splatfest": "祭典比賽"
+    }
+  },
+  "salmonrun": {
+    "title": "SALMON RUN",
+    "weapons": "派發武器"
+  },
+  "gear": {
+    "title": "裝備",
+    "sale": "目前販售的裝備",
+    "dailydrop": "本日精選",
+    "order": "預訂"
+  }
+}

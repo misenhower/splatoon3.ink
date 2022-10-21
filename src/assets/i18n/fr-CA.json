@@ -1,0 +1,22 @@
+{
+  "schedule": {
+    "title": "Horaire",
+    "types": {
+      "series": "Série",
+      "open": "Ouvert",
+      "regular": "Match classique",
+      "anarchy": "Match anarchie",
+      "splatfest": "Festimatch"
+    }
+  },
+  "salmonrun": {
+    "title": "Salmon Run",
+    "weapons": "Armes fournies"
+  },
+  "gear": {
+    "title": "Équipement",
+    "sale": "Équipement en solde",
+    "dailydrop": "Chouchou du jour",
+    "order": "Commander"
+  }
+}

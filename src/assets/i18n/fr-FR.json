@@ -23,13 +23,12 @@
   },
   "schedule": {
     "title": "Planning",
-    "subtitle": "Planning",
     "types": {
-      "Series": "Série",
-      "Open": "Ouvert",
-      "Regular Battle": "Match Classique",
-      "Anarchy Battle": "Match Anarchie",
-      "Splatfest Battle": "Match Splatfest"
+      "series": "Série",
+      "open": "Ouvert",
+      "regular": "Match classique",
+      "anarchy": "Match anarchie",
+      "splatfest": "Festimatch"
     }
   },
   "salmonrun": {
@@ -39,9 +38,8 @@
   "gear": {
     "title": "Équipement",
     "sale": "Équipement en solde",
-    "splatnet-gear": "Équipement SplatNet",
     "dailydrop": "Chouchou du jour",
-    "order": "Acheter"
+    "order": "Commander"
   },
   "about": {
     "title": "À propos !",

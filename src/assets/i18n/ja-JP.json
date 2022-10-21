@@ -1,0 +1,22 @@
+{
+  "schedule": {
+    "title": "スケジュール",
+    "types": {
+      "series": "チャレンジ",
+      "open": "オープン",
+      "regular": "レギュラーマッチ",
+      "anarchy": "バンカラマッチ",
+      "splatfest": "フェスマッチ"
+    }
+  },
+  "salmonrun": {
+    "title": "サーモンラン",
+    "weapons": "支給ブキ"
+  },
+  "gear": {
+    "title": "ギア",
+    "sale": "ただいま販売中のギア",
+    "dailydrop": "本日のピックアップ",
+    "order": "注文する"
+  }
+}

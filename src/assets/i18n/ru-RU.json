@@ -1,0 +1,22 @@
+{
+  "schedule": {
+    "title": "Расписание",
+    "types": {
+      "series": "Серия",
+      "open": "Открытый",
+      "regular": "Бой салаг",
+      "anarchy": "Стихийный бой",
+      "splatfest": "Сплатфест-бой"
+    }
+  },
+  "salmonrun": {
+    "title": "Salmon Run",
+    "weapons": "Табельное оружие"
+  },
+  "gear": {
+    "title": "Снаряжение",
+    "sale": "Особое предложение",
+    "dailydrop": "Свежачок дня",
+    "order": "Заказать"
+  }
+}

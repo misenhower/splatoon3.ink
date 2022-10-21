@@ -93,28 +93,28 @@ const props = defineProps({
 
 const types = {
   regular: {
-    name: 'Regular Battle',
+    name: 'regular',
     badge: null,
     store: useRegularSchedulesStore(),
     img: battleRegularSvg,
     bg: 'bg-splatoon-battle-regular bg-tapes',
   },
   anarchySeries: {
-    name: 'Anarchy Battle',
-    badge: 'Series',
+    name: 'anarchy',
+    badge: 'series',
     store: useAnarchySeriesSchedulesStore(),
     img: battleBankaraSvg,
     bg: 'bg-splatoon-battle-ranked bg-tapes',
   },
   anarchyOpen: {
-    name: 'Anarchy Battle',
-    badge: 'Open',
+    name: 'anarchy',
+    badge: 'open',
     store: useAnarchyOpenSchedulesStore(),
     img: battleBankaraSvg,
     bg: 'bg-splatoon-battle-ranked bg-tapes',
   },
   splatfest: {
-    name: 'Splatfest Battle',
+    name: 'splatfest',
     badge: null,
     store: useSplatfestSchedulesStore(),
     img: battleRegularSvg,

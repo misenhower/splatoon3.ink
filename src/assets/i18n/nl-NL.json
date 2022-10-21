@@ -1,0 +1,22 @@
+{
+  "schedule": {
+    "title": "Levelschema",
+    "types": {
+      "series": "Sessie",
+      "open": "Open",
+      "regular": "Standaardgevecht",
+      "anarchy": "Chaosgevecht",
+      "splatfest": "Splatfest-gevecht"
+    }
+  },
+  "salmonrun": {
+    "title": "Salmon Run",
+    "weapons": "Beschikbare wapens"
+  },
+  "gear": {
+    "title": "Uitrusting",
+    "sale": "Nu in de aanbieding",
+    "dailydrop": "Verse vangst",
+    "order": "Bestellen"
+  }
+}

@@ -1,7 +1,7 @@
 <template>
   <div class="flex font-splatoon2 space-x-2">
     <router-link to="/" class="router-link">
-      {{ $t('schedule.subtitle') }}
+      {{ $t('schedule.title') }}
     </router-link>
     <router-link to="/salmonrun" class="router-link">
       {{ $t('salmonrun.title') }}
