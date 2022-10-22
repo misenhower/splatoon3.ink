@@ -1,13 +1,15 @@
 {
+  "times": {
+    "now": "Actuel",
+    "next": "Suivant",
+    "future": "Prochains",
+    "checkback": "Revenez voir plus tard !"
+  },
   "time": {
     "in": "dans",
-    "next": "Suivant",
-    "now": "En cours !",
-    "soon": "Prochains !",
     "remaining": "restant",
     "until": "Jusqu'au",
     "left": "restantes",
-    "checkback": "Revenez voir plus tard !",
     "d": "j",
     "day": "jour",
     "days": "jours",

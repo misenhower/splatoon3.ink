@@ -1,4 +1,10 @@
 {
+  "times": {
+    "now": "In corso!",
+    "next": "Prossimo",
+    "future": "Successivi"
+  },
+  "time": {},
   "schedule": {
     "title": "Calendario",
     "types": {

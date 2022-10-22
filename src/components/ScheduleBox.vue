@@ -62,7 +62,7 @@
 
       <div class="mx-2 space-y-2" v-if="nextSchedule && nextSchedule.settings">
         <SquidTape class="font-splatoon2 text-sm drop-shadow -rotate-6 -mx-2">
-          <div class="px-2">{{ $t('time.next') }}</div>
+          <div class="px-2">{{ $t('times.next') }}</div>
         </SquidTape>
 
         <ScheduleRow :schedule="nextSchedule" />

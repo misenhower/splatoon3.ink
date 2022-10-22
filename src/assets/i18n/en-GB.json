@@ -1,4 +1,10 @@
 {
+  "times": {
+    "now": "Now",
+    "next": "Next",
+    "future": "Future"
+  },
+  "time": {},
   "schedule": {
     "title": "Schedule",
     "types": {

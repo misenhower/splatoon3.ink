@@ -1,4 +1,10 @@
 {
+  "times": {
+    "now": "Nu",
+    "next": "Volgende",
+    "future": "Daarna"
+  },
+  "time": {},
   "schedule": {
     "title": "Levelschema",
     "types": {

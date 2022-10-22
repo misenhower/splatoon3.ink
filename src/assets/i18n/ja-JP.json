@@ -1,4 +1,10 @@
 {
+  "times": {
+    "now": "オープン！",
+    "next": "つぎ",
+    "future": "そのつぎ"
+  },
+  "time": {},
   "schedule": {
     "title": "スケジュール",
     "types": {

@@ -1,13 +1,15 @@
 {
+  "times": {
+    "now": "Aktuell",
+    "next": "Demnächst",
+    "future": "Danach",
+    "checkback": "Schau später vorbei!"
+  },
   "time": {
     "in": "in",
-    "now": "Jetzt geöffnet!",
-    "next": "Demnächst",
-    "soon": "Bald!",
     "remaining": "übrig",
     "until": "Bis",
     "left": "verbleibend",
-    "checkback": "Schau später vorbei!",
     "d": "Tg",
     "day": "Tag",
     "days": "Tage",

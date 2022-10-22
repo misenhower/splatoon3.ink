@@ -1,13 +1,15 @@
 {
+  "times": {
+    "now": "Now",
+    "next": "Next",
+    "future": "Future",
+    "checkback": "Check back soon!"
+  },
   "time": {
     "in": "in",
-    "now": "Now Open!",
-    "next": "Next",
-    "soon": "Soon!",
     "remaining": "remaining",
     "until": "Until",
     "left": "left",
-    "checkback": "Check back soon!",
     "d": "d",
     "day": "day",
     "days": "days",

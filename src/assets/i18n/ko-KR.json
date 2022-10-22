@@ -1,4 +1,10 @@
 {
+  "times": {
+    "now": "오픈!",
+    "next": "다음",
+    "future": "그다음"
+  },
+  "time": {},
   "schedule": {
     "title": "스케줄",
     "types": {

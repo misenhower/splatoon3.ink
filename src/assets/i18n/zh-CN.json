@@ -1,4 +1,10 @@
 {
+  "times": {
+    "now": "开放！",
+    "next": "下次",
+    "future": "下下次"
+  },
+  "time": {},
   "schedule": {
     "title": "日程",
     "types": {
