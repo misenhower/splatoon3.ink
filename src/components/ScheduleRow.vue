@@ -28,7 +28,7 @@
             </div>
 
             <div class="text-sm text-zinc-300 text-shadow">
-              {{ $t('time.in') }} {{ formatDurationFromNow(props.schedule.startTime) }}
+              {{ $t('time.in', { time: formatDurationFromNow(props.schedule.startTime) }) }}
             </div>
 
             <div class="text-sm text-zinc-300 text-shadow">

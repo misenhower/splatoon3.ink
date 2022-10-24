@@ -4,7 +4,9 @@
     "next": "다음",
     "future": "그다음"
   },
-  "time": {},
+  "time": {
+    "until": "{time}까지"
+  },
   "schedule": {
     "title": "스케줄",
     "types": {

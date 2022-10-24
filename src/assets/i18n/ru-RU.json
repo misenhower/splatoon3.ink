@@ -4,7 +4,9 @@
     "next": "Следующий",
     "future": "Скоро"
   },
-  "time": {},
+  "time": {
+    "until": "До {time}"
+  },
   "schedule": {
     "title": "Расписание",
     "types": {

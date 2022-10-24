@@ -4,7 +4,9 @@
     "next": "Siguiente",
     "future": "Posteriores"
   },
-  "time": {},
+  "time": {
+    "until": "Hasta {time}"
+  },
   "schedule": {
     "title": "Calendario",
     "types": {

@@ -4,7 +4,9 @@
     "next": "Suivant",
     "future": "Prochains"
   },
-  "time": {},
+  "time": {
+    "until": "Jusqu'au {time}"
+  },
   "schedule": {
     "title": "Horaire",
     "types": {

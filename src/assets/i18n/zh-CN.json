@@ -4,7 +4,9 @@
     "next": "下次",
     "future": "下下次"
   },
-  "time": {},
+  "time": {
+    "until": "到{time}为止"
+  },
   "schedule": {
     "title": "日程",
     "types": {

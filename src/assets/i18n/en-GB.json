@@ -4,7 +4,9 @@
     "next": "Next",
     "future": "Future"
   },
-  "time": {},
+  "time": {
+    "until": "Until {time}"
+  },
   "schedule": {
     "title": "Schedule",
     "types": {

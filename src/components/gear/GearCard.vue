@@ -68,8 +68,7 @@
       </div>
 
       <div class="inline-block text-xs bg-zinc-200 bg-opacity-30 rounded px-1 py-px font-semibold">
-        {{ formatShortDurationFromNow(props.gear.saleEndTime) }}
-        {{ $t('time.left') }}
+        {{ $t('time.left', { time: formatShortDurationFromNow(props.gear.saleEndTime) }) }}
       </div>
     </div>
   </div>

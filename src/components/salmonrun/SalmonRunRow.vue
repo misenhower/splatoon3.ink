@@ -12,8 +12,7 @@
       </div>
 
       <div class="hidden sm:block text-xs bg-zinc-100 bg-opacity-80 rounded text-black px-2">
-        {{ $t('time.in') }}
-        {{ formatDurationFromNow(props.schedule.startTime, true) }}
+        {{ $t('time.in', { time: formatDurationFromNow(props.schedule.startTime, true) }) }}
       </div>
     </div>
 

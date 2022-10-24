@@ -4,7 +4,9 @@
     "next": "Volgende",
     "future": "Daarna"
   },
-  "time": {},
+  "time": {
+    "until": "Tot {time}"
+  },
   "schedule": {
     "title": "Levelschema",
     "types": {

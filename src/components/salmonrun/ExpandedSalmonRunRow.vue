@@ -7,10 +7,10 @@
         {{ $d(props.schedule.endTime, 'dateTimeShort') }}
       </div>
       <div class="text-shadow text-zinc-300 ss:hidden">
-        {{ formatDurationFromNow(props.schedule.endTime) }} {{ $t('time.remaining') }}
+        {{ $t('time.remaining', { time: formatDurationFromNow(props.schedule.endTime) }) }}
       </div>
       <div class="hidden ss:block text-shadow text-white text-xl">
-        {{ formatDurationHoursFromNow(props.schedule.endTime) }} {{ $t('time.remaining') }}
+        {{ $t('time.remaining', { time: formatDurationHoursFromNow(props.schedule.endTime) }) }}
       </div>
     </div>
 

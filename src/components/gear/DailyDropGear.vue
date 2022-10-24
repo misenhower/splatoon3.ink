@@ -26,7 +26,7 @@
 
       <template v-if="brand">
         <div class="text-center font-splatoon2 text-splatoon-yellow">
-          {{ $t('time.until') }} {{ $d(brand?.saleEndTime, 'dateTimeShortWeekday') }}
+          {{ $t('time.until', { time: $d(brand?.saleEndTime, 'dateTimeShortWeekday') }) }}
         </div>
         <div class="space-y-4 px-4">
           <GearCardHorizontal

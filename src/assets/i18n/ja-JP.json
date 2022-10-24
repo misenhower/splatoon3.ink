@@ -4,7 +4,9 @@
     "next": "つぎ",
     "future": "そのつぎ"
   },
-  "time": {},
+  "time": {
+    "until": "{time} まで"
+  },
   "schedule": {
     "title": "スケジュール",
     "types": {

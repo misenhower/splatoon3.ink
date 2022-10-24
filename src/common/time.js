@@ -19,7 +19,8 @@ function getDurationParts(value) {
 // Countdown duration (e.g., 1d 13h 21m 19s)
 // "hideSeconds" only hides seconds when the time is >= 1 hour, this is used in the Salmon Run box
 export function formatDuration(value, hideSeconds = false) {
-  const i18n = useI18n()
+  const { t } = useI18n();
+
   let { negative, days, hours, minutes, seconds } = getDurationParts(value);
 
   // Add leading zeros
@@ -28,10 +29,10 @@ export function formatDuration(value, hideSeconds = false) {
   seconds = ('0' + seconds).substr(-2);
 
   // Format for translation
-  days = days && `${days}${i18n.t('time.d')}`;
-  hours = (days || hours) && `${hours}${i18n.t('time.h')}`;
-  minutes = `${minutes}${i18n.t('time.m')}`;
-  seconds = `${seconds}${i18n.t('time.s')}`;
+  days = days && t('time.d', days);
+  hours = (days || hours) && t('time.h', hours);
+  minutes = t('time.m', { n: minutes }, minutes);
+  seconds = t('time.s', { n: seconds }, seconds);
 
   if (days)
     return negative + (hideSeconds ? `${days} ${hours} ${minutes}` : `${days} ${hours} ${minutes} ${seconds}`);
@@ -47,16 +48,16 @@ export function formatDurationFromNow(value, hideSeconds = false) {
 }
 
 export function formatShortDuration(value) {
-  const i18n = useI18n()
+  const { t } = useI18n()
   let { negative, days, hours, minutes, seconds } = getDurationParts(value);
 
   if (days)
-    return `${negative}${days} ${days === 1 ? i18n.t('time.day') : i18n.t('time.days')}`;
+    return t('time.days', { n: `${negative}${days}` }, days);
   if (hours)
-    return `${negative}${hours} ${hours === 1 ? i18n.t('time.hour') : i18n.t('time.hours')}`;
+    return t('time.hours', { n: `${negative}${hours}` }, hours);
   if (minutes)
-    return `${negative}${minutes} ${minutes === 1 ? i18n.t('time.minute') : i18n.t('time.minutes')}`;
-  return `${negative}${seconds} ${seconds === 1 ? i18n.t('time.second') : i18n.t('time.seconds')}`;
+    return t('time.minutes', { n: `${negative}${minutes}` }, minutes);
+  return t('time.seconds', { n: `${negative}${seconds}` }, seconds);
 }
 
 export function formatShortDurationFromNow(value) {
