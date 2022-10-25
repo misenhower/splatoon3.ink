@@ -5,7 +5,18 @@
     "future": "下下次"
   },
   "time": {
-    "until": "到{time}為止"
+    "in": "{time}內",
+    "remaining": "還剩{time}",
+    "until": "到{time}為止",
+    "left": "還剩{time}",
+    "d": "{n}天 | {n}天",
+    "h": "{n}小時 | {n}小時",
+    "m": "{n}分鐘 | {n}分鐘",
+    "s": "{n}秒 | {n}秒",
+    "days": "{n}天 | {n}天",
+    "hours": "{n}小時 | {n}小時",
+    "minutes": "{n}分鐘 | {n}分鐘",
+    "seconds": "{n}秒 | {n}秒"
   },
   "schedule": {
     "title": "時間表",

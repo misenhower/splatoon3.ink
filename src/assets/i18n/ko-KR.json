@@ -5,7 +5,18 @@
     "future": "그다음"
   },
   "time": {
-    "until": "{time}까지"
+    "in": "{time}안에",
+    "remaining": "{time}남음",
+    "until": "{time}까지",
+    "left": "{time}남았다",
+    "d": "{n}일 | {n}일",
+    "h": "{n}시간 | {n}시간",
+    "m": "{n}분 | {n}분",
+    "s": "{n}초 | {n}초",
+    "days": "{n}일 | {n}일",
+    "hours": "{n}시간 | {n}시간",
+    "minutes": "{n}분 | {n}분",
+    "seconds": "{n}초 | {n}초"
   },
   "schedule": {
     "title": "스케줄",

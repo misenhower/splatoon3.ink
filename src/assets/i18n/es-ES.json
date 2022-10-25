@@ -5,7 +5,18 @@
     "future": "Posteriores"
   },
   "time": {
-    "until": "Hasta {time}"
+    "in": "en {time}",
+    "remaining": "{time} restante",
+    "until": "Hasta {time}",
+    "left": "{time} restante",
+    "d": "{n}d | {n}d",
+    "h": "{n}h | {n}h",
+    "m": "{n}m | {n}m",
+    "s": "{n}s | {n}s",
+    "days": "{n} día | {n} días",
+    "hours": "{n} hora | {n} horas",
+    "minutes": "{n} minuto | {n} minutos",
+    "seconds": "{n} segundo | {n} segundos"
   },
   "schedule": {
     "title": "Calendarios",

@@ -5,7 +5,18 @@
     "future": "下下次"
   },
   "time": {
-    "until": "到{time}为止"
+    "in": "{time}内",
+    "remaining": "还剩{time}",
+    "until": "到{time}为止",
+    "left": "还剩{time}",
+    "d": "{n}天 | {n}天",
+    "h": "{n}小时 | {n}小时",
+    "m": "{n}分钟 | {n}分钟",
+    "s": "{n}秒 | {n}秒",
+    "days": "{n}天 | {n}天",
+    "hours": "{n}小时 | {n}小时",
+    "minutes": "{n}分钟 | {n}分钟",
+    "seconds": "{n}秒 | {n}秒"
   },
   "schedule": {
     "title": "日程",

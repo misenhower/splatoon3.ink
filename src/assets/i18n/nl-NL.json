@@ -5,7 +5,18 @@
     "future": "Daarna"
   },
   "time": {
-    "until": "Tot {time}"
+    "in": "over {time}",
+    "remaining": "Nog {time}",
+    "until": "Tot {time}",
+    "left": "Nog {time}",
+    "d": "{n}d | {n}d",
+    "h": "{n}u | {n}u",
+    "m": "{n}m | {n}m",
+    "s": "{n}s | {n}s",
+    "days": "{n} dag | {n} dagen",
+    "hours": "{n} uur | {n} uur",
+    "minutes": "{n} minuut | {n} minuten",
+    "seconds": "{n} seconde | {n} seconden"
   },
   "schedule": {
     "title": "Levelschema",

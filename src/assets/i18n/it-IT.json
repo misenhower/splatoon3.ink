@@ -5,7 +5,18 @@
     "future": "Successivi"
   },
   "time": {
-    "until": "Fino a: {time}"
+    "in": "tra {time}",
+    "remaining": "{time} rimanenti",
+    "until": "Fino a: {time}",
+    "left": "{time} rimanenti",
+    "d": "{n}g | {n}g",
+    "h": "{n}o | {n}o",
+    "m": "{n}m | {n}m",
+    "s": "{n}s | {n}s",
+    "days": "{n} giorno | {n} giorni",
+    "hours": "{n} ora | {n} ore",
+    "minutes": "{n} minuto | {n} minuti",
+    "seconds": "{n} secondo | {n} secondi"
   },
   "schedule": {
     "title": "Calendario",

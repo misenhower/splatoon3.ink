@@ -5,7 +5,18 @@
     "future": "そのつぎ"
   },
   "time": {
-    "until": "{time} まで"
+    "in": "{time}後",
+    "remaining": "残り{time}",
+    "until": "{time} まで",
+    "left": "残り{time}",
+    "d": "{n}日 | {n}日",
+    "h": "{n}時間 | {n}時間",
+    "m": "{n}分 | {n}分",
+    "s": "{n}秒 | {n}秒",
+    "days": "{n}日 | {n}日",
+    "hours": "{n}時間 | {n}時間",
+    "minutes": "{n}分 | {n}分",
+    "seconds": "{n}秒 | {n}秒"
   },
   "schedule": {
     "title": "スケジュール",
