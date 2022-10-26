@@ -67,12 +67,12 @@ export function formatShortDurationFromNow(value) {
 }
 
 export function formatDurationHours(value) {
-  const i18n = useI18n()
+  const { t } = useI18n()
   let { negative, days, hours } = getDurationParts(value);
 
   hours += 24 * days;
 
-  return `${negative}${hours} ${hours === 1 ? i18n.t('time.hour') : i18n.t('time.hours')}`;
+  return t('time.hours', { n: `${negative}${hours}` }, hours);
 }
 
 export function formatDurationHoursFromNow(value) {
