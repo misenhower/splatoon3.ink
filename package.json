@@ -13,6 +13,7 @@
     "warmCaches": "node app/index.mjs warmCaches"
   },
   "dependencies": {
+    "@headlessui/vue": "^1.7.3",
     "@intlify/vite-plugin-vue-i18n": "^6.0.3",
     "console-stamp": "^3.0.6",
     "cron": "^2.1.0",
