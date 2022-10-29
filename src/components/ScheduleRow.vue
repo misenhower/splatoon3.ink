@@ -28,7 +28,12 @@
             </div>
 
             <div class="text-sm text-zinc-300 text-shadow">
-              {{ $t('time.in', { time: formatDurationFromNow(props.schedule.startTime) }) }}
+              <template v-if="time.isUpcoming(props.schedule.startTime)">
+                {{ $t('time.in', { time: formatDurationFromNow(props.schedule.startTime) }) }}
+              </template>
+              <template v-else>
+                {{ $t('time.remaining', { time: formatDurationFromNow(props.schedule.endTime) }) }}
+              </template>
             </div>
 
             <div class="text-sm text-zinc-300 text-shadow">
@@ -61,10 +66,13 @@
 import StageImage from './StageImage.vue';
 import RuleIcon from './RuleIcon.vue';
 import { formatDurationFromNow } from '../common/time';
+import { useTimeStore } from '../stores/time.mjs';
 
 const props = defineProps({
   schedule: {
     required: true,
   },
 });
+
+const time = useTimeStore();
 </script>

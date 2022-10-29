@@ -6,8 +6,8 @@
         <div class="fixed inset-0 bg-zinc-900/80 transition-opacity backdrop-blur-sm" />
       </TransitionChild>
 
-      <div class="fixed inset-0 z-20 overflow-y-auto">
-        <div class="flex min-h-full justify-center p-4 text-center items-center">
+      <div class="fixed inset-0 z-20" :class="noScroll ? 'overflow-hidden' : 'overflow-y-auto'">
+        <div class="flex justify-center p-4 text-center" :class="noScroll ? 'h-full overflow-hidden' : 'min-h-full items-center'">
           <TransitionChild as="template" enter="ease-out duration-300"
             enter-from="opacity-0 translate-y-0 scale-95"
             enter-to="opacity-100 translate-y-0 scale-100" leave="ease-in duration-200"
@@ -31,6 +31,7 @@ defineProps({
     type: Boolean,
     default: true,
   },
+  noScroll: Boolean,
   innerClass: String,
 });
 </script>

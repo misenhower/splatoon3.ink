@@ -1,5 +1,5 @@
 <template>
-  <ProductContainer :bg="type.bg" class="w-full pt-10 pb-8">
+  <ProductContainer :bg="type.bg" class="w-full pt-10 pb-4">
     <div class="space-y-2">
       <div class="flex items-center space-x-2 mx-2">
         <img :src="type.img" />
@@ -67,12 +67,21 @@
 
         <ScheduleRow :schedule="nextSchedule" />
       </div>
+
+      <div class="text-center pt-2">
+        <button class="bg-zinc-300 bg-opacity-50 hover:bg-opacity-70 px-2 py-1 rounded-full font-splatoon2 text-shadow" @click="open = true">
+          <span class="inline-block rotate-[25deg] text-red">&#57445;</span>
+          All Upcoming Schedules
+        </button>
+      </div>
     </div>
+
+    <ScheduleDialog :type="props.type" :show="open" @close="open = false" />
   </ProductContainer>
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useUSSplatfestsStore } from '@/stores/splatfests';
 import ProductContainer from './ProductContainer.vue';
 import StageImage from './StageImage.vue';
@@ -80,6 +89,7 @@ import ScheduleRow from './ScheduleRow.vue';
 import RuleIcon from './RuleIcon.vue';
 import SquidTape from './SquidTape.vue';
 import { useScheduleTypes } from './concerns/scheduleTypes.mjs';
+import ScheduleDialog from './ScheduleDialog.vue';
 
 const props = defineProps({
   type: {
@@ -94,6 +104,8 @@ const type = computed(() => types[props.type]);
 const store = computed(() => type.value.store);
 const nextSchedule = computed(() => store.value.upcomingSchedules?.[0]);
 const tricolor = computed(() => useUSSplatfestsStore().tricolor);
+
+const open = ref(false);
 </script>
 
 <style scoped>
