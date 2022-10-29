@@ -36,5 +36,3 @@ export function useScheduleTypes() {
 
   return { types };
 }
-
-
