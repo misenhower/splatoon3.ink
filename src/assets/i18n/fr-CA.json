@@ -26,7 +26,8 @@
       "regular": "Match classique",
       "anarchy": "Match anarchie",
       "splatfest": "Festimatch"
-    }
+    },
+    "all-upcoming": "Les stages à venir"
   },
   "salmonrun": {
     "title": "Salmon Run",

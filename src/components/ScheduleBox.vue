@@ -71,7 +71,7 @@
       <div class="text-center pt-2">
         <button class="bg-zinc-300 bg-opacity-50 hover:bg-opacity-70 px-2 py-1 rounded-full font-splatoon2 text-shadow" @click="open = true">
           <span class="inline-block rotate-[25deg] text-red">&#57445;</span>
-          All Upcoming Schedules
+          {{ $t('schedule.all-upcoming') }}
         </button>
       </div>
     </div>

@@ -27,7 +27,8 @@
       "regular": "Standardkampf",
       "anarchy": "Anarchie-Kampf",
       "splatfest": "Splatfest-Kampf"
-    }
+    },
+    "all-upcoming": "Alle bevorstehenden Arenen"
   },
   "salmonrun": {
     "title": "Salmon Run",

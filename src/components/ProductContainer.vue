@@ -1,5 +1,5 @@
 <template>
-  <div class="relative">
+  <div class="relative" :class="fullMask ? 'product-mask overflow-hidden rounded-2xl' : ''">
     <div class="absolute inset-0 product-mask rounded-2xl -z-10" :class="props.bg" :style="bgStyle"></div>
     <slot />
   </div>
@@ -12,6 +12,7 @@ const props = defineProps({
     default: 'bg-splatoon-blue',
   },
   bgStyle: String,
+  fullMask: Boolean,
 })
 </script>
 

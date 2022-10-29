@@ -26,7 +26,8 @@
       "regular": "Regular Battle",
       "anarchy": "Anarchy Battle",
       "splatfest": "Splatfest Battle"
-    }
+    },
+    "all-upcoming": "All Upcoming Stages"
   },
   "salmonrun": {
     "title": "Salmon Run",
