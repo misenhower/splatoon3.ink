@@ -1,5 +1,5 @@
 <template>
-  <div class="relative">
+  <button class="relative" @click.prevent="open = true">
     <div class="bg-zinc-700 aspect-[2/1] overflow-hidden" :class="imgClass">
       <img :src="lowRes" v-if="lowRes" />
       <div class="bg-zinc-500 animate-pulse h-full" :class="imgClass" v-else>&nbsp;</div>
@@ -20,11 +20,14 @@
       font-splatoon2
       px-2
     " :class="textSize" v-if="!hideLabel && stage">{{ $t(`splatnet.stages.${stage.id}.name`, stage.name) }}</div>
-  </div>
+
+    <StageDialog :stage="stage" :show="open" @close="open = false" />
+  </button>
 </template>
 
 <script setup>
-import { computed } from '@vue/reactivity';
+import { computed, ref } from 'vue';
+import StageDialog from './StageDialog.vue';
 
 const props = defineProps({
   stage: Object,
@@ -36,5 +39,7 @@ const props = defineProps({
   hideLabel: Boolean,
 });
 
-const lowRes = computed(() => props.stage?.image.url);
+const open = ref(false);
+
+const lowRes = computed(() => props.stage?.thumbnailImage.url);
 </script>

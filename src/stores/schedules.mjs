@@ -6,10 +6,20 @@ import { useTimeStore } from "./time.mjs";
 // Schedule store definition (used for each type of schedule)
 function defineScheduleStore(id, options) {
   return defineStore(`schedules/${id}`, () => {
-    const transform = node => ({
-      ...node,
-      settings: options.settings(node),
-    });
+    const transform = (node) => {
+      node = {
+        ...node,
+        settings: options.settings(node),
+      };
+
+      // Move the thumbnail image to "thumbnailImage" and pull in the high-res image for the stage
+      for (let stage of node.settings.vsStages || []) {
+        stage.thumbnailImage = stage.image;
+        stage.image = findStageImage(stage.id) || stage.image;
+      }
+
+      return node;
+    };
 
     const time = useTimeStore();
     const schedules = computed(() => options.nodes()?.map(n => transform(n)));
@@ -20,6 +30,12 @@ function defineScheduleStore(id, options) {
 
     return { schedules, currentSchedules, activeSchedule, upcomingSchedules };
   });
+}
+
+function findStageImage(id) {
+  return useSchedulesDataStore().data
+    ?.vsStages.nodes.find(s => s.id === id)
+    ?.originalImage;
 }
 
 // Regular Battle
