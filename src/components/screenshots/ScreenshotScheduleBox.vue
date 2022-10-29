@@ -3,7 +3,7 @@
     <div class="space-y-2">
       <div class="flex items-center justify-center space-x-1 mx-2">
         <div class="font-splatoon1 text-4xl text-shadow">
-          {{ type.name }}
+          {{ $t(type.name) }}
         </div>
       </div>
 
@@ -20,7 +20,7 @@
             <div class="flex items-center" v-if="type.badge">
               <img :src="type.img" class="h-10" />
               <div v-if="type.badge" class="font-splatoon2 text-2xl bg-splatoon-blue px-2 drop-shadow rounded">
-                {{ type.badge }}
+                {{ $t(type.badge) }}
               </div>
             </div>
           </div>
@@ -55,15 +55,12 @@
 </template>
 
 <script setup>
-import { computed } from '@vue/reactivity';
-import { useAnarchyOpenSchedulesStore, useAnarchySeriesSchedulesStore, useRegularSchedulesStore, useSplatfestSchedulesStore } from '@/stores/schedules';
+import { computed } from 'vue';
 import { useUSSplatfestsStore } from '@/stores/splatfests';
 import ProductContainer from '../ProductContainer.vue';
 import StageImage from '../StageImage.vue';
-
-import battleRegularSvg from '@/assets/img/modes/regular.svg';
-import battleBankaraSvg from '@/assets/img/modes/bankara.svg';
 import RuleIcon from '../RuleIcon.vue';
+import { useScheduleTypes } from '@/components/concerns/scheduleTypes.mjs';
 
 const props = defineProps({
   type: {
@@ -72,36 +69,7 @@ const props = defineProps({
   },
 });
 
-const types = {
-  regular: {
-    name: 'Regular Battle',
-    badge: null,
-    store: useRegularSchedulesStore(),
-    img: battleRegularSvg,
-    bg: 'bg-splatoon-battle-regular bg-tapes',
-  },
-  anarchySeries: {
-    name: 'Anarchy Battle',
-    badge: 'Series',
-    store: useAnarchySeriesSchedulesStore(),
-    img: battleBankaraSvg,
-    bg: 'bg-splatoon-battle-ranked bg-tapes',
-  },
-  anarchyOpen: {
-    name: 'Anarchy Battle',
-    badge: 'Open',
-    store: useAnarchyOpenSchedulesStore(),
-    img: battleBankaraSvg,
-    bg: 'bg-splatoon-battle-ranked bg-tapes',
-  },
-  splatfest: {
-    name: 'Splatfest Battle',
-    badge: null,
-    store: useSplatfestSchedulesStore(),
-    img: battleRegularSvg,
-    bg: 'bg-splatoon-battle-regular bg-tapes',
-  },
-};
+const { types } = useScheduleTypes();
 
 const type = computed(() => types[props.type]);
 const store = computed(() => type.value.store);

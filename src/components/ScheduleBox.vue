@@ -4,10 +4,10 @@
       <div class="flex items-center space-x-2 mx-2">
         <img :src="type.img" />
         <div class="font-splatoon1 lg:text-2xl xl:text-3xl text-shadow">
-          {{ $t(`schedule.types.${type.name}`) }}
+          {{ $t(type.name) }}
         </div>
         <div v-if="type.badge" class="font-splatoon2 text-xs lg:text-sm xl:text-base bg-splatoon-blue rounded px-1 drop-shadow">
-          {{ $t(`schedule.types.${type.badge}`) }}
+          {{ $t(type.badge) }}
         </div>
       </div>
 
@@ -72,17 +72,14 @@
 </template>
 
 <script setup>
-import { computed } from '@vue/reactivity';
-import { useAnarchyOpenSchedulesStore, useAnarchySeriesSchedulesStore, useRegularSchedulesStore, useSplatfestSchedulesStore } from '../stores/schedules';
+import { computed } from 'vue';
 import { useUSSplatfestsStore } from '@/stores/splatfests';
 import ProductContainer from './ProductContainer.vue';
 import StageImage from './StageImage.vue';
 import ScheduleRow from './ScheduleRow.vue';
-
-import battleRegularSvg from '@/assets/img/modes/regular.svg';
-import battleBankaraSvg from '@/assets/img/modes/bankara.svg';
 import RuleIcon from './RuleIcon.vue';
 import SquidTape from './SquidTape.vue';
+import { useScheduleTypes } from './concerns/scheduleTypes.mjs';
 
 const props = defineProps({
   type: {
@@ -91,36 +88,7 @@ const props = defineProps({
   },
 });
 
-const types = {
-  regular: {
-    name: 'regular',
-    badge: null,
-    store: useRegularSchedulesStore(),
-    img: battleRegularSvg,
-    bg: 'bg-splatoon-battle-regular bg-tapes',
-  },
-  anarchySeries: {
-    name: 'anarchy',
-    badge: 'series',
-    store: useAnarchySeriesSchedulesStore(),
-    img: battleBankaraSvg,
-    bg: 'bg-splatoon-battle-ranked bg-tapes',
-  },
-  anarchyOpen: {
-    name: 'anarchy',
-    badge: 'open',
-    store: useAnarchyOpenSchedulesStore(),
-    img: battleBankaraSvg,
-    bg: 'bg-splatoon-battle-ranked bg-tapes',
-  },
-  splatfest: {
-    name: 'splatfest',
-    badge: null,
-    store: useSplatfestSchedulesStore(),
-    img: battleRegularSvg,
-    bg: 'bg-splatoon-battle-regular bg-tapes',
-  },
-};
+const { types } = useScheduleTypes();
 
 const type = computed(() => types[props.type]);
 const store = computed(() => type.value.store);
