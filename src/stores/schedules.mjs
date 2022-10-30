@@ -13,7 +13,7 @@ function defineScheduleStore(id, options) {
       };
 
       // Move the thumbnail image to "thumbnailImage" and pull in the high-res image for the stage
-      for (let stage of node.settings.vsStages || []) {
+      for (let stage of node.settings?.vsStages || []) {
         stage.thumbnailImage = stage.image;
         stage.image = findStageImage(stage.id) || stage.image;
       }
