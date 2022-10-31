@@ -6,7 +6,7 @@
           <RuleIcon :rule="props.schedule.settings.vsRule" class="h-5" />
         </div>
         <div class="text-shadow">
-          {{ props.schedule.settings.vsRule.name }}
+          {{ $t(`splatnet.rules.${props.schedule.settings.vsRule.id}.name`, props.schedule.settings.vsRule.name) }}
         </div>
       </div>
     </div>
