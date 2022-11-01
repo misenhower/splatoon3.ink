@@ -26,7 +26,8 @@
       "regular": "一般比赛",
       "anarchy": "蛮颓比赛",
       "splatfest": "祭典比赛"
-    }
+    },
+    "all-upcoming": "接下来的对战场地"
   },
   "salmonrun": {
     "title": "鲑鱼跑",
