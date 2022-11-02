@@ -8,7 +8,7 @@
     <!-- Details -->
     <div class="grow min-w-0 flex flex-col justify-evenly space-y-2">
       <div class="flex">
-        <div class="inline-block text-xs bg-zinc-200 bg-opacity-30 rounded px-1 py-px font-semibold">
+        <div class="inline-block font-splatoon2 text-xs bg-zinc-200 bg-opacity-30 rounded px-1 py-px font-semibold">
           {{ $t('time.left', { time: formatShortDurationFromNow(props.gear.saleEndTime) }) }}
         </div>
       </div>
