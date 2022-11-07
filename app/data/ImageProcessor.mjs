@@ -22,7 +22,7 @@ export default class ImageProcessor
     await this.maybeDownload(url, destination);
 
     // Return the new public URL
-    return this.publicUrl(destination);
+    return [destination, this.publicUrl(destination)];
   }
 
   normalize(url) {
