@@ -1,6 +1,10 @@
 import fs from 'fs/promises';
 import DataUpdater from "./DataUpdater.mjs";
 
+function getFestId(id) {
+  return Buffer.from(id, 'base64').toString().match(/^Fest-[A-Z]+:(.+)$/)?.[1] ?? id;
+}
+
 function generateFestUrl(id) {
   return process.env.DEBUG ?
     `https://s.nintendo.com/av5ja-lp1/znca/game/4834290508791808?p=/fest_record/${id}` :
