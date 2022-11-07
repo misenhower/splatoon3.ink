@@ -34,7 +34,7 @@ export default class ImageProcessor
   }
 
   publicUrl(file) {
-    return `${this.siteUrl}/${this.outputDirectory}/${file}`;
+    return `${this.siteUrl ?? ''}/${this.outputDirectory}/${file}`;
   }
 
   async exists(file) {
