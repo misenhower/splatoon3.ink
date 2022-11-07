@@ -182,7 +182,7 @@ export default class DataUpdater
     if (!events) return;
 
     const ical = await this.getiCalData(events, images);
-    this.writeFile(this.getCalendarPath(this.calendarFilename ?? this.filename), ical);
+    await this.writeFile(this.getCalendarPath(this.calendarFilename ?? this.filename), ical);
   }
 
   getCalendarPath(filename) {
@@ -197,10 +197,10 @@ export default class DataUpdater
     // Create a calendar object
     const calendar = new ical({
       name: this.calendarName ?? this.name,
-      url: 'https://splatoon3.ink',
+      url: process.env.SITE_URL,
       prodId: {
-        company: 'splatoon3.ink',
-        product: 'splatoon3.ink',
+        company: 'Splatoon3.ink',
+        product: 'Splatoon3.ink',
         language: 'EN',
       },
       timezone: 'UTC',
