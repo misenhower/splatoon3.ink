@@ -42,7 +42,11 @@
             />
 
           <div class="flex-1 relative" v-if="tricolor?.isTricolorActive">
-            <StageImage imgClass="rounded-2xl" :stage="tricolor?.tricolorStage" />
+            <StageImage
+              imgClass="rounded-2xl"
+              :stage="tricolor?.tricolorStage"
+              textSize="text-3xl"
+              />
 
             <div class="absolute top-0 right-0 rounded-full bg-black p-1">
               <img src="@/assets/img/rules/tricolor.svg" class="h-12 w-12" />
