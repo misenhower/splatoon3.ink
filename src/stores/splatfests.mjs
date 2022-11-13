@@ -43,10 +43,18 @@ function defineSplatfestRegionStore(region) {
 
     // TODO: Eventually this needs to be handled on a per-region basis.
     const tricolor = computed(() => {
-      let fest = useSchedulesDataStore().data?.currentFest;
+      let {currentFest: fest, vsStages} = useSchedulesDataStore().data ?? {};
 
       if (!fest) {
         return null;
+      }
+
+      // Move the thumbnail image to "thumbnailImage" and pull in the high-res image for the stage
+      if (!('thumbnailImage' in fest.tricolorStage)) {
+        fest.tricolorStage.thumbnailImage = fest.tricolorStage.image;
+        fest.tricolorStage.image =
+          vsStages.nodes.find(s => s.id === fest.tricolorStage.id)?.originalImage ||
+          fest.tricolorStage.image;
       }
 
       return {
