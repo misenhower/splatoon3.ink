@@ -20,6 +20,7 @@
     "cron": "^2.1.0",
     "dotenv": "^16.0.2",
     "ecstatic": "^4.1.4",
+    "ical-generator": "^3.6.0",
     "jsonpath": "^1.1.1",
     "lodash": "^4.17.21",
     "mkdirp": "^1.0.4",

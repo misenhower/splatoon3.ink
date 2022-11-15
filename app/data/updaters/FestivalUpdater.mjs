@@ -1,10 +1,29 @@
 import fs from 'fs/promises';
 import DataUpdater from "./DataUpdater.mjs";
 
+function getFestId(id) {
+  return Buffer.from(id, 'base64').toString().match(/^Fest-[A-Z]+:(.+)$/)?.[1] ?? id;
+}
+
+function generateFestUrl(id) {
+  return process.env.DEBUG ?
+    `https://s.nintendo.com/av5ja-lp1/znca/game/4834290508791808?p=/fest_record/${id}` :
+    `${process.env.SITE_URL ?? ''}/nso/f/${id}`;
+}
+
 export default class FestivalUpdater extends DataUpdater
 {
   name = 'Festivals';
   filename = 'festivals';
+  calendarName = 'Splatoon 3 Splatfests';
+  calendarFilename = 'festivals';
+
+  constructor(region = null) {
+    super(region);
+
+    this.calendarName += ` (${region})`;
+    this.calendarFilename += `.${region}`;
+  }
 
   imagePaths = [
     '$..image.url',
@@ -38,5 +57,18 @@ export default class FestivalUpdater extends DataUpdater
     result[this.region] = data;
 
     return super.formatDataForWrite(result);
+  }
+
+  *getCalendarEntries(data) {
+    for (const fest of data.data.festRecords.nodes) {
+      yield {
+        id: getFestId(fest.id),
+        title: `Splatfest (${this.region}): ${fest.teams.map(t => t.teamName).join(' vs. ')}`,
+        url: generateFestUrl(fest.id),
+        imageUrl: fest.image.url,
+        start: fest.startTime,
+        end: fest.endTime,
+      };
+    }
   }
 }

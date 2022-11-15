@@ -22,6 +22,14 @@ export function regionTokens() {
   };
 }
 
+function getDefaultRegion() {
+  for (const [region, token] of Object.entries(regionTokens())) {
+    if (token) return region;
+  }
+
+  throw new Error('Session token not set for any region');
+}
+
 export default class NsoClient
 {
   constructor(region, nintendoToken) {
@@ -33,7 +41,7 @@ export default class NsoClient
   }
 
   static make(region = null) {
-    region ??= 'US';
+    region ??= getDefaultRegion();
     let tokens = regionTokens();
 
     if (!Object.keys(tokens).includes(region)) {

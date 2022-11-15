@@ -10,7 +10,12 @@ import SplatNet3Client, { SPLATNET3_WEB_SERVICE_ID } from "./SplatNet3Client.mjs
 export async function warmCaches() {
   console.info('Warming caches...');
 
-  for (let region of Object.keys(regionTokens())) {
+  for (let [region, token] of Object.entries(regionTokens())) {
+    if (!token) {
+      console.warn('Session token not set for region %s', region);
+      continue;
+    }
+
     await warmCache(region);
   }
 }
