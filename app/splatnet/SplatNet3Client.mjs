@@ -136,6 +136,10 @@ export default class SplatNet3Client
     return this.getGraphQLPersistedQuery(1, '2d661988c055d843b3be290f04fb0db9', { festId });
   }
 
+  getFestRankingData(festId) {
+    return this.getGraphQLPersistedQuery(1, '58bdd28e3cf71c3bf38bc45836ee1e96', { festId });
+  }
+
   getCurrentFestData() {
     return this.getGraphQLPersistedQuery(1, 'c0429fd738d829445e994d3370999764');
   }

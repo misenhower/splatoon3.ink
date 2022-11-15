@@ -1,5 +1,6 @@
 import fs from 'fs/promises';
 import DataUpdater from "./DataUpdater.mjs";
+import FestivalRankingUpdater from './FestivalRankingUpdater.mjs';
 
 function getFestId(id) {
   return Buffer.from(id, 'base64').toString().match(/^Fest-[A-Z]+:(.+)$/)?.[1] ?? id;
@@ -38,6 +39,9 @@ export default class FestivalUpdater extends DataUpdater
       let detailResult = await this.splatnet(locale).getFestDetailData(node.id);
 
       Object.assign(node, detailResult.data.fest);
+
+      let rankingUpdater = new FestivalRankingUpdater(this.region, node.id);
+      await rankingUpdater.update();
     }
 
     return result;
