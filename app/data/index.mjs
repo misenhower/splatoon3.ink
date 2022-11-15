@@ -28,7 +28,7 @@ export async function updateAll() {
 
   for (let updater of updaters()) {
     try {
-      await updater.update();
+      await updater.updateIfNeeded();
     } catch (e) {
       console.error(e);
     }

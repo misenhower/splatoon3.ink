@@ -54,6 +54,19 @@ export default class DataUpdater
     return new SplatNet3Client(this.nsoClient, locale.code);
   }
 
+  async shouldUpdate() {
+    return true;
+  }
+
+  async updateIfNeeded() {
+    if (!(await this.shouldUpdate())) {
+      this.console.info('No need to update data');
+      return;
+    }
+
+    return await this.update();
+  }
+
   async update() {
     this.console.info('Updating data...');
 
