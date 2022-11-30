@@ -1,5 +1,6 @@
 import DailyDropGearTweet from "./generators/DailyDropGearTweet.mjs";
 import RegularGearTweet from "./generators/RegularGearTweet.mjs";
+import SalmonRunGearTweet from "./generators/SalmonRunGearTweet.mjs";
 import SalmonRunTweet from "./generators/SalmonRunTweet.mjs";
 import SchedulesTweet from "./generators/SchedulesTweet.mjs";
 import SplatfestResultsTweet from "./generators/SplatfestResultsTweet.mjs";
@@ -11,6 +12,7 @@ export function defaultTwitterManager() {
     new DailyDropGearTweet,
     new RegularGearTweet,
     new SalmonRunTweet,
+    new SalmonRunGearTweet,
     new SplatfestResultsTweet,
   ]);
 }

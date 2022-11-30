@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import { createPinia, setActivePinia } from 'pinia';
-import { useFestivalsDataStore, useGearDataStore, useSchedulesDataStore } from '../../../src/stores/data.mjs';
+import { useCoopDataStore, useFestivalsDataStore, useGearDataStore, useSchedulesDataStore } from '../../../src/stores/data.mjs';
 import prefixedConsole from '../../common/prefixedConsole.mjs';
 import Tweet from '../Tweet.mjs';
 import TwitterClient from '../TwitterClient.mjs';
@@ -38,6 +38,7 @@ export default class TweetGenerator
 
     useSchedulesDataStore().setData(JSON.parse(await fs.readFile('dist/data/schedules.json')));
     useGearDataStore().setData(JSON.parse(await fs.readFile('dist/data/gear.json')));
+    useCoopDataStore().setData(JSON.parse(await fs.readFile('dist/data/coop.json')));
     useFestivalsDataStore().setData(JSON.parse(await fs.readFile('dist/data/festivals.json')));
 
     this._piniaInitialized = true;
