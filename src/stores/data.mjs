@@ -41,12 +41,14 @@ function defineEndpointStore(id, endpoint, transform = null) {
 
 export const useSchedulesDataStore = defineEndpointStore('schedules', '/data/schedules.json', d => d.data);
 export const useGearDataStore = defineEndpointStore('gear', '/data/gear.json', d => d.data);
+export const useCoopDataStore = defineEndpointStore('coop', '/data/coop.json', d => d.data);
 export const useFestivalsDataStore = defineEndpointStore('festivals', '/data/festivals.json');
 
 export const useDataStore = defineStore('data', () => {
   const stores = {
     schedules: useSchedulesDataStore(),
     gear: useGearDataStore(),
+    coop: useCoopDataStore(),
     festivals: useFestivalsDataStore(),
   };
   let updateDataTimer;
@@ -95,6 +97,7 @@ export const useDataStore = defineStore('data', () => {
     stopUpdating,
     schedules: computed(() => stores.schedules.data),
     gear: computed(() => stores.gear.data),
+    coop: computed(() => stores.coop.data),
     festivals: computed(() => stores.festivals.data),
   }
 });

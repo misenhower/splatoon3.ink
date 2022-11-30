@@ -3,6 +3,7 @@ import ScreenshotsHomeView from '@/views/screenshots/ScreenshotsHomeView.vue'
 import CountdownView from '@/views/screenshots/CountdownView.vue'
 import SchedulesView from '@/views/screenshots/SchedulesView.vue'
 import SalmonRunView from '@/views/screenshots/SalmonRunView.vue'
+import SalmonRunGearView from '@/views/screenshots/SalmonRunGearView.vue'
 import RegularGearView from '@/views/screenshots/RegularGearView.vue'
 import DailyDropGearView from '@/views/screenshots/DailyDropGearView.vue'
 import SplatfestView from '@/views/screenshots/SplatfestView.vue'
@@ -33,6 +34,10 @@ const router = createRouter({
     {
       path: '/gear/dailydrop',
       component: DailyDropGearView,
+    },
+    {
+      path: '/gear/salmonrun',
+      component: SalmonRunGearView,
     },
     {
       path: '/splatfest',
