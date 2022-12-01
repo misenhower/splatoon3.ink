@@ -15,6 +15,7 @@
         <ScreenshotScheduleBox type="regular" class="flex-1 -rotate-1" />
         <ScreenshotScheduleBox type="anarchySeries" class="flex-1 rotate-1" />
         <ScreenshotScheduleBox type="anarchyOpen" class="flex-1 -rotate-1" />
+        <ScreenshotScheduleBox type="xMatch" class="flex-1 rotate-1" />
       </div>
     </div>
   </ScreenshotLayout>
