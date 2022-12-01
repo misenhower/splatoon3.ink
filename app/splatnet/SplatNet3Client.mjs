@@ -117,7 +117,7 @@ export default class SplatNet3Client
   // Specific queries
 
   getStageScheduleData() {
-    return this.getGraphQLPersistedQuery(1, '7d4bb0565342b7385ceb97d109e14897');
+    return this.getGraphQLPersistedQuery(1, '730cd98e84f1030d3e9ac86b6f1aae13');
   }
 
   getGesotownData() {
@@ -125,7 +125,7 @@ export default class SplatNet3Client
   }
 
   getCoopHistoryData() {
-    return this.getGraphQLPersistedQuery(1, '817618ce39bcf5570f52a97d73301b30');
+    return this.getGraphQLPersistedQuery(1, '6ed02537e4a65bbb5e7f4f23092f6154');
   }
 
   getFestRecordData() {
@@ -133,11 +133,11 @@ export default class SplatNet3Client
   }
 
   getFestDetailData(festId) {
-    return this.getGraphQLPersistedQuery(1, '2d661988c055d843b3be290f04fb0db9', { festId });
+    return this.getGraphQLPersistedQuery(1, '96c3a7fd484b8d3be08e0a3c99eb2a3d', { festId });
   }
 
   getFestRankingData(festId) {
-    return this.getGraphQLPersistedQuery(1, '58bdd28e3cf71c3bf38bc45836ee1e96', { festId });
+    return this.getGraphQLPersistedQuery(1, '4869de13d0d209032b203608cb598aef', { festId });
   }
 
   getCurrentFestData() {
