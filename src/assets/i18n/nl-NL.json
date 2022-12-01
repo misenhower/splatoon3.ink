@@ -25,7 +25,9 @@
       "open": "Open",
       "regular": "Standaardgevecht",
       "anarchy": "Chaosgevecht",
-      "splatfest": "Splatfest-gevecht"
+      "splatfest": "Splatfest-gevecht",
+      "xmatch": "X-gevecht",
+      "league": "Toernooigevecht"
     }
   },
   "salmonrun": {

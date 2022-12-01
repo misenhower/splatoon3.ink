@@ -25,7 +25,9 @@
       "open": "開放",
       "regular": "一般比賽",
       "anarchy": "蠻頹比賽",
-      "splatfest": "祭典比賽"
+      "splatfest": "祭典比賽",
+      "xmatch": "X比賽",
+      "league": "聯盟比賽"
     }
   },
   "salmonrun": {

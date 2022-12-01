@@ -25,7 +25,9 @@
       "open": "오픈",
       "regular": "레귤러 매치",
       "anarchy": "카오폴리스 매치",
-      "splatfest": "페스티벌 매치"
+      "splatfest": "페스티벌 매치",
+      "xmatch": "X 매치",
+      "league": "리그 매치"
     }
   },
   "salmonrun": {

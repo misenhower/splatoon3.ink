@@ -25,7 +25,9 @@
       "open": "Открытый",
       "regular": "Бой салаг",
       "anarchy": "Стихийный бой",
-      "splatfest": "Сплатфест-бой"
+      "splatfest": "Сплатфест-бой",
+      "xmatch": "Бой X",
+      "league": "Бой лиги"
     }
   },
   "salmonrun": {

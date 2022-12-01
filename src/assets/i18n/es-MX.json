@@ -25,7 +25,9 @@
       "open": "Informal",
       "regular": "Combate amistoso",
       "anarchy": "Combate caótico",
-      "splatfest": "Combate temático"
+      "splatfest": "Combate temático",
+      "xmatch": "Combate X",
+      "league": "Combate de liga"
     }
   },
   "salmonrun": {

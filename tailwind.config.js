@@ -20,6 +20,7 @@ module.exports = {
           battle: {
             regular: '#19d719',
             ranked: '#f54910',
+            xmatch: '#0fdb9b',
             league: '#f02d7d',
           },
 

@@ -25,7 +25,9 @@
       "open": "オープン",
       "regular": "レギュラーマッチ",
       "anarchy": "バンカラマッチ",
-      "splatfest": "フェスマッチ"
+      "splatfest": "フェスマッチ",
+      "xmatch": "Xマッチ",
+      "league": "リーグマッチ"
     }
   },
   "salmonrun": {
