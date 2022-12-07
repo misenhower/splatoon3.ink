@@ -33,7 +33,8 @@
   },
   "salmonrun": {
     "title": "Salmon Run",
-    "weapons": "Armes fournies"
+    "weapons": "Armes fournies",
+    "bigrun": "Big Run"
   },
   "gear": {
     "title": "Équipement",

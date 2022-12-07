@@ -32,7 +32,8 @@
   },
   "salmonrun": {
     "title": "SALMON RUN",
-    "weapons": "派發武器"
+    "weapons": "派發武器",
+    "bigrun": "大型跑"
   },
   "gear": {
     "title": "裝備",

@@ -32,7 +32,8 @@
   },
   "salmonrun": {
     "title": "Salmon Run",
-    "weapons": "Armi fornite"
+    "weapons": "Armi fornite",
+    "bigrun": "Big Run"
   },
   "gear": {
     "title": "Oggetti",

@@ -33,7 +33,8 @@
   },
   "salmonrun": {
     "title": "鲑鱼跑",
-    "weapons": "发放武器"
+    "weapons": "发放武器",
+    "bigrun": "大型跑"
   },
   "gear": {
     "title": "装备",

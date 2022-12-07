@@ -24,12 +24,13 @@ export default class SalmonRunTweet extends TweetGenerator
 
     let lines = [];
 
+    let mode = schedule.isBigRun ? 'BIG RUN' : 'Salmon Run';
     let hasMysteryWeapon = schedule.settings.weapons.some(w => w.name === 'Random');
 
     if (hasMysteryWeapon) {
-      lines.push(`Salmon Run is now open on ${schedule.settings.coopStage.name} with MYSTERY WEAPONS! #salmonrun #splatoon3`);
+      lines.push(`${mode} is now open on ${schedule.settings.coopStage.name} with MYSTERY WEAPONS! #salmonrun #splatoon3`);
     } else {
-      lines.push(`Salmon Run is now open on ${schedule.settings.coopStage.name}! #salmonrun #splatoon3`);
+      lines.push(`${mode} is now open on ${schedule.settings.coopStage.name}! #salmonrun #splatoon3`);
     }
 
     lines.push('');

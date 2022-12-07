@@ -1,17 +1,26 @@
 <template>
   <div class="font-splatoon2 space-y-1" v-if="schedule">
-    <div>
+    <div class="flex gap-2">
       <div class="text-lg text-shadow text-zinc-200 ss:hidden">
         {{ $d(schedule.startTime, 'dateTimeShort') }}
         &ndash;
         {{ $d(schedule.endTime, 'dateTimeShort') }}
       </div>
-      <div class="text-shadow text-zinc-300 ss:hidden">
-        {{ $t('time.remaining', { time: formatDurationFromNow(schedule.endTime) }) }}
-      </div>
+
       <div class="hidden ss:block text-shadow text-white text-xl">
         {{ $t('time.remaining', { time: formatDurationHoursFromNow(schedule.endTime) }) }}
       </div>
+
+      <div
+        class="bg-zinc-800 bg-opacity-80 text-sm text-white rounded-lg px-2 border-2 border-splatoon-bigRun"
+        v-if="schedule.isBigRun">
+        <img src="@/assets/img/modes/coop.bigrun.svg" :title="$t('salmonrun.bigrun')" class="w-4 inline-block" />
+        {{ $t('salmonrun.bigrun') }}
+      </div>
+    </div>
+
+    <div class="text-shadow text-zinc-300 ss:hidden">
+      {{ $t('time.remaining', { time: formatDurationFromNow(schedule.endTime) }) }}
     </div>
 
     <div class="flex items-center space-x-2">

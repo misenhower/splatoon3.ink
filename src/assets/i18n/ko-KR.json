@@ -32,7 +32,8 @@
   },
   "salmonrun": {
     "title": "새먼 런",
-    "weapons": "지급 무기"
+    "weapons": "지급 무기",
+    "bigrun": "빅 런"
   },
   "gear": {
     "title": "기어",

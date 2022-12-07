@@ -32,7 +32,8 @@
   },
   "salmonrun": {
     "title": "Salmon Run",
-    "weapons": "Armas asignadas"
+    "weapons": "Armas asignadas",
+    "bigrun": "Big Run"
   },
   "gear": {
     "title": "Equipamiento",

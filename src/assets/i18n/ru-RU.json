@@ -32,7 +32,8 @@
   },
   "salmonrun": {
     "title": "Salmon Run",
-    "weapons": "Табельное оружие"
+    "weapons": "Табельное оружие",
+    "bigrun": "Big Run"
   },
   "gear": {
     "title": "Снаряжение",

@@ -32,7 +32,8 @@
   },
   "salmonrun": {
     "title": "サーモンラン",
-    "weapons": "支給ブキ"
+    "weapons": "支給ブキ",
+    "bigrun": "ビッグラン"
   },
   "gear": {
     "title": "ギア",

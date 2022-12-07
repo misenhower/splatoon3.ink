@@ -25,6 +25,7 @@ module.exports = {
           },
 
           salmonRun: '#ff5600',
+          bigRun: '#b322ff',
         },
       },
       fontFamily: {

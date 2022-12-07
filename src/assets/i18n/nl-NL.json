@@ -32,7 +32,8 @@
   },
   "salmonrun": {
     "title": "Salmon Run",
-    "weapons": "Beschikbare wapens"
+    "weapons": "Beschikbare wapens",
+    "bigrun": "Big Run"
   },
   "gear": {
     "title": "Uitrusting",

@@ -2,7 +2,8 @@
   <div class="font-splatoon2 space-y-1" v-if="schedule">
     <div class="flex items-center">
       <div>
-        <img src="@/assets/img/modes/coop.svg" class="w-6 mr-1" />
+        <img src="@/assets/img/modes/coop.bigrun.svg" :title="$t('salmonrun.bigrun')" class="w-6 mr-1" v-if="schedule.isBigRun" />
+        <img src="@/assets/img/modes/coop.svg" :title="$t('salmonrun.title')" class="w-6 mr-1" v-else />
       </div>
 
       <div class="flex-1 text-shadow text-zinc-200">
@@ -21,6 +22,10 @@
 
       <div class="flex-1 text-sm text-zinc-300 text-shadow">
         {{ $t(`splatnet.stages.${schedule.settings.coopStage.id}.name`, schedule.settings.coopStage.name) }}
+
+        <span class="text-xs inline-block bg-splatoon-bigRun bg-opacity-80 text-white rounded px-2" v-if="schedule.isBigRun">
+          {{ $t('salmonrun.bigrun') }}
+        </span>
       </div>
 
       <div class="flex flex-col items-center space-y-1">

@@ -2,6 +2,7 @@ import { acceptHMRUpdate, defineStore } from "pinia";
 import { computed } from "vue";
 import { useSchedulesDataStore } from "./data.mjs";
 import { useTimeStore } from "./time.mjs";
+import sortBy from 'lodash/sortBy.js';
 
 // Schedule store definition (used for each type of schedule)
 function defineScheduleStore(id, options) {
@@ -76,7 +77,17 @@ export const useSplatfestSchedulesStore = defineScheduleStore('splatfest', {
 
 // Salmon Run
 export const useSalmonRunSchedulesStore = defineScheduleStore('salmonRun', {
-  nodes: () => useSchedulesDataStore().data?.coopGroupingSchedule.regularSchedules.nodes,
+  nodes: () => {
+    const data = useSchedulesDataStore().data;
+
+    // Combine Salmon Run and Big Run schedules
+    let nodes = []
+      .concat(data?.coopGroupingSchedule.regularSchedules.nodes.map(n => ({ ...n, isBigRun: false })))
+      .concat(data?.coopGroupingSchedule.bigRunSchedules.nodes.map(n => ({ ...n, isBigRun: true })))
+      .filter(n => n);
+
+    return sortBy(nodes, 'startTime');
+  },
   settings: node => node.setting,
 });
 
