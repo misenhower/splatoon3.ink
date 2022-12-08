@@ -1,8 +1,8 @@
-import TweetGenerator from "./TweetGenerator.mjs";
+import StatusGenerator from "./StatusGenerator.mjs";
 import Media from "../Media.mjs";
 import { useAnarchyOpenSchedulesStore, useAnarchySeriesSchedulesStore, useLeagueSchedulesStore, useRegularSchedulesStore, useSplatfestSchedulesStore, useXSchedulesStore } from "../../../src/stores/schedules.mjs";
 import { useUSSplatfestsStore } from '../../../src/stores/splatfests.mjs';
-export default class SchedulesTweet extends TweetGenerator
+export default class SchedulesStatus extends StatusGenerator
 {
   key = 'schedules';
   name = 'Schedules';

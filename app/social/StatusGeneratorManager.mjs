@@ -1,12 +1,12 @@
 import fs from 'fs/promises';
 import mkdirp from 'mkdirp';
 import ScreenshotHelper from "../screenshots/ScreenshotHelper.mjs";
-import TweetGenerator from "./generators/TweetGenerator.mjs";
+import StatusGenerator from "./generators/StatusGenerator.mjs";
 import TwitterClient from "./TwitterClient.mjs";
 
-export default class TwitterManager
+export default class StatusGeneratorManager
 {
-  /** @type {TweetGenerator[]} */
+  /** @type {StatusGenerator[]} */
   generators;
 
   /** @type {TwitterClient} */
@@ -21,34 +21,34 @@ export default class TwitterManager
     this.screenshotHelper = new ScreenshotHelper;
   }
 
-  async sendTweets() {
+  async sendStatuses() {
     for (let generator of this.generators) {
-      if (!(await generator.shouldTweet())) {
+      if (!(await generator.shouldPost())) {
         continue;
       }
 
-      await generator.sendTweet(this.screenshotHelper, this.client);
+      await generator.sendStatus(this.screenshotHelper, this.client);
     }
 
     await this.screenshotHelper.close();
   }
 
-  async testTweets() {
+  async testStatuses() {
     for (let generator of this.generators) {
       let dir = 'temp';
       await mkdirp(dir);
 
-      let tweet = await generator.getTweet(this.screenshotHelper);
+      let status = await generator.getStatus(this.screenshotHelper);
 
       let imgFilename = `temp/${generator.key}.png`;
-      await fs.writeFile(imgFilename, tweet.media[0].file);
+      await fs.writeFile(imgFilename, status.media[0].file);
 
       let text = [
         'Status:',
-        tweet.status,
+        status.status,
         '',
         'Alt text:',
-        tweet.media[0].altText,
+        status.media[0].altText,
       ].join('\n');
 
       let textFilename = `temp/${generator.key}.txt`;

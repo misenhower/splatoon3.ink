@@ -1,8 +1,8 @@
-import TweetGenerator from "./TweetGenerator.mjs";
+import StatusGenerator from "./StatusGenerator.mjs";
 import Media from "../Media.mjs";
 import { useUSSplatfestsStore } from '../../../src/stores/splatfests.mjs';
 
-export default class SplatfestResultsTweet extends TweetGenerator
+export default class SplatfestResultsStatus extends StatusGenerator
 {
   key = 'splatfestResults';
   name = 'Splatfest Results';

@@ -1,8 +1,8 @@
-import TweetGenerator from "./TweetGenerator.mjs";
+import StatusGenerator from "./StatusGenerator.mjs";
 import Media from "../Media.mjs";
 import { useSalmonRunSchedulesStore } from "../../../src/stores/schedules.mjs";
 
-export default class SalmonRunTweet extends TweetGenerator
+export default class SalmonRunStatus extends StatusGenerator
 {
   key = 'salmonrun';
   name = 'Salmon Run';

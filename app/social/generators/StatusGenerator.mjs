@@ -2,14 +2,14 @@ import fs from 'fs/promises';
 import { createPinia, setActivePinia } from 'pinia';
 import { useCoopDataStore, useFestivalsDataStore, useGearDataStore, useSchedulesDataStore } from '../../../src/stores/data.mjs';
 import prefixedConsole from '../../common/prefixedConsole.mjs';
-import Tweet from '../Tweet.mjs';
+import Status from '../Status.mjs';
 import TwitterClient from '../TwitterClient.mjs';
 import ScreenshotHelper from '../../screenshots/ScreenshotHelper.mjs';
 import { getTopOfCurrentHour } from '../../common/util.mjs';
 import { useTimeStore } from '../../../src/stores/time.mjs';
 import ValueCache from '../../common/ValueCache.mjs';
 
-export default class TweetGenerator
+export default class StatusGenerator
 {
   key = null;
   name = null;
@@ -21,10 +21,10 @@ export default class TweetGenerator
     return this._console;
   }
 
-  get lastTweetCache() {
-    this._lastTweetCache ??= new ValueCache(`twitter.${this.key}`);
+  get lastPostCache() {
+    this._lastPostCache ??= new ValueCache(`twitter.${this.key}`);
 
-    return this._lastTweetCache;
+    return this._lastPostCache;
   }
 
   async preparePinia() {
@@ -50,43 +50,43 @@ export default class TweetGenerator
     return useTimeStore().now;
   }
 
-  async shouldTweet() {
+  async shouldPost() {
     let currentTime = await this.getDataTime();
-    let cachedTime = await this.lastTweetCache.getData();
+    let cachedTime = await this.lastPostCache.getData();
 
     return currentTime && (!cachedTime || (currentTime > cachedTime));
   }
 
-  async updateLastTweetCache() {
+  async updatelastPostCache() {
     let currentTime = await this.getDataTime();
 
-    await this.lastTweetCache.setData(currentTime);
+    await this.lastPostCache.setData(currentTime);
   }
 
   /**
    * @param {ScreenshotHelper} screenshotHelper
    * @param {TwitterClient} twitterClient
    */
-  async sendTweet(screenshotHelper, twitterClient) {
-    let tweet = await this.getTweet(screenshotHelper);
+  async sendStatus(screenshotHelper, twitterClient) {
+    let status = await this.getStatus(screenshotHelper);
 
-    await twitterClient.send(tweet);
+    await twitterClient.send(status);
 
-    await this.updateLastTweetCache();
+    await this.updatelastPostCache();
   }
 
   /** @param {ScreenshotHelper} screenshotHelper */
-  async getTweet(screenshotHelper) {
-    const tweet = new Tweet;
-    tweet.status = await this._getStatus();
+  async getStatus(screenshotHelper) {
+    const status = new Status;
+    status.status = await this._getStatus();
 
     let media = await this.getMedia(screenshotHelper);
     if (media && !Array.isArray(media)) {
       media = [media];
     }
-    tweet.media = media;
+    status.media = media;
 
-    return tweet;
+    return status;
   }
 
   async _prepareScreenshotHelper(screenshotHelper) {

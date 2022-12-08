@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import consoleStamp from 'console-stamp';
 import cron from './cron.mjs';
-import { sendTweets, testTweets } from './twitter/index.mjs';
+import { sendStatuses, testStatuses } from './social/index.mjs';
 import { updateAll } from './data/index.mjs';
 import { warmCaches } from "./splatnet/index.mjs";
 
@@ -10,8 +10,8 @@ dotenv.config();
 
 const actions = {
   cron,
-  twitter: sendTweets,
-  twitterTest: testTweets,
+  social: sendStatuses,
+  socialTest: testStatuses,
   splatnet: updateAll,
   warmCaches,
 }

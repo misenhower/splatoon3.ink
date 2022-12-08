@@ -1,8 +1,8 @@
-import TweetGenerator from "./TweetGenerator.mjs";
+import StatusGenerator from "./StatusGenerator.mjs";
 import Media from "../Media.mjs";
 import { useCoopGearStore } from "../../../src/stores/gear.mjs";
 
-export default class SalmonRunGearTweet extends TweetGenerator
+export default class SalmonRunGearStatus extends StatusGenerator
 {
   key = 'gear.salmonrun';
   name = 'Salmon Run Gear';
@@ -19,10 +19,10 @@ export default class SalmonRunGearTweet extends TweetGenerator
     return gear?.__splatoon3ink_id;
   }
 
-  async shouldTweet() {
+  async shouldPost() {
     let gear = await this.getGear();
 
-    let cachedId = await this.lastTweetCache.getData();
+    let cachedId = await this.lastPostCache.getData();
 
     return gear?.__splatoon3ink_id && gear?.__splatoon3ink_id !== cachedId;
   }
