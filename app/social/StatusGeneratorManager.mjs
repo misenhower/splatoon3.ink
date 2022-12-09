@@ -24,19 +24,17 @@ export default class StatusGeneratorManager
     this.screenshotHelper = new ScreenshotHelper;
   }
 
-  async shouldPost(generator) {
-    for (let client of this.clients) {
-      if (await generator.shouldPost(client)) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
   async sendStatuses(force = false) {
     for (let generator of this.generators) {
-      if (!force && !(await this.shouldPost(generator))) {
+      let clientsToPost = [];
+
+      for (let client of this.clients) {
+        if (force || await generator.shouldPost(client)) {
+          clientsToPost.push(client);
+        }
+      }
+
+      if (clientsToPost.length === 0) {
         this.console(generator).info('No status to post, skipping');
 
         continue;
@@ -44,7 +42,7 @@ export default class StatusGeneratorManager
 
       let status = await generator.getStatus(this.screenshotHelper);
 
-      for (let client of this.clients) {
+      for (let client of clientsToPost) {
         this.console(generator, client).info('Posting...');
         await client.send(status, generator);
         await generator.updatelastPostCache(client);
