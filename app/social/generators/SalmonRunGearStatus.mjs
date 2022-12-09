@@ -19,10 +19,10 @@ export default class SalmonRunGearStatus extends StatusGenerator
     return gear?.__splatoon3ink_id;
   }
 
-  async shouldPost() {
+  async shouldPost(client) {
     let gear = await this.getGear();
 
-    let cachedId = await this.lastPostCache.getData();
+    let cachedId = await this.lastPostCache(client).getData();
 
     return gear?.__splatoon3ink_id && gear?.__splatoon3ink_id !== cachedId;
   }

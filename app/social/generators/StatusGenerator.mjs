@@ -3,7 +3,7 @@ import { createPinia, setActivePinia } from 'pinia';
 import { useCoopDataStore, useFestivalsDataStore, useGearDataStore, useSchedulesDataStore } from '../../../src/stores/data.mjs';
 import prefixedConsole from '../../common/prefixedConsole.mjs';
 import Status from '../Status.mjs';
-import TwitterClient from '../TwitterClient.mjs';
+import Client from '../clients/Client.mjs';
 import ScreenshotHelper from '../../screenshots/ScreenshotHelper.mjs';
 import { getTopOfCurrentHour } from '../../common/util.mjs';
 import { useTimeStore } from '../../../src/stores/time.mjs';
@@ -16,15 +16,13 @@ export default class StatusGenerator
 
   /** @type {Console} */
   get console() {
-    this._console ??= prefixedConsole('Twitter', this.name);
+    this._console ??= prefixedConsole('Social', this.name);
 
     return this._console;
   }
 
-  get lastPostCache() {
-    this._lastPostCache ??= new ValueCache(`twitter.${this.key}`);
-
-    return this._lastPostCache;
+  lastPostCache(client) {
+    return new ValueCache(`social.${client.key}.${this.key}`);
   }
 
   async preparePinia() {
@@ -50,33 +48,23 @@ export default class StatusGenerator
     return useTimeStore().now;
   }
 
-  async shouldPost() {
+  async shouldPost(client) {
     let currentTime = await this.getDataTime();
-    let cachedTime = await this.lastPostCache.getData();
+    let cachedTime = await this.lastPostCache(client).getData();
 
     return currentTime && (!cachedTime || (currentTime > cachedTime));
   }
 
-  async updatelastPostCache() {
+  async updatelastPostCache(client) {
     let currentTime = await this.getDataTime();
 
-    await this.lastPostCache.setData(currentTime);
-  }
-
-  /**
-   * @param {ScreenshotHelper} screenshotHelper
-   * @param {TwitterClient} twitterClient
-   */
-  async sendStatus(screenshotHelper, twitterClient) {
-    let status = await this.getStatus(screenshotHelper);
-
-    await twitterClient.send(status);
-
-    await this.updatelastPostCache();
+    await this.lastPostCache(client).setData(currentTime);
   }
 
   /** @param {ScreenshotHelper} screenshotHelper */
   async getStatus(screenshotHelper) {
+    this.console.log('Generating status...');
+
     const status = new Status;
     status.status = await this._getStatus();
 
