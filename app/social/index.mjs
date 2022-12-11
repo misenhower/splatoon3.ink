@@ -1,4 +1,5 @@
 import FileWriter from "./clients/FileWriter.mjs";
+import MastodonClient from "./clients/MastodonClient.mjs";
 import TwitterClient from "./clients/TwitterClient.mjs";
 import DailyDropGearStatus from "./generators/DailyDropGearStatus.mjs";
 import RegularGearStatus from "./generators/RegularGearStatus.mjs";
@@ -22,6 +23,7 @@ function defaultStatusGenerators() {
 function defaultClients() {
   return [
     new TwitterClient,
+    new MastodonClient,
   ];
 }
 

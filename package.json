@@ -23,6 +23,7 @@
     "ical-generator": "^3.6.0",
     "jsonpath": "^1.1.1",
     "lodash": "^4.17.21",
+    "masto": "^4.9.1",
     "mkdirp": "^1.0.4",
     "nxapi": "^1.4.0",
     "pinia": "^2.0.22",
