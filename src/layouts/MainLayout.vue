@@ -37,7 +37,7 @@
           <span>@splatoon3ink</span>
         </a>
         &ndash;
-        <a href="https://fedi.splatoon3.ink/splatoon3ink" target="_blank">
+        <a href="https://splatoon3.ink/@splatoon3ink" target="_blank">
           <span>@splatoon3ink@splatoon3.ink</span>
         </a>
         &ndash;
