@@ -38,6 +38,7 @@
         </a>
         &ndash;
         <a href="https://splatoon3.ink/@splatoon3ink" target="_blank">
+          <img src="@/assets/img/fediverse-white.svg" width="20" height="20" class="inline" />
           <span>@splatoon3ink@splatoon3.ink</span>
         </a>
         &ndash;
