@@ -11,7 +11,8 @@ function defineEndpointStore(id, endpoint, transform = null) {
       isUpdating.value = true;
 
       try {
-        let response = await fetch(endpoint);
+        let baseUrl = import.meta.env.VITE_DATA_FROM || '';
+        let response = await fetch(baseUrl + endpoint);
 
         if (!response.ok) {
           console.error(response);
