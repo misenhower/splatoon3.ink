@@ -19,6 +19,10 @@
               @splatoon3ink
             </div>
             <div>
+              <img src="@/assets/img/fediverse-white.svg" width="14" height="14" class="inline m-[3px]" />
+              @splatoon3ink@splatoon3.ink
+            </div>
+            <div>
               splatoon3.ink
             </div>
           </div>
