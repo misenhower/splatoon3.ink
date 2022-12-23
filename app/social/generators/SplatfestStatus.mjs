@@ -48,7 +48,7 @@ export default class SplatfestStatus extends StatusGenerator
       return null;
     }
 
-    return `${festival}:${state}`;
+    return `${festival.id}:${state}`;
   }
 
   async shouldPost(client) {
