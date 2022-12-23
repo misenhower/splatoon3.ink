@@ -23,5 +23,9 @@ import SplatfestResultsBox from '@/components/SplatfestResultsBox.vue';
 import { computed } from 'vue';
 const usSplatfests = useUSSplatfestsStore();
 
-const festival = computed(() => usSplatfests.activeFestival ?? usSplatfests.recentFestival);
+const festival = computed(() =>
+  usSplatfests.upcomingFestival
+  ?? usSplatfests.activeFestival
+  ?? usSplatfests.recentFestival
+);
 </script>
