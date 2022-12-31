@@ -20,7 +20,7 @@ export default class FestivalRankingUpdater extends DataUpdater
 
     this.festID = festID;
     this.endTime = endTime;
-    this.filename += `.${region}.${festID}`;
+    this.filename += `.${region}.${getFestId(festID)}`;
   }
 
   imagePaths = [
