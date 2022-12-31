@@ -35,6 +35,16 @@ export default class SplatfestResultsStatus extends StatusGenerator
     return `Splatfest results: Team ${winningTeam.teamName} wins! #splatfest #splatoon3`;
   }
 
+  async _getContentWrapper() {
+    let festival = await this.getFestival();
+
+    if (!festival || !festival.hasResults) {
+      return false;
+    }
+
+    return `${festival.title} Splatfest Results`;
+  }
+
   /** @param {ScreenshotHelper} screenshotHelper */
   async _getMedia(screenshotHelper) {
     let media = new Media;
