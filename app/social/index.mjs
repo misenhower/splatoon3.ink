@@ -1,4 +1,5 @@
 import FileWriter from "./clients/FileWriter.mjs";
+import ImageWriter from "./clients/ImageWriter.mjs";
 import MastodonClient from "./clients/MastodonClient.mjs";
 import TwitterClient from "./clients/TwitterClient.mjs";
 import DailyDropGearStatus from "./generators/DailyDropGearStatus.mjs";
@@ -26,6 +27,7 @@ function defaultClients() {
   return [
     new TwitterClient,
     new MastodonClient,
+    new ImageWriter,
   ];
 }
 
