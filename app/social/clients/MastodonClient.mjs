@@ -42,6 +42,8 @@ export default class MastodonClient extends Client
     // Send status
     await masto.statuses.create({
       status: status.status,
+      spoilerText: status.contentWrapper,
+      sensitive: !!status.contentWrapper, // Without the sensitive property the image is still visible
       mediaIds,
     });
   }

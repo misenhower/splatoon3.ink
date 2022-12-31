@@ -67,6 +67,7 @@ export default class StatusGenerator
 
     const status = new Status;
     status.status = await this._getStatus();
+    status.contentWrapper = await this._getContentWrapper();
 
     let media = await this.getMedia(screenshotHelper);
     if (media && !Array.isArray(media)) {
@@ -84,6 +85,10 @@ export default class StatusGenerator
   }
 
   async _getStatus () {
+    //
+  }
+
+  async _getContentWrapper() {
     //
   }
 
