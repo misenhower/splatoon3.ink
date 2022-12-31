@@ -34,10 +34,10 @@ export function defaultStatusGeneratorManager() {
   );
 }
 
-export function testStatusGeneratorManager() {
+export function testStatusGeneratorManager(additionalClients) {
   return new StatusGeneratorManager(
     defaultStatusGenerators(),
-    [new FileWriter],
+    [new FileWriter, ...additionalClients],
   );
 }
 
@@ -45,6 +45,6 @@ export function sendStatuses() {
   return defaultStatusGeneratorManager().sendStatuses();
 }
 
-export function testStatuses() {
-  return testStatusGeneratorManager().sendStatuses(true);
+export function testStatuses(additionalClients = []) {
+  return testStatusGeneratorManager(additionalClients).sendStatuses(true);
 }
