@@ -6,6 +6,7 @@ import RegularGearStatus from "./generators/RegularGearStatus.mjs";
 import SalmonRunGearStatus from "./generators/SalmonRunGearStatus.mjs";
 import SalmonRunStatus from "./generators/SalmonRunStatus.mjs";
 import SchedulesStatus from "./generators/SchedulesStatus.mjs";
+import SplatfestStatus from "./generators/SplatfestStatus.mjs";
 import SplatfestResultsStatus from "./generators/SplatfestResultsStatus.mjs";
 import StatusGeneratorManager from "./StatusGeneratorManager.mjs"
 
@@ -16,6 +17,7 @@ function defaultStatusGenerators() {
     new RegularGearStatus,
     new SalmonRunStatus,
     new SalmonRunGearStatus,
+    new SplatfestStatus,
     new SplatfestResultsStatus,
   ];
 }
