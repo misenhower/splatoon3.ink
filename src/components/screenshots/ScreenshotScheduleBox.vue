@@ -49,7 +49,12 @@
               />
 
             <div class="absolute top-0 right-0 rounded-full bg-black p-1">
-              <img src="@/assets/img/rules/tricolor.svg" class="h-12 w-12" />
+              <TricolorIcon
+                class="h-12 w-12"
+                :a="tricolor?.teams[0]?.color"
+                :b="tricolor?.teams[1]?.color"
+                :c="tricolor?.teams[2]?.color"
+                />
             </div>
           </div>
         </div>
@@ -64,6 +69,7 @@ import { useUSSplatfestsStore } from '@/stores/splatfests';
 import ProductContainer from '../ProductContainer.vue';
 import StageImage from '../StageImage.vue';
 import RuleIcon from '../RuleIcon.vue';
+import TricolorIcon from '../TricolorIcon.vue';
 import { useScheduleTypes } from '@/components/concerns/scheduleTypes.mjs';
 
 const props = defineProps({
