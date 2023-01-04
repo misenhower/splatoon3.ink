@@ -40,8 +40,10 @@ export default class FestivalUpdater extends DataUpdater
 
       Object.assign(node, detailResult.data.fest);
 
-      let rankingUpdater = new FestivalRankingUpdater(this.region, node.id, node.endTime);
-      await rankingUpdater.updateIfNeeded();
+      if (node.teams.find(t => t.result)) {
+        let rankingUpdater = new FestivalRankingUpdater(this.region, node.id, node.endTime);
+        await rankingUpdater.updateIfNeeded();
+      }
     }
 
     return result;

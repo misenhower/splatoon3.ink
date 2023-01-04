@@ -140,6 +140,10 @@ export default class SplatNet3Client
     return this.getGraphQLPersistedQuery(1, '4869de13d0d209032b203608cb598aef', { festId });
   }
 
+  getFestRankingPage(teamId, cursor) {
+    return this.getGraphQLPersistedQuery(1, 'be2eb9e9b8dd680519eb59cc46c1a32b', { cursor, first: 25, id: teamId });
+  }
+
   getCurrentFestData() {
     return this.getGraphQLPersistedQuery(1, 'c0429fd738d829445e994d3370999764');
   }

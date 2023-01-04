@@ -2,6 +2,14 @@ import fs from 'fs/promises';
 import prefixedConsole from "../../common/prefixedConsole.mjs";
 import DataUpdater from "./DataUpdater.mjs";
 
+function getFestId(id) {
+  return Buffer.from(id, 'base64').toString().match(/^Fest-[A-Z]+:(.+)$/)?.[1] ?? id;
+}
+
+function getFestTeamId(id) {
+  return Buffer.from(id, 'base64').toString().match(/^FestTeam-[A-Z]+:((.+):(.+))$/)?.[1] ?? id;
+}
+
 export default class FestivalRankingUpdater extends DataUpdater
 {
   name = 'FestivalRankingUpdater';
@@ -12,7 +20,7 @@ export default class FestivalRankingUpdater extends DataUpdater
 
     this.festID = festID;
     this.endTime = endTime;
-    this.filename += `.${region}.${festID}`;
+    this.filename += `.${region}.${getFestId(festID)}`;
   }
 
   imagePaths = [
@@ -25,7 +33,7 @@ export default class FestivalRankingUpdater extends DataUpdater
   ];
 
   get console() {
-    this._console ??= prefixedConsole('Updater', this.region, this.name, this.festID);
+    this._console ??= prefixedConsole('Updater', this.region, this.name, getFestId(this.festID));
 
     return this._console;
   }
@@ -50,7 +58,30 @@ export default class FestivalRankingUpdater extends DataUpdater
     return false;
   }
 
-  getData(locale) {
-    return this.splatnet(locale).getFestRankingData(this.festID);
+  async getData(locale) {
+    const data = await this.splatnet(locale).getFestRankingData(this.festID);
+
+    for (const team of data.data.fest.teams) {
+      let pageInfo = team.result?.rankingHolders.pageInfo;
+
+      while (pageInfo.hasNextPage) {
+        this.console.log('Fetching next page for team %s (%s), cursor %s',
+          getFestTeamId(team.id), team.teamName, pageInfo.endCursor);
+
+        const page = await this.splatnet(locale).getFestRankingPage(team.id, pageInfo.endCursor);
+
+        team.result.rankingHolders = {
+          edges: [
+            ...team.result.rankingHolders.edges,
+            ...page.data.node.result.rankingHolders.edges,
+          ],
+          pageInfo: page.data.node.result.rankingHolders.pageInfo,
+        };
+
+        pageInfo = page.data.node.result.rankingHolders.pageInfo;
+      }
+    }
+
+    return data;
   }
 }
