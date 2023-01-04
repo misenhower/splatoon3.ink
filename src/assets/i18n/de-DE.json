@@ -49,7 +49,7 @@
     "text-1": "Diese Seite ist eine von Fans erstellte, unoffizielle Quelle für Informationen über Nintendo's Splatoon 3. Du erinnerst dich vielleicht noch an {0}!",
     "subtitle-2": "Wie wurde diese Seite erstellt?",
     "text-2": "Das Frontend wurde mit {0}, {1}, und {2} erstellt. Statische Assets wurden mit {3} kompiliert.",
-    "text-3": "Das Backend, der Daten-Updater und der Twitter-Bot wurden mit {0} geschrieben. Besonderer Dank geht an die Projekte {1} und {2} für ihre Arbeit, den automatisierten Login für Nintendo Switch Online möglich zu machen.",
+    "text-3": "Das Backend, der Daten-Updater und der Twitter-Bot wurden mit {0} geschrieben.",
     "text-4": "Der Twitter-Bot unter {0} benutzt {1} um automatisch Bilder für jeden Tweet zu generieren.",
     "text-5": "Die Seite ist komplett Open-Source. Du kannst dir den Quellcode auf {0} ansehen.",
     "subtitle-3": "Darf ich Daten von dieser Seite in meinem eigenen Projekt verwenden?",

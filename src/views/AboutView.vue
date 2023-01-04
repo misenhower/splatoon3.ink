@@ -17,6 +17,16 @@
                     <i18n-t keypath="about.text-1" tag="p">
                       <a href="https://splatoon2.ink" target="_blank">Splatoon2.ink</a>
                     </i18n-t>
+
+                    <i18n-t keypath="about.text-5" tag="p">
+                      <a href="https://github.com/misenhower/splatoon3.ink/" target="_blank">GitHub</a>
+                    </i18n-t>
+
+                    <i18n-t keypath="about.text-special-thanks" tag="p">
+                      <a href="https://github.com/misenhower/splatoon3.ink/graphs/contributors" target="_blank">contributors</a>
+                      <a href="https://github.com/samuelthomas2774/nxapi" target="_blank">nxapi</a>
+                      <a href="https://github.com/imink-app/f-API" target="_blank">imink</a>
+                    </i18n-t>
                   </div>
 
                   <div>
@@ -30,17 +40,11 @@
 
                     <i18n-t keypath="about.text-3" tag="p">
                       <a href="https://nodejs.org/" target="_blank">NodeJS</a>
-                      <a href="https://github.com/samuelthomas2774/nxapi" target="_blank">nxapi</a>
-                      <a href="https://github.com/imink-app/f-API" target="_blank">imink</a>
                     </i18n-t>
 
                     <i18n-t keypath="about.text-4" tag="p">
                       <a href="https://twitter.com/splatoon3ink/" target="_blank">@Splatoon3ink</a>
                       <a href="https://pptr.dev/" target="_blank">Puppeteer</a>
-                    </i18n-t>
-
-                    <i18n-t keypath="about.text-5" tag="p">
-                      <a href="https://github.com/misenhower/splatoon3.ink/" target="_blank">GitHub</a>.
                     </i18n-t>
                   </div>
 
