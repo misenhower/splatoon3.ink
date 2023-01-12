@@ -26,13 +26,16 @@
       "open": "Ouvert",
       "regular": "Match classique",
       "anarchy": "Match anarchie",
-      "splatfest": "Festimatch"
+      "splatfest": "Festimatch",
+      "xmatch": "Match X",
+      "league": "Match de ligue"
     },
     "all-upcoming": "Les stages à venir"
   },
   "salmonrun": {
     "title": "Salmon Run",
-    "weapons": "Armes fournies"
+    "weapons": "Armes fournies",
+    "bigrun": "Big Run"
   },
   "gear": {
     "title": "Équipement",
@@ -46,7 +49,7 @@
     "text-1": "Ce site est une source d'informations non officielle, créée par un fan, sur le jeu Splatoon 3 de Nintendo. Vous vous souvenez peut-être de moi pour {0}!",
     "subtitle-2": "Comment ce site a-t-il été créé ?",
     "text-2": "Côté front, ce site a été conçu avec {0}, {1} et {2}. Les ressources statiques sont compilées en utilisant {3}.",
-    "text-3": "Côté back, les modules de mise à jour des données et le bot Twitter ont été développés à l'aide de {0}. Remerciements spécials pour les projets {1} et {2} pour leur travail visant à rendre possible la connexion automatique au Nintendo Switch Online.",
+    "text-3": "Côté back, les modules de mise à jour des données et le bot Twitter ont été développés à l'aide de {0}.",
     "text-4": "Le bot Twitter {0} utilise {1} pour générer automatiquement des images pour chaque tweet.",
     "text-5": "Ce site est entièrement open source. Vous pouvez consulter les sources ici sur {0}.",
     "subtitle-3": "Puis-je utiliser les données de ce site dans mon propre projet ?",

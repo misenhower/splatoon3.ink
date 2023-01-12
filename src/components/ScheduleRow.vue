@@ -8,6 +8,17 @@
         <div class="text-shadow">
           {{ $t(`splatnet.rules.${props.schedule.settings.vsRule.id}.name`, props.schedule.settings.vsRule.name) }}
         </div>
+        <div class="text-shadow text-right flex-1">
+          <div class="text-sm" v-if="time.isUpcoming(props.schedule.startTime)">
+            {{ $t('time.in', { time: formatDurationFromNow(props.schedule.startTime) }) }}
+          </div>
+
+          <div class="text-xs text-zinc-300">
+            {{ $d(props.schedule.startTime, 'time') }}
+            &ndash;
+            {{ $d(props.schedule.endTime, 'time') }}
+          </div>
+        </div>
       </div>
     </div>
     <div class="sm:hidden bg-zinc-500 rounded animate-pulse w-32" v-else>

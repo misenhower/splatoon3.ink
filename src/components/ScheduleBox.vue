@@ -51,9 +51,11 @@
               />
 
             <div class="absolute top-0 right-0 rounded-full bg-black p-1">
-              <img
-                src="@/assets/img/rules/tricolor.svg"
+              <TricolorIcon
                 class="h-6 w-6"
+                :a="tricolor?.teams[0]?.color"
+                :b="tricolor?.teams[1]?.color"
+                :c="tricolor?.teams[2]?.color"
                 />
             </div>
           </div>
@@ -90,6 +92,7 @@ import RuleIcon from './RuleIcon.vue';
 import SquidTape from './SquidTape.vue';
 import { useScheduleTypes } from './concerns/scheduleTypes.mjs';
 import ScheduleDialog from './ScheduleDialog.vue';
+import TricolorIcon from './TricolorIcon.vue';
 
 const props = defineProps({
   type: {

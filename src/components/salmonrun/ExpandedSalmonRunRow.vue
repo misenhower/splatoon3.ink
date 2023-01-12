@@ -1,21 +1,30 @@
 <template>
-  <div class="font-splatoon2 space-y-1" v-if="props.schedule">
-    <div>
+  <div class="font-splatoon2 space-y-1" v-if="schedule">
+    <div class="flex gap-2">
       <div class="text-lg text-shadow text-zinc-200 ss:hidden">
-        {{ $d(props.schedule.startTime, 'dateTimeShort') }}
+        {{ $d(schedule.startTime, 'dateTimeShort') }}
         &ndash;
-        {{ $d(props.schedule.endTime, 'dateTimeShort') }}
+        {{ $d(schedule.endTime, 'dateTimeShort') }}
       </div>
-      <div class="text-shadow text-zinc-300 ss:hidden">
-        {{ $t('time.remaining', { time: formatDurationFromNow(props.schedule.endTime) }) }}
-      </div>
+
       <div class="hidden ss:block text-shadow text-white text-xl">
-        {{ $t('time.remaining', { time: formatDurationHoursFromNow(props.schedule.endTime) }) }}
+        {{ $t('time.remaining', { time: formatDurationHoursFromNow(schedule.endTime) }) }}
+      </div>
+
+      <div
+        class="bg-zinc-800 bg-opacity-80 text-sm text-white rounded-lg px-2 border-2 border-splatoon-bigRun"
+        v-if="schedule.isBigRun">
+        <img src="@/assets/img/modes/coop.bigrun.svg" :title="$t('salmonrun.bigrun')" class="w-4 inline-block" />
+        {{ $t('salmonrun.bigrun') }}
       </div>
     </div>
 
+    <div class="text-shadow text-zinc-300 ss:hidden">
+      {{ $t('time.remaining', { time: formatDurationFromNow(schedule.endTime) }) }}
+    </div>
+
     <div class="flex items-center space-x-2">
-      <StageImage class="flex-1" imgClass="rounded-lg" :stage="props.schedule.settings.coopStage" />
+      <StageImage class="flex-1" imgClass="rounded-lg" :stage="schedule.settings.coopStage" />
 
       <div class="flex flex-col items-center space-y-1">
         <div class="text-sm text-center text-shadow text-zinc-200">
@@ -24,7 +33,7 @@
 
         <div class="bg-zinc-900 bg-opacity-30 rounded-full backdrop-blur-sm px-2">
           <SalmonRunWeapons
-            :weapons="props.schedule.settings.weapons"
+            :weapons="schedule.settings.weapons"
             weaponClass="w-10 sm:w-14"
             />
         </div>
@@ -38,7 +47,7 @@ import { formatDurationFromNow, formatDurationHoursFromNow } from '@/common/time
 import StageImage from '../StageImage.vue';
 import SalmonRunWeapons from './SalmonRunWeapons.vue';
 
-const props = defineProps({
+defineProps({
   schedule: Object,
 });
 </script>

@@ -1,12 +1,17 @@
 import { TwitterApi } from "twitter-api-v2";
-import Tweet from "./Tweet.mjs";
+import Client from "./Client.mjs";
 
-export default class TwitterClient
+export default class TwitterClient extends Client
 {
+  key = 'twitter';
+  name = 'Twitter';
+
   /** @var {TwitterApi} */
   #api;
 
   constructor() {
+    super();
+
     this.#api = new TwitterApi({
       appKey: process.env.TWITTER_CONSUMER_KEY,
       appSecret: process.env.TWITTER_CONSUMER_SECRET,
@@ -15,13 +20,10 @@ export default class TwitterClient
     });
   }
 
-  /**
-   * @param {Tweet} tweet
-   */
-  async send(tweet) {
+  async send(status, generator) {
     // Upload images
     let mediaIds = await Promise.all(
-      tweet.media.map(async m => {
+      status.media.map(async m => {
         let id = await this.#api.v1.uploadMedia(m.file, { mimeType: m.type });
 
         if (m.altText) {
@@ -32,7 +34,7 @@ export default class TwitterClient
       }),
     );
 
-    // Send tweet
-    await this.#api.v1.tweet(tweet.status, { media_ids: mediaIds });
+    // Send status
+    await this.#api.v1.tweet(status.status, { media_ids: mediaIds });
   }
 }

@@ -22,7 +22,7 @@ export default class ImageProcessor
     await this.maybeDownload(url, destination);
 
     // Return the new public URL
-    return this.publicUrl(destination);
+    return [destination, this.publicUrl(destination)];
   }
 
   normalize(url) {
@@ -34,7 +34,7 @@ export default class ImageProcessor
   }
 
   publicUrl(file) {
-    return `${this.siteUrl}/${this.outputDirectory}/${file}`;
+    return `${this.siteUrl ?? ''}/${this.outputDirectory}/${file}`;
   }
 
   async exists(file) {

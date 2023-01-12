@@ -25,12 +25,15 @@
       "open": "오픈",
       "regular": "레귤러 매치",
       "anarchy": "카오폴리스 매치",
-      "splatfest": "페스티벌 매치"
+      "splatfest": "페스티벌 매치",
+      "xmatch": "X 매치",
+      "league": "리그 매치"
     }
   },
   "salmonrun": {
     "title": "새먼 런",
-    "weapons": "지급 무기"
+    "weapons": "지급 무기",
+    "bigrun": "빅 런"
   },
   "gear": {
     "title": "기어",

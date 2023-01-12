@@ -25,12 +25,15 @@
       "open": "オープン",
       "regular": "レギュラーマッチ",
       "anarchy": "バンカラマッチ",
-      "splatfest": "フェスマッチ"
+      "splatfest": "フェスマッチ",
+      "xmatch": "Xマッチ",
+      "league": "リーグマッチ"
     }
   },
   "salmonrun": {
     "title": "サーモンラン",
-    "weapons": "支給ブキ"
+    "weapons": "支給ブキ",
+    "bigrun": "ビッグラン"
   },
   "gear": {
     "title": "ギア",

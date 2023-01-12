@@ -1,8 +1,8 @@
-import TweetGenerator from "./TweetGenerator.mjs";
+import StatusGenerator from "./StatusGenerator.mjs";
 import Media from "../Media.mjs";
 import { useUSSplatfestsStore } from '../../../src/stores/splatfests.mjs';
 
-export default class SplatfestResultsTweet extends TweetGenerator
+export default class SplatfestResultsStatus extends StatusGenerator
 {
   key = 'splatfestResults';
   name = 'Splatfest Results';
@@ -33,6 +33,16 @@ export default class SplatfestResultsTweet extends TweetGenerator
     let winningTeam = festival.teams.find(t => t.result.isWinner);
 
     return `Splatfest results: Team ${winningTeam.teamName} wins! #splatfest #splatoon3`;
+  }
+
+  async _getContentWrapper() {
+    let festival = await this.getFestival();
+
+    if (!festival || !festival.hasResults) {
+      return false;
+    }
+
+    return `${festival.title} Splatfest Results`;
   }
 
   /** @param {ScreenshotHelper} screenshotHelper */

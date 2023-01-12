@@ -1,5 +1,5 @@
 <template>
-  <button class="relative" @click.prevent="open = true">
+  <button class="block relative" @click.prevent="open = true">
     <div class="bg-zinc-700 aspect-[2/1] overflow-hidden" :class="imgClass">
       <img :src="lowRes" v-if="lowRes" />
       <div class="bg-zinc-500 animate-pulse h-full" :class="imgClass" v-else>&nbsp;</div>

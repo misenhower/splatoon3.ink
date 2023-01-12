@@ -25,13 +25,16 @@
       "open": "Open",
       "regular": "Regular Battle",
       "anarchy": "Anarchy Battle",
-      "splatfest": "Splatfest Battle"
+      "splatfest": "Splatfest Battle",
+      "xmatch": "X Battle",
+      "league": "League Battle"
     },
     "all-upcoming": "All Upcoming Stages"
   },
   "salmonrun": {
     "title": "Salmon Run",
-    "weapons": "Supplied Weapons"
+    "weapons": "Supplied Weapons",
+    "bigrun": "Big Run"
   },
   "gear": {
     "title": "Gear",

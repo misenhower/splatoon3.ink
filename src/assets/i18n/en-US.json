@@ -26,13 +26,16 @@
       "open": "Open",
       "regular": "Regular Battle",
       "anarchy": "Anarchy Battle",
-      "splatfest": "Splatfest Battle"
+      "splatfest": "Splatfest Battle",
+      "xmatch": "X Battle",
+      "league": "League Battle"
     },
     "all-upcoming": "All Upcoming Stages"
   },
   "salmonrun": {
     "title": "Salmon Run",
-    "weapons": "Supplied Weapons"
+    "weapons": "Supplied Weapons",
+    "bigrun": "Big Run"
   },
   "gear": {
     "title": "Gear",
@@ -44,9 +47,10 @@
     "title": "About!",
     "subtitle-1": "What is this?",
     "text-1": "This site is a fan-made, unofficial source of information for Nintendo's Splatoon 3. You might remember me from {0}!",
+    "text-special-thanks": "Special thanks to all of the {0} who have helped improve the site, as well as the {1} and {2} projects for their work to make automated Nintendo Switch Online logins possible.",
     "subtitle-2": "How was this site made?",
     "text-2": "On the front end, this site was built with {0}, {1}, and {2}. Static assets are compiled using {3}.",
-    "text-3": "On the back end, the data updaters and Twitter bot were written using {0}. Special thanks to the {1} and {2} projects for their work to make automated Nintendo Switch Online logins possible.",
+    "text-3": "On the back end, the data updaters and Twitter bot were written using {0}.",
     "text-4": "The Twitter bot at {0} uses {1} to automatically generate images for each tweet.",
     "text-5": "This site is completely open source. You can view the source here on {0}.",
     "subtitle-3": "Can I use data from this site in my own project?",

@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { computed } from "vue";
-import { useGearDataStore } from "./data.mjs";
+import { useCoopDataStore, useGearDataStore } from "./data.mjs";
 import { useTimeStore } from "./time.mjs";
 
 function whenCurrent(node) {
@@ -24,6 +24,14 @@ export const useGearStore = defineStore('gear', () => {
   const regularGear = computed(() => currentNodes(gesotown.value?.limitedGears));
 
   return { dailyDropBrand, dailyDropGear, regularGear };
+});
+
+export const useCoopGearStore = defineStore('coopGear', () => {
+  const coop = useCoopDataStore();
+
+  const monthlyGear = computed(() => coop.data?.coopResult?.monthlyGear);
+
+  return { monthlyGear };
 });
 
 if (import.meta.hot) {

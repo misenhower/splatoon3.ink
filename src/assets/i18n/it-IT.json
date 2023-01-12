@@ -25,12 +25,15 @@
       "open": "Aperta",
       "regular": "Partita amichevole",
       "anarchy": "Partita anarchica",
-      "splatfest": "Partita tematica"
+      "splatfest": "Partita tematica",
+      "xmatch": "Partita X",
+      "league": "Partita di lega"
     }
   },
   "salmonrun": {
     "title": "Salmon Run",
-    "weapons": "Armi fornite"
+    "weapons": "Armi fornite",
+    "bigrun": "Big Run"
   },
   "gear": {
     "title": "Oggetti",

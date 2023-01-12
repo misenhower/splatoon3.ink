@@ -15,7 +15,8 @@
       <div>
         Gear:
         <router-link to="/gear/regular">Regular</router-link>&nbsp;
-        <router-link to="/gear/dailydrop">Daily Drop</router-link>
+        <router-link to="/gear/dailydrop">Daily Drop</router-link>&nbsp;
+        <router-link to="/gear/salmonrun">Salmon Run</router-link>
       </div>
       <div>
         <router-link to="/splatfest">Splatfest</router-link>

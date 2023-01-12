@@ -25,13 +25,16 @@
       "open": "Ouvert",
       "regular": "Match classique",
       "anarchy": "Match anarchie",
-      "splatfest": "Festimatch"
+      "splatfest": "Festimatch",
+      "xmatch": "Match X",
+      "league": "Match de ligue"
     },
     "all-upcoming": "Les stages à venir"
   },
   "salmonrun": {
     "title": "Salmon Run",
-    "weapons": "Armes fournies"
+    "weapons": "Armes fournies",
+    "bigrun": "Big Run"
   },
   "gear": {
     "title": "Équipement",

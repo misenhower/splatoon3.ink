@@ -9,6 +9,7 @@ export default class StageScheduleUpdater extends DataUpdater
     '$..image.url',
     '$..originalImage.url',
     '$..thumbnailImage.url',
+    '$..bannerImage.url',
   ];
 
   derivedIds = [

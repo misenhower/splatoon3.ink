@@ -1,12 +1,12 @@
-import TweetGenerator from "./TweetGenerator.mjs";
+import StatusGenerator from "./StatusGenerator.mjs";
 import Media from "../Media.mjs";
 import ScreenshotHelper from "../../screenshots/ScreenshotHelper.mjs";
 
 const releaseDate = new Date('2022-09-09');
 
-export default class CountdownTweet extends TweetGenerator
+export default class CountdownStatus extends StatusGenerator
 {
-  shouldTweet() {
+  shouldPost() {
     const now = new Date;
     const cutoff = new Date('2022-09-10');
 

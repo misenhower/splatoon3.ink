@@ -1,8 +1,8 @@
-import TweetGenerator from "./TweetGenerator.mjs";
+import StatusGenerator from "./StatusGenerator.mjs";
 import Media from "../Media.mjs";
-import { useAnarchyOpenSchedulesStore, useAnarchySeriesSchedulesStore, useRegularSchedulesStore, useSplatfestSchedulesStore } from "../../../src/stores/schedules.mjs";
+import { useAnarchyOpenSchedulesStore, useAnarchySeriesSchedulesStore, useLeagueSchedulesStore, useRegularSchedulesStore, useSplatfestSchedulesStore, useXSchedulesStore } from "../../../src/stores/schedules.mjs";
 import { useUSSplatfestsStore } from '../../../src/stores/splatfests.mjs';
-export default class SchedulesTweet extends TweetGenerator
+export default class SchedulesStatus extends StatusGenerator
 {
   key = 'schedules';
   name = 'Schedules';
@@ -14,6 +14,8 @@ export default class SchedulesTweet extends TweetGenerator
       regular: useRegularSchedulesStore().activeSchedule,
       anarchySeries: useAnarchySeriesSchedulesStore().activeSchedule,
       anarchyOpen: useAnarchyOpenSchedulesStore().activeSchedule,
+      xMatch: useXSchedulesStore().activeSchedule,
+      league: useLeagueSchedulesStore().activeSchedule,
       splatfest: useSplatfestSchedulesStore().activeSchedule,
       tricolor: useUSSplatfestsStore().tricolor,
     }
@@ -40,7 +42,15 @@ export default class SchedulesTweet extends TweetGenerator
       return `Join the global Splatfest Battle on ${festStages[0].name} and ${festStages[1].name}! #splatfest #maprotation`;
     }
 
-    return `Splatoon 3 map rotation: Anarchy (Series) game mode: ${stages.anarchySeries.settings.vsRule.name}, Anarchy (Open) game mode: ${stages.anarchyOpen.settings.vsRule.name} #maprotation`;
+    let lines = [
+      'Splatoon 3 map rotation: #maprotation',
+      '',
+      `– Anarchy (Series): ${stages.anarchySeries.settings.vsRule.name}`,
+      `– Anarchy (Open): ${stages.anarchyOpen.settings.vsRule.name}`,
+      `– X Battle: ${stages.xMatch.settings.vsRule.name}`,
+    ];
+
+    return lines.join('\n');
   }
 
   /** @param {ScreenshotHelper} screenshotHelper */
@@ -72,6 +82,7 @@ export default class SchedulesTweet extends TweetGenerator
         `Regular Battle: ${detail(stages.regular)}`,
         `Anarchy Battle (Series): ${detail(stages.anarchySeries)}`,
         `Anarchy Battle (Open): ${detail(stages.anarchyOpen)}`,
+        `X Battle: ${detail(stages.xMatch)}`,
       ]);
     }
 

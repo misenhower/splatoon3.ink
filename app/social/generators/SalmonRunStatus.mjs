@@ -1,8 +1,8 @@
-import TweetGenerator from "./TweetGenerator.mjs";
+import StatusGenerator from "./StatusGenerator.mjs";
 import Media from "../Media.mjs";
 import { useSalmonRunSchedulesStore } from "../../../src/stores/schedules.mjs";
 
-export default class SalmonRunTweet extends TweetGenerator
+export default class SalmonRunStatus extends StatusGenerator
 {
   key = 'salmonrun';
   name = 'Salmon Run';
@@ -24,12 +24,13 @@ export default class SalmonRunTweet extends TweetGenerator
 
     let lines = [];
 
+    let mode = schedule.isBigRun ? 'BIG RUN' : 'Salmon Run';
     let hasMysteryWeapon = schedule.settings.weapons.some(w => w.name === 'Random');
 
     if (hasMysteryWeapon) {
-      lines.push(`Salmon Run is now open on ${schedule.settings.coopStage.name} with MYSTERY WEAPONS! #salmonrun #splatoon3`);
+      lines.push(`${mode} is now open on ${schedule.settings.coopStage.name} with MYSTERY WEAPONS! #salmonrun #splatoon3`);
     } else {
-      lines.push(`Salmon Run is now open on ${schedule.settings.coopStage.name}! #salmonrun #splatoon3`);
+      lines.push(`${mode} is now open on ${schedule.settings.coopStage.name}! #salmonrun #splatoon3`);
     }
 
     lines.push('');

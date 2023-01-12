@@ -2,6 +2,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import mkdirp from 'mkdirp';
 import jsonpath from 'jsonpath';
+import ical from 'ical-generator';
 import prefixedConsole from "../../common/prefixedConsole.mjs";
 import SplatNet3Client from "../../splatnet/SplatNet3Client.mjs";
 import ImageProcessor from '../ImageProcessor.mjs';
@@ -14,6 +15,8 @@ export default class DataUpdater
 {
   name = null;
   filename = null;
+  calendarName = null;
+  calendarFilename = null;
   outputDirectory = 'dist/data';
   archiveOutputDirectory = 'storage/archive';
 
@@ -51,6 +54,19 @@ export default class DataUpdater
     return new SplatNet3Client(this.nsoClient, locale.code);
   }
 
+  async shouldUpdate() {
+    return true;
+  }
+
+  async updateIfNeeded() {
+    if (!(await this.shouldUpdate())) {
+      this.console.info('No need to update data');
+      return;
+    }
+
+    return await this.update();
+  }
+
   async update() {
     this.console.info('Updating data...');
 
@@ -64,10 +80,13 @@ export default class DataUpdater
     await this.updateLocalizations(this.defaultLocale, data);
 
     // Download any new images
-    await this.downloadImages(data);
+    const images = await this.downloadImages(data);
 
     // Write the data to disk
     await this.saveData(data);
+
+    // Update iCal data
+    await this.updateCalendarEvents(data, images);
 
     this.console.info('Done');
   }
@@ -116,18 +135,24 @@ export default class DataUpdater
   }
 
   async downloadImages(data) {
+    // Return a map of image URLs to their local path
+    const images = {};
+
     for (let expression of this.imagePaths) {
       // This JSONPath library is completely synchronous, so we have to
       // build a mapping here after transforming all URLs.
       let mapping = {};
       for (let url of jsonpath.query(data, expression)) {
-        let publicUrl = await this.imageProcessor.process(url);
+        let [path, publicUrl] = await this.imageProcessor.process(url);
         mapping[url] = publicUrl;
+        images[publicUrl] = path;
       }
 
       // Now apply the URL transformations
       jsonpath.apply(data, expression, url => mapping[url]);
     }
+
+    return images;
   }
 
   // File handling
@@ -161,5 +186,76 @@ export default class DataUpdater
   async writeFile(file, data) {
     await mkdirp(path.dirname(file))
     await fs.writeFile(file, data);
+  }
+
+  // Calendar output
+
+  async updateCalendarEvents(data, images) {
+    const events = this.getCalendarEntries(data);
+    if (!events) return;
+
+    const ical = await this.getiCalData(events, images);
+    await this.writeFile(this.getCalendarPath(this.calendarFilename ?? this.filename), ical);
+  }
+
+  getCalendarPath(filename) {
+    return `${this.outputDirectory}/${filename}.ics`;
+  }
+
+  getCalendarEntries(data) {
+    //
+  }
+
+  async getiCalData(events, images) {
+    // Create a calendar object
+    const calendar = new ical({
+      name: this.calendarName ?? this.name,
+      url: process.env.SITE_URL,
+      prodId: {
+        company: 'Splatoon3.ink',
+        product: 'Splatoon3.ink',
+        language: 'EN',
+      },
+      timezone: 'UTC',
+    });
+
+    // Create a map of image URLs to image data
+    const imageData = {};
+
+    // Add event entries
+    for (let event of events) {
+      calendar.createEvent(({
+        id: event.id,
+        summary: event.title,
+        start: event.start,
+        end: event.end,
+        url: event.url,
+        attachments: [event.imageUrl],
+      }));
+
+      const filename = images[event.imageUrl];
+      if (filename) {
+        const data = await fs.readFile(this.imageProcessor.localPath(filename));
+        imageData[event.imageUrl] = data;
+      }
+    }
+
+    // Convert the calendar to an ICS string
+    let ics = calendar.toString();
+
+    // Embed image attachments
+    ics = ics.replaceAll(/^ATTACH:((.|\r\n )*)$/gm, (match, url) => {
+      url = url.replaceAll('\r\n ', '');
+
+      const filename = images[url];
+      const data = imageData[url];
+      if (!filename || !data) return match;
+
+      const ical = `ATTACH;ENCODING=BASE64;VALUE=BINARY;X-APPLE-FILENAME=${path.basename(filename)}:${data.toString('base64')}`;
+
+      return ical.replace(/(.{72})/g, '$1\r\n ').trim();
+    });
+
+    return ics;
   }
 }

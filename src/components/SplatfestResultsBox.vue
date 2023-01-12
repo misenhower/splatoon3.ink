@@ -58,7 +58,7 @@ function results(ratioKey, topKey) {
 }
 
 const resultRows = computed(() => {
-  return [
+  const rows = [
     {
       title: 'Conch Shells',
       results: results('horagaiRatio', 'isHoragaiRatioTop'),
@@ -76,6 +76,15 @@ const resultRows = computed(() => {
       results: results('challengeContributionRatio', 'isChallengeContributionRatioTop'),
     },
   ];
+
+  if (props.festival.teams.find(t => t.result.tricolorContributionRatio !== null)) {
+    rows.push({
+      title: 'Tricolor Battle',
+      results: results('tricolorContributionRatio', 'isTricolorContributionRatioTop'),
+    });
+  }
+
+  return rows;
 });
 
 const winner = computed(() => props.festival.teams.find(t => t.result.isWinner));

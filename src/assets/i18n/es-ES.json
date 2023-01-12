@@ -25,12 +25,15 @@
       "open": "Informal",
       "regular": "Combate amistoso",
       "anarchy": "Combate caótico",
-      "splatfest": "Combate temático"
+      "splatfest": "Combate temático",
+      "xmatch": "Combate X",
+      "league": "Combate del torneo"
     }
   },
   "salmonrun": {
     "title": "Salmon Run",
-    "weapons": "Armas asignadas"
+    "weapons": "Armas asignadas",
+    "bigrun": "Big Run"
   },
   "gear": {
     "title": "Equipamiento",

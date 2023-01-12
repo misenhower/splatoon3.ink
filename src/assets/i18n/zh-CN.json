@@ -25,13 +25,16 @@
       "open": "开放",
       "regular": "一般比赛",
       "anarchy": "蛮颓比赛",
-      "splatfest": "祭典比赛"
+      "splatfest": "祭典比赛",
+      "xmatch": "X比赛",
+      "league": "联盟比赛"
     },
     "all-upcoming": "接下来的对战场地"
   },
   "salmonrun": {
     "title": "鲑鱼跑",
-    "weapons": "发放武器"
+    "weapons": "发放武器",
+    "bigrun": "大型跑"
   },
   "gear": {
     "title": "装备",

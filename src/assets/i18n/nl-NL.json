@@ -25,12 +25,15 @@
       "open": "Open",
       "regular": "Standaardgevecht",
       "anarchy": "Chaosgevecht",
-      "splatfest": "Splatfest-gevecht"
+      "splatfest": "Splatfest-gevecht",
+      "xmatch": "X-gevecht",
+      "league": "Toernooigevecht"
     }
   },
   "salmonrun": {
     "title": "Salmon Run",
-    "weapons": "Beschikbare wapens"
+    "weapons": "Beschikbare wapens",
+    "bigrun": "Big Run"
   },
   "gear": {
     "title": "Uitrusting",

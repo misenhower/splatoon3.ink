@@ -1,9 +1,9 @@
-import TweetGenerator from "./TweetGenerator.mjs";
+import StatusGenerator from "./StatusGenerator.mjs";
 import Media from "../Media.mjs";
 import { useGearStore } from "../../../src/stores/gear.mjs";
 import { getGearIcon } from "../../common/util.mjs";
 
-export default class RegularGearTweet extends TweetGenerator
+export default class RegularGearStatus extends StatusGenerator
 {
   key = 'gear.regular';
   name = 'Regular Gear';
@@ -17,7 +17,7 @@ export default class RegularGearTweet extends TweetGenerator
   async getDataTime() {
     let gear = await this.getLatestGear();
 
-    // We only have end times for gear, so use that to track the tweet time
+    // We only have end times for gear, so use that to track the status time
     return Date.parse(gear.saleEndTime);
   }
 

@@ -1,9 +1,9 @@
-import TweetGenerator from "./TweetGenerator.mjs";
+import StatusGenerator from "./StatusGenerator.mjs";
 import Media from "../Media.mjs";
 import { useGearStore } from "../../../src/stores/gear.mjs";
 import { getGearIcon } from "../../common/util.mjs";
 
-export default class DailyDropGearTweet extends TweetGenerator
+export default class DailyDropGearStatus extends StatusGenerator
 {
   key = 'gear.dailydrop';
   name = 'Daily Drop Gear';
@@ -19,7 +19,7 @@ export default class DailyDropGearTweet extends TweetGenerator
   async getDataTime() {
     let { brand } = await this.getData();
 
-    // We only have end times for gear, so use that to track the tweet time
+    // We only have end times for gear, so use that to track the status time
     return Date.parse(brand.saleEndTime);
   }
 
