@@ -15,7 +15,7 @@
     <div class="absolute -bottom-6 w-full text-center">
       <img class="w-80 inline-block rotate-2" src="@/assets/img/stickers/sticker-12.png" />
       <div class="absolute inset-0 flex items-center justify-center text-black font-splatoon2">
-        {{ stage.name }}
+        {{ $t(`splatnet.stages.${stage.id}.name`, stage.name) }}
       </div>
     </div>
   </ModalDialog>
