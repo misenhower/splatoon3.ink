@@ -19,15 +19,24 @@ export default class SalmonRunStatus extends StatusGenerator
     return Date.parse(schedule.startTime);
   }
 
+  _isGrizzcoMystery(schedule) {
+    return schedule.settings.weapons.some(w => w.__splatoon3ink_id === 'edcfecb7e8acd1a7')
+  }
+
+  _isMystery(schedule) {
+    return schedule.settings.weapons.some(w => w.name === 'Random');
+  }
+
   async _getStatus() {
     let schedule = await this.getActiveSchedule();
 
     let lines = [];
 
     let mode = schedule.isBigRun ? 'BIG RUN' : 'Salmon Run';
-    let hasMysteryWeapon = schedule.settings.weapons.some(w => w.name === 'Random');
 
-    if (hasMysteryWeapon) {
+    if (this._isGrizzcoMystery(schedule)) {
+      lines.push(`${mode} is now open on ${schedule.settings.coopStage.name} with GRIZZCO MYSTERY WEAPONS! #salmonrun #splatoon3`);
+    } else if (this._isMystery(schedule)) {
       lines.push(`${mode} is now open on ${schedule.settings.coopStage.name} with MYSTERY WEAPONS! #salmonrun #splatoon3`);
     } else {
       lines.push(`${mode} is now open on ${schedule.settings.coopStage.name}! #salmonrun #splatoon3`);
