@@ -20,6 +20,32 @@ export const locales = [
   { code: 'zh-TW', flag: '🇹🇼', name: '中文(台灣)' },
 ];
 
+export const regionalLocales = {
+  US: [
+    locales.find(l => l.code === 'en-US'),
+    locales.find(l => l.code === 'es-MX'),
+    locales.find(l => l.code === 'fr-CA'),
+  ],
+  EU: [
+    locales.find(l => l.code === 'en-GB'),
+    locales.find(l => l.code === 'de-DE'),
+    locales.find(l => l.code === 'es-ES'),
+    locales.find(l => l.code === 'fr-FR'),
+    locales.find(l => l.code === 'it-IT'),
+    locales.find(l => l.code === 'nl-NL'),
+    locales.find(l => l.code === 'ru-RU'),
+  ],
+  JP: [
+    locales.find(l => l.code === 'ja-JP'),
+  ],
+  AP: [
+    locales.find(l => l.code === 'en-US'),
+    locales.find(l => l.code === 'ko-KR'),
+    locales.find(l => l.code === 'zh-CN'),
+    locales.find(l => l.code === 'zh-TW'),
+  ],
+};
+
 export const defaultLocale = locales.find(l => l.code === 'en-US');
 
 const datetimeFormats = {

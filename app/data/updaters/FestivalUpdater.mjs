@@ -29,20 +29,39 @@ export default class FestivalUpdater extends DataUpdater
     '$..image.url',
   ];
 
+  localizations = [
+    {
+      key: 'festivals',
+      nodes: [
+        '$..festRecords.nodes.*',
+      ],
+      id: '__splatoon3ink_id',
+      values: [
+        'title',
+        'teams.0.teamName',
+        'teams.1.teamName',
+        'teams.2.teamName',
+      ],
+    },
+  ];
+
   async getData(locale) {
     let result = await this.splatnet(locale).getFestRecordData();
 
     this.deriveFestivalIds(result);
 
     // Get the detailed data for each Splatfest
-    for (let node of result.data.festRecords.nodes) {
-      let detailResult = await this.getFestivalDetails(node);
+    // (unless we're getting localization-specific data)
+    if (locale === this.defaultLocale) {
+      for (let node of result.data.festRecords.nodes) {
+        let detailResult = await this.getFestivalDetails(node);
 
-      Object.assign(node, detailResult.data.fest);
+        Object.assign(node, detailResult.data.fest);
 
-      if (node.teams.find(t => t.result)) {
-        let rankingUpdater = new FestivalRankingUpdater(this.region, node.id, node.endTime);
-        await rankingUpdater.updateIfNeeded();
+        if (node.teams.find(t => t.result)) {
+          let rankingUpdater = new FestivalRankingUpdater(this.region, node.id, node.endTime);
+          await rankingUpdater.updateIfNeeded();
+        }
       }
     }
 
