@@ -1,4 +1,5 @@
 import fs from 'fs/promises';
+import jsonpath from 'jsonpath';
 import DataUpdater from "./DataUpdater.mjs";
 import FestivalRankingUpdater from './FestivalRankingUpdater.mjs';
 import { getFestId } from '../../common/util.mjs';
@@ -30,6 +31,8 @@ export default class FestivalUpdater extends DataUpdater
   async getData(locale) {
     let result = await this.splatnet(locale).getFestRecordData();
 
+    this.deriveFestivalIds(result);
+
     // Get the detailed data for each Splatfest
     // TODO: Implement caching for past Splatfests to reduce the number of requests needed.
     for (let node of result.data.festRecords.nodes) {
@@ -44,6 +47,13 @@ export default class FestivalUpdater extends DataUpdater
     }
 
     return result;
+  }
+
+  deriveFestivalIds(data) {
+    jsonpath.apply(data, '$..nodes.*', node => ({
+      '__splatoon3ink_id': getFestId(node.id),
+      ...node,
+    }));
   }
 
   async formatDataForWrite(data) {
