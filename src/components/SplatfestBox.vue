@@ -7,7 +7,7 @@
 
       <div class="flex justify-center mx-2">
         <div class="font-splatoon2 text-zinc-200 text-lg text-center text-shadow bg-zinc-700 px-4 py-1 rounded-full bg-opacity-50 backdrop-blur-sm">
-          {{ festival.title }}
+          {{ $t(`splatnet.festivals.${festival.__splatoon3ink_id}.title`, festival.title) }}
         </div>
       </div>
 
@@ -15,11 +15,11 @@
         <img :src="props.festival.image.url" />
 
         <div class="flex -mt-3 mb-4">
-          <template v-for="team in festival.teams" :key="team.id">
+          <template v-for="(team, i) in festival.teams" :key="team.id">
             <div class="flex-1 flex justify-center items-center">
               <SquidTape class="font-splatoon2 text-shadow -rotate-3" bg="" :style="`background-color: ${toRgba(team.color)};`">
                 <div class="px-2">
-                  {{ team.teamName }}
+                  {{ $t(`splatnet.festivals.${ festival.__splatoon3ink_id }.teams.${i}.teamName`, team.teamName) }}
                 </div>
               </SquidTape>
             </div>
