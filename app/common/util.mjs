@@ -48,3 +48,11 @@ export function deriveId(node) {
         ...node,
     };
 }
+
+export function getFestId(id) {
+    return Buffer.from(id, 'base64').toString().match(/^Fest-[A-Z]+:(.+)$/)?.[1] ?? id;
+}
+
+export function getFestTeamId(id) {
+    return Buffer.from(id, 'base64').toString().match(/^FestTeam-[A-Z]+:((.+):(.+))$/)?.[1] ?? id;
+}

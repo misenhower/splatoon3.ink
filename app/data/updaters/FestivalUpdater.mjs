@@ -1,10 +1,7 @@
 import fs from 'fs/promises';
 import DataUpdater from "./DataUpdater.mjs";
 import FestivalRankingUpdater from './FestivalRankingUpdater.mjs';
-
-function getFestId(id) {
-  return Buffer.from(id, 'base64').toString().match(/^Fest-[A-Z]+:(.+)$/)?.[1] ?? id;
-}
+import { getFestId } from '../../common/util.mjs';
 
 function generateFestUrl(id) {
   return process.env.DEBUG ?
