@@ -3,6 +3,7 @@ import jsonpath from 'jsonpath';
 import DataUpdater from "./DataUpdater.mjs";
 import FestivalRankingUpdater from './FestivalRankingUpdater.mjs';
 import { getFestId } from '../../common/util.mjs';
+import ValueCache from '../../common/ValueCache.mjs';
 
 function generateFestUrl(id) {
   return process.env.DEBUG ?
@@ -34,9 +35,8 @@ export default class FestivalUpdater extends DataUpdater
     this.deriveFestivalIds(result);
 
     // Get the detailed data for each Splatfest
-    // TODO: Implement caching for past Splatfests to reduce the number of requests needed.
     for (let node of result.data.festRecords.nodes) {
-      let detailResult = await this.splatnet(locale).getFestDetailData(node.id);
+      let detailResult = await this.getFestivalDetails(node);
 
       Object.assign(node, detailResult.data.fest);
 
@@ -54,6 +54,27 @@ export default class FestivalUpdater extends DataUpdater
       '__splatoon3ink_id': getFestId(node.id),
       ...node,
     }));
+  }
+
+  async getFestivalDetails(node) {
+    let cache = new ValueCache(`festivals.${node.id}`);
+
+    // We don't need to use the locale for this data
+    // since localization data retrieval happens elsewhere.
+    let data = await cache.getData();
+
+    // How long until this festival ends/ended?
+    // We want to retrieve the latest data until 4 hours after the Splatfest ends
+    let diff = Date.now() - new Date(node.endTime);
+    let forceUpdate = (diff < 4 * 60 * 60 * 100);
+
+    if (forceUpdate || !data) {
+      this.console.info(`Getting festival details for ${node.id}`);
+      data = await this.splatnet().getFestDetailData(node.id);
+      await cache.setData(data);
+    }
+
+    return data;
   }
 
   async formatDataForWrite(data) {
