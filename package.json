@@ -12,6 +12,7 @@
     "social:test:image": "node app/index.mjs socialTestImage",
     "social:test:mastodon": "node app/index.mjs socialTestMastodon",
     "splatnet": "node app/index.mjs splatnet",
+    "splatnet:all": "node app/index.mjs splatnetAll",
     "warmCaches": "node app/index.mjs warmCaches"
   },
   "dependencies": {
