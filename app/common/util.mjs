@@ -56,3 +56,11 @@ export function getFestId(id) {
 export function getFestTeamId(id) {
     return Buffer.from(id, 'base64').toString().match(/^FestTeam-[A-Z]+:((.+):(.+))$/)?.[1] ?? id;
 }
+
+export function getXRankSeasonId(id) {
+    let parts = Buffer.from(id, 'base64').toString().match(/^XRankingSeason-([A-Z]+):(.+)$/i);
+
+    return parts
+        ? `${parts[1]}-${parts[2]}`
+        : id;
+}

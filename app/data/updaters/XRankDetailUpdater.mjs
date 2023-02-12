@@ -1,4 +1,5 @@
 import prefixedConsole from "../../common/prefixedConsole.mjs";
+import { getXRankSeasonId } from "../../common/util.mjs";
 import DataUpdater from "./DataUpdater.mjs";
 
 export default class XRankDetailUpdater extends DataUpdater
@@ -20,11 +21,12 @@ export default class XRankDetailUpdater extends DataUpdater
     this.seasonId = seasonId;
     this.xRankDetailType = xRankDetailType;
 
-    this.filename += `.${seasonId}.${xRankDetailType.key}`;
+    let readableId = getXRankSeasonId(seasonId);
+    this.filename += `.${readableId}.${xRankDetailType.key}`;
   }
 
   get console() {
-    this._console ??= prefixedConsole('Updater', this.region, this.name, this.seasonId, this.xRankDetailType.name);
+    this._console ??= prefixedConsole('Updater', this.region, this.name, getXRankSeasonId(this.seasonId), this.xRankDetailType.name);
 
     return this._console;
   }

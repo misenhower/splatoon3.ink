@@ -1,4 +1,6 @@
+import jsonpath from 'jsonpath';
 import prefixedConsole from "../../common/prefixedConsole.mjs";
+import { getXRankSeasonId } from '../../common/util.mjs';
 import DataUpdater from "./DataUpdater.mjs";
 import XRankDetailUpdater from "./XRankDetailUpdater.mjs";
 
@@ -32,10 +34,19 @@ export default class XRankUpdater extends DataUpdater
   async getData(locale) {
     let result = await this.splatnet(locale).getXRankingData(this.divisionKey);
 
+    this.deriveSeasonIds(result);
+
     let seasonId = result.data.xRanking.currentSeason.id;
     await this.updateSeasonDetail(seasonId);
 
     return result;
+  }
+
+  deriveSeasonIds(data) {
+    jsonpath.apply(data, '$..currentSeason', node => ({
+      '__splatoon3ink_id': getXRankSeasonId(node.id),
+      ...node,
+    }));
   }
 
   async updateSeasonDetail(seasonId) {
