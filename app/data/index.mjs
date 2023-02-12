@@ -3,6 +3,7 @@ import StageScheduleUpdater from "./updaters/StageScheduleUpdater.mjs";
 import CoopUpdater from "./updaters/CoopUpdater.mjs";
 import FestivalUpdater from "./updaters/FestivalUpdater.mjs";
 import { regionTokens } from "../splatnet/NsoClient.mjs";
+import XRankUpdater from "./updaters/XRankUpdater.mjs";
 
 function updaters() {
   const tokens = regionTokens();
@@ -15,6 +16,8 @@ function updaters() {
     tokens.EU && new FestivalUpdater('EU'),
     tokens.JP && new FestivalUpdater('JP'),
     tokens.AP && new FestivalUpdater('AP'),
+    new XRankUpdater('Tentatek', 'ATLANTIC'),
+    new XRankUpdater('Takoroka', 'PACIFIC'),
   ].filter(u => u);
 }
 

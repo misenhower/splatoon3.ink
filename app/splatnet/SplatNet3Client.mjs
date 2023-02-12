@@ -147,4 +147,77 @@ export default class SplatNet3Client
   getCurrentFestData() {
     return this.getGraphQLPersistedQuery(1, 'c0429fd738d829445e994d3370999764');
   }
+
+  getXRankingData(region) {
+    return this.getGraphQLPersistedQuery(1, 'd771444f2584d938db8d10055599011d', { region });
+  }
+
+  getXRankingDetailQueryTypes() {
+    return [
+      {
+        name: 'Splat Zones Leaderboard',
+        key: 'splatzones',
+        id: 'eb69df6f2a2f13ab207eedc568f0f8b6',
+        dataKey: 'xRankingAr',
+      },
+      {
+        name: 'Splat Zones Top Weapons',
+        key: 'splatzones.weapons',
+        id: 'a6782a0c692e8076656f9b4ab613fd82',
+        dataKey: 'weaponTopsAr',
+      },
+      {
+        name: 'Clam Blitz Leaderboard',
+        key: 'clamblitz',
+        id: '68f99b7b02537bcb881db07e4e67f8dd',
+        dataKey: 'xRankingCl',
+      },
+      {
+        name: 'Clam Blitz Top Weapons',
+        key: 'clamblitz.weapons',
+        id: '8d3c5bb2e82d6eb32a37eefb0e1f8f69',
+        dataKey: 'weaponTopsCl',
+      },
+      {
+        name: 'Rainmaker Leaderboard',
+        key: 'rainmaker',
+        id: '5f8f333770ed3c43e21b0121f3a86716',
+        dataKey: 'xRankingGl',
+      },
+      {
+        name: 'Rainmaker Top Weapons',
+        key: 'rainmaker.weapons',
+        id: 'b23468857c049c2f0684797e45fabac1',
+        dataKey: 'weaponTopsGl',
+      },
+      {
+        name: 'Tower Control Leaderboard',
+        key: 'towercontrol',
+        id: '4e8b381ae6f9620443627f4eac3a2210',
+        dataKey: 'xRankingLf',
+      },
+      {
+        name: 'Tower Control Top Weapons',
+        key: 'towercontrol.weapons',
+        id: 'd46f88c2ea5c4daeb5fe9d5813d07a99',
+        dataKey: 'weaponTopsLf',
+      },
+    ];
+  }
+
+  getXRankingDetail(type, id, page = 1) {
+    // The API splits this data into 5 pages of 100 results (param: "page").
+    // Each page is segmented into smaller 25-record chunks (by default) as well (param: "first").
+    // We can just pass a larger number (up to 100) into the "first" param
+    // to retrieve all results for that page.
+    let first = 100;
+
+    return this.getGraphQLPersistedQuery(1, type.id, { id, first, page });
+  }
+
+  async *getXRankingDetailPages(type, id) {
+    for (let page = 1; page <= 5; page++) {
+      yield await this.getXRankingDetail(type, id, page);
+    }
+  }
 }
