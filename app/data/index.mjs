@@ -2,7 +2,6 @@ import GearUpdater from "./updaters/GearUpdater.mjs";
 import StageScheduleUpdater from "./updaters/StageScheduleUpdater.mjs";
 import CoopUpdater from "./updaters/CoopUpdater.mjs";
 import FestivalUpdater from "./updaters/FestivalUpdater.mjs";
-import CurrentFestivalUpdater from "./updaters/CurrentFestivalUpdater.mjs";
 import { regionTokens } from "../splatnet/NsoClient.mjs";
 
 function updaters() {
@@ -16,10 +15,6 @@ function updaters() {
     tokens.EU && new FestivalUpdater('EU'),
     tokens.JP && new FestivalUpdater('JP'),
     tokens.AP && new FestivalUpdater('AP'),
-    tokens.US && new CurrentFestivalUpdater('US'),
-    tokens.EU && new CurrentFestivalUpdater('EU'),
-    tokens.JP && new CurrentFestivalUpdater('JP'),
-    tokens.AP && new CurrentFestivalUpdater('AP'),
   ].filter(u => u);
 }
 
