@@ -43,7 +43,7 @@ export default class FestivalRankingUpdater extends DataUpdater
     // How long until this festival ends/ended?
     // We want to update this data until 4 hours after the Splatfest ends
     let diff = Date.now() - new Date(this.endTime);
-    if (diff < 4 * 60 * 60 * 100) {
+    if (diff < 4 * 60 * 60 * 1000) {
       return true;
     }
 
