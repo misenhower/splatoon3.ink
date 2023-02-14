@@ -1,8 +1,8 @@
 <template>
   <ProductContainer class="pt-10 pb-4" bg="bg-camo-purple" :bgStyle="`background-color: ${toRgba(winner.color)};`">
     <div class="space-y-2">
-      <div class="font-splatoon1 text-3xl mx-2">
-        Results!
+      <div class="font-splatoon1 text-3xl text-shadow mx-2">
+        {{ $t('festival.results.title') }}
       </div>
 
       <div class="mx-2 px-1 bg-zinc-700 bg-opacity-50 backdrop-blur-sm rounded-lg">
@@ -17,7 +17,7 @@
         <template v-for="row in resultRows" :key="row.title">
           <div class="flex font-splatoon2 text-shadow text-center py-1 items-center">
             <div class="w-36 mx-2">
-              {{ row.title }}
+              {{ $t(row.title) }}
             </div>
 
             <div class="flex bg-zinc-700 bg-opacity-70 rounded-full py-1">
@@ -31,8 +31,8 @@
         </template>
       </div>
 
-      <div class="font-splatoon2 text-splatoon-yellow text-center mx-2 ss:hidden">
-        Team {{ winner.teamName }} Wins!
+      <div class="font-splatoon2 text-splatoon-yellow text-center text-shadow mx-2 ss:hidden">
+        {{ $t('festival.results.won', { team: $t(`splatnet.festivals.${ festival.__splatoon3ink_id }.teams.${i}.teamName`, winner.teamName) }) }}
       </div>
     </div>
   </ProductContainer>
@@ -60,26 +60,26 @@ function results(ratioKey, topKey) {
 const resultRows = computed(() => {
   const rows = [
     {
-      title: 'Conch Shells',
+      title: 'festival.results.conchshells',
       results: results('horagaiRatio', 'isHoragaiRatioTop'),
     },
     {
-      title: 'Votes',
+      title: 'festival.results.votes',
       results: results('voteRatio', 'isVoteRatioTop'),
     },
     {
-      title: 'Open',
+      title: 'festival.results.open',
       results: results('regularContributionRatio', 'isRegularContributionRatioTop'),
     },
     {
-      title: 'Pro',
+      title: 'festival.results.pro',
       results: results('challengeContributionRatio', 'isChallengeContributionRatioTop'),
     },
   ];
 
   if (props.festival.teams.find(t => t.result.tricolorContributionRatio !== null)) {
     rows.push({
-      title: 'Tricolor Battle',
+      title: 'festival.results.tricolor',
       results: results('tricolorContributionRatio', 'isTricolorContributionRatioTop'),
     });
   }

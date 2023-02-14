@@ -15,7 +15,7 @@
             <ScheduleBox type="anarchyOpen" class="flex-1 md:-rotate-1" />
           </div>
           <div class="flex flex-col justify-center space-y-6 md:flex-row md:space-x-6 md:space-y-0">
-            <ScheduleBox type="xMatch" class="flex-1 md:-rotate-1 max-w-lg" />
+            <ScheduleBox type="xMatch" class="flex-1 md:-rotate-1 md:max-w-lg" />
           </div>
         </template>
         <div class="flex justify-center" v-if="usSplatfests.upcomingFestival">
@@ -25,7 +25,7 @@
             />
         </div>
 
-        <div class="flex items-center justify-center flex-col space-y-6 md:flex-row md:space-x-6 md:space-y-0" v-if="usSplatfests.recentFestival">
+        <div class="flex flex-wrap items-center justify-center gap-y-6 md:gap-x-6" v-if="usSplatfests.recentFestival">
           <SplatfestBox
             :festival="usSplatfests.recentFestival"
             class="max-w-md md:-rotate-1"
@@ -34,7 +34,7 @@
           <SplatfestResultsBox
             v-if="usSplatfests.recentFestival.hasResults"
             :festival="usSplatfests.recentFestival"
-            class="max-w-md md:rotate-1"
+            class="max-w-sm md:max-w-md md:rotate-1"
             />
         </div>
       </div>
