@@ -34,7 +34,7 @@
           <SplatfestResultsBox
             v-if="usSplatfests.recentFestival.hasResults"
             :festival="usSplatfests.recentFestival"
-            class="max-w-sm md:max-w-md md:rotate-1"
+            class="w-full sm:max-w-md md:rotate-1"
             />
         </div>
       </div>
