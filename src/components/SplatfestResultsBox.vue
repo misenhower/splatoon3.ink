@@ -32,7 +32,7 @@
       </div>
 
       <div class="font-splatoon2 text-splatoon-yellow text-center text-shadow mx-2 ss:hidden">
-        {{ $t('festival.results.won', { team: $t(`splatnet.festivals.${ festival.__splatoon3ink_id }.teams.${i}.teamName`, winner.teamName) }) }}
+        {{ $t('festival.results.won', { team: $t(`splatnet.festivals.${ festival.__splatoon3ink_id }.teams.${winnerIndex}.teamName`, winner.teamName) }) }}
       </div>
     </div>
   </ProductContainer>
@@ -87,7 +87,8 @@ const resultRows = computed(() => {
   return rows;
 });
 
-const winner = computed(() => props.festival.teams.find(t => t.result.isWinner));
+const winnerIndex = computed(() => props.festival.teams.findIndex(t => t.result.isWinner));
+const winner = computed(() => props.festival.teams[winnerIndex.value]);
 </script>
 
 <style scoped>
