@@ -35,6 +35,20 @@
     "weapons": "Beschikbare wapens",
     "bigrun": "Big Run"
   },
+  "festival": {
+    "upcoming": "Splatfest",
+    "active": "Splatfest",
+    "past": "Splatfest",
+    "results": {
+      "title": "Uitslag",
+      "conchshells": "Prijsschelpen",
+      "votes": "Stemmen",
+      "open": "Open",
+      "pro": "Pro",
+      "tricolor": "Driekleurengevecht",
+      "won": "{team} heeft gewonnen!"
+    }
+  },
   "gear": {
     "title": "Uitrusting",
     "sale": "Nu in de aanbieding",

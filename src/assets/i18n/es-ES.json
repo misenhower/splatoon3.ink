@@ -35,6 +35,20 @@
     "weapons": "Armas asignadas",
     "bigrun": "Big Run"
   },
+  "festival": {
+    "upcoming": "Festival",
+    "active": "Festival",
+    "past": "Festival",
+    "results": {
+      "title": "Resultados",
+      "conchshells": "Tasa de caracolas",
+      "votes": "Votos",
+      "open": "Informal",
+      "pro": "Formal",
+      "tricolor": "Combate tricolor",
+      "won": "¡Victoria de {team}!"
+    }
+  },
   "gear": {
     "title": "Equipamiento",
     "sale": "Equipamiento a la venta",

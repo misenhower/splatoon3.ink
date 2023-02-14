@@ -35,6 +35,20 @@
     "weapons": "지급 무기",
     "bigrun": "빅 런"
   },
+  "festival": {
+    "upcoming": "페스티벌",
+    "active": "페스티벌",
+    "past": "페스티벌",
+    "results": {
+      "title": "정산",
+      "conchshells": "소라고둥 획득률",
+      "votes": "득표율",
+      "open": "오픈",
+      "pro": "챌린지",
+      "tricolor": "트리컬러 어택",
+      "won": "{team} 승리!"
+    }
+  },
   "gear": {
     "title": "기어",
     "sale": "현재 판매 중인 기어",
