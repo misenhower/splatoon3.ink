@@ -25,7 +25,7 @@
             />
         </div>
 
-        <div class="flex flex-wrap items-center justify-center gap-y-6 md:gap-x-6 md:gap-y-0" v-if="usSplatfests.recentFestival">
+        <div class="flex flex-wrap items-center justify-center gap-y-6 md:gap-x-6" v-if="usSplatfests.recentFestival">
           <SplatfestBox
             :festival="usSplatfests.recentFestival"
             class="max-w-md md:-rotate-1"
