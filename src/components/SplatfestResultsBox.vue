@@ -32,7 +32,7 @@
       </div>
 
       <div class="font-splatoon2 text-splatoon-yellow text-center text-shadow mx-2 ss:hidden">
-        {{ $t('festival.results.won', { team: winner.teamName }) }}
+        {{ $t('festival.results.won', { team: $t(`splatnet.festivals.${ festival.__splatoon3ink_id }.teams.${i}.teamName`, winner.teamName) }) }}
       </div>
     </div>
   </ProductContainer>
