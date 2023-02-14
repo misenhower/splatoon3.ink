@@ -44,9 +44,13 @@ import SquidTape from './SquidTape.vue';
 
 const props = defineProps({
   festival: Object,
+  historyMode: Boolean,
 });
 
 const title = computed(() => {
+  if (props.historyMode) {
+    return 'festival.active';
+  }
   switch (props.festival.status) {
     case STATUS_PAST:
       return 'festival.past';
