@@ -1,8 +1,8 @@
 <template>
   <ProductContainer class="pt-10 pb-4" bg="bg-zinc-500 bg-camo-purple">
     <div class="space-y-2">
-      <div class="font-splatoon1 text-3xl mx-2">
-        {{ title }}
+      <div class="font-splatoon1 text-3xl text-shadow mx-2">
+        {{ $t(title) }}
       </div>
 
       <div class="flex justify-center mx-2">
@@ -27,7 +27,7 @@
         </div>
       </div>
 
-      <div class="font-splatoon2 text-splatoon-yellow text-center mx-2 ss:hidden">
+      <div class="font-splatoon2 text-splatoon-yellow text-center text-shadow mx-2 ss:hidden">
         {{ $d(festival.startTime, 'dateTimeShortWeekday') }}
         &ndash;
         {{ $d(festival.endTime, 'dateTimeShortWeekday') }}
@@ -49,12 +49,12 @@ const props = defineProps({
 const title = computed(() => {
   switch (props.festival.status) {
     case STATUS_PAST:
-      return 'Recent Splatfest';
+      return 'festival.past';
     case STATUS_UPCOMING:
-      return 'Upcoming Splatfest';
+      return 'festival.upcoming';
     case STATUS_ACTIVE:
     default:
-      return 'Splatfest';
+      return 'festival.active';
   }
 });
 
