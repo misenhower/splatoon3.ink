@@ -9,6 +9,9 @@
     <router-link to="/gear" class="router-link">
       {{ $t('gear.title') }}
     </router-link>
+    <router-link to="/splatfests" class="router-link">
+      {{ $t('festival.title') }}
+    </router-link>
   </div>
 </template>
 
