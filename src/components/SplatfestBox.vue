@@ -1,12 +1,12 @@
 <template>
   <ProductContainer class="pt-10 pb-4" bg="bg-zinc-500 bg-camo-purple">
     <div class="space-y-2">
-      <div class="font-splatoon1 text-3xl text-shadow mx-2">
+      <div class="font-splatoon1 lg:text-2xl xl:text-3xl text-shadow mx-2">
         {{ $t(title) }}
       </div>
 
       <div class="flex justify-center mx-2">
-        <div class="font-splatoon2 text-zinc-200 text-lg text-center text-shadow bg-zinc-700 px-4 py-1 rounded-full bg-opacity-50 backdrop-blur-sm">
+        <div class="font-splatoon2 text-zinc-200 text-center text-shadow text-sm lg:text-lg bg-zinc-700 px-4 py-1 rounded-full bg-opacity-50 backdrop-blur-sm">
           {{ $t(`splatnet.festivals.${festival.__splatoon3ink_id}.title`, festival.title) }}
         </div>
       </div>
@@ -17,7 +17,7 @@
         <div class="flex -mt-3 mb-4">
           <template v-for="(team, i) in festival.teams" :key="team.id">
             <div class="flex-1 flex justify-center items-center">
-              <SquidTape class="font-splatoon2 text-shadow -rotate-3" bg="" :style="`background-color: ${toRgba(team.color)};`">
+              <SquidTape class="font-splatoon2 text-shadow text-sm lg:text-base -rotate-3" bg="" :style="`background-color: ${toRgba(team.color)};`">
                 <div class="px-2">
                   {{ $t(`splatnet.festivals.${ festival.__splatoon3ink_id }.teams.${i}.teamName`, team.teamName) }}
                 </div>
@@ -27,7 +27,7 @@
         </div>
       </div>
 
-      <div class="font-splatoon2 text-splatoon-yellow text-center text-shadow mx-2 ss:hidden">
+      <div class="font-splatoon2 text-splatoon-yellow text-center text-sm lg:text-base text-shadow mx-2 ss:hidden">
         {{ $d(festival.startTime, 'dateTimeShortWeekday') }}
         &ndash;
         {{ $d(festival.endTime, 'dateTimeShortWeekday') }}
