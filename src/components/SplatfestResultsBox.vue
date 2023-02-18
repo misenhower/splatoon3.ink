@@ -1,15 +1,15 @@
 <template>
   <ProductContainer class="pt-10 pb-4" bg="bg-camo-purple" :bgStyle="`background-color: ${toRgba(winner.color)};`">
     <div class="space-y-2">
-      <div class="font-splatoon1 text-sm lg:text-3xl text-shadow mx-2">
+      <div class="font-splatoon1 text-2xl lg:text-3xl text-shadow mx-2">
         {{ $t('festival.results.title') }}
       </div>
 
       <div class="mx-2 px-1 bg-zinc-700 bg-opacity-50 backdrop-blur-sm rounded-lg">
-        <div class="flex justify-end md:justify-center py-2">
-          <div class="w-20 md:w-36 -mx-1"></div>
+        <div class="flex justify-center md:justify-center py-2">
+          <div class="w-36 sm:mx-4 lg:-mx-1"></div>
           <template v-for="team in festival.teams" :key="team.id">
-            <div class="w-12 mx-2 md:w-20 flex justify-center py-1 rounded" :style="`background-color: ${toRgba(team.color)};`">
+            <div class="w-12 mx-2 sm:w-20 flex justify-center py-1 rounded" :style="`background-color: ${toRgba(team.color)};`">
               <img :src="team.image.url" class="w-6 h-6" />
             </div>
           </template>

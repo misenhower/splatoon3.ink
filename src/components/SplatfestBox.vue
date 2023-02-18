@@ -1,7 +1,7 @@
 <template>
   <ProductContainer class="pt-10 pb-4" bg="bg-zinc-500 bg-camo-purple">
     <div class="space-y-2">
-      <div class="font-splatoon1 lg:text-2xl xl:text-3xl text-shadow mx-2">
+      <div class="font-splatoon1 text-2xl xl:text-3xl text-shadow mx-2">
         {{ $t(title) }}
       </div>
 
