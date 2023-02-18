@@ -7,7 +7,7 @@ import prefixedConsole from "../../common/prefixedConsole.mjs";
 import SplatNet3Client from "../../splatnet/SplatNet3Client.mjs";
 import ImageProcessor from '../ImageProcessor.mjs';
 import NsoClient from '../../splatnet/NsoClient.mjs';
-import { locales, defaultLocale } from '../../../src/common/i18n.mjs';
+import { locales, regionalLocales, defaultLocale } from '../../../src/common/i18n.mjs';
 import { LocalizationProcessor } from '../LocalizationProcessor.mjs';
 import { deriveId } from '../../common/util.mjs';
 
@@ -25,6 +25,7 @@ export default class DataUpdater
   localizations = [];
 
   constructor(region = null) {
+    this.selectedRegion = region;
     this.nsoClient = NsoClient.make(region);
     this.imageProcessor = new ImageProcessor;
   }
@@ -34,11 +35,15 @@ export default class DataUpdater
   }
 
   get locales() {
-    return locales;
+    return this.selectedRegion
+      ? regionalLocales[this.region]
+      : locales;
   }
 
   get defaultLocale() {
-    return defaultLocale;
+    return this.selectedRegion
+      ? this.locales[0]
+      : defaultLocale;
   }
 
   /** @type {Console} */

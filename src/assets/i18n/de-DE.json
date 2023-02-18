@@ -37,6 +37,21 @@
     "weapons": "Verfügbare Waffen",
     "bigrun": "Big Run"
   },
+  "festival": {
+    "title": "Splatfeste",
+    "upcoming": "Bevorstehendes Splatfest",
+    "active": "Splatfest",
+    "past": "Letztes Splatfest",
+    "results": {
+      "title": "Ergebnisse!",
+      "conchshells": "Tritonshörner",
+      "votes": "Votes",
+      "open": "Offen",
+      "pro": "Pro",
+      "tricolor": "Dreifarb-Kampf",
+      "won": "Team {team} hat gewonnen!"
+    }
+  },
   "gear": {
     "title": "Ausrüstung",
     "sale": "Jetzt im Angebot",
@@ -47,6 +62,7 @@
     "title": "Über!",
     "subtitle-1": "Was ist das?",
     "text-1": "Diese Seite ist eine von Fans erstellte, unoffizielle Quelle für Informationen über Nintendo's Splatoon 3. Du erinnerst dich vielleicht noch an {0}!",
+    "text-special-thanks": "Besonderer Dank an alle {0}, welche dabei geholfen haben, die Seite zu verbessern, sowie {1} und {2} für ihre Arbeit, automatisierte Nintendo Switch Online Logins möglich zu machen.",
     "subtitle-2": "Wie wurde diese Seite erstellt?",
     "text-2": "Das Frontend wurde mit {0}, {1}, und {2} erstellt. Statische Assets wurden mit {3} kompiliert.",
     "text-3": "Das Backend, der Daten-Updater und der Twitter-Bot wurden mit {0} geschrieben.",

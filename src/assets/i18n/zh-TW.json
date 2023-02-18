@@ -35,6 +35,21 @@
     "weapons": "派發武器",
     "bigrun": "大型跑"
   },
+  "festival": {
+    "title": "祭典",
+    "upcoming": "祭典",
+    "active": "祭典",
+    "past": "祭典",
+    "results": {
+      "title": "結算",
+      "conchshells": "法螺獲得率",
+      "votes": "得票率",
+      "open": "開放",
+      "pro": "挑戰",
+      "tricolor": "三色奪寶攻擊",
+      "won": "{team}獲勝！"
+    }
+  },
   "gear": {
     "title": "裝備",
     "sale": "目前販售的裝備",

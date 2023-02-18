@@ -1,10 +1,9 @@
 import fs from 'fs/promises';
+import jsonpath from 'jsonpath';
 import DataUpdater from "./DataUpdater.mjs";
 import FestivalRankingUpdater from './FestivalRankingUpdater.mjs';
-
-function getFestId(id) {
-  return Buffer.from(id, 'base64').toString().match(/^Fest-[A-Z]+:(.+)$/)?.[1] ?? id;
-}
+import { getFestId } from '../../common/util.mjs';
+import ValueCache from '../../common/ValueCache.mjs';
 
 function generateFestUrl(id) {
   return process.env.DEBUG ?
@@ -30,23 +29,71 @@ export default class FestivalUpdater extends DataUpdater
     '$..image.url',
   ];
 
+  localizations = [
+    {
+      key: 'festivals',
+      nodes: [
+        '$..festRecords.nodes.*',
+      ],
+      id: '__splatoon3ink_id',
+      values: [
+        'title',
+        'teams.0.teamName',
+        'teams.1.teamName',
+        'teams.2.teamName',
+      ],
+    },
+  ];
+
   async getData(locale) {
     let result = await this.splatnet(locale).getFestRecordData();
 
+    this.deriveFestivalIds(result);
+
     // Get the detailed data for each Splatfest
-    // TODO: Implement caching for past Splatfests to reduce the number of requests needed.
-    for (let node of result.data.festRecords.nodes) {
-      let detailResult = await this.splatnet(locale).getFestDetailData(node.id);
+    // (unless we're getting localization-specific data)
+    if (locale === this.defaultLocale) {
+      for (let node of result.data.festRecords.nodes) {
+        let detailResult = await this.getFestivalDetails(node);
 
-      Object.assign(node, detailResult.data.fest);
+        Object.assign(node, detailResult.data.fest);
 
-      if (node.teams.find(t => t.result)) {
-        let rankingUpdater = new FestivalRankingUpdater(this.region, node.id, node.endTime);
-        await rankingUpdater.updateIfNeeded();
+        if (node.teams.find(t => t.result)) {
+          let rankingUpdater = new FestivalRankingUpdater(this.region, node.id, node.endTime);
+          await rankingUpdater.updateIfNeeded();
+        }
       }
     }
 
     return result;
+  }
+
+  deriveFestivalIds(data) {
+    jsonpath.apply(data, '$..nodes.*', node => ({
+      '__splatoon3ink_id': getFestId(node.id),
+      ...node,
+    }));
+  }
+
+  async getFestivalDetails(node) {
+    let cache = new ValueCache(`festivals.${node.id}`);
+
+    // We don't need to use the locale for this data
+    // since localization data retrieval happens elsewhere.
+    let data = await cache.getData();
+
+    // How long until this festival ends/ended?
+    // We want to retrieve the latest data until 4 hours after the Splatfest ends
+    let diff = Date.now() - new Date(node.endTime);
+    let forceUpdate = (diff < 4 * 60 * 60 * 1000);
+
+    if (forceUpdate || !data) {
+      this.console.info(`Getting festival details for ${node.id}`);
+      data = await this.splatnet().getFestDetailData(node.id);
+      await cache.setData(data);
+    }
+
+    return data;
   }
 
   async formatDataForWrite(data) {

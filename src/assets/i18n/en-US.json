@@ -37,6 +37,21 @@
     "weapons": "Supplied Weapons",
     "bigrun": "Big Run"
   },
+  "festival": {
+    "title": "Splatfests",
+    "upcoming": "Upcoming Splatfest",
+    "active": "Splatfest",
+    "past": "Recent Splatfest",
+    "results": {
+      "title": "Results!",
+      "conchshells": "Conch Shells",
+      "votes": "Votes",
+      "open": "Open",
+      "pro": "Pro",
+      "tricolor": "Tricolor Battle",
+      "won": "Team {team} wins!"
+    }
+  },
   "gear": {
     "title": "Gear",
     "sale": "Gear on Sale Now",

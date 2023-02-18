@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import SalmonRunView from '../views/SalmonRunView.vue'
 import GearView from '../views/GearView.vue'
 import AboutView from '../views/AboutView.vue'
+import SplatfestsView from '../views/SplatfestsView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,6 +22,11 @@ const router = createRouter({
       path: '/gear',
       name: 'gear',
       component: GearView,
+    },
+    {
+      path: '/splatfests',
+      name: 'splatfests',
+      component: SplatfestsView,
     },
     {
       path: '/about',

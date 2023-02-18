@@ -35,6 +35,21 @@
     "weapons": "支給ブキ",
     "bigrun": "ビッグラン"
   },
+  "festival": {
+    "title": "フェス",
+    "upcoming": "フェス",
+    "active": "フェス",
+    "past": "フェス",
+    "results": {
+      "title": "清算",
+      "conchshells": "ホラガイ獲得率",
+      "votes": "得票率",
+      "open": "オープン",
+      "pro": "チャレンジ",
+      "tricolor": "トリカラアタック",
+      "won": "{team}の勝利！"
+    }
+  },
   "gear": {
     "title": "ギア",
     "sale": "ただいま販売中のギア",

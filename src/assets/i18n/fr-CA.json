@@ -36,6 +36,21 @@
     "weapons": "Armes fournies",
     "bigrun": "Big Run"
   },
+  "festival": {
+    "title": "Festivals",
+    "upcoming": "Festival",
+    "active": "Festival",
+    "past": "Festival",
+    "results": {
+      "title": "Résultats",
+      "conchshells": "Conques",
+      "votes": "Votes",
+      "open": "Ouvert",
+      "pro": "Défi",
+      "tricolor": "Match tricolore",
+      "won": "{team} l'emporte!"
+    }
+  },
   "gear": {
     "title": "Équipement",
     "sale": "Équipement en solde",

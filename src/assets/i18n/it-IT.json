@@ -35,6 +35,21 @@
     "weapons": "Armi fornite",
     "bigrun": "Big Run"
   },
+  "festival": {
+    "title": "Festival",
+    "upcoming": "Festival",
+    "active": "Festival",
+    "past": "Festival",
+    "results": {
+      "title": "Risultati",
+      "conchshells": "Conchiglie",
+      "votes": "Voti",
+      "open": "Aperta",
+      "pro": "Sfida",
+      "tricolor": "Attacco tricolore",
+      "won": "Vittoria per {team}!"
+    }
+  },
   "gear": {
     "title": "Oggetti",
     "sale": "Articoli in offerta",

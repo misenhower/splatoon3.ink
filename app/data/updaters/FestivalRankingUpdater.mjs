@@ -1,14 +1,7 @@
 import fs from 'fs/promises';
 import prefixedConsole from "../../common/prefixedConsole.mjs";
 import DataUpdater from "./DataUpdater.mjs";
-
-function getFestId(id) {
-  return Buffer.from(id, 'base64').toString().match(/^Fest-[A-Z]+:(.+)$/)?.[1] ?? id;
-}
-
-function getFestTeamId(id) {
-  return Buffer.from(id, 'base64').toString().match(/^FestTeam-[A-Z]+:((.+):(.+))$/)?.[1] ?? id;
-}
+import { getFestId, getFestTeamId } from '../../common/util.mjs';
 
 export default class FestivalRankingUpdater extends DataUpdater
 {
@@ -50,7 +43,7 @@ export default class FestivalRankingUpdater extends DataUpdater
     // How long until this festival ends/ended?
     // We want to update this data until 4 hours after the Splatfest ends
     let diff = Date.now() - new Date(this.endTime);
-    if (diff < 4 * 60 * 60 * 100) {
+    if (diff < 4 * 60 * 60 * 1000) {
       return true;
     }
 

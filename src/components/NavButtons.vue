@@ -1,5 +1,5 @@
 <template>
-  <div class="flex font-splatoon2 space-x-2">
+  <div class="flex flex-wrap justify-center gap-x-2 gap-y-2 font-splatoon2">
     <router-link to="/" class="router-link">
       {{ $t('schedule.title') }}
     </router-link>
@@ -8,6 +8,9 @@
     </router-link>
     <router-link to="/gear" class="router-link">
       {{ $t('gear.title') }}
+    </router-link>
+    <router-link to="/splatfests" class="router-link">
+      {{ $t('festival.title') }}
     </router-link>
   </div>
 </template>
