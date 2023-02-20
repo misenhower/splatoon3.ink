@@ -82,8 +82,8 @@ export default class ScreenshotHelper
         waitUntil: 'networkidle0', // Wait until the network is idle
     });
 
-    // Wait an additional 500ms
-    await this.#page.waitForNetworkIdle({ idleTime: 500 });
+    // Wait an additional 1000ms
+    await this.#page.waitForNetworkIdle({ idleTime: 1000 });
 
     // Take the screenshot
     return await this.#page.screenshot();
