@@ -84,7 +84,12 @@ export const useSalmonRunSchedulesStore = defineScheduleStore('salmonRun', {
     let nodes = []
       .concat(data?.coopGroupingSchedule.regularSchedules.nodes.map(n => ({ ...n, isBigRun: false })))
       .concat(data?.coopGroupingSchedule.bigRunSchedules.nodes.map(n => ({ ...n, isBigRun: true })))
-      .filter(n => n);
+      .filter(n => n)
+      .map(n => ({
+        ...n,
+        isMystery: n.setting.weapons.some(w => w.name === 'Random'),
+        isGrizzcoMystery: n.setting.weapons.some(w => w.__splatoon3ink_id === 'edcfecb7e8acd1a7'),
+      }));
 
     return sortBy(nodes, 'startTime');
   },
