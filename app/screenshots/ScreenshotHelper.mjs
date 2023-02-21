@@ -70,12 +70,17 @@ export default class ScreenshotHelper
     let url = new URL(`http://localhost:${this.#httpServer.port}/screenshots/`);
     url.hash = path;
 
-    if (this.defaultParams) {
+    let params = {
+      ...this.defaultParams,
+      ...options.params,
+    };
+
+    if (params) {
       // We can't use url.searchParams because they need to come after the hash
       url.hash += '?';
-      for (let key in this.defaultParams) {
-        url.hash += `${key}=${this.defaultParams[key]}`;
-      }
+      url.hash += Object.keys(params)
+        .map(key => `${key}=${params[key]}`)
+        .join('&');
     }
 
     await this.#page.goto(url, {
