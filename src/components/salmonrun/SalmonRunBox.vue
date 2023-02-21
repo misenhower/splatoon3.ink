@@ -11,22 +11,23 @@
 
         <!-- Main content -->
         <div class="md:w-2/3 mx-2 pb-2">
-          <div class="mb-6 space-y-2" v-if="store.activeSchedule">
+          <div class="mb-6 space-y-2" v-if="activeSchedule">
             <SquidTape class="font-splatoon2 text-sm drop-shadow -rotate-6 -mx-2">
               <div class="px-2">{{ $t('times.now') }}</div>
             </SquidTape>
 
-            <ExpandedSalmonRunRow :schedule="store.activeSchedule" />
+            <ExpandedSalmonRunRow :schedule="activeSchedule" />
           </div>
 
-          <div class="ss:hidden py-1 bg-zinc-900 bg-opacity-70 rounded-lg backdrop-blur-sm">
+          <div class="py-1 bg-zinc-900 bg-opacity-70 rounded-lg backdrop-blur-sm" v-if="upcomingSchedules.length">
             <SquidTape class="font-splatoon2 text-sm drop-shadow -rotate-6 -mx-2">
               <div class="px-2">{{ $t('times.future') }}</div>
             </SquidTape>
 
             <div class="mx-2 divide-y-2 divide-dashed divide-zinc-400">
-              <div v-for="schedule in store.upcomingSchedules" :key="schedule.startTime">
-                <SalmonRunRow class="my-2" :schedule="schedule"/>
+              <div v-for="schedule in upcomingSchedules" :key="schedule.startTime">
+                <ExpandedSalmonRunRow class="my-3" :schedule="schedule" v-if="isScreenshot" />
+                <SalmonRunRow class="my-2" :schedule="schedule" v-else />
               </div>
             </div>
           </div>
@@ -37,13 +38,31 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import { useSalmonRunSchedulesStore } from '@/stores/schedules.mjs';
 import ProductContainer from '../ProductContainer.vue';
 import SquidTape from '../SquidTape.vue';
 import SalmonRunRow from './SalmonRunRow.vue';
 import ExpandedSalmonRunRow from './ExpandedSalmonRunRow.vue';
 
+const props = defineProps({
+  isScreenshot: Boolean,
+  startTime: String,
+});
+
 const store = useSalmonRunSchedulesStore();
+
+function filterSchedules(schedules) {
+  return schedules.filter(s => !props.startTime || s?.startTime === props.startTime);
+}
+const activeSchedule = computed(() => filterSchedules([store.activeSchedule])[0]);
+const upcomingSchedules = computed(() => {
+  if (props.isScreenshot && !props.startTime) {
+    return [];
+  }
+
+  return filterSchedules(store.upcomingSchedules);
+});
 </script>
 
 <style scoped>

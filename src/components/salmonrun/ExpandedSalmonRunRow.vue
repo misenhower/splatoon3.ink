@@ -8,7 +8,13 @@
       </div>
 
       <div class="hidden ss:block text-shadow text-white text-xl">
-        {{ $t('time.remaining', { time: formatDurationHoursFromNow(schedule.endTime) }) }}
+        <template v-if="time.isUpcoming(schedule.startTime)">
+          Shift opens
+          {{ $t('time.in', { time: formatDurationHoursFromNow(schedule.startTime, true) }) }}
+        </template>
+        <template v-else>
+          {{ $t('time.remaining', { time: formatDurationHoursFromNow(schedule.endTime) }) }}
+        </template>
       </div>
 
       <div
@@ -44,10 +50,13 @@
 
 <script setup>
 import { formatDurationFromNow, formatDurationHoursFromNow } from '@/common/time';
+import { useTimeStore } from '../../stores/time.mjs';
 import StageImage from '../StageImage.vue';
 import SalmonRunWeapons from './SalmonRunWeapons.vue';
 
 defineProps({
   schedule: Object,
 });
+
+const time = useTimeStore();
 </script>
