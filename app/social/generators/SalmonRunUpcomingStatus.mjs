@@ -30,11 +30,11 @@ export default class SalmonRunUpcomingStatus extends StatusGenerator
   _getDescription(schedule) {
     switch (true) {
       case schedule.isBigRun:
-        return `A BIG RUN shift has been added to the schedule! #salmonrun #splatoon3`;
+        return `A BIG RUN shift on ${schedule.settings.coopStage.name} has been added to the schedule! #salmonrun #splatoon3`;
       case schedule.isGrizzcoMystery:
-        return `A Salmon Run shift with GRIZZCO MYSTERY WEAPONS has been added to the schedule! #salmonrun #splatoon3`;
+        return `A Salmon Run shift with GRIZZCO MYSTERY WEAPONS on ${schedule.settings.coopStage.name} has been added to the schedule! #salmonrun #splatoon3`;
       case schedule.isMystery:
-        return `A Salmon Run shift with MYSTERY WEAPONS has been added to the schedule! #salmonrun #splatoon3`;
+        return `A Salmon Run shift with MYSTERY WEAPONS on ${schedule.settings.coopStage.name} has been added to the schedule! #salmonrun #splatoon3`;
     }
   }
 
@@ -52,10 +52,17 @@ export default class SalmonRunUpcomingStatus extends StatusGenerator
 
     let startTime = Date.parse(schedule.startTime);
     let now = useTimeStore().now;
-    let hours = Math.min((startTime - now) / (1000 * 60 * 60));
-    hours = hours === 1 ? '1 hour' : `${hours} hours`;
+    let hours = Math.floor((startTime - now) / (1000 * 60 * 60));
 
-    lines.push(`In ${hours} this shift will begin on ${schedule.settings.coopStage.name} with:`);
+    let formattedTime;
+    if (hours >= 24) {
+      let days = Math.floor(hours / 24);
+      formattedTime = days === 1 ? '1 day' : `${days} days`;
+    } else {
+      formattedTime =  hours === 1 ? '1 hour' : `${hours} hours`;
+    }
+
+    lines.push(`This shift will start in ${formattedTime} with these weapons:`);
     lines.push(...schedule.settings.weapons.map(w => `– ${w.name}`));
 
     return lines.join('\n');
