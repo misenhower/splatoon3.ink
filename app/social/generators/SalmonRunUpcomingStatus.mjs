@@ -12,10 +12,10 @@ export default class SalmonRunUpcomingStatus extends StatusGenerator
     await this.preparePinia();
 
     // Look for any interesting upcoming schedules
-    return useSalmonRunSchedulesStore().currentSchedules.find(
+    return useSalmonRunSchedulesStore().upcomingSchedules.find(
       s => s.isBigRun
-      || s.isMystery
-      || s.isGrizzcoMystery
+        || s.isMystery
+        || s.isGrizzcoMystery
     );
   }
 
