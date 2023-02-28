@@ -1,6 +1,6 @@
 import StatusGenerator from "./StatusGenerator.mjs";
 import Media from "../Media.mjs";
-import { useAnarchyOpenSchedulesStore, useAnarchySeriesSchedulesStore, useLeagueSchedulesStore, useRegularSchedulesStore, useSplatfestSchedulesStore, useXSchedulesStore } from "../../../src/stores/schedules.mjs";
+import { useAnarchyOpenSchedulesStore, useAnarchySeriesSchedulesStore, useRegularSchedulesStore, useSplatfestSchedulesStore, useXSchedulesStore } from "../../../src/stores/schedules.mjs";
 import { useUSSplatfestsStore } from '../../../src/stores/splatfests.mjs';
 export default class SchedulesStatus extends StatusGenerator
 {
@@ -15,7 +15,6 @@ export default class SchedulesStatus extends StatusGenerator
       anarchySeries: useAnarchySeriesSchedulesStore().activeSchedule,
       anarchyOpen: useAnarchyOpenSchedulesStore().activeSchedule,
       xMatch: useXSchedulesStore().activeSchedule,
-      league: useLeagueSchedulesStore().activeSchedule,
       splatfest: useSplatfestSchedulesStore().activeSchedule,
       tricolor: useUSSplatfestsStore().tricolor,
     }

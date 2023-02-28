@@ -63,12 +63,6 @@ export const useXSchedulesStore = defineScheduleStore('xmatch', {
   settings: node => node.xMatchSetting,
 });
 
-// League Battle
-export const useLeagueSchedulesStore = defineScheduleStore('league', {
-  nodes: () => useSchedulesDataStore().data?.leagueSchedules.nodes,
-  settings: node => node.leagueMatchSetting,
-});
-
 // Splatfest Battle
 export const useSplatfestSchedulesStore = defineScheduleStore('splatfest', {
   nodes: () => useSchedulesDataStore().data?.festSchedules.nodes,
@@ -101,7 +95,6 @@ if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useAnarchySeriesSchedulesStore, import.meta.hot));
   import.meta.hot.accept(acceptHMRUpdate(useAnarchyOpenSchedulesStore, import.meta.hot));
   import.meta.hot.accept(acceptHMRUpdate(useXSchedulesStore, import.meta.hot));
-  import.meta.hot.accept(acceptHMRUpdate(useLeagueSchedulesStore, import.meta.hot));
   import.meta.hot.accept(acceptHMRUpdate(useSplatfestSchedulesStore, import.meta.hot));
   import.meta.hot.accept(acceptHMRUpdate(useSalmonRunSchedulesStore, import.meta.hot));
 }
