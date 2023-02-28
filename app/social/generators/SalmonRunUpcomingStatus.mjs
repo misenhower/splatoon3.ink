@@ -28,13 +28,15 @@ export default class SalmonRunUpcomingStatus extends StatusGenerator
   }
 
   _getDescription(schedule) {
+    let stageName = schedule.settings.coopStage.name || '???';
+
     switch (true) {
       case schedule.isBigRun:
-        return `A BIG RUN shift on ${schedule.settings.coopStage.name} has been added to the schedule! #salmonrun #splatoon3`;
+        return `A BIG RUN shift on ${stageName} has been added to the schedule! #salmonrun #splatoon3`;
       case schedule.isGrizzcoMystery:
-        return `A Salmon Run shift with GRIZZCO MYSTERY WEAPONS on ${schedule.settings.coopStage.name} has been added to the schedule! #salmonrun #splatoon3`;
+        return `A Salmon Run shift with GRIZZCO MYSTERY WEAPONS on ${stageName} has been added to the schedule! #salmonrun #splatoon3`;
       case schedule.isMystery:
-        return `A Salmon Run shift with MYSTERY WEAPONS on ${schedule.settings.coopStage.name} has been added to the schedule! #salmonrun #splatoon3`;
+        return `A Salmon Run shift with MYSTERY WEAPONS on ${stageName} has been added to the schedule! #salmonrun #splatoon3`;
     }
   }
 
@@ -56,7 +58,7 @@ export default class SalmonRunUpcomingStatus extends StatusGenerator
 
     let formattedTime;
     if (hours >= 24) {
-      let days = Math.floor(hours / 24);
+      let days = Math.round(hours / 24);
       formattedTime = days === 1 ? '1 day' : `${days} days`;
     } else {
       formattedTime =  hours === 1 ? '1 hour' : `${hours} hours`;
