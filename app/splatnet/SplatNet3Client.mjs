@@ -7,7 +7,7 @@ export const SPLATNET3_WEB_SERVICE_ID = '4834290508791808';
 export default class SplatNet3Client
 {
   baseUrl = 'https://api.lp1.av5ja.srv.nintendo.net';
-  webViewVersion = '2.0.0-8a061f6c';
+  webViewVersion = '3.0.0-2857bc50';
   bulletToken = null;
 
   constructor(nsoClient, acceptLanguage = 'en-US') {
@@ -117,7 +117,7 @@ export default class SplatNet3Client
   // Specific queries
 
   getStageScheduleData() {
-    return this.getGraphQLPersistedQuery(1, '730cd98e84f1030d3e9ac86b6f1aae13');
+    return this.getGraphQLPersistedQuery(1, '011e394c0e384d77a0701474c8c11a20');
   }
 
   getGesotownData() {
@@ -125,7 +125,7 @@ export default class SplatNet3Client
   }
 
   getCoopHistoryData() {
-    return this.getGraphQLPersistedQuery(1, '6ed02537e4a65bbb5e7f4f23092f6154');
+    return this.getGraphQLPersistedQuery(1, '91b917becd2fa415890f5b47e15ffb15');
   }
 
   getFestRecordData() {
