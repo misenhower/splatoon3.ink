@@ -36,6 +36,12 @@ export default class SalmonRunStatus extends StatusGenerator
 
     lines.push('');
 
+    let king = schedule.__splatoon3ink_king_salmonid_guess;
+    if (king) {
+      lines.push(`King Salmonid guess: ${king}`);
+      lines.push('');
+    }
+
     lines.push('Current weapons:');
     lines.push(...schedule.settings.weapons.map(w => `– ${w.name}`));
 

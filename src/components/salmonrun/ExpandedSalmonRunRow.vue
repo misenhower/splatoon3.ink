@@ -8,13 +8,15 @@
       </div>
 
       <div class="hidden ss:block text-shadow text-white text-xl">
-        <template v-if="time.isUpcoming(schedule.startTime)">
+        <KingSalmonid :schedule="schedule" class="inline-block -mb-1 mr-2" />
+
+        <div class="inline-block" v-if="time.isUpcoming(schedule.startTime)">
           Shift opens
           {{ $t('time.in', { time: formatDurationHoursFromNow(schedule.startTime, true) }) }}
-        </template>
-        <template v-else>
+        </div>
+        <div class="inline-block" v-else>
           {{ $t('time.remaining', { time: formatDurationHoursFromNow(schedule.endTime) }) }}
-        </template>
+        </div>
       </div>
 
       <div
@@ -26,6 +28,8 @@
     </div>
 
     <div class="text-shadow text-zinc-300 ss:hidden">
+      <KingSalmonid :schedule="schedule" class="inline-block align-middle" />
+
       {{ $t('time.remaining', { time: formatDurationFromNow(schedule.endTime) }) }}
     </div>
 
@@ -52,6 +56,7 @@
 import { formatDurationFromNow, formatDurationHoursFromNow } from '@/common/time';
 import { useTimeStore } from '../../stores/time.mjs';
 import StageImage from '../StageImage.vue';
+import KingSalmonid from './KingSalmonid.vue';
 import SalmonRunWeapons from './SalmonRunWeapons.vue';
 
 defineProps({

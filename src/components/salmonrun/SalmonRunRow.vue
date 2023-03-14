@@ -21,6 +21,8 @@
       <StageImage class="w-1/5" imgClass="rounded" :stage="schedule.settings.coopStage" hide-label />
 
       <div class="flex-1 text-sm text-zinc-300 text-shadow">
+        <KingSalmonid :schedule="schedule" class="inline-block align-middle" size="w-5" />
+
         {{ $t(`splatnet.stages.${schedule.settings.coopStage.id}.name`, schedule.settings.coopStage.name) }}
 
         <span class="text-xs inline-block bg-splatoon-bigRun bg-opacity-80 text-white rounded px-2" v-if="schedule.isBigRun">
@@ -38,6 +40,7 @@
 <script setup>
 import { formatDurationFromNow } from '@/common/time';
 import StageImage from '../StageImage.vue';
+import KingSalmonid from './KingSalmonid.vue';
 import SalmonRunWeapons from './SalmonRunWeapons.vue';
 
 defineProps({

@@ -35,7 +35,11 @@
   "salmonrun": {
     "title": "Salmon Run",
     "weapons": "Supplied Weapons",
-    "bigrun": "Big Run"
+    "bigrun": "Big Run",
+    "kings": {
+      "maybe-cohozuna": "Maybe: Cohozuna?",
+      "maybe-horrorboros": "Maybe: Horrorboros?"
+    }
   },
   "festival": {
     "title": "Splatfests",
