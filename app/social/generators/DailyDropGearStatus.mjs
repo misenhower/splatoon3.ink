@@ -34,7 +34,13 @@ export default class DailyDropGearStatus extends StatusGenerator
       return `${icon} ${name} with ${power}`;
     }).join('\n');
 
-    return `The Daily Drop: Today's featured brand is ${brand.brand.name}! #dailydrop\n\n${formattedGears}\n\n🛒 Order: https://splatoon3.ink/nso/g/`;
+    return [
+      `The Daily Drop: Today's featured brand is ${brand.brand.name}! #dailydrop`,
+      '',
+      formattedGears,
+      // '',
+      // `🛒 Order: https://splatoon3.ink/nso/g/`
+    ].join('\n');
   }
 
   /** @param {ScreenshotHelper} screenshotHelper */
