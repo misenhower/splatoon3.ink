@@ -46,7 +46,7 @@
     </div>
 
     <!-- Order button -->
-    <div class="absolute top-0 right-0 hidden mobile:block">
+    <div class="absolute top-0 right-0 hidden mobile:block" v-if="false">
       <a :href="shopUrl">
         <SquidTape class="font-splatoon2 text-sm text-black rounded-sm -rotate-2" bg="bg-splatoon-yellow" squidBg="bg-black"
           border="border border-black">
@@ -60,7 +60,7 @@
     <!-- Price/Order button -->
     <div class="flex-none flex flex-col self-stretch items-end" v-if="false">
       <div class="flex-1">
-        <div class="hidden mobile:block">
+        <div class="hidden mobile:block" v-if="false">
           <a :href="shopUrl">
             <SquidTape
               class="font-splatoon2 text-sm text-black rounded-sm -rotate-2"
