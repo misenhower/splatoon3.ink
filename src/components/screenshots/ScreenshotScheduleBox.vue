@@ -1,5 +1,5 @@
 <template>
-  <ProductContainer :bg="type.bg" class="pt-10">
+  <ProductContainer :bg="type.bg" class="pt-10 max-w-sm">
     <div class="space-y-2">
       <div class="flex items-center justify-center space-x-1 mx-2">
         <div class="font-splatoon1 text-2xl text-shadow">
