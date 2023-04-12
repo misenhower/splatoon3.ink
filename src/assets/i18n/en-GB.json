@@ -34,7 +34,8 @@
   "salmonrun": {
     "title": "Salmon Run",
     "weapons": "Supplied Weapons",
-    "bigrun": "Big Run"
+    "bigrun": "Big Run",
+    "eggstrawork": "Eggstra Work",
   },
   "festival": {
     "title": "Splatfests",
