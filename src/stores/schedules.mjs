@@ -29,6 +29,7 @@ function defineScheduleStore(id, options) {
     const activeSchedule = computed(() => schedules.value?.find(s => time.isActive(s.startTime, s.endTime)));
     const upcomingSchedules = computed(() => schedules.value?.filter(s => time.isUpcoming(s.startTime)));
 
+
     return { schedules, currentSchedules, activeSchedule, upcomingSchedules };
   });
 }
@@ -90,6 +91,12 @@ export const useSalmonRunSchedulesStore = defineScheduleStore('salmonRun', {
   settings: node => node.setting,
 });
 
+// Eggstra Work
+export const useEggstraWorkSchedulesStore = defineScheduleStore('eggstraWork', {
+  nodes: () => useSchedulesDataStore().data?.coopGroupingSchedule.teamContestSchedules.nodes || [],
+  settings: node => node.setting,
+});
+
 if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useRegularSchedulesStore, import.meta.hot));
   import.meta.hot.accept(acceptHMRUpdate(useAnarchySeriesSchedulesStore, import.meta.hot));
@@ -97,4 +104,5 @@ if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useXSchedulesStore, import.meta.hot));
   import.meta.hot.accept(acceptHMRUpdate(useSplatfestSchedulesStore, import.meta.hot));
   import.meta.hot.accept(acceptHMRUpdate(useSalmonRunSchedulesStore, import.meta.hot));
+  import.meta.hot.accept(acceptHMRUpdate(useEggstraWorkSchedulesStore, import.meta.hot));
 }

@@ -27,8 +27,8 @@
       </div>
     </div>
 
-    <div class="text-shadow text-zinc-300 ss:hidden">
-      <KingSalmonid :schedule="schedule" class="inline-block align-middle" />
+    <div class="text-shadow text-zinc-300 ss:hidden" v-if="!time.isUpcoming(schedule.startTime)">
+      <KingSalmonid :schedule="schedule" class="inline-block align-middle" v-if="!eggstra" />
 
       {{ $t('time.remaining', { time: formatDurationFromNow(schedule.endTime) }) }}
     </div>
@@ -61,6 +61,7 @@ import SalmonRunWeapons from './SalmonRunWeapons.vue';
 
 defineProps({
   schedule: Object,
+  eggstra: Boolean,
 });
 
 const time = useTimeStore();

@@ -6,6 +6,9 @@
           <div class="w-full max-w-2xl">
             <SalmonRunBox class="md:-rotate-1" />
           </div>
+          <div class="w-full max-w-2xl" v-if="eggstraWork.schedules.length">
+            <SalmonRunBox class="md:rotate-1" eggstra/>
+          </div>
         </div>
       </div>
     </div>
@@ -13,6 +16,8 @@
 </template>
 
 <script setup>
+import { useEggstraWorkSchedulesStore } from '@/stores/schedules.mjs';
 import MainLayout from '@/layouts/MainLayout.vue'
 import SalmonRunBox from '../components/salmonrun/SalmonRunBox.vue';
+const eggstraWork = useEggstraWorkSchedulesStore();
 </script>
