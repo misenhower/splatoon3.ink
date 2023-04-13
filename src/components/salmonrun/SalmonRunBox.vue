@@ -55,19 +55,18 @@ const props = defineProps({
   eggstra: Boolean,
 });
 
-const SRstore = useSalmonRunSchedulesStore();
-const EWstore = useEggstraWorkSchedulesStore();
+const store = computed(() => props.eggstra ? useEggstraWorkSchedulesStore() : useSalmonRunSchedulesStore());
 
 function filterSchedules(schedules) {
   return schedules.filter(s => !props.startTime || s?.startTime === props.startTime);
 }
-const activeSchedule = computed(() => filterSchedules([props.eggstra ? EWstore.activeSchedule : SRstore.activeSchedule])[0]);
+const activeSchedule = computed(() => filterSchedules([store.value.activeSchedule])[0]);
 const upcomingSchedules = computed(() => {
   if (props.isScreenshot && !props.startTime) {
     return [];
   }
 
-  return filterSchedules(props.eggstra ? EWstore.upcomingSchedules : SRstore.upcomingSchedules);
+  return filterSchedules(store.value.upcomingSchedules);
 });
 </script>
 
