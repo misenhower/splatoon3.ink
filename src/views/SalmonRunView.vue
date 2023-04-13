@@ -6,7 +6,7 @@
           <div class="w-full max-w-2xl">
             <SalmonRunBox class="md:-rotate-1" />
           </div>
-          <div class="w-full max-w-2xl" v-if="eggstraWork.schedules.length">
+          <div class="w-full max-w-2xl" v-if="eggstraWork.currentSchedules.length">
             <SalmonRunBox class="md:rotate-1" eggstra/>
           </div>
         </div>
