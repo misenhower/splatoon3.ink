@@ -58,7 +58,6 @@ export default class StageScheduleUpdater extends DataUpdater
     let schedules = _.sortBy([
       ..._.get(data, 'data.coopGroupingSchedule.regularSchedules.nodes'),
       ..._.get(data, 'data.coopGroupingSchedule.bigRunSchedules.nodes'),
-      ..._.get(data, 'data.coopGroupingSchedule.teamContestSchedules.nodes'),
     ], 'startTime');
 
     // Remove cached times that don't exist anymore
