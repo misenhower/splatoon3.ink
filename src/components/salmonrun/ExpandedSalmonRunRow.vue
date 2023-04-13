@@ -1,6 +1,8 @@
 <template>
   <div class="font-splatoon2 space-y-1" v-if="schedule">
     <div class="flex gap-2">
+      <img src="@/assets/img/modes/coop.eggstra.svg" :title="$t('salmonrun.bigrun')" class="w-6 -mr-1" v-if="eggstra" />
+
       <div class="text-lg text-shadow text-zinc-200 ss:hidden">
         {{ $d(schedule.startTime, 'dateTimeShort') }}
         &ndash;
