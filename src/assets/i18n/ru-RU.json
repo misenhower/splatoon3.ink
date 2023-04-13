@@ -33,7 +33,8 @@
   "salmonrun": {
     "title": "Salmon Run",
     "weapons": "Табельное оружие",
-    "bigrun": "Big Run"
+    "bigrun": "Big Run",
+    "eggstrawork": "Икорный овертайм"
   },
   "festival": {
     "title": "Сплатфест",

@@ -2,7 +2,7 @@
   <ScreenshotLayout header="Salmon Run">
     <div class="grow flex items-center justify-center">
       <div class="max-w-2xl scale-[1.6]">
-        <SalmonRunBox class="-rotate-1" is-screenshot :startTime="route.query.startTime" />
+        <SalmonRunBox class="-rotate-1" is-screenshot :startTime="route.query.startTime" :eggstra="route.query.eggstra=='true'"/>
       </div>
     </div>
   </ScreenshotLayout>

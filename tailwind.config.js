@@ -26,6 +26,7 @@ module.exports = {
 
           salmonRun: '#ff5600',
           bigRun: '#b322ff',
+          eggstraWork: '#be8800'
         },
       },
       fontFamily: {

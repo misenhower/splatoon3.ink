@@ -33,7 +33,8 @@
   "salmonrun": {
     "title": "サーモンラン",
     "weapons": "支給ブキ",
-    "bigrun": "ビッグラン"
+    "bigrun": "ビッグラン",
+    "eggstrawork": "バイトチームコンテスト"
   },
   "festival": {
     "title": "フェス",
