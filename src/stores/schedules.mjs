@@ -29,7 +29,6 @@ function defineScheduleStore(id, options) {
     const activeSchedule = computed(() => schedules.value?.find(s => time.isActive(s.startTime, s.endTime)));
     const upcomingSchedules = computed(() => schedules.value?.filter(s => time.isUpcoming(s.startTime)));
 
-
     return { schedules, currentSchedules, activeSchedule, upcomingSchedules };
   });
 }
