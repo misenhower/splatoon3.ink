@@ -26,7 +26,7 @@ export default class EggstraWorkUpcomingStatus extends StatusGenerator
   _getDescription(schedule) {
     let stageName = schedule.settings.coopStage.name || '???';
 
-    return `An Eggstra Work shift on ${stageName} has been added to the schedule! #salmonrun #splatoon3`;
+    return `An EGGSTRA WORK shift on ${stageName} has been added to the schedule! #salmonrun #splatoon3`;
   }
 
   async _getStatus() {

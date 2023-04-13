@@ -24,7 +24,7 @@ export default class EggstraWorkStatus extends StatusGenerator
 
     let lines = [];
 
-    let mode = 'Eggstra Work'
+    let mode = 'EGGSTRA WORK'
 
     lines.push(`${mode} is now open on ${schedule.settings.coopStage.name}! #salmonrun #splatoon3`);
 
