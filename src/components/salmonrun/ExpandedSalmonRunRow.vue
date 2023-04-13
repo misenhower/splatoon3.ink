@@ -8,7 +8,7 @@
       </div>
 
       <div class="hidden ss:block text-shadow text-white text-xl">
-        <KingSalmonid :schedule="schedule" class="inline-block -mb-1 mr-2" />
+        <KingSalmonid :schedule="schedule" class="inline-block -mb-1 mr-2" v-if="!eggstra"/>
 
         <div class="inline-block" v-if="time.isUpcoming(schedule.startTime)">
           Shift opens

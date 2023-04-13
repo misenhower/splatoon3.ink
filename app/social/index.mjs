@@ -11,6 +11,8 @@ import SplatfestStatus from "./generators/SplatfestStatus.mjs";
 import SplatfestResultsStatus from "./generators/SplatfestResultsStatus.mjs";
 import StatusGeneratorManager from "./StatusGeneratorManager.mjs"
 import SalmonRunUpcomingStatus from "./generators/SalmonRunUpcomingStatus.mjs";
+import EggstraWorkStatus from "./generators/EggstraWorkStatus.mjs";
+import EggstraWorkUpcomingStatus from "./generators/EggstraWorkUpcomingStatus.mjs";
 
 function defaultStatusGenerators() {
   return [
@@ -22,6 +24,8 @@ function defaultStatusGenerators() {
     new SalmonRunGearStatus,
     new SplatfestStatus,
     new SplatfestResultsStatus,
+    new EggstraWorkStatus,
+    new EggstraWorkUpcomingStatus,
   ];
 }
 
