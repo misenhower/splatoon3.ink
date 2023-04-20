@@ -120,6 +120,10 @@ export default class SplatNet3Client
     return this.getGraphQLPersistedQuery(1, '011e394c0e384d77a0701474c8c11a20');
   }
 
+  getStageRecordData() {
+    return this.getGraphQLPersistedQuery(1, 'f08a932d533845dde86e674e03bbb7d3');
+  }
+
   getGesotownData() {
     return this.getGraphQLPersistedQuery(1, 'a43dd44899a09013bcfd29b4b13314ff');
   }

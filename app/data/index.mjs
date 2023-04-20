@@ -4,6 +4,7 @@ import CoopUpdater from "./updaters/CoopUpdater.mjs";
 import FestivalUpdater from "./updaters/FestivalUpdater.mjs";
 import { regionTokens } from "../splatnet/NsoClient.mjs";
 import XRankUpdater from "./updaters/XRankUpdater.mjs";
+import StagesUpdater from "./updaters/StagesUpdater.mjs";
 
 function updaters() {
   const tokens = regionTokens();
@@ -16,6 +17,7 @@ function updaters() {
     tokens.EU && new FestivalUpdater('EU'),
     tokens.JP && new FestivalUpdater('JP'),
     tokens.AP && new FestivalUpdater('AP'),
+    new StagesUpdater,
   ].filter(u => u);
 }
 
