@@ -1,8 +1,7 @@
-import fs from 'fs/promises';
 import prefixedConsole from "../../common/prefixedConsole.mjs";
 import DataUpdater from "./DataUpdater.mjs";
 import { getFestId, getFestTeamId } from '../../common/util.mjs';
-import { exists } from '../../common/fs.mjs';
+import { olderThan } from '../../common/fs.mjs';
 
 export default class FestivalRankingUpdater extends DataUpdater
 {
@@ -32,21 +31,13 @@ export default class FestivalRankingUpdater extends DataUpdater
     return this._console;
   }
 
-  async shouldUpdate() {
-    // If the file doesn't exist, we need to download the data
-    if (!(await exists(this.getPath(this.filename)))) {
-      return true;
-    }
-
+  shouldUpdate() {
     // How long until this festival ends/ended?
     // We want to update this data until 4 hours after the Splatfest ends
-    let diff = Date.now() - new Date(this.endTime);
-    if (diff < 4 * 60 * 60 * 1000) {
-      return true;
-    }
+    let cutoff = new Date(this.endTime);
+    cutoff.setHours(cutoff.getHours() + 4);
 
-    // Otherwise, no need to update
-    return false;
+    return olderThan(this.getPath(this.filename), cutoff);
   }
 
   async getData(locale) {
