@@ -81,13 +81,14 @@ export default class FestivalUpdater extends DataUpdater
     // We don't need to use the locale for this data
     // since localization data retrieval happens elsewhere.
     let data = await cache.getData();
+    let cachedAt = await cache.getCachedAt();
 
     // How long until this festival ends/ended?
     // We want to retrieve the latest data until 4 hours after the Splatfest ends
-    let diff = Date.now() - new Date(node.endTime);
-    let forceUpdate = (diff < 4 * 60 * 60 * 1000);
+    let cutoff = new Date(node.endTime);
+    cutoff.setHours(cutoff.getHours() + 4);
 
-    if (forceUpdate || !data) {
+    if (!data || cachedAt < cutoff) {
       this.console.info(`Getting festival details for ${node.id}`);
       data = await this.splatnet().getFestDetailData(node.id);
       await cache.setData(data);

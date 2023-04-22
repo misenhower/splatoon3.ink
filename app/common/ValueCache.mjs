@@ -38,8 +38,15 @@ export default class ValueCache
     return item && item.data;
   }
 
+  async getCachedAt() {
+    let item = await this._getRawItem();
+
+    return (item && item.cachedAt) ? new Date(item.cachedAt) : null;
+  }
+
   async setData(data, expires = null) {
-    let serialized = JSON.stringify({ expires, data }, undefined, 2);
+    let cachedAt = new Date;
+    let serialized = JSON.stringify({ expires, data, cachedAt }, undefined, 2);
 
     await mkdirp(path.dirname(this.path));
     await fs.writeFile(this.path, serialized);
