@@ -3,6 +3,7 @@ import path from 'path';
 import mkdirp from 'mkdirp';
 import prefixedConsole from "../common/prefixedConsole.mjs";
 import { normalizeSplatnetResourcePath } from '../common/util.mjs';
+import { exists } from '../common/fs.mjs';
 
 export default class ImageProcessor
 {
@@ -37,21 +38,9 @@ export default class ImageProcessor
     return `${this.siteUrl ?? ''}/${this.outputDirectory}/${file}`;
   }
 
-  async exists(file) {
-    try {
-      await fs.access(this.localPath(file));
-
-      return true;
-    } catch (e) {
-      //
-    }
-
-    return false;
-  }
-
   async maybeDownload(url, destination) {
     // If the file already exists, we don't need to download it again
-    if (await this.exists(destination)) {
+    if (await exists(this.localPath(destination))) {
       return
     }
 

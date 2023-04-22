@@ -2,6 +2,7 @@ import fs from 'fs/promises';
 import prefixedConsole from "../../common/prefixedConsole.mjs";
 import DataUpdater from "./DataUpdater.mjs";
 import { getFestId, getFestTeamId } from '../../common/util.mjs';
+import { exists } from '../../common/fs.mjs';
 
 export default class FestivalRankingUpdater extends DataUpdater
 {
@@ -32,11 +33,8 @@ export default class FestivalRankingUpdater extends DataUpdater
   }
 
   async shouldUpdate() {
-    // Does the file exist?
-    try {
-      await fs.readFile(this.getPath(this.filename));
-    } catch (e) {
-      // File doesn't exist or other error, so we need to download the data
+    // If the file doesn't exist, we need to download the data
+    if (!(await exists(this.getPath(this.filename)))) {
       return true;
     }
 
