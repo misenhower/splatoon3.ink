@@ -1,3 +1,4 @@
+import { olderThan } from "../../common/fs.mjs";
 import prefixedConsole from "../../common/prefixedConsole.mjs";
 import { getXRankSeasonId } from "../../common/util.mjs";
 import DataUpdater from "./DataUpdater.mjs";
@@ -15,10 +16,11 @@ export default class XRankDetailUpdater extends DataUpdater
     '$..image3dThumbnail.url',
   ];
 
-  constructor(seasonId, xRankDetailType) {
+  constructor(seasonId, endTime, xRankDetailType) {
     super();
 
     this.seasonId = seasonId;
+    this.endTime = endTime;
     this.xRankDetailType = xRankDetailType;
 
     let readableId = getXRankSeasonId(seasonId);
@@ -29,6 +31,14 @@ export default class XRankDetailUpdater extends DataUpdater
     this._console ??= prefixedConsole('Updater', this.region, this.name, getXRankSeasonId(this.seasonId), this.xRankDetailType.name);
 
     return this._console;
+  }
+
+  shouldUpdate() {
+    // We want to update this data until 4 hours after the season ends
+    let cutoff = new Date(this.endTime);
+    cutoff.setHours(cutoff.getHours() + 4);
+
+    return olderThan(this.getPath(this.filename), cutoff);
   }
 
   async getData(locale) {

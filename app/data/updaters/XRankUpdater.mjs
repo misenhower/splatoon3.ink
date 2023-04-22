@@ -37,7 +37,7 @@ export default class XRankUpdater extends DataUpdater
 
     for (let season of seasons) {
       this.deriveSeasonId(season);
-      await this.updateSeasonDetail(season.id);
+      await this.updateSeasonDetail(season);
     }
 
     return result;
@@ -54,9 +54,9 @@ export default class XRankUpdater extends DataUpdater
     season.__splatoon3ink_id = getXRankSeasonId(season.id);
   }
 
-  async updateSeasonDetail(seasonId) {
+  async updateSeasonDetail(season) {
     for (let type of this.splatnet().getXRankingDetailQueryTypes()) {
-      let updater = new XRankDetailUpdater(seasonId, type);
+      let updater = new XRankDetailUpdater(season.id, season.endTime, type);
       await updater.updateIfNeeded();
     }
   }
