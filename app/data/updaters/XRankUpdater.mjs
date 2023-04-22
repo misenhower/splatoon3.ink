@@ -33,20 +33,25 @@ export default class XRankUpdater extends DataUpdater
 
   async getData(locale) {
     let result = await this.splatnet(locale).getXRankingData(this.divisionKey);
+    let seasons = this.getSeasons(result.data);
 
-    this.deriveSeasonIds(result);
-
-    let seasonId = result.data.xRanking.currentSeason.id;
-    await this.updateSeasonDetail(seasonId);
+    for (let season of seasons) {
+      this.deriveSeasonId(season);
+      await this.updateSeasonDetail(season.id);
+    }
 
     return result;
   }
 
-  deriveSeasonIds(data) {
-    jsonpath.apply(data, '$..currentSeason', node => ({
-      '__splatoon3ink_id': getXRankSeasonId(node.id),
-      ...node,
-    }));
+  getSeasons(data) {
+    let seasons = data.xRanking.pastSeasons?.nodes ?? [];
+    seasons.unshift(data.xRanking.currentSeason);
+
+    return seasons;
+  }
+
+  deriveSeasonId(season) {
+    season.__splatoon3ink_id = getXRankSeasonId(season.id);
   }
 
   async updateSeasonDetail(seasonId) {
