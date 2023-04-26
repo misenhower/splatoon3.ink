@@ -11,11 +11,13 @@
     "social:test": "node app/index.mjs socialTest",
     "social:test:image": "node app/index.mjs socialTestImage",
     "social:test:mastodon": "node app/index.mjs socialTestMastodon",
+    "social:test:bluesky": "node app/index.mjs socialTestBluesky",
     "splatnet": "node app/index.mjs splatnet",
     "splatnet:all": "node app/index.mjs splatnetAll",
     "warmCaches": "node app/index.mjs warmCaches"
   },
   "dependencies": {
+    "@atproto/api": "^0.2.9",
     "@headlessui/vue": "^1.7.3",
     "@heroicons/vue": "^2.0.12",
     "@intlify/vite-plugin-vue-i18n": "^6.0.3",
@@ -31,6 +33,7 @@
     "nxapi": "^1.4.0",
     "pinia": "^2.0.22",
     "puppeteer": "^18.0.3",
+    "sharp": "^0.32.0",
     "twitter-api-v2": "^1.12.7",
     "vue": "^3.2.39",
     "vue-i18n": "^9.2.2",

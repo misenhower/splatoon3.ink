@@ -6,6 +6,7 @@ import { updatePrimary, updateAll } from './data/index.mjs';
 import { warmCaches } from "./splatnet/index.mjs";
 import MastodonClient from './social/clients/MastodonClient.mjs';
 import ImageWriter from './social/clients/ImageWriter.mjs';
+import BlueskyClient from './social/clients/BlueskyClient.mjs';
 
 consoleStamp(console);
 dotenv.config();
@@ -15,6 +16,7 @@ const actions = {
   social: sendStatuses,
   socialTest: testStatuses,
   socialTestMastodon: () => testStatuses([new MastodonClient]),
+  socialTestBluesky: () => testStatuses([new BlueskyClient]),
   socialTestImage: () => testStatuses([new ImageWriter]),
   splatnet: updatePrimary,
   splatnetAll: updateAll,

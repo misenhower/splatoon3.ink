@@ -13,6 +13,7 @@ import StatusGeneratorManager from "./StatusGeneratorManager.mjs"
 import SalmonRunUpcomingStatus from "./generators/SalmonRunUpcomingStatus.mjs";
 import EggstraWorkStatus from "./generators/EggstraWorkStatus.mjs";
 import EggstraWorkUpcomingStatus from "./generators/EggstraWorkUpcomingStatus.mjs";
+import BlueskyClient from "./clients/BlueskyClient.mjs";
 
 function defaultStatusGenerators() {
   return [
@@ -33,6 +34,7 @@ function defaultClients() {
   return [
     new TwitterClient,
     new MastodonClient,
+    new BlueskyClient,
     new ImageWriter,
   ];
 }
