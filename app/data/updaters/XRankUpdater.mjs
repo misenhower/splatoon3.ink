@@ -44,10 +44,10 @@ export default class XRankUpdater extends DataUpdater
   }
 
   getSeasons(data) {
-    let seasons = data.xRanking.pastSeasons?.nodes ?? [];
-    seasons.unshift(data.xRanking.currentSeason);
-
-    return seasons;
+    return [
+      data.xRanking.currentSeason,
+      ...data.xRanking.pastSeasons.nodes,
+    ];
   }
 
   deriveSeasonId(season) {
