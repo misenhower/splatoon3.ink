@@ -82,7 +82,7 @@ export const useSalmonRunSchedulesStore = defineScheduleStore('salmonRun', {
       .map(n => ({
         ...n,
         isMystery: n.setting.weapons.some(w => w.name === 'Random'),
-        isGrizzcoMystery: n.setting.weapons.some(w => w.__splatoon3ink_id === 'edcfecb7e8acd1a7'),
+        isGrizzcoMystery: n.setting.weapons.some(w => w.__splatoon3ink_id === '6e17fbe20efecca9'),
       }));
 
     return sortBy(nodes, 'startTime');
