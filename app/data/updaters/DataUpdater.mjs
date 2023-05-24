@@ -173,7 +173,11 @@ export default class DataUpdater
   }
 
   getPath(filename) {
-    return `${this.outputDirectory}/${this.directory}/${filename}.json`;
+    return [
+      this.outputDirectory,
+      this.directory,
+      `${filename}.json`,
+    ].filter(x => x).join('/');
   }
 
   getArchivePath(filename) {
