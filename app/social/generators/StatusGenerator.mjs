@@ -32,7 +32,7 @@ export default class StatusGenerator
 
     setActivePinia(createPinia());
 
-    useTimeStore().setNow(getTopOfCurrentHour());
+    useTimeStore().setNow(getTopOfCurrentHour().getTime());
 
     useSchedulesDataStore().setData(JSON.parse(await fs.readFile('dist/data/schedules.json')));
     useGearDataStore().setData(JSON.parse(await fs.readFile('dist/data/gear.json')));

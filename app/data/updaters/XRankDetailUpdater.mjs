@@ -6,7 +6,8 @@ import DataUpdater from "./DataUpdater.mjs";
 export default class XRankDetailUpdater extends DataUpdater
 {
   name = 'X-Rank Detail';
-  filename = 'xrank/xrank.detail';
+  filename = 'xrank.detail';
+  directory = 'xrank';
 
   imagePaths = [
     '$..image.url',

@@ -5,8 +5,26 @@ export function getTopOfCurrentHour(date = null) {
 
     date.setUTCMinutes(0);
     date.setUTCSeconds(0);
+    date.setUTCMilliseconds(0);
 
-    return Math.trunc(date.getTime() / 1000) * 1000;
+    return date;
+}
+
+function leadingZero(value) {
+    return value.toString().padStart(2, '0');
+}
+
+export function getDateParts(date = null) {
+    date ??= new Date;
+
+    return {
+        year: date.getUTCFullYear(),
+        month: leadingZero(date.getUTCMonth() + 1),
+        day: leadingZero(date.getUTCDate()),
+        hour: leadingZero(date.getUTCHours()),
+        minute: leadingZero(date.getUTCMinutes()),
+        second: leadingZero(date.getUTCSeconds()),
+    };
 }
 
 export function getGearIcon(gear) {

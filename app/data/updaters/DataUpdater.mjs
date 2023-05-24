@@ -9,16 +9,17 @@ import ImageProcessor from '../ImageProcessor.mjs';
 import NsoClient from '../../splatnet/NsoClient.mjs';
 import { locales, regionalLocales, defaultLocale } from '../../../src/common/i18n.mjs';
 import { LocalizationProcessor } from '../LocalizationProcessor.mjs';
-import { deriveId } from '../../common/util.mjs';
+import { deriveId, getDateParts, getTopOfCurrentHour } from '../../common/util.mjs';
 
 export default class DataUpdater
 {
   name = null;
   filename = null;
+  directory = null;
   calendarName = null;
   calendarFilename = null;
   outputDirectory = 'dist/data';
-  archiveOutputDirectory = 'storage/archive';
+  archiveOutputDirectory = 'dist/data/archive';
 
   imagePaths = [];
   derivedIds = [];
@@ -168,16 +169,25 @@ export default class DataUpdater
     await this.writeFile(this.getPath(this.filename), s);
 
     // Write a secondary file for archival
-    let filename = `${this.filename}.${Date.now()}`;
-    await this.writeFile(this.getArchivePath(filename), s);
+    await this.writeFile(this.getArchivePath(this.filename), s);
   }
 
   getPath(filename) {
-    return `${this.outputDirectory}/${filename}.json`;
+    return `${this.outputDirectory}/${this.directory}/${filename}.json`;
   }
 
   getArchivePath(filename) {
-    return `${this.archiveOutputDirectory}/${filename}.json`;
+    // We only want to store one file per hour, so start with the top of the current hour
+    let date = getTopOfCurrentHour();
+    let { year, month, day, hour, minute, second } = getDateParts(date);
+
+    return [
+      this.archiveOutputDirectory,
+      year,
+      month,
+      day,
+      `${year}-${month}-${day}.${hour}-${minute}-${second}.${filename}.json`,
+    ].join('/');
   }
 
   async formatDataForWrite(data) {
