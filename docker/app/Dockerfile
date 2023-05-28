@@ -1,4 +1,4 @@
-FROM node:18
+FROM node:20
 
 # Puppeteer support
 # Adapted from: https://github.com/puppeteer/puppeteer/blob/2d50ec5b384f2ae8eb02a534843caceca9f58ffe/docker/Dockerfile
