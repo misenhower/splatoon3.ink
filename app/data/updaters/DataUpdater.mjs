@@ -19,7 +19,8 @@ export default class DataUpdater
   calendarName = null;
   calendarFilename = null;
   outputDirectory = 'dist/data';
-  archiveOutputDirectory = 'dist/data/archive';
+  archiveOutputDirectory = 'storage/archive';
+  archiveOnePerHour = true;
 
   imagePaths = [];
   derivedIds = [];
@@ -181,15 +182,16 @@ export default class DataUpdater
   }
 
   getArchivePath(filename) {
-    // We only want to store one file per hour, so start with the top of the current hour
-    let date = getTopOfCurrentHour();
+    let date = new Date;
+    if (this.archiveOnePerHour) {
+      // We only want to store one file per hour, so start with the top of the current hour
+      date = getTopOfCurrentHour(date);
+    }
+
     let { year, month, day, hour, minute, second } = getDateParts(date);
 
     return [
       this.archiveOutputDirectory,
-      year,
-      month,
-      day,
       `${year}-${month}-${day}.${hour}-${minute}-${second}.${filename}.json`,
     ].join('/');
   }

@@ -8,6 +8,7 @@ export default class XRankDetailUpdater extends DataUpdater
   name = 'X-Rank Detail';
   filename = 'xrank.detail';
   directory = 'xrank';
+  archiveOnePerHour = false;
 
   imagePaths = [
     '$..image.url',
