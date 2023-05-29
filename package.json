@@ -14,10 +14,12 @@
     "social:test:bluesky": "node app/index.mjs socialTestBluesky",
     "splatnet": "node app/index.mjs splatnet",
     "splatnet:all": "node app/index.mjs splatnetAll",
-    "warmCaches": "node app/index.mjs warmCaches"
+    "warmCaches": "node app/index.mjs warmCaches",
+    "data:archive": "node app/index.mjs dataArchive"
   },
   "dependencies": {
     "@atproto/api": "^0.2.9",
+    "@aws-sdk/client-s3": "^3.341.0",
     "@headlessui/vue": "^1.7.3",
     "@heroicons/vue": "^2.0.12",
     "@intlify/vite-plugin-vue-i18n": "^6.0.3",

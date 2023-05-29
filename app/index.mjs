@@ -7,6 +7,7 @@ import { warmCaches } from "./splatnet/index.mjs";
 import MastodonClient from './social/clients/MastodonClient.mjs';
 import ImageWriter from './social/clients/ImageWriter.mjs';
 import BlueskyClient from './social/clients/BlueskyClient.mjs';
+import DataArchiver from './data/DataArchiver.mjs';
 
 consoleStamp(console);
 dotenv.config();
@@ -21,6 +22,7 @@ const actions = {
   splatnet: updatePrimary,
   splatnetAll: updateAll,
   warmCaches,
+  dataArchive: () => (new DataArchiver).process(),
 }
 
 const command = process.argv[2];
