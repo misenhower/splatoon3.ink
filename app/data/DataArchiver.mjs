@@ -2,6 +2,10 @@ import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import fs from 'fs/promises';
 import prefixedConsole from "../common/prefixedConsole.mjs";
 
+export function archiveData() {
+  return (new DataArchiver).process();
+}
+
 export default class DataArchiver
 {
   inputDirectory = 'storage/archive';
