@@ -5,7 +5,7 @@ import prefixedConsole from "../common/prefixedConsole.mjs";
 export default class DataArchiver
 {
   inputDirectory = 'storage/archive';
-  deleteAfterUpload = true;
+  deleteAfterUpload = false;
 
   async process() {
     if (!this.canRun) {
