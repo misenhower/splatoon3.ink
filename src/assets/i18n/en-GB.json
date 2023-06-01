@@ -52,6 +52,10 @@
       "won": "Team {team} wins!"
     }
   },
+  "challenges": {
+    "title": "Challenges",
+    "available": "Available again"
+  },
   "gear": {
     "title": "Gear",
     "sale": "Gear on Sale Now",
