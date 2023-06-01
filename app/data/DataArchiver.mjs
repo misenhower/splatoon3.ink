@@ -9,7 +9,7 @@ export function archiveData() {
 export default class DataArchiver
 {
   inputDirectory = 'storage/archive';
-  deleteAfterUpload = false;
+  deleteAfterUpload = true;
 
   async process() {
     if (!this.canRun) {
