@@ -69,6 +69,12 @@ export const useSplatfestSchedulesStore = defineScheduleStore('splatfest', {
   settings: node => node.festMatchSetting,
 });
 
+// Challenges
+export const useChallengeSchedulesStore = defineScheduleStore('challenge', {
+  nodes: () => useSchedulesDataStore().data?.eventSchedules.nodes,
+  settings: node => node.leagueMatchSetting,
+});
+
 // Salmon Run
 export const useSalmonRunSchedulesStore = defineScheduleStore('salmonRun', {
   nodes: () => {
@@ -104,4 +110,5 @@ if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useSplatfestSchedulesStore, import.meta.hot));
   import.meta.hot.accept(acceptHMRUpdate(useSalmonRunSchedulesStore, import.meta.hot));
   import.meta.hot.accept(acceptHMRUpdate(useEggstraWorkSchedulesStore, import.meta.hot));
+  import.meta.hot.accept(acceptHMRUpdate(useChallengeSchedulesStore, import.meta.hot));
 }
