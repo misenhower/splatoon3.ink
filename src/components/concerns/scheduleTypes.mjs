@@ -1,8 +1,9 @@
-import { useAnarchyOpenSchedulesStore, useAnarchySeriesSchedulesStore, useRegularSchedulesStore, useSplatfestSchedulesStore, useXSchedulesStore } from '@/stores/schedules';
+import { useAnarchyOpenSchedulesStore, useAnarchySeriesSchedulesStore, useRegularSchedulesStore, useSplatfestSchedulesStore, useXSchedulesStore, useChallengeSchedulesStore } from '@/stores/schedules';
 import battleRegularSvg from '@/assets/img/modes/regular.svg';
 import battleBankaraSvg from '@/assets/img/modes/bankara.svg';
 import battleXSvg from '@/assets/img/modes/x.svg';
 import battleLeagueSvg from '@/assets/img/modes/league.svg';
+import battleEventSvg from '@/assets/img/modes/event.svg';
 
 export function useScheduleTypes() {
   const types = {
@@ -40,6 +41,13 @@ export function useScheduleTypes() {
       store: useSplatfestSchedulesStore(),
       img: battleRegularSvg,
       bg: 'bg-splatoon-battle-regular bg-tapes',
+    },
+    challenge: {
+      name: 'schedule.types.challenge',
+      badge: null,
+      store: useChallengeSchedulesStore(),
+      img: battleEventSvg,
+      bg: 'bg-splatoon-battle-league bg-tapes',
     },
   };
 
