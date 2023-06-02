@@ -2,10 +2,10 @@
     <template v-if="rule && schedule">
     <div class="flex items-center w-full font-splatoon2">
         <RuleIcon :rule="rule" class="h-5 lg:h-6" />
-        <div class="px-2 text-shadow md:whitespace-nowrap">
+        <div class="px-2 text-shadow whitespace-pre">
             {{ $d(schedule.startTime, 'dateTimeShortWeekday') }}
             &ndash;
-            {{ $d(schedule.endTime, 'dateTimeShortWeekday') }}
+            {{ $d(schedule.endTime, 'dateTimeShort') }}
         </div>
 
         <div class="flex justify-end w-full">
