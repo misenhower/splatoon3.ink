@@ -3,6 +3,8 @@ import { computed } from "vue";
 import { useSchedulesDataStore } from "./data.mjs";
 import { useTimeStore } from "./time.mjs";
 import sortBy from 'lodash/sortBy.js';
+import min from 'lodash/min.js';
+import max from 'lodash/max.js';
 
 // Schedule store definition (used for each type of schedule)
 function defineScheduleStore(id, options) {
@@ -69,6 +71,17 @@ export const useSplatfestSchedulesStore = defineScheduleStore('splatfest', {
   settings: node => node.festMatchSetting,
 });
 
+// Challenge Events
+export const useEventSchedulesStore = defineScheduleStore('event', {
+  nodes: () => useSchedulesDataStore().data?.eventSchedules.nodes.map(node => ({
+    // Find the overall start/end times for the event based on all time periods
+    startTime: min(node.timePeriods.map(t => t.startTime)),
+    endTime: max(node.timePeriods.map(t => t.endTime)),
+    ...node,
+  })),
+  settings: node => node.leagueMatchSetting,
+});
+
 // Salmon Run
 export const useSalmonRunSchedulesStore = defineScheduleStore('salmonRun', {
   nodes: () => {
@@ -102,6 +115,7 @@ if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useAnarchyOpenSchedulesStore, import.meta.hot));
   import.meta.hot.accept(acceptHMRUpdate(useXSchedulesStore, import.meta.hot));
   import.meta.hot.accept(acceptHMRUpdate(useSplatfestSchedulesStore, import.meta.hot));
+  import.meta.hot.accept(acceptHMRUpdate(useEventSchedulesStore, import.meta.hot));
   import.meta.hot.accept(acceptHMRUpdate(useSalmonRunSchedulesStore, import.meta.hot));
   import.meta.hot.accept(acceptHMRUpdate(useEggstraWorkSchedulesStore, import.meta.hot));
 }
