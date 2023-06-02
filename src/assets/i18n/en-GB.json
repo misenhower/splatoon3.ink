@@ -53,9 +53,9 @@
     }
   },
   "events": {
-    "title": "Events",
+    "title": "Challenges",
     "available": "Available again",
-    "not_available": "No events available, check back later!"
+    "not_available": "No challenges available, check back later!"
   },
   "gear": {
     "title": "Gear",
