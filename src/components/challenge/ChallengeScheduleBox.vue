@@ -29,9 +29,9 @@
             </div>
 
             <div class="justify-end text-xs lg:text-sm bg-zinc-100 bg-opacity-80 rounded text-black px-2">
-              {{ $d(currentSchedule.timePeriods[0].startTime, 'dateTimeShortWeekday') }}
+              {{ $d(currentSchedule.startTime, 'dateTimeShortWeekday') }}
               &ndash;
-              {{ $d(currentSchedule.timePeriods[0].endTime, 'dateTimeShort') }}
+              {{ $d(currentSchedule.endTime, 'dateTimeShort') }}
             </div>
           </div>
 
