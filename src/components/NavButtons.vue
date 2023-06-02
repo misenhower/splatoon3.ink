@@ -7,7 +7,7 @@
       {{ $t('salmonrun.title') }}
     </router-link>
     <router-link to="/challenges" class="router-link">
-      {{ $t('challenges.title') }}
+      {{ $t('events.title') }}
     </router-link>
     <router-link to="/gear" class="router-link">
       {{ $t('gear.title') }}
