@@ -40,6 +40,16 @@ export default class StageScheduleUpdater extends DataUpdater
       id: '__splatoon3ink_id',
       values: 'name',
     },
+    {
+      key: 'events',
+      nodes: '$..eventSchedules.nodes.*.leagueMatchSetting.leagueMatchEvent',
+      id: 'id',
+      values: [
+        'name',
+        'desc',
+        'regulation',
+      ],
+    },
   ];
 
   async getData(locale) {
