@@ -1,4 +1,4 @@
-import { useAnarchyOpenSchedulesStore, useAnarchySeriesSchedulesStore, useRegularSchedulesStore, useSplatfestSchedulesStore, useXSchedulesStore, useChallengeSchedulesStore } from '@/stores/schedules';
+import { useAnarchyOpenSchedulesStore, useAnarchySeriesSchedulesStore, useRegularSchedulesStore, useSplatfestSchedulesStore, useXSchedulesStore, useEventSchedulesStore } from '@/stores/schedules';
 import battleRegularSvg from '@/assets/img/modes/regular.svg';
 import battleBankaraSvg from '@/assets/img/modes/bankara.svg';
 import battleXSvg from '@/assets/img/modes/x.svg';
@@ -45,7 +45,7 @@ export function useScheduleTypes() {
     challenge: {
       name: 'schedule.types.challenge',
       badge: null,
-      store: useChallengeSchedulesStore(),
+      store: useEventSchedulesStore(),
       img: battleEventSvg,
       bg: 'bg-splatoon-battle-league bg-tapes',
     },
