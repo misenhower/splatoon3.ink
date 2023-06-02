@@ -1,32 +1,31 @@
 <template>
-    <MainLayout :title="$t('events.title')">
-      <div class="grow flex items-center justify-center">
-        <div class="mx-4 md:mx-12 w-full space-y-10 max-w-xl">
-          <template v-if="store.activeSchedule || store.upcomingSchedules && store.upcomingSchedules.length > 0">
-            <div v-for="schedule in store.activeSchedule">
-              <ChallengeScheduleBox :currentSchedule="schedule" type="challenge" class="flex-1 md:-rotate-1" />
+  <MainLayout :title="$t('events.title')">
+    <div class="grow flex items-center justify-center">
+      <div class="mx-4 md:mx-12 max-w-screen-2xl w-full space-y-10">
+        <div v-if="store.currentSchedules?.length" class="flex flex-col lg:flex-row items-center justify-center gap-10">
+          <div v-for="(schedule, i) in store.currentSchedules" :key="schedule.settings.leagueMatchEvent.id" class="max-w-xl">
+              <ChallengeScheduleBox
+                :currentSchedule="schedule"
+                type="challenge"
+                class="w-full"
+                :class="(i % 2) ? 'md:rotate-1' : 'md:-rotate-1'"
+                />
             </div>
-
-            <div v-for="schedule in store.upcomingSchedules">
-              <ChallengeScheduleBox :currentSchedule="schedule" type="challenge" class="flex-1 md:-rotate-1" />
-            </div>
-          </template>
-
-          <template v-else>
-            <ProductContainer :bg="type.bg" class="w-full pt-10 pb-4 -rotate-1">
-              <div class="flex justify-center">
-                <div class="inline-flex items-center font-splatoon2 text-xl text-shadow m-2">
-                  <img :src="type.img" />
-                  {{ $t('events.not_available') }}
-                </div>
-              </div>
-            </ProductContainer>
-          </template>
         </div>
+
+        <!-- No events -->
+        <ProductContainer v-else :bg="type.bg" class="w-full mx-auto max-w-lg pt-10 pb-4 -rotate-1">
+          <div class="flex justify-center">
+            <div class="inline-flex items-center font-splatoon2 text-xl text-shadow m-2">
+              <img :src="type.img" />
+              {{ $t('events.not_available') }}
+            </div>
+          </div>
+        </ProductContainer>
       </div>
-    </MainLayout>
-  </template>
-  
+    </div>
+  </MainLayout>
+</template>
 <script setup>
 import { computed } from 'vue';
 
@@ -42,4 +41,3 @@ const { types } = useScheduleTypes();
 
 const type = computed(() => types['challenge']);
 </script>
-  
