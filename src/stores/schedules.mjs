@@ -118,5 +118,4 @@ if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useEventSchedulesStore, import.meta.hot));
   import.meta.hot.accept(acceptHMRUpdate(useSalmonRunSchedulesStore, import.meta.hot));
   import.meta.hot.accept(acceptHMRUpdate(useEggstraWorkSchedulesStore, import.meta.hot));
-  import.meta.hot.accept(acceptHMRUpdate(useChallengeSchedulesStore, import.meta.hot));
 }
