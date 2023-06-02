@@ -59,9 +59,10 @@
     "dailydrop": "Heutige Auswahl",
     "order": "Bestellen"
   },
-  "challenges": {
-    "title": "Challenges",
-    "available": "Erneut verfügbar"
+  "events": {
+    "title": "Events",
+    "available": "Erneut verfügbar",
+    "not_available": "Aktuell sind keine Events verfügbar, schau später erneut vorbei!"
   },
   "about": {
     "title": "Über!",
