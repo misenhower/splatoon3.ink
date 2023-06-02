@@ -7,7 +7,7 @@ export const SPLATNET3_WEB_SERVICE_ID = '4834290508791808';
 export default class SplatNet3Client
 {
   baseUrl = 'https://api.lp1.av5ja.srv.nintendo.net';
-  webViewVersion = '3.0.0-2857bc50';
+  webViewVersion = '4.0.0-e2ee936d';
   bulletToken = null;
 
   constructor(nsoClient, acceptLanguage = 'en-US') {

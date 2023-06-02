@@ -52,6 +52,11 @@
       "won": "Team {team} wins!"
     }
   },
+  "events": {
+    "title": "Challenges",
+    "available": "Available again",
+    "not_available": "No challenges available, check back later!"
+  },
   "gear": {
     "title": "Gear",
     "sale": "Gear on Sale Now",
