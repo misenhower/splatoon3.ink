@@ -10,6 +10,9 @@
         <router-link to="/schedules">Schedules</router-link>
       </div>
       <div>
+        <router-link to="/challenges">Challenges</router-link>
+      </div>
+      <div>
         <router-link to="/salmonrun">Salmon Run</router-link>
       </div>
       <div>

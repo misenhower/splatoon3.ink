@@ -14,12 +14,14 @@ import SalmonRunUpcomingStatus from "./generators/SalmonRunUpcomingStatus.mjs";
 import EggstraWorkStatus from "./generators/EggstraWorkStatus.mjs";
 import EggstraWorkUpcomingStatus from "./generators/EggstraWorkUpcomingStatus.mjs";
 import BlueskyClient from "./clients/BlueskyClient.mjs";
+import ChallengeStatus from "./generators/ChallengeStatus.mjs";
 
 function defaultStatusGenerators() {
   return [
     new SchedulesStatus,
     new DailyDropGearStatus,
     new RegularGearStatus,
+    new ChallengeStatus,
     new SalmonRunStatus,
     new SalmonRunUpcomingStatus,
     new SalmonRunGearStatus,

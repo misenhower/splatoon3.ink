@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import ScreenshotsHomeView from '@/views/screenshots/ScreenshotsHomeView.vue'
 import CountdownView from '@/views/screenshots/CountdownView.vue'
 import SchedulesView from '@/views/screenshots/SchedulesView.vue'
+import ChallengesView from '@/views/screenshots/ChallengesView.vue'
 import SalmonRunView from '@/views/screenshots/SalmonRunView.vue'
 import SalmonRunGearView from '@/views/screenshots/SalmonRunGearView.vue'
 import RegularGearView from '@/views/screenshots/RegularGearView.vue'
@@ -22,6 +23,10 @@ const router = createRouter({
     {
       path: '/schedules',
       component: SchedulesView,
+    },
+    {
+      path: '/challenges',
+      component: ChallengesView,
     },
     {
       path: '/salmonrun',

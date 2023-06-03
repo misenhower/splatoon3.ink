@@ -46,7 +46,7 @@
               />
           </div>
 
-          <div class="mx-2 space-y-2" v-if="event.upcomingTimePeriods?.length">
+          <div class="mx-2 space-y-2 ss:hidden" v-if="event.upcomingTimePeriods?.length">
             <SquidTape class="font-splatoon2 text-sm drop-shadow -rotate-6 -mx-2 mt-4">
               <div class="px-2">{{ $t('times.future') }}</div>
             </SquidTape>
