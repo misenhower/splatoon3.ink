@@ -73,12 +73,21 @@ export const useSplatfestSchedulesStore = defineScheduleStore('splatfest', {
 
 // Challenge Events
 export const useEventSchedulesStore = defineScheduleStore('event', {
-  nodes: () => useSchedulesDataStore().data?.eventSchedules.nodes.map(node => ({
-    // Find the overall start/end times for the event based on all time periods
-    startTime: min(node.timePeriods.map(t => t.startTime)),
-    endTime: max(node.timePeriods.map(t => t.endTime)),
-    ...node,
-  })),
+  nodes: () => useSchedulesDataStore().data?.eventSchedules.nodes.map(node => {
+    const time = useTimeStore();
+
+    return {
+      // Find the overall start/end times for the event based on all time periods
+      startTime: min(node.timePeriods.map(t => t.startTime)),
+      endTime: max(node.timePeriods.map(t => t.endTime)),
+
+      currentTimePeriods: node.timePeriods.filter(s => time.isCurrent(s.endTime)),
+      activeTimePeriod: node.timePeriods.find(s => time.isActive(s.startTime, s.endTime)),
+      upcomingTimePeriods: node.timePeriods.filter(s => time.isUpcoming(s.startTime)),
+
+      ...node,
+    };
+  }),
   settings: node => node.leagueMatchSetting,
 });
 

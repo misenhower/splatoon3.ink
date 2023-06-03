@@ -1,26 +1,26 @@
 <template>
-  <template v-if="currentSchedule" class="flex flex-row flex-1">
-    <ProductContainer :bg="type.bg" class="w-full pt-10 pb-4">
+  <template v-if="event">
+    <ProductContainer :bg="type.bg" class="w-full pt-10 pb-2">
       <div class="space-y-2">
         <div class="flex items-center space-x-2 mx-2">
           <img :src="type.img" />
             <div class="font-splatoon1 lg:text-2xl xl:text-3xl text-shadow">
-              {{ $t(`splatnet.events.${currentSchedule.settings.leagueMatchEvent.id}.name`, currentSchedule.settings.leagueMatchEvent.name) }}
+              {{ $t(`splatnet.events.${event.settings.leagueMatchEvent.id}.name`, event.settings.leagueMatchEvent.name) }}
 
               <div class="font-splatoon2 lg:text-md xl:text-xl text-shadow">
-                {{ $t(`splatnet.events.${currentSchedule.settings.leagueMatchEvent.id}.desc`, currentSchedule.settings.leagueMatchEvent.desc) }}
+                {{ $t(`splatnet.events.${event.settings.leagueMatchEvent.id}.desc`, event.settings.leagueMatchEvent.desc) }}
               </div>
             </div>
           </div>
 
-          <div class="bg-zinc-900 bg-opacity-70 backdrop-blur-sm pt-2 pb-6 px-2 mx-1 rounded-lg space-y-2">
+          <div class="bg-zinc-900 bg-opacity-70 backdrop-blur-sm pt-2 pb-1 px-2 mx-2 rounded-lg space-y-2">
             <div class="flex items-center justify-between font-splatoon2">
             <div class="flex items-center space-x-2 text-sm lg:text-lg">
-              <template v-if="currentSchedule">
+              <template v-if="event">
                 <div>
-                  <RuleIcon :rule="currentSchedule.settings.vsRule" class="h-5 lg:h-6" />
+                  <RuleIcon :rule="event.settings.vsRule" class="h-5 lg:h-6" />
                 </div>
-                <div class="text-shadow">{{ $t(`splatnet.rules.${currentSchedule.settings.vsRule.id}.name`, currentSchedule.settings.vsRule.name) }}</div>
+                <div class="text-shadow">{{ $t(`splatnet.rules.${event.settings.vsRule.id}.name`, event.settings.vsRule.name) }}</div>
               </template>
 
               <template v-else>
@@ -28,10 +28,8 @@
               </template>
             </div>
 
-            <div class="justify-end text-xs lg:text-sm bg-zinc-100 bg-opacity-80 rounded text-black px-2">
-              {{ $d(currentSchedule.startTime, 'dateTimeShortWeekday') }}
-              &ndash;
-              {{ $d(currentSchedule.endTime, 'dateTimeShort') }}
+            <div v-if="event.activeTimePeriod" class="justify-end text-xs lg:text-sm bg-zinc-100 bg-opacity-80 rounded text-black px-2">
+              {{  $t('time.remaining', { time: formatDurationFromNow(event.activeTimePeriod.endTime) }) }}
             </div>
           </div>
 
@@ -39,23 +37,23 @@
             <StageImage
               class="flex-1"
               imgClass="rounded-l-xl"
-              :stage="currentSchedule.settings?.vsStages[0]"
+              :stage="event.settings?.vsStages[0]"
             />
             <StageImage
               class="flex-1"
               imgClass="rounded-r-xl"
-              :stage="currentSchedule.settings?.vsStages[1]"
+              :stage="event.settings?.vsStages[1]"
             />
           </div>
 
-          <div class="mx-2 space-y-2" v-if="currentSchedule.timePeriods.slice(1).length > 0">
-            <SquidTape class="font-splatoon2 text-sm drop-shadow -rotate-6 -mx-2 mt-5">
-              <div class="px-2">{{ $t('events.available') }}</div>
+          <div class="mx-2 space-y-2" v-if="event.upcomingTimePeriods?.length">
+            <SquidTape class="font-splatoon2 text-sm drop-shadow -rotate-6 -mx-2 mt-4">
+              <div class="px-2">{{ $t('times.future') }}</div>
             </SquidTape>
 
             <div class="divide-y-2 divide-dashed divide-zinc-400 font-splatoon">
-              <div v-for="next in currentSchedule.timePeriods.slice(1)" class="flex flex-row justify-center">
-                <ChallengeScheduleRow :rule="currentSchedule.settings.vsRule" :key=next.startTime :schedule="next" class="my-2"/>
+              <div v-for="timePeriod in event.upcomingTimePeriods" :key="timePeriod.startTime" class="flex flex-row justify-center">
+                <ChallengeScheduleRow :event="event" :timePeriod="timePeriod" class="my-2"/>
               </div>
             </div>
           </div>
@@ -73,13 +71,14 @@ import RuleIcon from '../RuleIcon.vue';
 import SquidTape from '../SquidTape.vue';
 import { useScheduleTypes } from '../concerns/scheduleTypes.mjs';
 import ChallengeScheduleRow from './ChallengeScheduleRow.vue';
+import { formatDurationFromNow } from '../../common/time';
 
 const props = defineProps({
   type: {
     type: String,
     required: true,
   },
-  currentSchedule: {
+  event: {
     required: true
   }
 });

@@ -1,11 +1,11 @@
 <template>
   <MainLayout :title="$t('events.title')">
     <div class="grow flex items-center justify-center">
-      <div class="mx-4 md:mx-12 max-w-screen-2xl w-full space-y-10">
+      <div class="mx-4 md:mx-12 max-w-screen-2xl w-full my-6">
         <div v-if="store.currentSchedules?.length" class="flex flex-col lg:flex-row items-center justify-center gap-10">
-          <div v-for="(schedule, i) in store.currentSchedules" :key="schedule.settings.leagueMatchEvent.id" class="max-w-xl">
+          <div v-for="(event, i) in store.currentSchedules" :key="i" class="max-w-xl">
               <ChallengeScheduleBox
-                :currentSchedule="schedule"
+                :event="event"
                 type="challenge"
                 class="w-full"
                 :class="(i % 2) ? 'md:rotate-1' : 'md:-rotate-1'"
