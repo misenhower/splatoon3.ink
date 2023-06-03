@@ -57,5 +57,10 @@
     "sale": "目前贩卖的装备",
     "dailydrop": "今日精选",
     "order": "预定"
+  },
+  "events": {
+    "title": "活动比赛",
+    "available": "下一场",
+    "not_available": "日程未定"
   }
 }

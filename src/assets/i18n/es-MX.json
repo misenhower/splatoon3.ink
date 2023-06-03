@@ -56,5 +56,10 @@
     "sale": "Equipamiento a la venta",
     "dailydrop": "Marca destacada",
     "order": "Encargar"
+  },
+  "events": {
+    "title": "Combate especial",
+    "available": "Siguiente",
+    "not_available": "Calendario sin determinar"
   }
 }

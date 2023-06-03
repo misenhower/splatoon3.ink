@@ -80,5 +80,10 @@
     "term": "Ce site internet n'est pas affilié à Nintendo. Tous les noms de produits, logos et marques sont la propriété de leurs détenteurs respectifs.",
     "about": "À propos",
     "data": "Données"
+  },
+  "events": {
+    "title": "Match Challenge",
+    "available": "Créneau suivant",
+    "not_available": "Aucun match Challenge prévu pour le moment."
   }
 }

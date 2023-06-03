@@ -56,5 +56,10 @@
     "sale": "현재 판매 중인 기어",
     "dailydrop": "오늘의 픽업",
     "order": "주문하기"
+  },
+  "events": {
+    "title": "이벤트 매치",
+    "available": "다음",
+    "not_available": "스케줄이 미정입니다"
   }
 }

@@ -56,5 +56,10 @@
     "sale": "Articoli in offerta",
     "dailydrop": "Selezione del giorno",
     "order": "Ordina"
+  },
+  "events": {
+    "title": "Partita evento",
+    "available": "A seguire",
+    "not_available": "Non ci sono partite evento in programma."
   }
 }

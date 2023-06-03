@@ -56,5 +56,10 @@
     "sale": "Nu in de aanbieding",
     "dailydrop": "Verse vangst",
     "order": "Bestellen"
+  },
+  "events": {
+    "title": "Eventgevecht",
+    "available": "Volgende",
+    "not_available": "Er zijn momenteel geen eventgevechten gepland."
   }
 }

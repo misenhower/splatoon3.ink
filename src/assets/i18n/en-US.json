@@ -59,8 +59,8 @@
   },
   "events": {
     "title": "Challenges",
-    "available": "Available again",
-    "not_available": "No challenges available, check back later!"
+    "available": "Next",
+    "not_available": "No Challenges currently scheduled."
   },
   "gear": {
     "title": "Gear",

@@ -60,9 +60,9 @@
     "order": "Bestellen"
   },
   "events": {
-    "title": "Challenges",
-    "available": "Erneut verfügbar",
-    "not_available": "Aktuell sind keine Challenges verfügbar, schau später erneut vorbei!"
+    "title": "Event-Kämpfe",
+    "available": "Als Nächstes",
+    "not_available": "Momentan sind keine Event-Kämpfe geplant."
   },
   "about": {
     "title": "Über!",

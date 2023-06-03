@@ -56,5 +56,10 @@
     "sale": "Equipamiento a la venta",
     "dailydrop": "Sugerencia del día",
     "order": "Encargar"
+  },
+  "events": {
+    "title": "Combate evento",
+    "available": "Próximamente",
+    "not_available": "Calendario sin determinar"
   }
 }

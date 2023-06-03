@@ -56,5 +56,10 @@
     "sale": "目前販售的裝備",
     "dailydrop": "本日精選",
     "order": "預訂"
+  },
+  "events": {
+    "title": "活動比賽",
+    "available": "下一場",
+    "not_available": "時間表未定"
   }
 }

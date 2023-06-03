@@ -56,5 +56,10 @@
     "sale": "ただいま販売中のギア",
     "dailydrop": "本日のピックアップ",
     "order": "注文する"
+  },
+  "events": {
+    "title": "イベントマッチ",
+    "available": "つぎ",
+    "not_available": "スケジュールが未定です"
   }
 }

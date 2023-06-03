@@ -57,5 +57,10 @@
     "sale": "Équipement en solde",
     "dailydrop": "Chouchou du jour",
     "order": "Commander"
+  },
+  "events": {
+    "title": "Match épreuve",
+    "available": "Tout à l'heure",
+    "not_available": "Aucun match épreuve prévu pour le moment."
   }
 }
