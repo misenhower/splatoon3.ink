@@ -19,7 +19,7 @@ export default class ChallengeStatus extends StatusGenerator
   async getDataTime() {
     let schedule = await this.getActiveSchedule();
 
-    return Date.parse(schedule?.activeTimePeriod?.start_time);
+    return Date.parse(schedule?.activeTimePeriod?.startTime);
   }
 
   async _getStatus() {
