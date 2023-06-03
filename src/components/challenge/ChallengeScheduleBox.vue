@@ -4,17 +4,17 @@
       <div class="space-y-2">
         <div class="flex items-center space-x-2 mx-2">
           <img :src="type.img" />
-            <div class="font-splatoon1 lg:text-2xl xl:text-3xl text-shadow">
-              {{ $t(`splatnet.events.${event.settings.leagueMatchEvent.id}.name`, event.settings.leagueMatchEvent.name) }}
+          <div class="font-splatoon1 lg:text-2xl xl:text-3xl text-shadow">
+            {{ $t(`splatnet.events.${event.settings.leagueMatchEvent.id}.name`, event.settings.leagueMatchEvent.name) }}
 
-              <div class="font-splatoon2 lg:text-md xl:text-xl text-shadow">
-                {{ $t(`splatnet.events.${event.settings.leagueMatchEvent.id}.desc`, event.settings.leagueMatchEvent.desc) }}
-              </div>
+            <div class="font-splatoon2 lg:text-md xl:text-xl text-shadow">
+              {{ $t(`splatnet.events.${event.settings.leagueMatchEvent.id}.desc`, event.settings.leagueMatchEvent.desc) }}
             </div>
           </div>
+        </div>
 
-          <div class="bg-zinc-900 bg-opacity-70 backdrop-blur-sm pt-2 pb-1 px-2 mx-2 rounded-lg space-y-2">
-            <div class="flex items-center justify-between font-splatoon2">
+        <div class="bg-zinc-900 bg-opacity-70 backdrop-blur-sm pt-2 pb-1 px-2 mx-2 rounded-lg space-y-2">
+          <div class="flex items-center justify-between font-splatoon2">
             <div class="flex items-center space-x-2 text-sm lg:text-lg">
               <template v-if="event">
                 <div>
@@ -38,12 +38,12 @@
               class="flex-1"
               imgClass="rounded-l-xl"
               :stage="event.settings?.vsStages[0]"
-            />
+              />
             <StageImage
               class="flex-1"
               imgClass="rounded-r-xl"
               :stage="event.settings?.vsStages[1]"
-            />
+              />
           </div>
 
           <div class="mx-2 space-y-2" v-if="event.upcomingTimePeriods?.length">
@@ -58,6 +58,11 @@
             </div>
           </div>
         </div>
+
+        <div
+          class="font-splatoon2 mx-2 p-2 text-zinc-200 bg-zinc-900 bg-opacity-50 backdrop-blur-sm rounded-lg"
+          v-html="$t(`splatnet.events.${event.settings.leagueMatchEvent.id}.regulation`, event.settings.leagueMatchEvent.regulation)"
+          />
       </div>
     </ProductContainer>
   </template>
@@ -91,7 +96,7 @@ const type = computed(() => types[props.type]);
 <style scoped>
 :deep(.bg-tapes) {
   background-image: url('@/assets/img/tapes-transparent.png'),
-    linear-gradient(180deg, rgba(2, 0, 36, 0.10) 0%, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, 0.25) 100%);
+  linear-gradient(180deg, rgba(2, 0, 36, 0.10) 0%, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, 0.25) 100%);
   background-size: contain;
 }
 </style>
