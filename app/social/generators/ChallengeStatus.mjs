@@ -28,7 +28,7 @@ export default class ChallengeStatus extends StatusGenerator
     return [
       `A challenge event is now open! ${schedule.settings.leagueMatchEvent.name} – ${schedule.settings.leagueMatchEvent.desc}`,
       '',
-      `Play ${schedule.settings.vsRule.name} on ${schedule.settings.vsStages[0].name} and ${schedule.settings.vsStages[0].name}! #splatoon3`
+      `Play ${schedule.settings.vsRule.name} on ${schedule.settings.vsStages[0].name} and ${schedule.settings.vsStages[1].name}! #splatoon3`
     ].join('\n');
   }
 
