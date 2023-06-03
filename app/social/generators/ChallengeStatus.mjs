@@ -34,8 +34,12 @@ export default class ChallengeStatus extends StatusGenerator
 
   /** @param {ScreenshotHelper} screenshotHelper */
   async _getMedia(screenshotHelper) {
+    let schedule = await this.getActiveSchedule();
+
     let media = new Media;
     media.file = await screenshotHelper.capture('challenges');
+
+    media.altText = schedule.settings.leagueMatchEvent.regulation?.replace(/<br \/>/g, '\n');
 
     return media;
   }
