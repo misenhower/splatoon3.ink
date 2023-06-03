@@ -84,6 +84,7 @@ export const useEventSchedulesStore = defineScheduleStore('event', {
       currentTimePeriods: node.timePeriods.filter(s => time.isCurrent(s.endTime)),
       activeTimePeriod: node.timePeriods.find(s => time.isActive(s.startTime, s.endTime)),
       upcomingTimePeriods: node.timePeriods.filter(s => time.isUpcoming(s.startTime)),
+      pastTimePeriods: node.timePeriods.filter(s => !time.isCurrent(s.endTime)),
 
       ...node,
     };

@@ -60,6 +60,8 @@
   "events": {
     "title": "Combate evento",
     "available": "Próximamente",
-    "not_available": "Calendario sin determinar"
+    "not_available": "Calendario sin determinar",
+    "now": "Actualmente",
+    "now_open": "¡En curso!"
   }
 }

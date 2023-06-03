@@ -60,6 +60,8 @@
   "events": {
     "title": "イベントマッチ",
     "available": "つぎ",
-    "not_available": "スケジュールが未定です"
+    "not_available": "スケジュールが未定です",
+    "now": "いま",
+    "now_open": "開催中！"
   }
 }

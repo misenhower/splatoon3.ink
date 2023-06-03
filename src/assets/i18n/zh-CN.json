@@ -61,6 +61,8 @@
   "events": {
     "title": "活动比赛",
     "available": "下一场",
-    "not_available": "日程未定"
+    "not_available": "日程未定",
+    "now": "现在",
+    "now_open": "举行中！"
   }
 }

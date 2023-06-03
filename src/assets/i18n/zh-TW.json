@@ -60,6 +60,8 @@
   "events": {
     "title": "活動比賽",
     "available": "下一場",
-    "not_available": "時間表未定"
+    "not_available": "時間表未定",
+    "now": "現在",
+    "now_open": "舉行中！！"
   }
 }

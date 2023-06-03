@@ -84,6 +84,8 @@
   "events": {
     "title": "Match Challenge",
     "available": "Créneau suivant",
-    "not_available": "Aucun match Challenge prévu pour le moment."
+    "not_available": "Aucun match Challenge prévu pour le moment.",
+    "now": "Actuellement",
+    "now_open": "En cours !"
   }
 }

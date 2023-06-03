@@ -28,8 +28,10 @@
               </template>
             </div>
 
-            <div v-if="event.activeTimePeriod" class="justify-end text-xs lg:text-sm bg-zinc-100 bg-opacity-80 rounded text-black px-2">
-              {{  $t('time.remaining', { time: formatDurationFromNow(event.activeTimePeriod.endTime) }) }}
+            <div v-if="event.activeTimePeriod">
+              <SquidTape class="font-splatoon2 text-sm drop-shadow rotate-6">
+                <div class="px-2">{{ $t('events.now_open') }}</div>
+              </SquidTape>
             </div>
           </div>
 
@@ -46,16 +48,28 @@
               />
           </div>
 
-          <div class="mx-2 space-y-2 ss:hidden" v-if="event.upcomingTimePeriods?.length">
-            <SquidTape class="font-splatoon2 text-sm drop-shadow -rotate-6 -mx-2 mt-4">
-              <div class="px-2">{{ $t('events.available') }}</div>
-            </SquidTape>
-
-            <div class="divide-y-2 divide-dashed divide-zinc-400 font-splatoon">
-              <div v-for="timePeriod in event.upcomingTimePeriods" :key="timePeriod.startTime" class="flex flex-row justify-center">
-                <ChallengeScheduleRow :event="event" :timePeriod="timePeriod" class="my-2"/>
+          <div class="mx-2 space-y-2 ss:hidden">
+            <!-- Past time periods -->
+            <template v-if="event.pastTimePeriods?.length">
+              <div class="divide-y-2 divide-dashed divide-zinc-600 font-splatoon">
+                <div v-for="timePeriod in event.pastTimePeriods" :key="timePeriod.startTime" class="flex flex-row justify-center">
+                  <ChallengeScheduleRow :event="event" :timePeriod="timePeriod" class="my-2"/>
+                </div>
               </div>
-            </div>
+            </template>
+
+            <!-- Current/future time periods -->
+            <template v-if="event.currentTimePeriods?.length">
+              <SquidTape class="font-splatoon2 text-sm drop-shadow -rotate-6 -mx-2 mt-4">
+                <div class="px-2">{{ event.activeTimePeriod ? $t('events.now') : $t('events.available') }}</div>
+              </SquidTape>
+
+              <div class="divide-y-2 divide-dashed divide-zinc-400 font-splatoon">
+                <div v-for="timePeriod in event.currentTimePeriods" :key="timePeriod.startTime" class="flex flex-row justify-center">
+                  <ChallengeScheduleRow :event="event" :timePeriod="timePeriod" class="my-2"/>
+                </div>
+              </div>
+            </template>
           </div>
         </div>
 

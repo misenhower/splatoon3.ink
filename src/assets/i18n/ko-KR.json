@@ -60,6 +60,8 @@
   "events": {
     "title": "이벤트 매치",
     "available": "다음",
-    "not_available": "스케줄이 미정입니다"
+    "not_available": "스케줄이 미정입니다",
+    "now": "지금",
+    "now_open": "개최 중!"
   }
 }

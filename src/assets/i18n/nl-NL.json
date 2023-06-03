@@ -60,6 +60,8 @@
   "events": {
     "title": "Eventgevecht",
     "available": "Volgende",
-    "not_available": "Er zijn momenteel geen eventgevechten gepland."
+    "not_available": "Er zijn momenteel geen eventgevechten gepland.",
+    "now": "Nu",
+    "now_open": "Nu bezig!"
   }
 }

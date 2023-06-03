@@ -60,7 +60,9 @@
   "events": {
     "title": "Challenges",
     "available": "Next",
-    "not_available": "No Challenges currently scheduled."
+    "not_available": "No Challenges currently scheduled.",
+    "now": "Now",
+    "now_open": "Now Open!"
   },
   "gear": {
     "title": "Gear",

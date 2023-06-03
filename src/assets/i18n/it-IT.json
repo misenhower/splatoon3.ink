@@ -60,6 +60,8 @@
   "events": {
     "title": "Partita evento",
     "available": "A seguire",
-    "not_available": "Non ci sono partite evento in programma."
+    "not_available": "Non ci sono partite evento in programma.",
+    "now": "Attuale",
+    "now_open": "In corso!"
   }
 }
