@@ -18,7 +18,7 @@
             <div class="flex items-center space-x-2 text-sm lg:text-lg">
               <template v-if="event">
                 <div>
-                  <RuleIcon :rule="event.settings.vsRule" class="h-5 lg:h-6" />
+                  <RuleIcon :rule="event.settings.vsRule" class="h-5 lg:h-6 drop-shadow-ruleIcon" />
                 </div>
                 <div class="text-shadow">{{ $t(`splatnet.rules.${event.settings.vsRule.id}.name`, event.settings.vsRule.name) }}</div>
               </template>

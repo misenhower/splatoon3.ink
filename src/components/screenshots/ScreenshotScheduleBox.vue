@@ -11,7 +11,7 @@
         <div class="flex items-center justify-between font-splatoon2">
           <div class="flex items-center space-x-2 text-xl">
             <div>
-              <RuleIcon :rule="store.activeSchedule.settings.vsRule" class="h-8" />
+              <RuleIcon :rule="store.activeSchedule.settings.vsRule" class="h-8 drop-shadow-ruleIcon" />
             </div>
             <div class="text-shadow">{{ store.activeSchedule.settings.vsRule.name }}</div>
           </div>

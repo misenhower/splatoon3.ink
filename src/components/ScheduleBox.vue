@@ -16,7 +16,7 @@
           <div class="flex items-center space-x-2 text-sm lg:text-lg">
             <template v-if="store.activeSchedule && store.activeSchedule.settings">
               <div>
-                <RuleIcon :rule="store.activeSchedule.settings.vsRule" class="h-5 lg:h-6" />
+                <RuleIcon :rule="store.activeSchedule.settings.vsRule" class="h-5 lg:h-6 drop-shadow-ruleIcon" />
               </div>
               <div class="text-shadow">{{ $t(`splatnet.rules.${store.activeSchedule.settings.vsRule.id}.name`, store.activeSchedule.settings.vsRule.name) }}</div>
             </template>

@@ -1,7 +1,7 @@
 <template>
   <template v-if="event && timePeriod">
     <div class="flex items-center w-full font-splatoon2" :class="isCurrent ? 'text-zinc-100' : 'text-zinc-300 opacity-60'">
-        <RuleIcon :rule="event.settings.vsRule" class="h-5 lg:h-6" />
+        <RuleIcon :rule="event.settings.vsRule" class="h-5 lg:h-6 drop-shadow-ruleIcon" />
         <div class="px-2 text-shadow whitespace-pre">
             {{ $d(timePeriod.startTime, 'dateTimeShortWeekday') }}
             &ndash;
