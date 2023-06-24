@@ -1,23 +1,21 @@
 <template>
   <MainLayout :title="$t('schedule.title')">
     <div class="grow flex items-center justify-center">
-      <div class="mx-4 md:mx-12 max-w-screen-2xl w-full space-y-10">
-        <div class="flex flex-col space-y-6 md:flex-row md:space-x-6 md:space-y-0 justify-center" v-if="usSplatfests.activeFestival">
-          <div>
-            <SplatfestBox :festival="usSplatfests.activeFestival" class="flex-1 max-w-md md:-rotate-1" />
-          </div>
-          <ScheduleBox type="splatfest" class="flex-1 max-w-lg md:rotate-1" />
+      <div class="mx-4 md:mx-12 xmax-w-screen-2xl w-full space-y-10">
+        <div class="flex flex-wrap justify-center items-center gap-6">
+          <template v-if="usSplatfests.activeFestival">
+            <SplatfestBox :festival="usSplatfests.activeFestival" class="max-w-md md:-rotate-1" />
+            <ScheduleBox type="splatfest" class="max-w-lg md:rotate-1" />
+          </template>
+
+          <template v-else>
+            <ScheduleBox type="regular" class="md:max-w-lg md:-rotate-1" />
+            <ScheduleBox type="anarchySeries" class="md:max-w-lg md:rotate-1" />
+            <ScheduleBox type="anarchyOpen" class="md:max-w-lg md:-rotate-1" />
+            <ScheduleBox type="xMatch" class="md:max-w-lg md:rotate-1" />
+          </template>
         </div>
-        <template v-else>
-          <div class="flex flex-col space-y-6 md:flex-row md:space-x-6 md:space-y-0">
-            <ScheduleBox type="regular" class="flex-1 md:-rotate-1" />
-            <ScheduleBox type="anarchySeries" class="flex-1 md:rotate-1" />
-            <ScheduleBox type="anarchyOpen" class="flex-1 md:-rotate-1" />
-          </div>
-          <div class="flex flex-col justify-center space-y-6 md:flex-row md:space-x-6 md:space-y-0">
-            <ScheduleBox type="xMatch" class="flex-1 md:-rotate-1 md:max-w-lg" />
-          </div>
-        </template>
+
         <div class="flex justify-center" v-if="usSplatfests.upcomingFestival">
           <SplatfestBox
             :festival="usSplatfests.upcomingFestival"
