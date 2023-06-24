@@ -33,6 +33,9 @@ module.exports = {
         splatoon1: 'var(--font-family-s1)',
         splatoon2: 'var(--font-family-s2)',
       },
+      dropShadow: {
+        'ruleIcon': '1px 1px 0 rgb(0,0,0)',
+      },
     },
   },
   plugins: [

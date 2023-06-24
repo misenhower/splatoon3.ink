@@ -3,7 +3,7 @@
     <div class="font-splatoon2 sm:hidden" v-if="props.schedule">
       <div class="flex items-center space-x-2">
         <div>
-          <RuleIcon :rule="props.schedule.settings.vsRule" class="h-5" />
+          <RuleIcon :rule="props.schedule.settings.vsRule" class="h-5 drop-shadow-ruleIcon" />
         </div>
         <div class="text-shadow">
           {{ $t(`splatnet.rules.${props.schedule.settings.vsRule.id}.name`, props.schedule.settings.vsRule.name) }}
@@ -31,7 +31,7 @@
           <template v-if="props.schedule">
             <div class="flex items-center justify-center space-x-2">
               <div>
-                <RuleIcon :rule="props.schedule.settings.vsRule" class="h-5 lg:h-6" />
+                <RuleIcon :rule="props.schedule.settings.vsRule" class="h-5 lg:h-6 drop-shadow-ruleIcon" />
               </div>
               <div class="text-xs lg:text-lg text-shadow">
                 {{ $t(`splatnet.rules.${props.schedule.settings.vsRule.id}.name`, props.schedule.settings.vsRule.name) }}
