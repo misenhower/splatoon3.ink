@@ -35,6 +35,6 @@ export default class TwitterClient extends Client
     );
 
     // Send status
-    await this.#api.v1.tweet(status.status, { media_ids: mediaIds });
+    await this.#api.v2.tweet(status.status, { media: { media_ids: mediaIds } });
   }
 }
