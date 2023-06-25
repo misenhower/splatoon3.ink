@@ -1,7 +1,7 @@
 <template>
   <MainLayout :title="$t('schedule.title')">
     <div class="grow flex items-center justify-center">
-      <div class="mx-4 md:mx-12 xmax-w-screen-2xl w-full space-y-10">
+      <div class="mx-4 md:mx-12 w-full space-y-10">
         <div class="flex flex-wrap justify-center items-center gap-6">
           <template v-if="usSplatfests.activeFestival">
             <SplatfestBox :festival="usSplatfests.activeFestival" class="max-w-md md:-rotate-1" />
