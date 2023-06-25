@@ -9,10 +9,10 @@
           </template>
 
           <template v-else>
-            <ScheduleBox type="regular" class="md:max-w-lg md:-rotate-1" />
-            <ScheduleBox type="anarchySeries" class="md:max-w-lg md:rotate-1" />
-            <ScheduleBox type="anarchyOpen" class="md:max-w-lg md:-rotate-1" />
-            <ScheduleBox type="xMatch" class="md:max-w-lg md:rotate-1" />
+            <ScheduleBox type="regular" class="md:max-w-md 2xl:max-w-lg md:-rotate-1" />
+            <ScheduleBox type="anarchySeries" class="md:max-w-md 2xl:max-w-lg md:rotate-1" />
+            <ScheduleBox type="anarchyOpen" class="md:max-w-md 2xl:max-w-lg md:-rotate-1" />
+            <ScheduleBox type="xMatch" class="md:max-w-md 2xl:max-w-lg md:rotate-1" />
           </template>
         </div>
 
