@@ -15,7 +15,7 @@ export default defineConfig({
   plugins: [
     vue(),
     vueI18n({
-      include: resolve(__dirname, './src/assets/i18n/**')
+      include: resolve(__dirname, './src/assets/i18n/**'),
     }),
     {
       // Quick hack to redirect dynamic assets to the /dist/ directory
@@ -32,16 +32,16 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
-    }
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
   },
   build: {
     emptyOutDir: false,
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
-        screenshots: resolve(__dirname, 'screenshots/index.html')
-      }
-    }
-  }
+        screenshots: resolve(__dirname, 'screenshots/index.html'),
+      },
+    },
+  },
 })

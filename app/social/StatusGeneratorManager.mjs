@@ -39,28 +39,28 @@ export default class StatusGeneratorManager
   async #generateAndSend(generator, force) {
     let clientsToPost = [];
 
-      for (let client of this.clients) {
-        if (force || await generator.shouldPost(client)) {
-          clientsToPost.push(client);
-        }
+    for (let client of this.clients) {
+      if (force || await generator.shouldPost(client)) {
+        clientsToPost.push(client);
       }
+    }
 
-      if (clientsToPost.length === 0) {
-        this.console(generator).info('No status to post, skipping');
+    if (clientsToPost.length === 0) {
+      this.console(generator).info('No status to post, skipping');
 
-        return;
+      return;
+    }
+
+    let status = await generator.getStatus(this.screenshotHelper);
+
+    for (let client of clientsToPost) {
+      this.console(generator, client).info('Posting...');
+      try {
+        await client.send(status, generator);
+        await generator.updatelastPostCache(client);
+      } catch (e) {
+        this.console(generator, client).error(`Error posting: ${e}`);
       }
-
-      let status = await generator.getStatus(this.screenshotHelper);
-
-      for (let client of clientsToPost) {
-        this.console(generator, client).info('Posting...');
-        try {
-          await client.send(status, generator);
-          await generator.updatelastPostCache(client);
-        } catch (e) {
-          this.console(generator, client).error(`Error posting: ${e}`);
-        }
-      }
+    }
   }
 }

@@ -29,7 +29,7 @@ export default class BlueskyClient extends Client
 
       this.#loggedIn = true;
     }
-}
+  }
 
   async send(status, generator) {
     await this.login();

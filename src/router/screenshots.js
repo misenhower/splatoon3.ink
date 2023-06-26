@@ -48,7 +48,7 @@ const router = createRouter({
       path: '/splatfest',
       component: SplatfestView,
     },
-  ]
+  ],
 })
 
 export default router

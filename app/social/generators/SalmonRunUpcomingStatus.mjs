@@ -15,7 +15,7 @@ export default class SalmonRunUpcomingStatus extends StatusGenerator
     return useSalmonRunSchedulesStore().upcomingSchedules.find(
       s => s.isBigRun
         || s.isMystery
-        || s.isGrizzcoMystery
+        || s.isGrizzcoMystery,
     );
   }
 

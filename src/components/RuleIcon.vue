@@ -14,7 +14,7 @@ import ruleYaguraSvg from '@/assets/img/rules/yagura.svg';
 const props = defineProps({
   rule: {
     required: true,
-  }
+  },
 });
 
 const img = computed(() => {

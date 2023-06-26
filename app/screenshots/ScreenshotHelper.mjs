@@ -84,7 +84,7 @@ export default class ScreenshotHelper
     }
 
     await this.#page.goto(url, {
-        waitUntil: 'networkidle0', // Wait until the network is idle
+      waitUntil: 'networkidle0', // Wait until the network is idle
     });
 
     // Wait an additional 1000ms

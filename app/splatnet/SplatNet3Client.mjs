@@ -64,7 +64,7 @@ export default class SplatNet3Client
         'X-NACOUNTRY': 'US', // TODO
         'X-GameWebToken': webServiceToken,
         'Accept-Language': this.acceptLanguage,
-      }
+      },
     });
 
     if (!response.ok) {

@@ -12,12 +12,12 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: HomeView,
     },
     {
       path: '/salmonrun',
       name: 'salmonrun',
-      component: SalmonRunView
+      component: SalmonRunView,
     },
     {
       path: '/gear',
@@ -37,13 +37,13 @@ const router = createRouter({
     {
       path: '/about',
       name: 'about',
-      component: AboutView
+      component: AboutView,
     },
     {
       path: '/faq',
       redirect: { name: 'about' },
     },
-  ]
+  ],
 })
 
 export default router

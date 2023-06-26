@@ -26,7 +26,7 @@ module.exports = {
 
           salmonRun: '#ff5600',
           bigRun: '#b322ff',
-          eggstraWork: '#be8800'
+          eggstraWork: '#be8800',
         },
       },
       fontFamily: {
@@ -42,6 +42,6 @@ module.exports = {
     plugin(function({ addVariant }) {
       addVariant('mobile', 'body.is-mobile &');
       addVariant('ss', 'body.for-screenshots &');
-    })
-  ]
+    }),
+  ],
 }

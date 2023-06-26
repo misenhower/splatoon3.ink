@@ -2,8 +2,8 @@
 const props = defineProps({
   fill: {
     type: String,
-    default: 'fill-splatoon-yellow'
-  }
+    default: 'fill-splatoon-yellow',
+  },
 });
 </script>
 

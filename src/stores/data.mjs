@@ -71,7 +71,7 @@ export const useDataStore = defineStore('data', () => {
 
     // If we're more than 20 seconds past the current hour, schedule the update for the next hour
     if (date.getMinutes() !== 0 || date.getSeconds() >= 20)
-    date.setHours(date.getHours() + 1);
+      date.setHours(date.getHours() + 1);
     date.setMinutes(0);
 
     // Random number of seconds past the hour (so all open browsers don't hit the server at the same time)

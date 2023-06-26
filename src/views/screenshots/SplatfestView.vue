@@ -26,6 +26,6 @@ const usSplatfests = useUSSplatfestsStore();
 const festival = computed(() =>
   usSplatfests.upcomingFestival
   ?? usSplatfests.activeFestival
-  ?? usSplatfests.recentFestival
+  ?? usSplatfests.recentFestival,
 );
 </script>

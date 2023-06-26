@@ -98,8 +98,8 @@ const props = defineProps({
     required: true,
   },
   event: {
-    required: true
-  }
+    required: true,
+  },
 });
 
 const { types } = useScheduleTypes();
