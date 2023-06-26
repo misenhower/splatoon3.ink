@@ -51,7 +51,7 @@
 
 <script setup>
 import { useGearStore } from '@/stores/gear.mjs';
-import { computed } from '@vue/reactivity';
+import { computed } from 'vue';
 import GearCardHorizontal from './GearCardHorizontal.vue';
 import ProductContainer from '../ProductContainer.vue';
 import SquidTape from '../SquidTape.vue';

@@ -30,7 +30,7 @@
 
 <script setup>
 import { useGearStore } from '@/stores/gear.mjs';
-import { computed } from '@vue/reactivity';
+import { computed } from 'vue';
 import GearCard from '@/components/gear/GearCard.vue';
 import ProductContainer from '@/components/ProductContainer.vue';
 import SquidTape from '@/components/SquidTape.vue';

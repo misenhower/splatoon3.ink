@@ -75,7 +75,7 @@
 </template>
 
 <script setup>
-import { computed } from '@vue/reactivity';
+import { computed } from 'vue';
 import SquidTape from '../SquidTape.vue';
 import { getGesotownGearUrl } from '@/common/links';
 import { formatShortDurationFromNow } from '../../common/time';

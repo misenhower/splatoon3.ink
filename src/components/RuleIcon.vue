@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import { computed } from '@vue/reactivity';
+import { computed } from 'vue';
 
 import ruleAreaSvg from '@/assets/img/rules/area.svg';
 import ruleAsariSvg from '@/assets/img/rules/asari.svg';
