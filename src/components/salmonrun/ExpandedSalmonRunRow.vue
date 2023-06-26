@@ -1,7 +1,7 @@
 <template>
-  <div class="font-splatoon2 space-y-1" v-if="schedule">
+  <div v-if="schedule" class="font-splatoon2 space-y-1">
     <div class="flex gap-2">
-      <img src="@/assets/img/modes/coop.eggstra.svg" :title="$t('salmonrun.bigrun')" class="w-6 -mr-1" v-if="eggstra" />
+      <img v-if="eggstra" src="@/assets/img/modes/coop.eggstra.svg" :title="$t('salmonrun.bigrun')" class="w-6 -mr-1" />
 
       <div class="text-lg text-shadow text-zinc-200 ss:hidden">
         {{ $d(schedule.startTime, 'dateTimeShort') }}
@@ -10,33 +10,34 @@
       </div>
 
       <div class="hidden ss:block text-shadow text-white text-xl">
-        <KingSalmonid :schedule="schedule" class="inline-block -mb-1 mr-2" v-if="!eggstra"/>
+        <KingSalmonid v-if="!eggstra" :schedule="schedule" class="inline-block -mb-1 mr-2" />
 
-        <div class="inline-block" v-if="time.isUpcoming(schedule.startTime)">
+        <div v-if="time.isUpcoming(schedule.startTime)" class="inline-block">
           Shift opens
           {{ $t('time.in', { time: formatDurationHoursFromNow(schedule.startTime, true) }) }}
         </div>
-        <div class="inline-block" v-else>
+        <div v-else class="inline-block">
           {{ $t('time.remaining', { time: formatDurationHoursFromNow(schedule.endTime) }) }}
         </div>
       </div>
 
       <div
+        v-if="schedule.isBigRun"
         class="bg-zinc-800 bg-opacity-80 text-sm text-white rounded-lg px-2 border-2 border-splatoon-bigRun"
-        v-if="schedule.isBigRun">
+      >
         <img src="@/assets/img/modes/coop.bigrun.svg" :title="$t('salmonrun.bigrun')" class="w-4 inline-block" />
         {{ $t('salmonrun.bigrun') }}
       </div>
     </div>
 
-    <div class="text-shadow text-zinc-300 ss:hidden" v-if="!time.isUpcoming(schedule.startTime)">
-      <KingSalmonid :schedule="schedule" class="inline-block align-middle" v-if="!eggstra" />
+    <div v-if="!time.isUpcoming(schedule.startTime)" class="text-shadow text-zinc-300 ss:hidden">
+      <KingSalmonid v-if="!eggstra" :schedule="schedule" class="inline-block align-middle" />
 
       {{ $t('time.remaining', { time: formatDurationFromNow(schedule.endTime) }) }}
     </div>
 
     <div class="flex items-center space-x-2">
-      <StageImage class="flex-1" imgClass="rounded-lg" :stage="schedule.settings.coopStage" />
+      <StageImage class="flex-1" img-class="rounded-lg" :stage="schedule.settings.coopStage" />
 
       <div class="flex flex-col items-center space-y-1">
         <div class="text-sm text-center text-shadow text-zinc-200">
@@ -46,8 +47,8 @@
         <div class="bg-zinc-900 bg-opacity-30 rounded-full backdrop-blur-sm px-2">
           <SalmonRunWeapons
             :weapons="schedule.settings.weapons"
-            weaponClass="w-10 sm:w-14"
-            />
+            weapon-class="w-10 sm:w-14"
+          />
         </div>
       </div>
     </div>

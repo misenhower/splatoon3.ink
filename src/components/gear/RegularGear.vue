@@ -1,6 +1,6 @@
 <template>
   <div class="relative">
-    <div class="bg-paper absolute inset-0 -z-50"></div>
+    <div class="bg-paper absolute inset-0 -z-50" />
     <div class="absolute bottom-0 inset-x-0 -mb-px">
       <img src="@/assets/img/paper-tear-overlay-w.png" />
     </div>
@@ -17,10 +17,10 @@
         <SquidTape
           class="font-splatoon1 text-2xl text-black rounded-sm -rotate-2 z-10"
           bg="bg-splatoon-orange"
-          squidBg="bg-black"
+          squid-bg="bg-black"
           border="border border-black"
-          squidSize="15px"
-          >
+          squid-size="15px"
+        >
           <div class="px-1">
             {{ $t("gear.sale") }}
           </div>
@@ -29,14 +29,14 @@
 
       <template v-if="gears && gears.length">
         <div class="md:hidden px-2">
-          <div class="bg-horiz-card" v-for="gear in gears" :key="gear.id">
+          <div v-for="gear in gears" :key="gear.id" class="bg-horiz-card">
             <GearCardHorizontal :gear="gear" />
           </div>
         </div>
 
         <div class="hidden md:block px-2">
           <div class="flex flex-wrap justify-center max-w-3xl">
-            <div class="my-6 w-1/3 flex justify-center" v-for="gear in gears" :key="gear.id">
+            <div v-for="gear in gears" :key="gear.id" class="my-6 w-1/3 flex justify-center">
               <GearCard :gear="gear" />
             </div>
           </div>

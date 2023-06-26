@@ -16,24 +16,24 @@
           </template>
         </div>
 
-        <div class="flex justify-center" v-if="usSplatfests.upcomingFestival">
+        <div v-if="usSplatfests.upcomingFestival" class="flex justify-center">
           <SplatfestBox
             :festival="usSplatfests.upcomingFestival"
             class="flex-1 max-w-md md:-rotate-1"
-            />
+          />
         </div>
 
-        <div class="flex flex-wrap items-center justify-center gap-y-6 md:gap-x-6" v-if="usSplatfests.recentFestival">
+        <div v-if="usSplatfests.recentFestival" class="flex flex-wrap items-center justify-center gap-y-6 md:gap-x-6">
           <SplatfestBox
             :festival="usSplatfests.recentFestival"
             class="max-w-md md:-rotate-1"
-            />
+          />
 
           <SplatfestResultsBox
             v-if="usSplatfests.recentFestival.hasResults"
             :festival="usSplatfests.recentFestival"
             class="w-full sm:max-w-md md:rotate-1"
-            />
+          />
         </div>
       </div>
     </div>

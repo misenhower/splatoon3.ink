@@ -2,7 +2,7 @@
   <main class="min-h-screen flex flex-col overflow-hidden">
     <slot />
 
-    <div class="h-16"></div>
+    <div class="h-16" />
 
     <div class="h-12 m-4 bg-black bg-opacity-50 backdrop-blur-sm rounded-full absolute bottom-0 inset-x-0">
       <div class="flex justify-between h-full font-splatoon2 text-sm text-zinc-300">

@@ -1,6 +1,6 @@
 <template>
   <div class="relative">
-    <div class="bg-paper absolute inset-0 -z-50"></div>
+    <div class="bg-paper absolute inset-0 -z-50" />
     <div class="absolute bottom-0 inset-x-0 -mb-px">
       <img src="@/assets/img/paper-tear-overlay-w.png" />
     </div>
@@ -14,8 +14,13 @@
 
     <div class="pb-24 lg:pb-36">
       <div class="text-center pt-4">
-        <SquidTape class="font-splatoon1 text-4xl text-black rounded-sm -rotate-2 z-10" bg="bg-splatoon-orange"
-          squidBg="bg-black" border="border-2 border-black" squidSize="25px">
+        <SquidTape
+          class="font-splatoon1 text-4xl text-black rounded-sm -rotate-2 z-10"
+          bg="bg-splatoon-orange"
+          squid-bg="bg-black"
+          border="border-2 border-black"
+          squid-size="25px"
+        >
           <div class="px-3 py-1">
             Gear on Sale Now
           </div>
@@ -25,12 +30,12 @@
       <div class="mx-8 space-x-6 flex">
         <div class="w-96 flex justify-center items-center">
           <div class="scale-[1.85]">
-            <GearCard class="w-56" :gear="latestGear" v-if="latestGear" />
+            <GearCard v-if="latestGear" class="w-56" :gear="latestGear" />
           </div>
         </div>
 
         <div class="flex flex-wrap justify-center max-w-2xl">
-          <div class="my-4 w-1/3 flex justify-center" v-for="gear in gears" :key="gear.id">
+          <div v-for="gear in gears" :key="gear.id" class="my-4 w-1/3 flex justify-center">
             <GearCard :gear="gear" />
           </div>
         </div>

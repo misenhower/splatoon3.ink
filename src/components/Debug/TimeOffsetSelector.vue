@@ -1,10 +1,12 @@
 <template>
   <div class="flex justify-center text-xs">
     <div class="flex space-x-2 bg-zinc-700 p-1 rounded">
-      <div class="bg-zinc-500 rounded font-semibold px-1">Time Offset</div>
+      <div class="bg-zinc-500 rounded font-semibold px-1">
+        Time Offset
+      </div>
 
       <div v-for="part of ['d', 'h', 'm']" :key="part">
-        <select class="bg-zinc-800 text-right" v-model="values[part]">
+        <select v-model="values[part]" class="bg-zinc-800 text-right">
           <option v-for="i of range(limits[part])" :key="i">
             {{ i }}
           </option>

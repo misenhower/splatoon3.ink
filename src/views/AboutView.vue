@@ -10,7 +10,9 @@
             <ProductContainer class="py-12 bg-octoarrow">
               <div class="faq text-zinc-300 px-10">
                 <div class="space-y-6">
-                  <h1 class="font-splatoon2">{{ $t('about.title') }}</h1>
+                  <h1 class="font-splatoon2">
+                    {{ $t('about.title') }}
+                  </h1>
 
                   <div>
                     <h2>{{ $t('about.subtitle-1') }}</h2>
@@ -67,7 +69,9 @@
                   </div>
 
                   <div>
-                    <router-link to="/">&laquo; {{ $t('about.schedules') }}</router-link>
+                    <router-link to="/">
+                      &laquo; {{ $t('about.schedules') }}
+                    </router-link>
                   </div>
                 </div>
               </div>

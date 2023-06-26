@@ -4,13 +4,13 @@
       <div class="mx-4 md:mx-12 max-w-screen-2xl w-full my-6">
         <div v-if="store.currentSchedules?.length" class="flex flex-col lg:flex-row items-center justify-center gap-10">
           <div v-for="(event, i) in store.currentSchedules" :key="i" class="max-w-xl">
-              <ChallengeScheduleBox
-                :event="event"
-                type="challenge"
-                class="w-full"
-                :class="(i % 2) ? 'md:rotate-1' : 'md:-rotate-1'"
-                />
-            </div>
+            <ChallengeScheduleBox
+              :event="event"
+              type="challenge"
+              class="w-full"
+              :class="(i % 2) ? 'md:rotate-1' : 'md:-rotate-1'"
+            />
+          </div>
         </div>
 
         <!-- No events -->

@@ -6,7 +6,7 @@
         :title="$t(`splatnet.weapons.${weapon.__splatoon3ink_id}.name`, weapon.name)"
         class="aspect-square hover:scale-[1.15] hover:z-10 transition-transform"
         :class="weaponClass"
-        />
+      />
     </div>
   </div>
 </template>

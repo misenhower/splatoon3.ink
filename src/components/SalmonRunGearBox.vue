@@ -1,11 +1,11 @@
 <template>
-  <ProductContainer class="pt-10 pb-4 px-10" bg="bg-zinc-500 bg-monsters" v-if="gear">
+  <ProductContainer v-if="gear" class="pt-10 pb-4 px-10" bg="bg-zinc-500 bg-monsters">
     <div class="flex flex-col items-center space-y-4">
       <div>
         <img :src="gear.image.url" />
       </div>
       <div>
-        <SquidTape class="font-splatoon2 text-2xl bg-splatoon-salmonRun -rotate-2" squidSize="16px">
+        <SquidTape class="font-splatoon2 text-2xl bg-splatoon-salmonRun -rotate-2" squid-size="16px">
           <div class="px-2">
             {{ $t(`splatnet.gear.${gear.__splatoon3ink_id}.name`, gear.name) }}
           </div>

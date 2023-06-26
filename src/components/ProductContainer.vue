@@ -1,6 +1,6 @@
 <template>
   <div class="relative">
-    <div class="absolute inset-0 product-mask rounded-2xl -z-10" :class="props.bg" :style="bgStyle"></div>
+    <div class="absolute inset-0 product-mask rounded-2xl -z-10" :class="props.bg" :style="bgStyle" />
     <slot />
   </div>
 </template>

@@ -7,12 +7,12 @@
             :festival="festival"
             class="max-w-md md:-rotate-1"
             history-mode
-            />
+          />
 
           <SplatfestResultsBox
             :festival="festival"
             class="w-full sm:max-w-md md:rotate-1"
-            />
+          />
         </div>
       </div>
     </div>

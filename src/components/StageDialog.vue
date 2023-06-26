@@ -5,7 +5,7 @@
         <span class="sr-only">Close</span>
         <XMarkIcon class="h-4 w-4" aria-hidden="true" />
       </button>
-      <img :src="imgUrl" v-if="imgUrl" />
+      <img v-if="imgUrl" :src="imgUrl" />
     </div>
 
     <div class="absolute -top-8 w-full text-center">

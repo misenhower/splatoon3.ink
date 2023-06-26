@@ -56,10 +56,14 @@
 
     <!-- Time left/Order button -->
     <div class="absolute top-1 left-6 space-y-2">
-      <div class="hidden mobile:block -ml-4" v-if="false">
+      <div v-if="false" class="hidden mobile:block -ml-4">
         <a :href="shopUrl">
-          <SquidTape class="font-splatoon2 text-sm text-black rounded-sm -rotate-3" bg="bg-splatoon-yellow" squidBg="bg-black"
-            border="border border-black">
+          <SquidTape
+            class="font-splatoon2 text-sm text-black rounded-sm -rotate-3"
+            bg="bg-splatoon-yellow"
+            squid-bg="bg-black"
+            border="border border-black"
+          >
             <div class="px-1">
               {{ $t('gear.order') }}
             </div>

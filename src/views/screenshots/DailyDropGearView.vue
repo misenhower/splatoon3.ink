@@ -9,7 +9,7 @@
 
       <div class="absolute right-8 top-12 max-w-sm rotate-6">
         <div class="bg-zinc-100 p-2">
-          <img :src="brand.image.url" v-if="brand" />
+          <img v-if="brand" :src="brand.image.url" />
         </div>
 
         <img class="absolute -top-8 left-28 w-48 -rotate-3" src="@/assets/img/tape/tape-5.png" />

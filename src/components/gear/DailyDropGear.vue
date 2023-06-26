@@ -6,14 +6,18 @@
           <img :src="brand.image.url" />
         </div>
         <div class="flex flex-col items-center -space-y-2">
-          <SquidTape class="font-splatoon2 text-sm text-black rounded-sm -rotate-2 z-10" bg="bg-splatoon-green" squidBg="bg-black"
-            border="border border-black">
+          <SquidTape
+            class="font-splatoon2 text-sm text-black rounded-sm -rotate-2 z-10"
+            bg="bg-splatoon-green"
+            squid-bg="bg-black"
+            border="border border-black"
+          >
             <div class="px-1">
               {{ $t('gear.dailydrop') }}
             </div>
           </SquidTape>
 
-          <div class="relative -rotate-2" v-if="brand">
+          <div v-if="brand" class="relative -rotate-2">
             <img src="@/assets/img/gesotown-daily-drop-bg.png" class="w-64" />
             <div class="absolute inset-0 flex items-center ml-4">
               <div class="font-splatoon2 text-lg">
@@ -30,11 +34,11 @@
         </div>
         <div class="space-y-4 px-4">
           <GearCardHorizontal
-            class="bg-zinc-100 bg-opacity-20 backdrop-blur-sm border border-zinc-50 border-opacity-20 rounded-lg"
             v-for="gear in gears"
             :key="gear.id"
+            class="bg-zinc-100 bg-opacity-20 backdrop-blur-sm border border-zinc-50 border-opacity-20 rounded-lg"
             :gear="gear"
-            />
+          />
         </div>
       </template>
 

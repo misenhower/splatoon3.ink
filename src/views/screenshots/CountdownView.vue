@@ -8,7 +8,9 @@
         <Splat1 class="absolute hidden sm:block w-48 -bottom-36 right-20" fill="fill-splatoon-green" />
 
         <div class="relative">
-          <div class="font-splatoon1 text-6xl text-center">Splatoon 3</div>
+          <div class="font-splatoon1 text-6xl text-center">
+            Splatoon 3
+          </div>
 
           <Splatoon3Countdown />
         </div>

@@ -1,37 +1,41 @@
 <template>
   <ProductContainer :bg="eggstra ? 'bg-splatoon-eggstraWork bg-monsters' : 'bg-splatoon-salmonRun bg-monsters'" class="pt-8 overflow-hidden rounded-2xl">
     <div class="space-y-2">
-      <div class="font-splatoon1 text-3xl mx-4 text-shadow" v-if="eggstra">
+      <div v-if="eggstra" class="font-splatoon1 text-3xl mx-4 text-shadow">
         {{ $t('salmonrun.eggstrawork') }}
       </div>
-      <div class="font-splatoon1 text-3xl mx-4 text-shadow" v-else>
+      <div v-else class="font-splatoon1 text-3xl mx-4 text-shadow">
         {{ $t('salmonrun.title') }}
       </div>
 
       <div class="flex">
         <!-- Character graphic -->
-        <div class="flex-1 bg-eggstra hidden md:block" v-if="eggstra"></div>
-        <div class="flex-1 bg-character hidden md:block" v-else></div>
+        <div v-if="eggstra" class="flex-1 bg-eggstra hidden md:block" />
+        <div v-else class="flex-1 bg-character hidden md:block" />
 
         <!-- Main content -->
         <div class="md:w-2/3 mx-2 pb-2">
-          <div class="mb-6 space-y-2" v-if="activeSchedule">
+          <div v-if="activeSchedule" class="mb-6 space-y-2">
             <SquidTape class="font-splatoon2 text-sm drop-shadow -rotate-6 -mx-2">
-              <div class="px-2">{{ $t('times.now') }}</div>
+              <div class="px-2">
+                {{ $t('times.now') }}
+              </div>
             </SquidTape>
 
-            <ExpandedSalmonRunRow :schedule="activeSchedule" :eggstra="eggstra"/>
+            <ExpandedSalmonRunRow :schedule="activeSchedule" :eggstra="eggstra" />
           </div>
 
-          <div class="py-1 bg-zinc-900 bg-opacity-70 rounded-lg backdrop-blur-sm" v-if="upcomingSchedules.length">
+          <div v-if="upcomingSchedules.length" class="py-1 bg-zinc-900 bg-opacity-70 rounded-lg backdrop-blur-sm">
             <SquidTape class="font-splatoon2 text-sm drop-shadow -rotate-6 -mx-2">
-              <div class="px-2">{{ $t('times.future') }}</div>
+              <div class="px-2">
+                {{ $t('times.future') }}
+              </div>
             </SquidTape>
 
             <div class="mx-2 divide-y-2 divide-dashed divide-zinc-400">
               <div v-for="schedule in upcomingSchedules" :key="schedule.startTime">
-                <ExpandedSalmonRunRow class="my-3" :schedule="schedule" v-if="isScreenshot || eggstra" :eggstra="eggstra"/>
-                <SalmonRunRow class="my-2" :schedule="schedule" v-else />
+                <ExpandedSalmonRunRow v-if="isScreenshot || eggstra" class="my-3" :schedule="schedule" :eggstra="eggstra" />
+                <SalmonRunRow v-else class="my-2" :schedule="schedule" />
               </div>
             </div>
           </div>

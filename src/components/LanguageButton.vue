@@ -1,7 +1,9 @@
 <template>
   <select v-model="currentLanguage" class="bg-transparent text-zinc-300 cursor-pointer">
     <template v-for="locale in locales" :key="locale.code">
-      <option :value="locale.code">{{ locale.flag }} {{ locale.name }}</option>
+      <option :value="locale.code">
+        {{ locale.flag }} {{ locale.name }}
+      </option>
     </template>
   </select>
 </template>

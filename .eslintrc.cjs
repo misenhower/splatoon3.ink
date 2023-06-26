@@ -2,7 +2,7 @@
 module.exports = {
   "root": true,
   "extends": [
-    "plugin:vue/vue3-essential",
+    "plugin:vue/vue3-recommended",
     "eslint:recommended",
   ],
   "rules": {
@@ -12,6 +12,9 @@ module.exports = {
 
     // Vue
     "vue/multi-word-component-names": "off",
+    "vue/require-default-prop": "off",
+    "vue/max-attributes-per-line": ["warn", { singleline: { max: 4 } }],
+    "vue/html-self-closing": ["warn", { html: { void: "always" } }],
   },
   "globals": {
     "__dirname": "readonly",

@@ -46,10 +46,14 @@
     </div>
 
     <!-- Order button -->
-    <div class="absolute top-0 right-0 hidden mobile:block" v-if="false">
+    <div v-if="false" class="absolute top-0 right-0 hidden mobile:block">
       <a :href="shopUrl">
-        <SquidTape class="font-splatoon2 text-sm text-black rounded-sm -rotate-2" bg="bg-splatoon-yellow" squidBg="bg-black"
-          border="border border-black">
+        <SquidTape
+          class="font-splatoon2 text-sm text-black rounded-sm -rotate-2"
+          bg="bg-splatoon-yellow"
+          squid-bg="bg-black"
+          border="border border-black"
+        >
           <div class="px-1">
             {{ $t('gear.order') }}
           </div>
@@ -58,16 +62,16 @@
     </div>
 
     <!-- Price/Order button -->
-    <div class="flex-none flex flex-col self-stretch items-end" v-if="false">
+    <div v-if="false" class="flex-none flex flex-col self-stretch items-end">
       <div class="flex-1">
-        <div class="hidden mobile:block" v-if="false">
+        <div v-if="false" class="hidden mobile:block">
           <a :href="shopUrl">
             <SquidTape
               class="font-splatoon2 text-sm text-black rounded-sm -rotate-2"
               bg="bg-splatoon-yellow"
-              squidBg="bg-black"
+              squid-bg="bg-black"
               border="border border-black"
-              >
+            >
               <div class="px-1">
                 {{ $t('gear.order') }}
               </div>

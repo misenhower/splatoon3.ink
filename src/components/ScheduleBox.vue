@@ -18,15 +18,19 @@
               <div>
                 <RuleIcon :rule="store.activeSchedule.settings.vsRule" class="h-5 lg:h-6 drop-shadow-ruleIcon" />
               </div>
-              <div class="text-shadow">{{ $t(`splatnet.rules.${store.activeSchedule.settings.vsRule.id}.name`, store.activeSchedule.settings.vsRule.name) }}</div>
+              <div class="text-shadow">
+                {{ $t(`splatnet.rules.${store.activeSchedule.settings.vsRule.id}.name`, store.activeSchedule.settings.vsRule.name) }}
+              </div>
             </template>
 
             <template v-else>
-              <div class="w-32 bg-zinc-600 rounded animate-pulse">&nbsp;</div>
+              <div class="w-32 bg-zinc-600 rounded animate-pulse">
+&nbsp;
+              </div>
             </template>
           </div>
 
-          <div class="justify-end text-xs lg:text-sm bg-zinc-100 bg-opacity-80 rounded text-black px-2" v-if="store.activeSchedule">
+          <div v-if="store.activeSchedule" class="justify-end text-xs lg:text-sm bg-zinc-100 bg-opacity-80 rounded text-black px-2">
             {{ $d(store.activeSchedule.startTime, 'time') }}
             &ndash;
             {{ $d(store.activeSchedule.endTime, 'time') }}
@@ -36,19 +40,19 @@
         <div class="flex space-x-1">
           <StageImage
             class="flex-1"
-            imgClass="rounded-l-xl"
+            img-class="rounded-l-xl"
             :stage="store.activeSchedule?.settings?.vsStages[0]"
-            />
+          />
           <StageImage
             class="flex-1"
-            imgClass="rounded-r-xl"
+            img-class="rounded-r-xl"
             :stage="store.activeSchedule?.settings?.vsStages[1]"
-            />
-          <div class="flex-1 relative" v-if="tricolor?.isTricolorActive">
+          />
+          <div v-if="tricolor?.isTricolorActive" class="flex-1 relative">
             <StageImage
-              imgClass="rounded-xl"
+              img-class="rounded-xl"
               :stage="tricolor?.tricolorStage"
-              />
+            />
 
             <div class="absolute top-0 right-0 rounded-full bg-black p-1">
               <TricolorIcon
@@ -56,15 +60,17 @@
                 :a="tricolor?.teams[0]?.color"
                 :b="tricolor?.teams[1]?.color"
                 :c="tricolor?.teams[2]?.color"
-                />
+              />
             </div>
           </div>
         </div>
       </div>
 
-      <div class="mx-2 space-y-2" v-if="nextSchedule && nextSchedule.settings">
+      <div v-if="nextSchedule && nextSchedule.settings" class="mx-2 space-y-2">
         <SquidTape class="font-splatoon2 text-sm drop-shadow -rotate-6 -mx-2">
-          <div class="px-2">{{ $t('times.next') }}</div>
+          <div class="px-2">
+            {{ $t('times.next') }}
+          </div>
         </SquidTape>
 
         <ScheduleRow :schedule="nextSchedule" />

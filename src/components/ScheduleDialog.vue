@@ -23,7 +23,9 @@
           <template v-for="{ title, schedules } in sections" :key="title">
             <div class="mt-6 mx-2 space-y-2 text-left">
               <SquidTape class="font-splatoon2 text-sm drop-shadow -rotate-6 -mx-2">
-                <div class="px-2">{{ $t(title) }}</div>
+                <div class="px-2">
+                  {{ $t(title) }}
+                </div>
               </SquidTape>
 
               <ScheduleRow v-for="schedule in schedules" :key="schedule.startTime" :schedule="schedule" />

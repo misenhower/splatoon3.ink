@@ -1,11 +1,15 @@
 <template>
   <button class="block relative" @click.prevent="open = true">
     <div class="bg-zinc-700 aspect-[2/1] overflow-hidden" :class="imgClass">
-      <img :src="lowRes" v-if="lowRes" />
-      <div class="bg-zinc-500 animate-pulse h-full" :class="imgClass" v-else>&nbsp;</div>
+      <img v-if="lowRes" :src="lowRes" />
+      <div v-else class="bg-zinc-500 animate-pulse h-full" :class="imgClass">
+&nbsp;
+      </div>
     </div>
 
-    <div class="
+    <div
+      v-if="!hideLabel && stage"
+      class="
       absolute
       bg-zinc-900
       rounded
@@ -19,7 +23,11 @@
       whitespace-nowrap
       font-splatoon2
       px-2
-    " :class="textSize" v-if="!hideLabel && stage">{{ $t(`splatnet.stages.${stage.id}.name`, stage.name) }}</div>
+    "
+      :class="textSize"
+    >
+      {{ $t(`splatnet.stages.${stage.id}.name`, stage.name) }}
+    </div>
 
     <StageDialog :stage="stage" :show="open" @close="open = false" />
   </button>

@@ -1,8 +1,8 @@
 <template>
   <div class="inline-block text-center px-2 py-1" :class="bg">
     <div class="relative">
-      <div class="absolute squid-tl top-0 left-0" :class="squidBg" :style="squidStyles"></div>
-      <div class="absolute squid-br bottom-0 right-0" :class="squidBg" :style="squidStyles"></div>
+      <div class="absolute squid-tl top-0 left-0" :class="squidBg" :style="squidStyles" />
+      <div class="absolute squid-br bottom-0 right-0" :class="squidBg" :style="squidStyles" />
       <div class="label border" :class="props.border" :style="labelStyles">
         <slot />
       </div>

@@ -3,12 +3,11 @@
     <div class="grow flex items-center justify-center scale-[1.1]">
       <ChallengeScheduleBox
         v-if="store.activeSchedule"
-          :event="store.activeSchedule"
-          type="challenge"
-          class="w-full max-w-xl -rotate-1"
-          />
+        :event="store.activeSchedule"
+        type="challenge"
+        class="w-full max-w-xl -rotate-1"
+      />
     </div>
-
   </ScreenshotLayout>
 </template>
 
