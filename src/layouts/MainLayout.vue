@@ -34,11 +34,6 @@
           <span>{{ $t('footer.data') }}</span>
         </a>
         &ndash;
-        <a href="https://twitter.com/splatoon3ink" target="_blank">
-          <img src="@/assets/img/twitter-white.png" width="20" height="20" class="inline" />
-          <span>@splatoon3ink</span>
-        </a>
-        &ndash;
         <a href="https://splatoon3.ink/@splatoon3ink" target="_blank">
           <img src="@/assets/img/fediverse-white.svg" width="14" height="14" class="inline m-[3px]" />
           <span>@splatoon3ink@splatoon3.ink</span>
