@@ -13,14 +13,13 @@
             <ScheduleBox type="anarchySeries" class="md:max-w-md 2xl:max-w-lg md:rotate-1" />
             <ScheduleBox type="anarchyOpen" class="md:max-w-md 2xl:max-w-lg md:-rotate-1" />
             <ScheduleBox type="xMatch" class="md:max-w-md 2xl:max-w-lg md:rotate-1" />
-          </template>
-        </div>
 
-        <div v-if="usSplatfests.upcomingFestival" class="flex justify-center">
-          <SplatfestBox
-            :festival="usSplatfests.upcomingFestival"
-            class="flex-1 max-w-md md:-rotate-1"
-          />
+            <SplatfestBox
+              v-if="usSplatfests.upcomingFestival"
+              :festival="usSplatfests.upcomingFestival"
+              class="md:max-w-md 2xl:max-w-lg md:-rotate-1"
+            />
+          </template>
         </div>
 
         <div v-if="usSplatfests.recentFestival" class="flex flex-wrap items-center justify-center gap-y-6 md:gap-x-6">
