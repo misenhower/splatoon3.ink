@@ -37,7 +37,7 @@
     "pinia": "^2.0.22",
     "puppeteer": "^18.0.3",
     "sharp": "^0.32.0",
-    "threads-api": "file:../threads-api/threads-api",
+    "threads-api": "^1.4.0",
     "twitter-api-v2": "^1.12.7",
     "vue": "^3.2.39",
     "vue-i18n": "^9.2.2",
