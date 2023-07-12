@@ -1,3 +1,4 @@
+import sharp from "sharp";
 import threads from "threads-api";
 import Client from "./Client.mjs";
 
@@ -17,9 +18,11 @@ export default class ThreadsClient extends Client {
   }
 
   async send(status, generator) {
+    let jpeg = await sharp(status.media[0].file).jpeg().toBuffer();
+
     await this.#api.publish({
       text: status.status,
-      image: status.media[0].file,
+      image: { type: "image/jpeg", data: jpeg },
     });
   }
 }
