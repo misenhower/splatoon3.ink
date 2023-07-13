@@ -66,7 +66,7 @@
     "subtitle-2": "Comment ce site a-t-il été créé ?",
     "text-2": "Côté front, ce site a été conçu avec {0}, {1} et {2}. Les ressources statiques sont compilées en utilisant {3}.",
     "text-3": "Côté back, les modules de mise à jour des données et le bot Twitter ont été développés à l'aide de {0}.",
-    "text-4": "Le bot Twitter {0} utilise {1} pour générer automatiquement des images pour chaque tweet.",
+    "text-4": "Le bot {0} utilise {1} pour générer automatiquement des images pour chaque tweet.",
     "text-5": "Ce site est entièrement open source. Vous pouvez consulter les sources ici sur {0}.",
     "subtitle-3": "Puis-je utiliser les données de ce site dans mon propre projet ?",
     "text-6": "Oui ! J'adore voir tous les projets créatifs que les gens imaginent en utilisant les données de ce site.",

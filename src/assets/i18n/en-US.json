@@ -78,7 +78,7 @@
     "subtitle-2": "How was this site made?",
     "text-2": "On the front end, this site was built with {0}, {1}, and {2}. Static assets are compiled using {3}.",
     "text-3": "On the back end, the data updaters and Twitter bot were written using {0}.",
-    "text-4": "The Twitter bot at {0} uses {1} to automatically generate images for each tweet.",
+    "text-4": "The {0} bots use {1} to automatically generate images for each post.",
     "text-5": "This site is completely open source. You can view the source here on {0}.",
     "subtitle-3": "Can I use data from this site in my own project?",
     "text-6": "Yes! I love seeing all the creative projects people come up with that use this site's data.",
@@ -91,6 +91,7 @@
   "footer": {
     "term": "This website is not affiliated with Nintendo. All product names, logos, and brands are property of their respective owners.",
     "about": "About",
+    "socials": "Social Media",
     "data": "Data"
   }
 }

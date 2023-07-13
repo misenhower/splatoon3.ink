@@ -45,7 +45,9 @@
                     </i18n-t>
 
                     <i18n-t keypath="about.text-4" tag="p">
-                      <a href="https://twitter.com/splatoon3ink/" target="_blank">@Splatoon3ink</a>
+                      <router-link to="/socials">
+                        {{ $t('footer.socials') }}
+                      </router-link>
                       <a href="https://pptr.dev/" target="_blank">Puppeteer</a>
                     </i18n-t>
                   </div>
