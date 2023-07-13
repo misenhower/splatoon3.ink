@@ -7,6 +7,7 @@ import { warmCaches } from "./splatnet/index.mjs";
 import MastodonClient from './social/clients/MastodonClient.mjs';
 import ImageWriter from './social/clients/ImageWriter.mjs';
 import BlueskyClient from './social/clients/BlueskyClient.mjs';
+import ThreadsClient from './social/clients/ThreadsClient.mjs';
 import { archiveData } from './data/DataArchiver.mjs';
 
 consoleStamp(console);
@@ -19,6 +20,7 @@ const actions = {
   socialTestMastodon: () => testStatuses([new MastodonClient]),
   socialTestBluesky: () => testStatuses([new BlueskyClient]),
   socialTestImage: () => testStatuses([new ImageWriter]),
+  socialTestThreads: () => testStatuses([new ThreadsClient]),
   splatnet: updatePrimary,
   splatnetAll: updateAll,
   warmCaches,
