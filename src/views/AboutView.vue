@@ -6,11 +6,11 @@
           <Splat2 class="absolute -top-32 -left-24 w-64" />
           <Splat5 class="absolute -right-28 -bottom-24 w-64" />
 
-          <div class="relative md:rotate-1">
+          <div class="relative z-0 md:rotate-1">
             <ProductContainer class="py-12 bg-octoarrow">
               <div class="faq text-zinc-300 px-10">
                 <div class="space-y-6">
-                  <h1 class="font-splatoon2">
+                  <h1 class="font-splatoon2 text-shadow">
                     {{ $t('about.title') }}
                   </h1>
 
