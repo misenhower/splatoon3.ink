@@ -5,6 +5,7 @@ import GearView from '../views/GearView.vue'
 import AboutView from '../views/AboutView.vue'
 import SplatfestsView from '../views/SplatfestsView.vue'
 import ChallengesView from '../views/ChallengesView.vue'
+import SocialsView from '../views/SocialsView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,6 +34,11 @@ const router = createRouter({
       path: '/challenges',
       name: 'challenges',
       component: ChallengesView,
+    },
+    {
+      path: '/socials',
+      name: 'socials',
+      component: SocialsView,
     },
     {
       path: '/about',
