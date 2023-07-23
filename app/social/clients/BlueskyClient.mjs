@@ -10,24 +10,23 @@ export default class BlueskyClient extends Client
   name = 'Bluesky';
 
   #agent;
-  #loggedIn = false;
 
-  constructor() {
-    super();
-
-    this.#agent = new BskyAgent({
-      service: process.env.BLUESKY_SERVICE,
-    });
+  async canSend() {
+    return process.env.BLUESKY_SERVICE
+      && process.env.BLUESKY_IDENTIFIER
+      && process.env.BLUESKY_PASSWORD;
   }
 
   async login() {
-    if (!this.#loggedIn) {
+    if (!this.#agent) {
+      this.#agent = new BskyAgent({
+        service: process.env.BLUESKY_SERVICE,
+      });
+
       await this.#agent.login({
         identifier: process.env.BLUESKY_IDENTIFIER,
         password: process.env.BLUESKY_PASSWORD,
       });
-
-      this.#loggedIn = true;
     }
   }
 

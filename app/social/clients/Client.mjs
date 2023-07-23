@@ -6,6 +6,10 @@ export default class Client
   key;
   name;
 
+  async canSend() {
+    return true;
+  }
+
   /**
    * @param {Status} status
    * @param {StatusGenerator} generator

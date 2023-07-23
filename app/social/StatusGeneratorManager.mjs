@@ -40,6 +40,11 @@ export default class StatusGeneratorManager
     let clientsToPost = [];
 
     for (let client of this.clients) {
+      if (!(await client.canSend())) {
+        this.console(generator, client).warn('Client cannot send (missing credentials)');
+        continue;
+      }
+
       if (force || await generator.shouldPost(client)) {
         clientsToPost.push(client);
       }

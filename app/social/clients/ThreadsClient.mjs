@@ -17,6 +17,11 @@ export default class ThreadsClient extends Client {
     });
   }
 
+  async canSend() {
+    return process.env.THREADS_USERNAME
+      && process.env.THREADS_PASSWORD;
+  }
+
   async send(status, generator) {
     let jpeg = await sharp(status.media[0].file).jpeg().toBuffer();
 

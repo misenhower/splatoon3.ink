@@ -16,6 +16,10 @@ export default class MastodonClient extends Client
     this.#accessToken = process.env.MASTODON_ACCESS_TOKEN;
   }
 
+  async canSend() {
+    return this.#url && this.#accessToken;
+  }
+
   async send(status, generator) {
     // Mastodon API
     const masto = await login({
