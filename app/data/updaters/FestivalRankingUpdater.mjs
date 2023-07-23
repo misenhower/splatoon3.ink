@@ -44,9 +44,9 @@ export default class FestivalRankingUpdater extends DataUpdater
     const data = await this.splatnet(locale).getFestRankingData(this.festID);
 
     for (const team of data.data.fest.teams) {
-      let pageInfo = team.result?.rankingHolders.pageInfo;
+      let pageInfo = team.result?.rankingHolders?.pageInfo;
 
-      while (pageInfo.hasNextPage) {
+      while (pageInfo?.hasNextPage) {
         this.console.log('Fetching next page for team %s (%s), cursor %s',
           getFestTeamId(team.id), team.teamName, pageInfo.endCursor);
 
