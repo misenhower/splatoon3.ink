@@ -12,7 +12,7 @@ export default class ThreadsClient extends Client {
     super();
 
     this.#api = new threads.ThreadsAPI({
-      // username: process.env.THREADS_USERNAME,
+      username: process.env.THREADS_USERNAME,
       // password: process.env.THREADS_PASSWORD,
       token: process.env.THREADS_TOKEN,
       deviceID: process.env.THREADS_DEVICE_ID,
@@ -23,7 +23,8 @@ export default class ThreadsClient extends Client {
     // return process.env.THREADS_USERNAME
     //   && process.env.THREADS_PASSWORD;
 
-    return process.env.THREADS_TOKEN
+    return process.env.THREADS_USERNAME
+      && process.env.THREADS_TOKEN
       && process.env.THREADS_DEVICE_ID;
   }
 
