@@ -161,7 +161,7 @@ export default class SplatNet3Client
       {
         name: 'Splat Zones Leaderboard',
         key: 'splatzones',
-        id: 'eb69df6f2a2f13ab207eedc568f0f8b6',
+        id: '6de3895bd90b5fa5220b5e9355981e16',
         dataKey: 'xRankingAr',
       },
       {
@@ -173,7 +173,7 @@ export default class SplatNet3Client
       {
         name: 'Clam Blitz Leaderboard',
         key: 'clamblitz',
-        id: '68f99b7b02537bcb881db07e4e67f8dd',
+        id: '3ab25d7f475cb3d5daf16f835a23411b',
         dataKey: 'xRankingCl',
       },
       {
@@ -185,7 +185,7 @@ export default class SplatNet3Client
       {
         name: 'Rainmaker Leaderboard',
         key: 'rainmaker',
-        id: '5f8f333770ed3c43e21b0121f3a86716',
+        id: 'd62ec65b297968b659103d8dc95d014d',
         dataKey: 'xRankingGl',
       },
       {
@@ -197,7 +197,7 @@ export default class SplatNet3Client
       {
         name: 'Tower Control Leaderboard',
         key: 'towercontrol',
-        id: '4e8b381ae6f9620443627f4eac3a2210',
+        id: 'd96057b8f46e5f7f213a35c8ea2b8fdc',
         dataKey: 'xRankingLf',
       },
       {
