@@ -9,9 +9,11 @@ import ImageWriter from './social/clients/ImageWriter.mjs';
 import BlueskyClient from './social/clients/BlueskyClient.mjs';
 import ThreadsClient from './social/clients/ThreadsClient.mjs';
 import { archiveData } from './data/DataArchiver.mjs';
+import { sentryInit } from './common/sentry.mjs';
 
 consoleStamp(console);
 dotenv.config();
+sentryInit();
 
 const actions = {
   cron,
