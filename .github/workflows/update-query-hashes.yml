@@ -1,0 +1,25 @@
+name: Update query hashes
+
+on:
+  schedule:
+    - cron: '30 * * * *'
+
+jobs:
+  check-and-create-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Download file from URL
+      run: curl -o app/splatnet/queryHashes.json https://raw.githubusercontent.com/imink-app/SplatNet3/master/Data/splatnet3_webview_data.json
+
+    - name: Create PR
+      uses: peter-evans/create-pull-request@v3
+      with:
+        title: Update query hashes
+        commit-message: Update query hashes
+        branch: update-query-hashes
+        body: Update query hashes
+        delete-branch: true
