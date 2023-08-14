@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Download file from URL
       run: curl -o app/splatnet/queryHashes.json https://raw.githubusercontent.com/imink-app/SplatNet3/master/Data/splatnet3_webview_data.json
