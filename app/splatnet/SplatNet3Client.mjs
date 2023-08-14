@@ -141,11 +141,11 @@ export default class SplatNet3Client
   }
 
   getFestRankingData(festId) {
-    return this.getGraphQLPersistedQuery(1, '4869de13d0d209032b203608cb598aef', { festId });
+    return this.getGraphQLPersistedQuery(1, 'cc38f388c51f9930bd7cca966893f1b4', { festId });
   }
 
   getFestRankingPage(teamId, cursor) {
-    return this.getGraphQLPersistedQuery(1, 'be2eb9e9b8dd680519eb59cc46c1a32b', { cursor, first: 25, id: teamId });
+    return this.getGraphQLPersistedQuery(1, 'f488fccdad37b9e19aed50a8d6e83a24', { cursor, first: 25, id: teamId });
   }
 
   getCurrentFestData() {

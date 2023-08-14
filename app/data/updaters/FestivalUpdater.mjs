@@ -60,7 +60,12 @@ export default class FestivalUpdater extends DataUpdater
 
         if (node.teams.find(t => t.result)) {
           let rankingUpdater = new FestivalRankingUpdater(this.region, node.id, node.endTime);
-          await rankingUpdater.updateIfNeeded();
+
+          try {
+            await rankingUpdater.updateIfNeeded();
+          } catch (e) {
+            this.console.error(e);
+          }
         }
       }
     }
