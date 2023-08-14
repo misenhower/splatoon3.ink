@@ -1,6 +1,6 @@
 import ValueCache from "../common/ValueCache.mjs";
-import NsoClient from "./NsoClient.mjs";
 import prefixedConsole from '../common/prefixedConsole.mjs';
+import fs from 'fs/promises';
 
 export const SPLATNET3_WEB_SERVICE_ID = '4834290508791808';
 
@@ -9,6 +9,7 @@ export default class SplatNet3Client
   baseUrl = 'https://api.lp1.av5ja.srv.nintendo.net';
   webViewVersion = '4.0.0-e2ee936d';
   bulletToken = null;
+  queryHashes = null;
 
   constructor(nsoClient, acceptLanguage = 'en-US') {
     this.console = prefixedConsole('SplatNet', nsoClient.region);
@@ -25,6 +26,17 @@ export default class SplatNet3Client
 
     // Expire 5min early to make sure we have time to execute requests
     return expires - 5 * 60 * 1000;
+  }
+
+  // Query hashes
+  async _queryHash(name) {
+    if (!this.queryHashes) {
+      // Data from: https://github.com/imink-app/SplatNet3/blob/master/Data/splatnet3_webview_data.json
+      let data = await fs.readFile(new URL('./queryHashes.json', import.meta.url));
+      this.queryHashes = JSON.parse(data);
+    }
+
+    return this.queryHashes?.graphql?.hash_map?.[name];
   }
 
   // Bullet token
@@ -105,7 +117,9 @@ export default class SplatNet3Client
     return await response.json();
   }
 
-  async getGraphQLPersistedQuery(version, sha256Hash, variables = {}) {
+  async getGraphQLPersistedQuery(version, query, variables = {}) {
+    let sha256Hash = await this._queryHash(query) ?? query;
+
     let body = {
       extensions: { persistedQuery: { version, sha256Hash } },
       variables,
@@ -117,43 +131,43 @@ export default class SplatNet3Client
   // Specific queries
 
   getStageScheduleData() {
-    return this.getGraphQLPersistedQuery(1, 'd1f062c14f74f758658b2703a5799002');
+    return this.getGraphQLPersistedQuery(1, 'StageScheduleQuery');
   }
 
   getStageRecordData() {
-    return this.getGraphQLPersistedQuery(1, 'f08a932d533845dde86e674e03bbb7d3');
+    return this.getGraphQLPersistedQuery(1, 'StageRecordQuery');
   }
 
   getGesotownData() {
-    return this.getGraphQLPersistedQuery(1, 'a43dd44899a09013bcfd29b4b13314ff');
+    return this.getGraphQLPersistedQuery(1, 'GesotownQuery');
   }
 
   getCoopHistoryData() {
-    return this.getGraphQLPersistedQuery(1, '91b917becd2fa415890f5b47e15ffb15');
+    return this.getGraphQLPersistedQuery(1, 'CoopHistoryQuery');
   }
 
   getFestRecordData() {
-    return this.getGraphQLPersistedQuery(1, '44c76790b68ca0f3da87f2a3452de986');
+    return this.getGraphQLPersistedQuery(1, 'FestRecordQuery');
   }
 
   getFestDetailData(festId) {
-    return this.getGraphQLPersistedQuery(1, '96c3a7fd484b8d3be08e0a3c99eb2a3d', { festId });
+    return this.getGraphQLPersistedQuery(1, 'DetailFestRecordDetailQuery', { festId });
   }
 
   getFestRankingData(festId) {
-    return this.getGraphQLPersistedQuery(1, 'cc38f388c51f9930bd7cca966893f1b4', { festId });
+    return this.getGraphQLPersistedQuery(1, 'DetailRankingQuery', { festId });
   }
 
   getFestRankingPage(teamId, cursor) {
-    return this.getGraphQLPersistedQuery(1, 'f488fccdad37b9e19aed50a8d6e83a24', { cursor, first: 25, id: teamId });
+    return this.getGraphQLPersistedQuery(1, 'RankingHoldersFestTeamRankingHoldersPaginationQuery', { cursor, first: 25, id: teamId });
   }
 
   getCurrentFestData() {
-    return this.getGraphQLPersistedQuery(1, 'c0429fd738d829445e994d3370999764');
+    return this.getGraphQLPersistedQuery(1, 'useCurrentFestQuery');
   }
 
   getXRankingData(region) {
-    return this.getGraphQLPersistedQuery(1, 'd771444f2584d938db8d10055599011d', { region });
+    return this.getGraphQLPersistedQuery(1, 'XRankingQuery', { region });
   }
 
   getXRankingDetailQueryTypes() {
@@ -161,49 +175,49 @@ export default class SplatNet3Client
       {
         name: 'Splat Zones Leaderboard',
         key: 'splatzones',
-        id: '6de3895bd90b5fa5220b5e9355981e16',
+        id: 'DetailTabViewXRankingArRefetchQuery',
         dataKey: 'xRankingAr',
       },
       {
         name: 'Splat Zones Top Weapons',
         key: 'splatzones.weapons',
-        id: 'a6782a0c692e8076656f9b4ab613fd82',
+        id: 'DetailTabViewWeaponTopsArRefetchQuery',
         dataKey: 'weaponTopsAr',
       },
       {
         name: 'Clam Blitz Leaderboard',
         key: 'clamblitz',
-        id: '3ab25d7f475cb3d5daf16f835a23411b',
+        id: 'DetailTabViewXRankingClRefetchQuery',
         dataKey: 'xRankingCl',
       },
       {
         name: 'Clam Blitz Top Weapons',
         key: 'clamblitz.weapons',
-        id: '8d3c5bb2e82d6eb32a37eefb0e1f8f69',
+        id: 'DetailTabViewWeaponTopsClRefetchQuery',
         dataKey: 'weaponTopsCl',
       },
       {
         name: 'Rainmaker Leaderboard',
         key: 'rainmaker',
-        id: 'd62ec65b297968b659103d8dc95d014d',
+        id: 'DetailTabViewXRankingGlRefetchQuery',
         dataKey: 'xRankingGl',
       },
       {
         name: 'Rainmaker Top Weapons',
         key: 'rainmaker.weapons',
-        id: 'b23468857c049c2f0684797e45fabac1',
+        id: 'DetailTabViewWeaponTopsGlRefetchQuery',
         dataKey: 'weaponTopsGl',
       },
       {
         name: 'Tower Control Leaderboard',
         key: 'towercontrol',
-        id: 'd96057b8f46e5f7f213a35c8ea2b8fdc',
+        id: 'DetailTabViewXRankingLfRefetchQuery',
         dataKey: 'xRankingLf',
       },
       {
         name: 'Tower Control Top Weapons',
         key: 'towercontrol.weapons',
-        id: 'd46f88c2ea5c4daeb5fe9d5813d07a99',
+        id: 'DetailTabViewWeaponTopsLfRefetchQuery',
         dataKey: 'weaponTopsLf',
       },
     ];
