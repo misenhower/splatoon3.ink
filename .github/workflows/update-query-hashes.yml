@@ -3,6 +3,7 @@ name: Update query hashes
 on:
   schedule:
     - cron: '30 * * * *'
+  workflow_dispatch:
 
 jobs:
   check-and-create-pr:
