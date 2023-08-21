@@ -7,7 +7,6 @@ export const SPLATNET3_WEB_SERVICE_ID = '4834290508791808';
 export default class SplatNet3Client
 {
   baseUrl = 'https://api.lp1.av5ja.srv.nintendo.net';
-  webViewVersion = '4.0.0-e2ee936d';
   bulletToken = null;
   queryHashes = null;
 
@@ -29,12 +28,22 @@ export default class SplatNet3Client
   }
 
   // Query hashes
-  async _queryHash(name) {
+  async _loadQueryHashes() {
     if (!this.queryHashes) {
       // Data from: https://github.com/imink-app/SplatNet3/blob/master/Data/splatnet3_webview_data.json
       let data = await fs.readFile(new URL('./queryHashes.json', import.meta.url));
       this.queryHashes = JSON.parse(data);
     }
+  }
+
+  async _webViewVersion() {
+    await this._loadQueryHashes();
+
+    return this.queryHashes?.version;
+  }
+
+  async _queryHash(name) {
+    await this._loadQueryHashes();
 
     return this.queryHashes?.graphql?.hash_map?.[name];
   }
@@ -72,7 +81,7 @@ export default class SplatNet3Client
     let response = await fetch(this.baseUrl + '/api/bullet_tokens', {
       method: 'POST',
       headers: {
-        'X-Web-View-Ver': this.webViewVersion,
+        'X-Web-View-Ver': await this._webViewVersion(),
         'X-NACOUNTRY': 'US', // TODO
         'X-GameWebToken': webServiceToken,
         'Accept-Language': this.acceptLanguage,
@@ -103,7 +112,7 @@ export default class SplatNet3Client
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${this.bulletToken.bulletToken}`,
-        'X-Web-View-Ver': this.webViewVersion,
+        'X-Web-View-Ver': await this._webViewVersion(),
         'Content-Type': 'application/json',
         'Accept-Language': this.acceptLanguage,
       },
