@@ -23,6 +23,8 @@
     "types": {
       "series": "Serie",
       "open": "Aperta",
+      "pro": "Sfida",
+      "tricolor": "Tricolore",
       "regular": "Partita amichevole",
       "anarchy": "Partita anarchica",
       "splatfest": "Partita tematica",

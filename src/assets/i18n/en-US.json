@@ -24,6 +24,8 @@
     "types": {
       "series": "Series",
       "open": "Open",
+      "pro": "Pro",
+      "tricolor": "Tricolor",
       "regular": "Regular Battle",
       "anarchy": "Anarchy Battle",
       "splatfest": "Splatfest Battle",

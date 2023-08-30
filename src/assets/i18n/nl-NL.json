@@ -23,6 +23,8 @@
     "types": {
       "series": "Sessie",
       "open": "Open",
+      "pro": "Pro",
+      "tricolor": "Driekleure",
       "regular": "Standaardgevecht",
       "anarchy": "Chaosgevecht",
       "splatfest": "Splatfest-gevecht",

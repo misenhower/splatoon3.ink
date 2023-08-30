@@ -23,6 +23,8 @@
     "types": {
       "series": "挑战",
       "open": "开放",
+      "pro": "挑战",
+      "tricolor": "三色夺宝攻击",
       "regular": "一般比赛",
       "anarchy": "蛮颓比赛",
       "splatfest": "祭典比赛",

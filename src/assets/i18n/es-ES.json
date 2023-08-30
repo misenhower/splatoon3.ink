@@ -23,6 +23,8 @@
     "types": {
       "series": "Formal",
       "open": "Informal",
+      "pro": "Formal",
+      "tricolor": "Tricolor",
       "regular": "Combate amistoso",
       "anarchy": "Combate caótico",
       "splatfest": "Combate temático",
