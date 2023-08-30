@@ -50,13 +50,13 @@ export const useRegularSchedulesStore = defineScheduleStore('regular', {
 // Anarchy Battle (Series)
 export const useAnarchySeriesSchedulesStore = defineScheduleStore('anarchy/series', {
   nodes: () => useSchedulesDataStore().data?.bankaraSchedules.nodes,
-  settings: node => node.bankaraMatchSettings?.find(s => s.mode === 'CHALLENGE'),
+  settings: node => node.bankaraMatchSettings?.find(s => s.bankaraMode === 'CHALLENGE'),
 });
 
 // Anarchy Battle (Open)
 export const useAnarchyOpenSchedulesStore = defineScheduleStore('anarchy/open', {
   nodes: () => useSchedulesDataStore().data?.bankaraSchedules.nodes,
-  settings: node => node.bankaraMatchSettings?.find(s => s.mode === 'OPEN'),
+  settings: node => node.bankaraMatchSettings?.find(s => s.bankaraMode === 'OPEN'),
 });
 
 // X Battle
@@ -65,10 +65,16 @@ export const useXSchedulesStore = defineScheduleStore('xmatch', {
   settings: node => node.xMatchSetting,
 });
 
-// Splatfest Battle
-export const useSplatfestSchedulesStore = defineScheduleStore('splatfest', {
+// Splatfest Battle (Open)
+export const useSplatfestOpenSchedulesStore = defineScheduleStore('splatfest/open', {
   nodes: () => useSchedulesDataStore().data?.festSchedules.nodes,
-  settings: node => node.festMatchSetting,
+  settings: node => node.festMatchSettings?.find(s => s.festMode === 'OPEN'),
+});
+
+// Splatfest Battle (Pro)
+export const useSplatfestProSchedulesStore = defineScheduleStore('splatfest/pro', {
+  nodes: () => useSchedulesDataStore().data?.festSchedules.nodes,
+  settings: node => node.festMatchSettings?.find(s => s.festMode === 'CHALLENGE'),
 });
 
 // Challenge Events
@@ -124,7 +130,8 @@ if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useAnarchySeriesSchedulesStore, import.meta.hot));
   import.meta.hot.accept(acceptHMRUpdate(useAnarchyOpenSchedulesStore, import.meta.hot));
   import.meta.hot.accept(acceptHMRUpdate(useXSchedulesStore, import.meta.hot));
-  import.meta.hot.accept(acceptHMRUpdate(useSplatfestSchedulesStore, import.meta.hot));
+  import.meta.hot.accept(acceptHMRUpdate(useSplatfestOpenSchedulesStore, import.meta.hot));
+  import.meta.hot.accept(acceptHMRUpdate(useSplatfestProSchedulesStore, import.meta.hot));
   import.meta.hot.accept(acceptHMRUpdate(useEventSchedulesStore, import.meta.hot));
   import.meta.hot.accept(acceptHMRUpdate(useSalmonRunSchedulesStore, import.meta.hot));
   import.meta.hot.accept(acceptHMRUpdate(useEggstraWorkSchedulesStore, import.meta.hot));

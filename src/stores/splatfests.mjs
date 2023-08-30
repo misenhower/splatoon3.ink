@@ -60,6 +60,8 @@ function defineSplatfestRegionStore(region) {
       return {
         ...fest,
         isTricolorActive: time.isActive(fest.midtermTime, fest.endTime),
+        startTime: fest.midtermTime,
+        endTime: fest.endTime,
       };
     });
 
