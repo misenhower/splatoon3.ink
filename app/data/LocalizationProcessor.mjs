@@ -39,6 +39,8 @@ export class LocalizationProcessor {
   *dataIterations(data) {
     for (let ruleset of this.rulesetIterations()) {
       for (let node of jsonpath.query(data, ruleset.node)) {
+        if (!node) continue;
+
         let id = get(node, ruleset.id);
 
         yield {
