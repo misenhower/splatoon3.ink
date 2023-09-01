@@ -23,6 +23,8 @@
     "types": {
       "series": "チャレンジ",
       "open": "オープン",
+      "pro": "チャレンジ",
+      "tricolor": "トリカラ",
       "regular": "レギュラーマッチ",
       "anarchy": "バンカラマッチ",
       "splatfest": "フェスマッチ",

@@ -23,6 +23,8 @@
     "types": {
       "series": "Série",
       "open": "Ouvert",
+      "pro": "Défi",
+      "tricolor": "Tricolore",
       "regular": "Match classique",
       "anarchy": "Match anarchie",
       "splatfest": "Festimatch",

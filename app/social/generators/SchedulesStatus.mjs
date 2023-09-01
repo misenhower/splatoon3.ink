@@ -1,6 +1,6 @@
 import StatusGenerator from "./StatusGenerator.mjs";
 import Media from "../Media.mjs";
-import { useAnarchyOpenSchedulesStore, useAnarchySeriesSchedulesStore, useRegularSchedulesStore, useSplatfestSchedulesStore, useXSchedulesStore } from "../../../src/stores/schedules.mjs";
+import { useAnarchyOpenSchedulesStore, useAnarchySeriesSchedulesStore, useRegularSchedulesStore, useSplatfestOpenSchedulesStore, useSplatfestProSchedulesStore, useXSchedulesStore } from "../../../src/stores/schedules.mjs";
 import { useUSSplatfestsStore } from '../../../src/stores/splatfests.mjs';
 export default class SchedulesStatus extends StatusGenerator
 {
@@ -15,7 +15,8 @@ export default class SchedulesStatus extends StatusGenerator
       anarchySeries: useAnarchySeriesSchedulesStore().activeSchedule,
       anarchyOpen: useAnarchyOpenSchedulesStore().activeSchedule,
       xMatch: useXSchedulesStore().activeSchedule,
-      splatfest: useSplatfestSchedulesStore().activeSchedule,
+      splatfestOpen: useSplatfestOpenSchedulesStore().activeSchedule,
+      splatfestPro: useSplatfestProSchedulesStore().activeSchedule,
       tricolor: useUSSplatfestsStore().tricolor,
     }
   }
@@ -31,14 +32,21 @@ export default class SchedulesStatus extends StatusGenerator
   async _getStatus() {
     let stages = await this.getStages();
 
-    if (stages.splatfest?.settings) {
-      let festStages = stages.splatfest.settings.vsStages;
+    if (stages.splatfestOpen?.settings) {
+      let festOpenStages = stages.splatfestOpen.settings.vsStages;
+      let festProStages = stages.splatfestPro.settings.vsStages;
 
-      if (stages.tricolor?.isTricolorActive) {
-        return `Join the global Splatfest Battle on ${festStages[0].name}, ${festStages[1].name}, and Tricolor Battle on ${stages.tricolor.tricolorStage.name}! #splatfest #maprotation`;
+      let lines = [
+        'Join the global Splatfest Battle! #splatfest #maprotation',
+        '',
+        `– Open: ${festOpenStages[0].name} and ${festOpenStages[1].name}`,
+        `– Pro: ${festProStages[0].name} and ${festProStages[1].name}`,
+      ]
+
+      if(stages.tricolor?.isTricolorActive) {
+        lines.push(`– Tricolor: ${stages.tricolor.tricolorStage.name}`);
       }
 
-      return `Join the global Splatfest Battle on ${festStages[0].name} and ${festStages[1].name}! #splatfest #maprotation`;
     }
 
     let lines = [
@@ -68,13 +76,14 @@ export default class SchedulesStatus extends StatusGenerator
 
     let lines = ['Splatoon 3 map rotation:\n'];
 
-    if (stages.splatfest?.settings) {
+    if (stages.splatfestOpen?.settings) {
       lines.push(...[
-        `Splatfest Battle: ${detail(stages.splatfest)}`,
+        `Splatfest Battle (Open): ${detail(stages.splatfestOpen)}`,
+        `Splatfest Battle (Pro): ${detail(stages.splatfestPro)}`,
       ]);
 
       if (stages.tricolor?.isTricolorActive) {
-        lines.push(`Tricolor Battle: ${stages.tricolor.tricolorStage.name}`);
+        lines.push(`Splatfest Battle (Tricolor): Tricolor Turf War on ${stages.tricolor.tricolorStage.name}`);
       }
     } else {
       lines.push(...[

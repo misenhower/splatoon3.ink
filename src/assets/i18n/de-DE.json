@@ -24,6 +24,8 @@
     "types": {
       "series": "Serie",
       "open": "Offen",
+      "pro": "Pro",
+      "tricolor": "Dreifarb",
       "regular": "Standardkampf",
       "anarchy": "Anarchie-Kampf",
       "splatfest": "Splatfest-Kampf",

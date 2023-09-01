@@ -1,4 +1,4 @@
-import { useAnarchyOpenSchedulesStore, useAnarchySeriesSchedulesStore, useRegularSchedulesStore, useSplatfestSchedulesStore, useXSchedulesStore, useEventSchedulesStore } from '@/stores/schedules';
+import { useAnarchyOpenSchedulesStore, useAnarchySeriesSchedulesStore, useRegularSchedulesStore, useSplatfestOpenSchedulesStore, useSplatfestProSchedulesStore, useXSchedulesStore, useEventSchedulesStore } from '@/stores/schedules';
 import battleRegularSvg from '@/assets/img/modes/regular.svg';
 import battleBankaraSvg from '@/assets/img/modes/bankara.svg';
 import battleXSvg from '@/assets/img/modes/x.svg';
@@ -35,10 +35,24 @@ export function useScheduleTypes() {
       img: battleXSvg,
       bg: 'bg-splatoon-battle-xmatch bg-tapes',
     },
-    splatfest: {
+    splatfestOpen: {
       name: 'schedule.types.splatfest',
-      badge: null,
-      store: useSplatfestSchedulesStore(),
+      badge: 'schedule.types.open',
+      store: useSplatfestOpenSchedulesStore(),
+      img: battleRegularSvg,
+      bg: 'bg-splatoon-battle-regular bg-tapes',
+    },
+    splatfestPro: {
+      name: 'schedule.types.splatfest',
+      badge: 'schedule.types.pro',
+      store: useSplatfestProSchedulesStore(),
+      img: battleRegularSvg,
+      bg: 'bg-splatoon-battle-regular bg-tapes',
+    },
+    splatfestTricolor: {
+      name: 'schedule.types.splatfest',
+      badge: 'schedule.types.tricolor',
+      store: useSplatfestProSchedulesStore(),
       img: battleRegularSvg,
       bg: 'bg-splatoon-battle-regular bg-tapes',
     },

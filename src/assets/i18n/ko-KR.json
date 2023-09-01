@@ -23,6 +23,8 @@
     "types": {
       "series": "챌린지",
       "open": "오픈",
+      "pro": "챌린지",
+      "tricolor": "트리컬러",
       "regular": "레귤러 매치",
       "anarchy": "카오폴리스 매치",
       "splatfest": "페스티벌 매치",

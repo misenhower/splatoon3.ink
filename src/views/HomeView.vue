@@ -4,8 +4,10 @@
       <div class="mx-4 md:mx-12 w-full space-y-10">
         <div class="flex flex-wrap justify-center items-center gap-6">
           <template v-if="usSplatfests.activeFestival">
-            <SplatfestBox :festival="usSplatfests.activeFestival" class="max-w-md md:-rotate-1" />
-            <ScheduleBox type="splatfest" class="max-w-lg md:rotate-1" />
+            <SplatfestBox :festival="usSplatfests.activeFestival" class="md:max-w-md 2xl:max-w-lg md:-rotate-1" />
+            <ScheduleBox type="splatfestOpen" class="md:max-w-md 2xl:max-w-lg md:-rotate-1" />
+            <ScheduleBox type="splatfestPro" class="md:max-w-md 2xl:max-w-lg md:-rotate-1" />
+            <TricolorBox v-if="tricolor?.isTricolorActive" class="md:max-w-md 2xl:max-w-lg md:rotate-1" />
           </template>
 
           <template v-else>
@@ -40,11 +42,14 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import MainLayout from '@/layouts/MainLayout.vue'
 import ScheduleBox from '../components/ScheduleBox.vue';
+import TricolorBox from '../components/TricolorBox.vue';
 
 import { useUSSplatfestsStore } from '@/stores/splatfests';
 import SplatfestBox from '../components/SplatfestBox.vue';
 import SplatfestResultsBox from '../components/SplatfestResultsBox.vue';
 const usSplatfests = useUSSplatfestsStore();
+const tricolor = computed(() => usSplatfests.tricolor);
 </script>

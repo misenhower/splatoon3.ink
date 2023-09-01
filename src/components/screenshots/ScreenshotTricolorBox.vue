@@ -7,14 +7,19 @@
         </div>
       </div>
 
-      <div v-if="store.activeSchedule" class="pt-2 pb-6 px-2 space-y-2">
+      <div  class="pt-2 pb-6 px-2 space-y-2">
         <div class="flex items-center justify-between font-splatoon2">
           <div class="flex items-center space-x-2 text-xl">
             <div>
-              <RuleIcon :rule="store.activeSchedule.settings.vsRule" class="h-8 drop-shadow-ruleIcon" />
+              <TricolorIcon
+                class="h-8 drop-shadow-ruleIcon"
+                :a="tricolor?.teams[0]?.color"
+                :b="tricolor?.teams[1]?.color"
+                :c="tricolor?.teams[2]?.color"
+              />
             </div>
             <div class="text-shadow">
-              {{ store.activeSchedule.settings.vsRule.name }}
+              Tricolor Turf War
             </div>
           </div>
 
@@ -30,15 +35,8 @@
 
         <div class="space-y-8">
           <StageImage
-            class="flex-1"
             img-class="rounded-2xl"
-            :stage="store.activeSchedule.settings.vsStages[0]"
-            text-size="text-xl"
-          />
-          <StageImage
-            class="flex-1"
-            img-class="rounded-2xl"
-            :stage="store.activeSchedule.settings.vsStages[1]"
+            :stage="tricolor?.tricolorStage"
             text-size="text-xl"
           />
         </div>
@@ -52,20 +50,14 @@ import { computed } from 'vue';
 import { useUSSplatfestsStore } from '@/stores/splatfests';
 import ProductContainer from '../ProductContainer.vue';
 import StageImage from '../StageImage.vue';
-import RuleIcon from '../RuleIcon.vue';
+import TricolorIcon from '../TricolorIcon.vue';
 import { useScheduleTypes } from '@/components/concerns/scheduleTypes.mjs';
 
-const props = defineProps({
-  type: {
-    type: String,
-    required: true,
-  },
-});
 
 const { types } = useScheduleTypes();
 
-const type = computed(() => types[props.type]);
-const store = computed(() => type.value.store);
+const type = computed(() => types["splatfestTricolor"]);
+const tricolor = computed(() => useUSSplatfestsStore().tricolor);
 </script>
 
 <style scoped>

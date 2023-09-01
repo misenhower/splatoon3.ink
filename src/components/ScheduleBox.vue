@@ -48,21 +48,6 @@
             img-class="rounded-r-xl"
             :stage="store.activeSchedule?.settings?.vsStages[1]"
           />
-          <div v-if="tricolor?.isTricolorActive" class="flex-1 relative">
-            <StageImage
-              img-class="rounded-xl"
-              :stage="tricolor?.tricolorStage"
-            />
-
-            <div class="absolute top-0 right-0 rounded-full bg-black p-1">
-              <TricolorIcon
-                class="h-6 w-6"
-                :a="tricolor?.teams[0]?.color"
-                :b="tricolor?.teams[1]?.color"
-                :c="tricolor?.teams[2]?.color"
-              />
-            </div>
-          </div>
         </div>
       </div>
 
@@ -90,7 +75,6 @@
 
 <script setup>
 import { computed, ref } from 'vue';
-import { useUSSplatfestsStore } from '@/stores/splatfests';
 import ProductContainer from './ProductContainer.vue';
 import StageImage from './StageImage.vue';
 import ScheduleRow from './ScheduleRow.vue';
@@ -98,7 +82,6 @@ import RuleIcon from './RuleIcon.vue';
 import SquidTape from './SquidTape.vue';
 import { useScheduleTypes } from './concerns/scheduleTypes.mjs';
 import ScheduleDialog from './ScheduleDialog.vue';
-import TricolorIcon from './TricolorIcon.vue';
 
 const props = defineProps({
   type: {
@@ -112,7 +95,6 @@ const { types } = useScheduleTypes();
 const type = computed(() => types[props.type]);
 const store = computed(() => type.value.store);
 const nextSchedule = computed(() => store.value.upcomingSchedules?.[0]);
-const tricolor = computed(() => useUSSplatfestsStore().tricolor);
 
 const open = ref(false);
 </script>
