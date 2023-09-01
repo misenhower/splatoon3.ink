@@ -7,9 +7,10 @@
           <div class="font-splatoon1 lg:text-2xl xl:text-3xl text-shadow">
             {{ $t(`splatnet.events.${event.settings.leagueMatchEvent.id}.name`, event.settings.leagueMatchEvent.name) }}
 
-            <div class="font-splatoon2 lg:text-md xl:text-xl text-shadow">
-              {{ $t(`splatnet.events.${event.settings.leagueMatchEvent.id}.desc`, event.settings.leagueMatchEvent.desc) }}
-            </div>
+            <div
+              class="font-splatoon2 lg:text-md xl:text-xl text-shadow"
+              v-html="$t(`splatnet.events.${event.settings.leagueMatchEvent.id}.desc`, event.settings.leagueMatchEvent.desc)"
+            />
           </div>
         </div>
 
