@@ -46,6 +46,7 @@ export default class SchedulesStatus extends StatusGenerator
       if(stages.tricolor?.isTricolorActive) {
         lines.push(`– Tricolor: ${stages.tricolor.tricolorStage.name}`);
       }
+      return lines.join('\n');
 
     }
 
