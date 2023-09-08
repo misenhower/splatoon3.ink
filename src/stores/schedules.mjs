@@ -68,7 +68,7 @@ export const useXSchedulesStore = defineScheduleStore('xmatch', {
 // Splatfest Battle (Open)
 export const useSplatfestOpenSchedulesStore = defineScheduleStore('splatfest/open', {
   nodes: () => useSchedulesDataStore().data?.festSchedules.nodes,
-  settings: node => node.festMatchSettings?.find(s => s.festMode === 'OPEN'),
+  settings: node => node.festMatchSettings?.find(s => s.festMode === 'REGULAR'),
 });
 
 // Splatfest Battle (Pro)
