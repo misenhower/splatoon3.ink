@@ -5,7 +5,8 @@
         <div class="mx-10">
           <SplatfestBox
             :festival="usSplatfests.activeFestival"
-            class="flex-1 max-w-md md:-rotate-1 scale-[1.2]"
+            class="flex-1 md:-rotate-1 scale-[1.2]"
+            :class="splatfestSizeClass"
           />
         </div>
         <ScreenshotScheduleBox type="splatfestOpen" class="flex-1 rotate-1" />
@@ -33,4 +34,5 @@ import SplatfestBox from '@/components/SplatfestBox.vue';
 import ScreenshotTricolorBox from '../../components/screenshots/ScreenshotTricolorBox.vue';
 const usSplatfests = useUSSplatfestsStore();
 const tricolor = computed(() => usSplatfests.tricolor);
+const splatfestSizeClass = computed(() => (tricolor.value?.isTricolorActive) ? 'max-w-xs' : 'max-w-md');
 </script>
