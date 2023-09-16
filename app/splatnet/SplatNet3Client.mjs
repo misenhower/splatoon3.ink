@@ -85,6 +85,7 @@ export default class SplatNet3Client
         'X-NACOUNTRY': 'US', // TODO
         'X-GameWebToken': webServiceToken,
         'Accept-Language': this.acceptLanguage,
+        'User-Agent': process.env.USER_AGENT,
       },
     });
 
