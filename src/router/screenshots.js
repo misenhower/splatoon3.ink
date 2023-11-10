@@ -45,8 +45,32 @@ const router = createRouter({
       component: SalmonRunGearView,
     },
     {
-      path: '/splatfest',
+      path: '/splatfest/NA',
       component: SplatfestView,
+      props: {
+        region: 'NA',
+      },
+    },
+    {
+      path: '/splatfest/EU',
+      component: SplatfestView,
+      props: {
+        region: 'EU',
+      },
+    },
+    {
+      path: '/splatfest/JP',
+      component: SplatfestView,
+      props: {
+        region: 'JP',
+      },
+    },
+    {
+      path: '/splatfest/AP',
+      component: SplatfestView,
+      props: {
+        region: 'AP',
+      },
     },
   ],
 })

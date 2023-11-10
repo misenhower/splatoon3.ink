@@ -124,7 +124,7 @@ export default class SplatfestStatus extends StatusGenerator
   /** @param {ScreenshotHelper} screenshotHelper */
   async _getMedia(screenshotHelper) {
     let media = new Media;
-    media.file = await screenshotHelper.capture('splatfest');
+    media.file = await screenshotHelper.capture(`splatfest/${this.region}`);
 
     return media;
   }
