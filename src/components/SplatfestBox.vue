@@ -3,6 +3,7 @@
     <div class="space-y-2">
       <div class="font-splatoon1 text-2xl xl:text-3xl text-shadow mx-2">
         {{ $t(title) }}
+        {{ regions.length < 4 ? ` (${regions.join('/')})` : '' }}
       </div>
 
       <div class="flex justify-center mx-2">
@@ -41,11 +42,36 @@ import { computed } from 'vue';
 import ProductContainer from './ProductContainer.vue';
 import { STATUS_PAST, STATUS_ACTIVE, STATUS_UPCOMING } from '@/stores/splatfests';
 import SquidTape from './SquidTape.vue';
+import { useUSSplatfestsStore, useEUSplatfestsStore, useJPSplatfestsStore, useAPSplatfestsStore } from '@/stores/splatfests';
 
 const props = defineProps({
   festival: Object,
   historyMode: Boolean,
 });
+
+const usSplatfests = useUSSplatfestsStore();
+const euSplatfests = useEUSplatfestsStore();
+const jpSplatfests = useJPSplatfestsStore();
+const apSplatfests = useAPSplatfestsStore();
+
+const regions = computed(() => {
+  const availableRegions = [];
+  const id = props.festival.__splatoon3ink_id;
+  if (usSplatfests.festivals.map(f => f.__splatoon3ink_id).includes(id)) {
+    availableRegions.push('NA');
+  }
+  if (euSplatfests.festivals.map(f => f.__splatoon3ink_id).includes(id)) {
+    availableRegions.push('EU');
+  }
+  if (jpSplatfests.festivals.map(f => f.__splatoon3ink_id).includes(id)) {
+    availableRegions.push('JP');
+  }
+  if (apSplatfests.festivals.map(f => f.__splatoon3ink_id).includes(id)) {
+    availableRegions.push('AP');
+  }
+  return availableRegions;
+})
+
 
 const title = computed(() => {
   if (props.historyMode) {
