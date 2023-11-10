@@ -2,11 +2,11 @@
   <ScreenshotLayout header="Map Schedules">
     <div class="grow flex items-center justify-center">
       <div v-if="activeFestivals.length > 0" class="flex space-x-6 items-center mx-6">
-        <div class="mx-10">
+        <div :class="marginsClass">
           <SplatfestMultiBox
             :festivals="activeFestivals"
-            class="flex-1 md:-rotate-1 scale-[1.2]"
-            :class="splatfestSizeClass"
+            class="flex-1 md:-rotate-1"
+            :class="`${splatfestSizeClass} ${regionSizeClass}`"
           />
         </div>
         <ScreenshotScheduleBox type="splatfestOpen" class="flex-1 rotate-1" />
@@ -41,5 +41,7 @@ const jpSplatfests = useJPSplatfestsStore();
 const apSplatfests = useAPSplatfestsStore();
 const tricolor = computed(() => usSplatfests.tricolor || euSplatfests.tricolor || jpSplatfests.tricolor || apSplatfests.tricolor);
 const activeFestivals = computed(() => uniqBy([usSplatfests.activeFestival, euSplatfests.activeFestival, jpSplatfests.activeFestival, apSplatfests.activeFestival].filter(festival => festival), '__splatoon3ink_id'));
-const splatfestSizeClass = computed(() => (tricolor.value?.isTricolorActive) ? 'max-w-xs' : 'max-w-md');
+const splatfestSizeClass = computed(() => (tricolor.value?.isTricolorActive || activeFestivals.value?.length > 1) ? 'max-w-xs' : 'max-w-md');
+const regionSizeClass = computed(() => (activeFestivals.value?.length > 1) ? '' : 'scale-[1.2]');
+const marginsClass = computed(() => (activeFestivals.value?.length <= 1) ? 'mx-10' : '');
 </script>
