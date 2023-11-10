@@ -1,10 +1,10 @@
 <template>
   <ScreenshotLayout header="Map Schedules">
     <div class="grow flex items-center justify-center">
-      <div v-if="usSplatfests.activeFestival" class="flex space-x-6 items-center mx-6">
+      <div v-if="activeFestivals.length > 0" class="flex space-x-6 items-center mx-6">
         <div class="mx-10">
-          <SplatfestBox
-            :festival="usSplatfests.activeFestival"
+          <SplatfestMultiBox
+            :festivals="activeFestivals"
             class="flex-1 md:-rotate-1 scale-[1.2]"
             :class="splatfestSizeClass"
           />
@@ -29,10 +29,17 @@ import { computed } from 'vue';
 import ScreenshotLayout from '../../layouts/ScreenshotLayout.vue';
 import ScreenshotScheduleBox from '../../components/screenshots/ScreenshotScheduleBox.vue';
 
-import { useUSSplatfestsStore } from '@/stores/splatfests';
-import SplatfestBox from '@/components/SplatfestBox.vue';
+import {uniqBy} from 'lodash';
+
+import { useUSSplatfestsStore, useEUSplatfestsStore, useJPSplatfestsStore, useAPSplatfestsStore } from '@/stores/splatfests';
+import SplatfestMultiBox from '@/components/SplatfestMultiBox.vue';
 import ScreenshotTricolorBox from '../../components/screenshots/ScreenshotTricolorBox.vue';
+
 const usSplatfests = useUSSplatfestsStore();
-const tricolor = computed(() => usSplatfests.tricolor);
+const euSplatfests = useEUSplatfestsStore();
+const jpSplatfests = useJPSplatfestsStore();
+const apSplatfests = useAPSplatfestsStore();
+const tricolor = computed(() => usSplatfests.tricolor || euSplatfests.tricolor || jpSplatfests.tricolor || apSplatfests.tricolor);
+const activeFestivals = computed(() => uniqBy([usSplatfests.activeFestival, euSplatfests.activeFestival, jpSplatfests.activeFestival, apSplatfests.activeFestival].filter(festival => festival), '__splatoon3ink_id'));
 const splatfestSizeClass = computed(() => (tricolor.value?.isTricolorActive) ? 'max-w-xs' : 'max-w-md');
 </script>
