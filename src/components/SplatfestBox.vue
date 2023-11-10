@@ -42,34 +42,20 @@ import { computed } from 'vue';
 import ProductContainer from './ProductContainer.vue';
 import { STATUS_PAST, STATUS_ACTIVE, STATUS_UPCOMING } from '@/stores/splatfests';
 import SquidTape from './SquidTape.vue';
-import { useUSSplatfestsStore, useEUSplatfestsStore, useJPSplatfestsStore, useAPSplatfestsStore } from '@/stores/splatfests';
 
 const props = defineProps({
   festival: Object,
   historyMode: Boolean,
 });
 
-const usSplatfests = useUSSplatfestsStore();
-const euSplatfests = useEUSplatfestsStore();
-const jpSplatfests = useJPSplatfestsStore();
-const apSplatfests = useAPSplatfestsStore();
-
 const regions = computed(() => {
   const availableRegions = [];
-  const id = props.festival.__splatoon3ink_id;
-  if (usSplatfests.festivals.map(f => f.__splatoon3ink_id).includes(id)) {
-    availableRegions.push('NA');
-  }
-  if (euSplatfests.festivals.map(f => f.__splatoon3ink_id).includes(id)) {
-    availableRegions.push('EU');
-  }
-  if (jpSplatfests.festivals.map(f => f.__splatoon3ink_id).includes(id)) {
-    availableRegions.push('JP');
-  }
-  if (apSplatfests.festivals.map(f => f.__splatoon3ink_id).includes(id)) {
-    availableRegions.push('AP');
-  }
-  return availableRegions;
+  const regions = props.festival.__splatoon3ink_id.split("-")[0];
+  if (regions.includes("J")) availableRegions.push("JP");
+  if (regions.includes("U")) availableRegions.push("NA");
+  if (regions.includes("E")) availableRegions.push("EU");
+  if (regions.includes("A")) availableRegions.push("AP");
+  return availableRegions
 })
 
 
