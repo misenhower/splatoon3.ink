@@ -37,7 +37,7 @@ export default class SchedulesStatus extends StatusGenerator
       let festProStages = stages.splatfestPro.settings.vsStages;
 
       let lines = [
-        'Join the global Splatfest Battle! #splatfest #maprotation',
+        'Join the Splatfest Battle! #splatfest #maprotation',
         '',
         `– Open: ${festOpenStages[0].name} and ${festOpenStages[1].name}`,
         `– Pro: ${festProStages[0].name} and ${festProStages[1].name}`,
