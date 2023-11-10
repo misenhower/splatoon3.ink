@@ -69,15 +69,15 @@ export default class SplatfestStatus extends StatusGenerator
 
     switch (state) {
       case 'upcoming':
-        return `You can now vote in the next global Splatfest: ${festival.title} #splatfest #splatoon3`;
+        return `You can now vote in the next Splatfest: ${festival.title} #splatfest #splatoon3`;
       case 'upcoming:3d':
-        return `Reminder: The next global Splatfest starts in 3 DAYS! ${festival.title} #splatfest #splatoon3`
+        return `Reminder: The next Splatfest starts in 3 DAYS! ${festival.title} #splatfest #splatoon3`
       case 'upcoming:1d':
-        return `Reminder: The next global Splatfest starts in 24 HOURS! ${festival.title} #splatfest #splatoon3`
+        return `Reminder: The next Splatfest starts in 24 HOURS! ${festival.title} #splatfest #splatoon3`
       case 'active':
-        return `The global Splatfest is NOW OPEN! ${festival.title} #splatfest #splatoon3`
+        return `The Splatfest is NOW OPEN! ${festival.title} #splatfest #splatoon3`
       case 'ended':
-        return `The global Splatfest is now closed. Results are usually posted within 2 hours! #splatfest #splatoon3`
+        return `The Splatfest is now closed. Results are usually posted within 2 hours! #splatfest #splatoon3`
     }
   }
 
