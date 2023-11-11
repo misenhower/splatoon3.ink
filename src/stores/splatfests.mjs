@@ -23,11 +23,23 @@ function defineSplatfestRegionStore(region) {
       }
     }
 
+    function getRegions(node) {
+      let result = [];
+      const regions = node.__splatoon3ink_id.split("-")[0];
+      if (regions.includes("J")) result.push("JP");
+      if (regions.includes("U")) result.push("NA");
+      if (regions.includes("E")) result.push("EU");
+      if (regions.includes("A")) result.push("AP");
+
+      return result;
+    }
+
     const festivals = computed(() => store.data?.[region]?.data.festRecords.nodes.map(node => {
       return {
         ...node,
         status: getStatus(node),
         hasResults: node.teams.some(t => t.result),
+        regions: getRegions(node),
       };
     }));
 
@@ -62,6 +74,7 @@ function defineSplatfestRegionStore(region) {
         isTricolorActive: time.isActive(fest.midtermTime, fest.endTime),
         startTime: fest.midtermTime,
         endTime: fest.endTime,
+        regions,
       };
     });
 
