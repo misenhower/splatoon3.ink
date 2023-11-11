@@ -20,15 +20,30 @@
 <script setup>
 import ScreenshotLayout from '../../layouts/ScreenshotLayout.vue';
 
-import { useUSSplatfestsStore } from '@/stores/splatfests';
+import { useUSSplatfestsStore, useEUSplatfestsStore, useJPSplatfestsStore, useAPSplatfestsStore } from '@/stores/splatfests';
 import SplatfestBox from '@/components/SplatfestBox.vue';
 import SplatfestResultsBox from '@/components/SplatfestResultsBox.vue';
 import { computed } from 'vue';
-const usSplatfests = useUSSplatfestsStore();
 
-const festival = computed(() =>
-  usSplatfests.upcomingFestival
-  ?? usSplatfests.activeFestival
-  ?? usSplatfests.recentFestival,
-);
+const usSplatfests = useUSSplatfestsStore();
+const euSplatfests = useEUSplatfestsStore();
+const jpSplatfests = useJPSplatfestsStore();
+const apSplatfests = useAPSplatfestsStore();
+
+const props = defineProps({
+  region: String,
+});
+
+
+const festival = computed(() => {
+  let store;
+  switch(props.region) {
+    case "NA": store = usSplatfests; break;
+    case "EU": store = euSplatfests; break;
+    case "JP": store = jpSplatfests; break;
+    case "AP": store = apSplatfests; break;
+    default: return null;
+  }
+  return store.upcomingFestival ?? store.activeFestival ?? store.recentFestival;
+});
 </script>

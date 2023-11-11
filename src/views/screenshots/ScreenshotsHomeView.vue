@@ -36,8 +36,18 @@
         </router-link>
       </div>
       <div>
-        <router-link to="/splatfest">
-          Splatfest
+        Splatfest:
+        <router-link to="/splatfest/NA">
+          NA
+        </router-link>&nbsp;
+        <router-link to="/splatfest/EU">
+          EU
+        </router-link>&nbsp;
+        <router-link to="/splatfest/JP">
+          JP
+        </router-link>&nbsp;
+        <router-link to="/splatfest/AP">
+          AP
         </router-link>
       </div>
     </div>

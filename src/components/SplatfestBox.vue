@@ -3,6 +3,7 @@
     <div class="space-y-2">
       <div class="font-splatoon1 text-2xl xl:text-3xl text-shadow mx-2">
         {{ $t(title) }}
+        {{ regions.length < 4 ? ` (${regions.join('/')})` : '' }}
       </div>
 
       <div class="flex justify-center mx-2">
@@ -46,6 +47,17 @@ const props = defineProps({
   festival: Object,
   historyMode: Boolean,
 });
+
+const regions = computed(() => {
+  const availableRegions = [];
+  const regions = props.festival.__splatoon3ink_id.split("-")[0];
+  if (regions.includes("J")) availableRegions.push("JP");
+  if (regions.includes("U")) availableRegions.push("NA");
+  if (regions.includes("E")) availableRegions.push("EU");
+  if (regions.includes("A")) availableRegions.push("AP");
+  return availableRegions
+})
+
 
 const title = computed(() => {
   if (props.historyMode) {
