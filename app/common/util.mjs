@@ -27,6 +27,10 @@ export function getDateParts(date = null) {
   };
 }
 
+export function br2nl(str, replace = '\n') {
+  return str.replace(/<br\s*\/?>/gi, replace);
+}
+
 export function getGearIcon(gear) {
   switch (gear.gear.__typename) {
     case 'HeadGear': return '🧢';

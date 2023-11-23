@@ -1,6 +1,7 @@
 import StatusGenerator from "./StatusGenerator.mjs";
 import Media from "../Media.mjs";
 import { useEventSchedulesStore } from "../../../src/stores/schedules.mjs";
+import { br2nl } from "../../common/util.mjs";
 export default class ChallengeStatus extends StatusGenerator
 {
   key = 'challenge';
@@ -25,8 +26,11 @@ export default class ChallengeStatus extends StatusGenerator
   async _getStatus() {
     let schedule = await this.getActiveSchedule();
 
+    let name = br2nl(schedule.settings.leagueMatchEvent.name, ' ');
+    let desc = br2nl(schedule.settings.leagueMatchEvent.desc, ' ');
+
     return [
-      `A challenge event is now open! ${schedule.settings.leagueMatchEvent.name} – ${schedule.settings.leagueMatchEvent.desc}`,
+      `A challenge event is now open! ${name} – ${desc}`,
       '',
       `Play ${schedule.settings.vsRule.name} on ${schedule.settings.vsStages[0].name} and ${schedule.settings.vsStages[1].name}! #splatoon3`,
     ].join('\n');
