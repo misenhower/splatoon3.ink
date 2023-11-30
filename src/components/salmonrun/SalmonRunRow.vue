@@ -21,7 +21,7 @@
       <StageImage class="w-1/5" img-class="rounded" :stage="schedule.settings.coopStage" hide-label />
 
       <div class="flex-1 text-sm text-zinc-300 text-shadow">
-        <KingSalmonid :schedule="schedule" class="inline-block align-middle" size="w-5" />
+        <KingSalmonid :schedule="schedule" class="inline-block align-middle drop-shadow-ruleIcon" size="w-5" />
 
         {{ $t(`splatnet.stages.${schedule.settings.coopStage.id}.name`, schedule.settings.coopStage.name) }}
 

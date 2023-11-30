@@ -10,7 +10,7 @@
       </div>
 
       <div class="hidden ss:block text-shadow text-white text-xl">
-        <KingSalmonid v-if="!eggstra" :schedule="schedule" class="inline-block -mb-1 mr-2" />
+        <KingSalmonid v-if="!eggstra" :schedule="schedule" class="inline-block -mb-1 mr-2 drop-shadow-ruleIcon" />
 
         <div v-if="time.isUpcoming(schedule.startTime)" class="inline-block">
           Shift opens
@@ -31,7 +31,7 @@
     </div>
 
     <div v-if="!time.isUpcoming(schedule.startTime)" class="text-shadow text-zinc-300 ss:hidden">
-      <KingSalmonid v-if="!eggstra" :schedule="schedule" class="inline-block align-middle" />
+      <KingSalmonid v-if="!eggstra" :schedule="schedule" class="inline-block align-middle drop-shadow-ruleIcon" />
 
       {{ $t('time.remaining', { time: formatDurationFromNow(schedule.endTime) }) }}
     </div>

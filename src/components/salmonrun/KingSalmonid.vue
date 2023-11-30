@@ -12,6 +12,12 @@
       :class="size"
       :title="$t(`splatnet.bosses.${boss.id}.name`, boss.name)"
     />
+    <img
+      v-if="schedule.setting.boss.name === 'Megalodontia'"
+      src="@/assets/img/king-megalodontia.png"
+      :class="size"
+      :title="$t(`splatnet.boss.${schedule.setting.boss.id}.name`, schedule.setting.boss.name)"
+    />
   </div>
 </template>
 
