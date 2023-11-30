@@ -39,8 +39,9 @@
     "weapons": "Supplied Weapons",
     "bigrun": "Big Run",
     "kings": {
-      "maybe-cohozuna": "Maybe: Cohozuna?",
-      "maybe-horrorboros": "Maybe: Horrorboros?"
+      "cohozuna": "Cohozuna",
+      "horrorboros": "Horrorboros",
+      "megalodontia": "Megalodontia"
     },
     "eggstrawork": "Eggstra Work"
   },
