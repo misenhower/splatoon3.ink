@@ -41,6 +41,12 @@ export default class StageScheduleUpdater extends DataUpdater
       values: 'name',
     },
     {
+      key: 'bosses',
+      nodes: '$..boss',
+      id: 'id',
+      values: 'name',
+    },
+    {
       key: 'events',
       nodes: '$..eventSchedules.nodes.*.leagueMatchSetting.leagueMatchEvent',
       id: 'id',
@@ -61,36 +67,18 @@ export default class StageScheduleUpdater extends DataUpdater
   }
 
   async processKingSalmonids(data) {
-    let cache = new ValueCache('kingsalmonids');
-    let guesses = (await cache.getData()) || [];
-
     // Get all known schedule times
     let schedules = _.sortBy([
       ..._.get(data, 'data.coopGroupingSchedule.regularSchedules.nodes'),
       ..._.get(data, 'data.coopGroupingSchedule.bigRunSchedules.nodes'),
     ], 'startTime');
 
-    // Remove cached times that don't exist anymore
-    guesses = guesses.filter(g => schedules.some(s => s.startTime === g.startTime));
-
-    // Process each schedule
-    let king = null;
+    // Legacy: set the salmonid_guess based on the actual data we now have
     for (let schedule of schedules) {
-      // Look for an existing guess
-      let guess = guesses.find(g => g.startTime === schedule.startTime);
-
-      // Determine the king for the current rotation
-      king = guess ? guess.king : this.nextKingSalmonid(king);
-
-      // If we didn't have it cached, add this guess to the cache
-      if (!guess) {
-        guesses.push({ startTime: schedule.startTime, king });
-      }
+      let king = schedule.setting?.boss?.name;
 
       schedule.__splatoon3ink_king_salmonid_guess = king;
     }
-
-    await cache.setData(_.sortBy(guesses, 'startTime'));
   }
 
   nextKingSalmonid(last = null) {

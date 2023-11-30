@@ -1,25 +1,29 @@
 <template>
   <div>
     <img
-      v-if="schedule.__splatoon3ink_king_salmonid_guess === 'Cohozuna'"
+      v-if="boss?.name === 'Cohozuna'"
       src="@/assets/img/king-cohozuna.png"
       :class="size"
-      :title="$t('salmonrun.kings.maybe-cohozuna')"
+      :title="$t(`splatnet.bosses.${boss.id}.name`, boss.name)"
     />
     <img
-      v-if="schedule.__splatoon3ink_king_salmonid_guess === 'Horrorboros'"
+      v-if="boss?.name === 'Horrorboros'"
       src="@/assets/img/king-horrorboros.png"
       :class="size"
-      :title="$t('salmonrun.kings.maybe-horrorboros')"
+      :title="$t(`splatnet.bosses.${boss.id}.name`, boss.name)"
     />
   </div>
 </template>
 
 <script setup>
-defineProps({
+import { computed } from 'vue';
+
+const props = defineProps({
   schedule: Object,
   size: {
     default: 'w-6',
   },
 })
+
+const boss = computed(() => props.schedule.settings.boss)
 </script>

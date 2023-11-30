@@ -36,9 +36,9 @@ export default class SalmonRunStatus extends StatusGenerator
 
     lines.push('');
 
-    let king = schedule.__splatoon3ink_king_salmonid_guess;
+    let king = schedule.settings.boss?.name;
     if (king) {
-      lines.push(`King Salmonid guess: ${king}`);
+      lines.push(`King Salmonid: ${king}`);
       lines.push('');
     }
 
