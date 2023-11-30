@@ -50,6 +50,16 @@ export default class StageScheduleUpdater extends DataUpdater
         'regulation',
       ],
     },
+    {
+      key: 'boss',
+      nodes: [
+        '$..coopGroupingSchedule.bigRunSchedules.nodes.*.setting.boss',
+        '$..coopGroupingSchedule.teamContestSchedules.nodes.*.setting.boss',
+        '$..coopGroupingSchedule.regularSchedules.nodes.*.setting.boss'
+      ],
+      id: '__splatoon3ink_id',
+      values: 'name'
+    }
   ];
 
   async getData(locale) {
