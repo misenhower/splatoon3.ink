@@ -24,7 +24,7 @@ const configs = {
   quick: {
     disableLocalizations: true,
     disableXRank: true,
-    disableFestivalDetails: true,
+    disableFestivalRankings: true,
   },
   default: {
     disableXRank: true,

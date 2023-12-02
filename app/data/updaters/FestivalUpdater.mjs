@@ -65,15 +65,13 @@ export default class FestivalUpdater extends DataUpdater
 
     // Get the detailed data for each Splatfest
     // (unless we're getting localization-specific data)
-    let shouldGetDetails = locale === this.defaultLocale
-      && !this.settings.disableFestivalDetails;
-    if (shouldGetDetails) {
+    if (locale === this.defaultLocale) {
       for (let node of result.data.festRecords.nodes) {
         let detailResult = await this.getFestivalDetails(node);
 
         Object.assign(node, detailResult.data.fest);
 
-        if (node.teams.find(t => t.result)) {
+        if (!this.settings.disableFestivalRankings && node.teams.find(t => t.result)) {
           let rankingUpdater = new FestivalRankingUpdater(this.region, node.id, node.endTime);
 
           try {
