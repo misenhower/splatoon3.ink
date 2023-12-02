@@ -14,8 +14,9 @@
     "social:test:mastodon": "node app/index.mjs socialTestMastodon",
     "social:test:bluesky": "node app/index.mjs socialTestBluesky",
     "social:test:threads": "node app/index.mjs socialTestThreads",
-    "splatnet": "node app/index.mjs splatnet",
-    "splatnet:all": "node app/index.mjs splatnetAll",
+    "splatnet:quick": "node app/index.mjs splatnet quick",
+    "splatnet": "node app/index.mjs splatnet default",
+    "splatnet:all": "node app/index.mjs splatnet all",
     "warmCaches": "node app/index.mjs warmCaches",
     "data:archive": "node app/index.mjs dataArchive"
   },

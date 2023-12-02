@@ -26,6 +26,8 @@ export default class DataUpdater
   derivedIds = [];
   localizations = [];
 
+  settings = {};
+
   constructor(region = null) {
     this.selectedRegion = region;
     this.nsoClient = NsoClient.make(region);
@@ -126,6 +128,10 @@ export default class DataUpdater
     // Save localizations for the initial locale
     let processor = new LocalizationProcessor(initialLocale, this.localizations);
     await processor.updateLocalizations(data);
+
+    if (this.settings.disableLocalizations) {
+      return;
+    }
 
     // Retrieve data for missing languages
     for (let locale of this.locales.filter(l => l !== initialLocale)) {

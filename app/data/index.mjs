@@ -15,43 +15,38 @@ function updaters() {
     new FestivalUpdater('JP'),
     new FestivalUpdater('AP'),
     new StagesUpdater,
-  ];
-}
-
-function lowPriorityUpdaters() {
-  return [
     new XRankUpdater('Tentatek', 'ATLANTIC'),
     new XRankUpdater('Takoroka', 'PACIFIC'),
   ];
 }
 
-async function run(updaters) {
-  for (let updater of updaters) {
+const configs = {
+  quick: {
+    disableLocalizations: true,
+    disableXRank: true,
+    disableFestivalDetails: true,
+  },
+  default: {
+    disableXRank: true,
+  },
+  all: {
+    // Everything enabled
+  },
+};
+
+export async function update(config = 'default') {
+  console.info(`Running ${config} updaters...`);
+
+  let settings = configs[config];
+
+  for (let updater of updaters()) {
+    updater.settings = settings;
     try {
       await updater.updateIfNeeded();
     } catch (e) {
       console.error(e);
     }
   }
-}
 
-export async function updateAll() {
-  console.info('Running all updaters...');
-  await run([
-    ...updaters(),
-    ...lowPriorityUpdaters(),
-  ]);
-  console.info('Done running all updaters');
-}
-
-export async function updatePrimary() {
-  console.info('Running primary updaters...');
-  await run(updaters());
-  console.info('Done running primary updaters');
-}
-
-export async function updateLowPriority() {
-  console.info('Running low-priority updaters...');
-  await run(lowPriorityUpdaters());
-  console.info('Done running low-priority updaters');
+  console.info(`Done running ${config} updaters`);
 }

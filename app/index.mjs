@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import consoleStamp from 'console-stamp';
 import cron from './cron.mjs';
 import { sendStatuses, testStatuses } from './social/index.mjs';
-import { updatePrimary, updateAll } from './data/index.mjs';
+import { update } from './data/index.mjs';
 import { warmCaches } from "./splatnet/index.mjs";
 import MastodonClient from './social/clients/MastodonClient.mjs';
 import ImageWriter from './social/clients/ImageWriter.mjs';
@@ -23,16 +23,16 @@ const actions = {
   socialTestBluesky: () => testStatuses([new BlueskyClient]),
   socialTestImage: () => testStatuses([new ImageWriter]),
   socialTestThreads: () => testStatuses([new ThreadsClient]),
-  splatnet: updatePrimary,
-  splatnetAll: updateAll,
+  splatnet: update,
   warmCaches,
   dataArchive: archiveData,
 }
 
 const command = process.argv[2];
+const params = process.argv.slice(3);
 const action = actions[command];
 if (action) {
-  action();
+  action(...params);
 } else {
   console.error(`Unrecognized command: ${command}`);
 }

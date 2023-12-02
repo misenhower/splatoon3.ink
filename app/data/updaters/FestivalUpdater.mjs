@@ -65,7 +65,9 @@ export default class FestivalUpdater extends DataUpdater
 
     // Get the detailed data for each Splatfest
     // (unless we're getting localization-specific data)
-    if (locale === this.defaultLocale) {
+    let shouldGetDetails = locale === this.defaultLocale
+      && !this.settings.disableFestivalDetails;
+    if (shouldGetDetails) {
       for (let node of result.data.festRecords.nodes) {
         let detailResult = await this.getFestivalDetails(node);
 
