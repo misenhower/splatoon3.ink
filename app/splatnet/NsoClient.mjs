@@ -48,12 +48,7 @@ export default class NsoClient
       throw new Error(`Invalid region: ${region}`);
     }
 
-    let token = tokens[region];
-    if (!token) {
-      throw new Error(`Token not set for region: ${region}`);
-    }
-
-    return new NsoClient(region, token);
+    return new NsoClient(region, tokens[region]);
   }
 
   get cachePrefix() {

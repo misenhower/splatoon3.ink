@@ -4,6 +4,7 @@ import DataUpdater from "./DataUpdater.mjs";
 import FestivalRankingUpdater from './FestivalRankingUpdater.mjs';
 import { getFestId } from '../../common/util.mjs';
 import ValueCache from '../../common/ValueCache.mjs';
+import { regionTokens } from '../../splatnet/NsoClient.mjs';
 
 function generateFestUrl(id) {
   return process.env.DEBUG ?
@@ -44,6 +45,18 @@ export default class FestivalUpdater extends DataUpdater
       ],
     },
   ];
+
+  shouldUpdate() {
+    const tokens = regionTokens();
+
+    if (!tokens[this.region]) {
+      this.console.log(`No token provided for ${this.region} region, skipping...`);
+
+      return false;
+    }
+
+    return super.shouldUpdate();
+  }
 
   async getData(locale) {
     let result = await this.splatnet(locale).getFestRecordData();
