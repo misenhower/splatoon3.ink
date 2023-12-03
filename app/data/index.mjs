@@ -4,6 +4,7 @@ import CoopUpdater from "./updaters/CoopUpdater.mjs";
 import FestivalUpdater from "./updaters/FestivalUpdater.mjs";
 import XRankUpdater from "./updaters/XRankUpdater.mjs";
 import StagesUpdater from "./updaters/StagesUpdater.mjs";
+import Sentry from '@sentry/node';
 
 function updaters() {
   return [
@@ -45,6 +46,7 @@ export async function update(config = 'default') {
       await updater.updateIfNeeded();
     } catch (e) {
       console.error(e);
+      Sentry.captureException(e);
     }
   }
 
