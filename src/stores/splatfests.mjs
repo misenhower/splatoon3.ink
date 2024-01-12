@@ -26,8 +26,10 @@ function defineSplatfestRegionStore(region) {
     function getRegions(node) {
       let result = [];
       const regions = node.__splatoon3ink_id.split("-")[0];
-      if (regions.includes("J")) result.push("JP");
+
+      // The order here is important for SplatfestStatus/SplatfestResultsStatus posts
       if (regions.includes("U")) result.push("NA");
+      if (regions.includes("J")) result.push("JP");
       if (regions.includes("E")) result.push("EU");
       if (regions.includes("A")) result.push("AP");
 
