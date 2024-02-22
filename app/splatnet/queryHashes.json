@@ -21,8 +21,8 @@
       "CoopRecordRefetchQuery" : "b43e1e3fcfd8aeca37a32009c2f85d89d74b20cb566b68a846d50a7e9a494685",
       "CreateMyOutfitMutation" : "b5257c5a3840cb01556750cbb56881d758534dfd91e9aec7c0232098fd767bb9",
       "DefeatEnemyRecordRefetchQuery" : "f79466b7aaf0a4a94332791074e3eba9e0b4941d8ca3098ca22ef851b260dc2c",
-      "DetailFestRecordDetailQuery" : "02946c9d6dec617425ed41ee9a9bf467ea2ddfb85e0a36b09e4c3ea2e0b9ac5b",
-      "DetailFestRefethQuery" : "dc5c1890cec78094d919e71621e9b4bc1ee06cfa99812dcacb401b8116a1ccad",
+      "DetailFestRecordDetailQuery" : "d7657ef18434fbb5685381a9104ad7da24d090c5671e3bfd0c0e586542ed318e",
+      "DetailFestRefethQuery" : "614b549a8be362c48c0dce773a95e9524a9338cfa9a7f47bf77a72a576f34122",
       "DetailFestVotingStatusRefethQuery" : "4a24f9ff7b1c5a5c520872ce083c1623354c3ec092a0bf95c0dc1c12a1e3fb63",
       "DetailRankingQuery" : "2e1f603f6da371874a7473bb68418d9308f1fd2492e57fd2b7d9bbb80138f8c0",
       "DetailTabViewWeaponTopsArRefetchQuery" : "0d97601d58e0eba18ea83fcce9789e35e10413344ccda7f9bb83129a2d7949f4",
@@ -76,6 +76,17 @@
       "SaleGearDetailOrderGesotownGearMutation" : "bb716c3be6e85331741d7e2f9b36a6c0de92ca1b8382418744c1540fec7c8f57",
       "SaleGearDetailQuery" : "b42e70a6873aa716d089f2c5ea219083d30f0fff6ed15b8f5630c01ef7a32015",
       "SettingQuery" : "8473b5eb2c2048f74eb48b0d3e9779f44febcf3477479625b4dc23449940206b",
+      "SideOrderChallengeDetailPointContainerPaginationQuery" : "7f8793e70c0e145b84fd21d2ae776d0603f608d16a5cfb50aeaad024bdd835d1",
+      "SideOrderChallengeDetailQuery" : "79c6ed209d1725f701cf76a719e581be5f6cff76128d4f47993f85384c874393",
+      "SideOrderRecordChallengeQuery" : "ce1ed302f8cc7c050751fa73ac2a8ae96d4795b1e8a25d27b9cea574983e837b",
+      "SideOrderRecordChallengeRefetchQuery" : "0e6745b2fd923261f0f3dd51eb180a80a03d256ffcac2a60d17ad87b84fc3be7",
+      "SideOrderRecordColorChipQuery" : "4da51aad1d800c62b3b637b4aee16285734db5a081b0287ee6347bea611697b6",
+      "SideOrderRecordColorChipRefetchQuery" : "dc72553f49be7586e75249a8c939902a81afcf88355969c26730df119f1de177",
+      "SideOrderRecordEnemyQuery" : "1eed33262150a80c5093892eec1ec098d41b9c67894a865da0fadaef6a2181f0",
+      "SideOrderRecordEnemyRefetchQuery" : "bfea918aa902a9241e929f1e1e873eafd01912d9b7687a4b35385370a54c6af1",
+      "SideOrderRecordPaletteQuery" : "3464ece725b5f1620721d3a8415a21eeecaef71ed1a9a521199177e8f88b9984",
+      "SideOrderRecordPaletteRefetchQuery" : "5399ad25d4092e9811f7051d826d70479c4589b0e438bc74f749542ba6291a7f",
+      "SideOrderRecordQuery" : "d5938657c26ef9a328aacc3ced0e88658c4262bb671346c68aa79822effbf4ed",
       "StageRecordQuery" : "c8b31c491355b4d889306a22bd9003ac68f8ce31b2d5345017cdd30a2c8056f3",
       "StageRecordsRefetchQuery" : "25dbf592793a590b6f8cfb0a62823aa02429b406a590333627d8ea703b190dfd",
       "StageScheduleQuery" : "d49fb6adffe15e3e43ca1167397debfc580eede3ad2232d7e32062bc5487e7eb",
@@ -99,5 +110,5 @@
       "useShareMyOutfitQuery" : "5502b09121f5e18bec8fefbe80cce21e1641624b579c57c1992b30dcff612b44"
     }
   },
-  "version" : "6.0.0-daea5c11"
+  "version" : "6.0.0-eb33aadc"
 }
