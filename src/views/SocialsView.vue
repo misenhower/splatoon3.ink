@@ -15,8 +15,7 @@
                   </h1>
 
                   <div>
-                    Stay up to date with the latest news and updates from Splatoon3.ink on social media!
-                    Check the list below to find your favorite platform.
+                    {{ $t('social.description') }}
                   </div>
 
                   <div>
@@ -37,9 +36,11 @@
             </ProductContainer>
 
             <img class="absolute hidden sm:block -top-6 right-36 w-32 -rotate-3" src="@/assets/img/tape/tape-2.png" />
-            <img class="absolute hidden sm:block top-20 -left-16 w-20 rotate-3" src="@/assets/img/stickers/sticker-2-red.png" />
+            <img class="absolute hidden sm:block top-20 -left-16 w-20 rotate-3"
+              src="@/assets/img/stickers/sticker-2-red.png" />
             <img class="absolute -bottom-4 -right-12 w-32 -rotate-6" src="@/assets/img/stickers/sticker-1.png" />
-            <img class="absolute hidden sm:block -bottom-4 left-40 w-60 rotate-3" src="@/assets/img/stickers/sticker-8.png" />
+            <img class="absolute hidden sm:block -bottom-4 left-40 w-60 rotate-3"
+              src="@/assets/img/stickers/sticker-8.png" />
           </div>
         </div>
       </div>

@@ -38,7 +38,8 @@
     "title": "Salmon Run",
     "weapons": "Supplied Weapons",
     "bigrun": "Big Run",
-    "eggstrawork": "Eggstra Work"
+    "eggstrawork": "Eggstra Work",
+    "opens": "Shift opens"
   },
   "festival": {
     "title": "Splatfests",
@@ -91,5 +92,8 @@
     "about": "About",
     "socials": "Social Media",
     "data": "Data"
+  },
+  "social": {
+    "description": "Stay up to date with the latest news and updates from Splatoon3.ink on social media! Check the list below to find your favorite platform."
   }
 }

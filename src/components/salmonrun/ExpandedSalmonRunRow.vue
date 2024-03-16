@@ -13,7 +13,7 @@
         <KingSalmonid v-if="!eggstra" :schedule="schedule" class="inline-block -mb-1 mr-2 drop-shadow-ruleIcon" />
 
         <div v-if="time.isUpcoming(schedule.startTime)" class="inline-block">
-          Shift opens
+          {{ $t('salmonrun.opens') }}
           {{ $t('time.in', { time: formatDurationHoursFromNow(schedule.startTime, true) }) }}
         </div>
         <div v-else class="inline-block">
@@ -21,10 +21,8 @@
         </div>
       </div>
 
-      <div
-        v-if="schedule.isBigRun"
-        class="bg-zinc-800 bg-opacity-80 text-sm text-white rounded-lg px-2 border-2 border-splatoon-bigRun"
-      >
+      <div v-if="schedule.isBigRun"
+        class="bg-zinc-800 bg-opacity-80 text-sm text-white rounded-lg px-2 border-2 border-splatoon-bigRun">
         <img src="@/assets/img/modes/coop.bigrun.svg" :title="$t('salmonrun.bigrun')" class="w-4 inline-block" />
         {{ $t('salmonrun.bigrun') }}
       </div>
@@ -45,10 +43,7 @@
         </div>
 
         <div class="bg-zinc-900 bg-opacity-30 rounded-full backdrop-blur-sm px-2">
-          <SalmonRunWeapons
-            :weapons="schedule.settings.weapons"
-            weapon-class="w-10 sm:w-14"
-          />
+          <SalmonRunWeapons :weapons="schedule.settings.weapons" weapon-class="w-10 sm:w-14" />
         </div>
       </div>
     </div>

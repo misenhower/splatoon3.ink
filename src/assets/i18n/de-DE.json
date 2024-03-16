@@ -38,7 +38,8 @@
     "title": "Salmon Run",
     "weapons": "Verfügbare Waffen",
     "bigrun": "Big Run",
-    "eggstrawork": "Team-Wettkampf"
+    "eggstrawork": "Team-Wettkampf",
+    "opens": "Schicht öffnet"
   },
   "festival": {
     "title": "Splatfeste",
@@ -90,5 +91,8 @@
     "term": "Diese Website steht in keiner Verbindung zu Nintendo. Alle Produktnamen, Logos und Marken sind Eigentum der jeweiligen Inhaber.",
     "about": "Über",
     "data": "Daten"
+  },
+  "social": {
+    "description": "Bleib auf dem Laufenden über die neuesten Nachrichten und Updates von Splatoon3.ink auf den sozialen Medien! In der Liste unten findest du deine Lieblingsplattform."
   }
 }
