@@ -43,7 +43,7 @@ function defineSplatfestRegionStore(region) {
         hasResults: node.teams.some(t => t.result),
         regions: getRegions(node),
       };
-    }));
+    }) ?? []);
 
     const previousFestivals = computed(() => festivals.value?.filter(f => f.status === STATUS_PAST));
     const activeFestival = computed(() => festivals.value?.find(f => f.status === STATUS_ACTIVE));
