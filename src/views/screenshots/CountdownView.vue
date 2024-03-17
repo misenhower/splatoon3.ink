@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-import ScreenshotLayout from '../../layouts/ScreenshotLayout.vue';
+import ScreenshotLayout from '@/layouts/ScreenshotLayout.vue';
 import Splatoon3Countdown from '@/components/Splatoon3Countdown.vue';
 import Splat2 from '@/components/splats/Splat2.vue';
 import Splat3 from '@/components/splats/Splat3.vue';

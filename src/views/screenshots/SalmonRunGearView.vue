@@ -9,6 +9,6 @@
 </template>
 
 <script setup>
-import ScreenshotLayout from '../../layouts/ScreenshotLayout.vue';
-import SalmonRunGearBox from '../../components/SalmonRunGearBox.vue';
+import ScreenshotLayout from '@/layouts/ScreenshotLayout.vue';
+import SalmonRunGearBox from '@/components/SalmonRunGearBox.vue';
 </script>

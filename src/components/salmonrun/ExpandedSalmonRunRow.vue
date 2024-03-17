@@ -53,10 +53,10 @@
 </template>
 
 <script setup>
-import { useTimeStore } from '../../stores/time.mjs';
-import StageImage from '../StageImage.vue';
 import KingSalmonid from './KingSalmonid.vue';
 import SalmonRunWeapons from './SalmonRunWeapons.vue';
+import { useTimeStore } from '@/stores/time.mjs';
+import StageImage from '@/components/StageImage.vue';
 import { formatDurationFromNow, formatDurationHoursFromNow } from '@/common/time';
 
 defineProps({

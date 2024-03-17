@@ -57,10 +57,10 @@
 <script setup>
 import { computed } from 'vue';
 import { uniqBy } from 'lodash';
-import ScheduleBox from '../components/ScheduleBox.vue';
-import TricolorBox from '../components/TricolorBox.vue';
-import SplatfestBox from '../components/SplatfestBox.vue';
-import SplatfestResultsBox from '../components/SplatfestResultsBox.vue';
+import ScheduleBox from '@/components/ScheduleBox.vue';
+import TricolorBox from '@/components/TricolorBox.vue';
+import SplatfestBox from '@/components/SplatfestBox.vue';
+import SplatfestResultsBox from '@/components/SplatfestResultsBox.vue';
 import { useUSSplatfestsStore, useEUSplatfestsStore, useJPSplatfestsStore, useAPSplatfestsStore } from '@/stores/splatfests';
 import MainLayout from '@/layouts/MainLayout.vue';
 

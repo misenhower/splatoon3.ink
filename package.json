@@ -47,6 +47,7 @@
     "vue-router": "^4.1.5"
   },
   "devDependencies": {
+    "@dword-design/eslint-plugin-import-alias": "^5.0.0",
     "@vitejs/plugin-vue": "^3.1.0",
     "@vue/eslint-config-airbnb": "^8.0.0",
     "autoprefixer": "^10.4.12",

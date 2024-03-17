@@ -49,9 +49,9 @@
 
 <script setup>
 import { computed } from 'vue';
-import ProductContainer from '../ProductContainer.vue';
-import StageImage from '../StageImage.vue';
-import RuleIcon from '../RuleIcon.vue';
+import ProductContainer from '@/components/ProductContainer.vue';
+import StageImage from '@/components/StageImage.vue';
+import RuleIcon from '@/components/RuleIcon.vue';
 import { useScheduleTypes } from '@/components/concerns/scheduleTypes.mjs';
 
 const props = defineProps({

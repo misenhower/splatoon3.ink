@@ -12,7 +12,7 @@
 </template>
 
 <script setup>
-import ScreenshotLayout from '../../layouts/ScreenshotLayout.vue';
+import ScreenshotLayout from '@/layouts/ScreenshotLayout.vue';
 import ChallengeScheduleBox from '@/components/challenge/ChallengeScheduleBox.vue';
 import { useEventSchedulesStore } from '@/stores/schedules.mjs';
 

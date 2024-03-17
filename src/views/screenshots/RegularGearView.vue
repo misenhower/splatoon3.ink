@@ -7,6 +7,6 @@
 </template>
 
 <script setup>
-import ScreenshotLayout from '../../layouts/ScreenshotLayout.vue';
+import ScreenshotLayout from '@/layouts/ScreenshotLayout.vue';
 import RegularGear from '@/components/screenshots/RegularGear.vue';
 </script>

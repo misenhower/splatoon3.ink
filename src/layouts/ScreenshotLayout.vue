@@ -42,8 +42,8 @@
 <script setup>
 import { watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
-import { useTimeStore } from '../stores/time';
-import TimeOffsetSelector from '../components/Debug/TimeOffsetSelector.vue';
+import { useTimeStore } from '@/stores/time';
+import TimeOffsetSelector from '@/components/Debug/TimeOffsetSelector.vue';
 
 const props = defineProps({
   header: {

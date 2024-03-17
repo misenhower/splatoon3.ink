@@ -5,8 +5,8 @@
 <script setup>
 import { onMounted, onUnmounted } from 'vue';
 import { RouterView } from 'vue-router';
-import { useDataStore } from '@/stores/data';
-import { useTimeStore } from '@/stores/time.mjs';
+import { useDataStore } from './stores/data';
+import { useTimeStore } from './stores/time.mjs';
 
 const time = useTimeStore();
 onMounted(() => time.startUpdatingNow());

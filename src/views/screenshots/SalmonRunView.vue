@@ -10,8 +10,8 @@
 
 <script setup>
 import { useRoute } from 'vue-router';
-import ScreenshotLayout from '../../layouts/ScreenshotLayout.vue';
-import SalmonRunBox from '../../components/salmonrun/SalmonRunBox.vue';
+import ScreenshotLayout from '@/layouts/ScreenshotLayout.vue';
+import SalmonRunBox from '@/components/salmonrun/SalmonRunBox.vue';
 
 const route = useRoute();
 </script>

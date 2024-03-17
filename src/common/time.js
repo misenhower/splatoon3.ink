@@ -1,5 +1,5 @@
 import { useI18n } from 'vue-i18n';
-import { useTimeStore } from '../stores/time';
+import { useTimeStore } from '@/stores/time';
 
 function getDurationParts(value) {
   let negative = (value < 0) ? '-' : '';

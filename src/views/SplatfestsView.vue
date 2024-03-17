@@ -22,8 +22,8 @@
 <script setup>
 import { computed } from 'vue';
 import { sortBy, uniqBy } from 'lodash';
-import SplatfestBox from '../components/SplatfestBox.vue';
-import SplatfestResultsBox from '../components/SplatfestResultsBox.vue';
+import SplatfestBox from '@/components/SplatfestBox.vue';
+import SplatfestResultsBox from '@/components/SplatfestResultsBox.vue';
 import MainLayout from '@/layouts/MainLayout.vue';
 import { useUSSplatfestsStore, useEUSplatfestsStore, useJPSplatfestsStore, useAPSplatfestsStore } from '@/stores/splatfests';
 

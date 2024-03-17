@@ -47,10 +47,10 @@
 
 <script setup>
 import { computed } from 'vue';
-import ProductContainer from '../ProductContainer.vue';
-import SquidTape from '../SquidTape.vue';
 import SalmonRunRow from './SalmonRunRow.vue';
 import ExpandedSalmonRunRow from './ExpandedSalmonRunRow.vue';
+import ProductContainer from '@/components/ProductContainer.vue';
+import SquidTape from '@/components/SquidTape.vue';
 import { useSalmonRunSchedulesStore, useEggstraWorkSchedulesStore } from '@/stores/schedules.mjs';
 
 const props = defineProps({

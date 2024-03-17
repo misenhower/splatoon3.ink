@@ -80,10 +80,10 @@
 </template>
 
 <script setup>
-import { formatDurationFromNow } from '../common/time';
-import { useTimeStore } from '../stores/time.mjs';
 import StageImage from './StageImage.vue';
 import RuleIcon from './RuleIcon.vue';
+import { formatDurationFromNow } from '@/common/time';
+import { useTimeStore } from '@/stores/time.mjs';
 
 const props = defineProps({
   schedule: {

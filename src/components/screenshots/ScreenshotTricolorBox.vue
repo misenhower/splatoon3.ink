@@ -47,9 +47,9 @@
 
 <script setup>
 import { computed } from 'vue';
-import ProductContainer from '../ProductContainer.vue';
-import StageImage from '../StageImage.vue';
-import TricolorIcon from '../TricolorIcon.vue';
+import ProductContainer from '@/components/ProductContainer.vue';
+import StageImage from '@/components/StageImage.vue';
+import TricolorIcon from '@/components/TricolorIcon.vue';
 import { useUSSplatfestsStore } from '@/stores/splatfests';
 import { useScheduleTypes } from '@/components/concerns/scheduleTypes.mjs';
 

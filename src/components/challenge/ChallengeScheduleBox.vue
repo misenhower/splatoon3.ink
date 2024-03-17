@@ -91,13 +91,13 @@
 
 <script setup>
 import { computed } from 'vue';
-import ProductContainer from '../ProductContainer.vue';
-import StageImage from '../StageImage.vue';
-import RuleIcon from '../RuleIcon.vue';
-import SquidTape from '../SquidTape.vue';
-import { useScheduleTypes } from '../concerns/scheduleTypes.mjs';
-import { br2nl } from '../../common/util.mjs';
 import ChallengeScheduleRow from './ChallengeScheduleRow.vue';
+import RuleIcon from '@/components/RuleIcon.vue';
+import ProductContainer from '@/components/ProductContainer.vue';
+import StageImage from '@/components/StageImage.vue';
+import SquidTape from '@/components/SquidTape.vue';
+import { useScheduleTypes } from '@/components/concerns/scheduleTypes.mjs';
+import { br2nl } from '@/common/util.mjs';
 
 const props = defineProps({
   type: {

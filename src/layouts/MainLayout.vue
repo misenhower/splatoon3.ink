@@ -55,7 +55,7 @@
 </template>
 
 <script setup>
-import NavButtons from '../components/NavButtons.vue';
+import NavButtons from '@/components/NavButtons.vue';
 import LanguageButton from '@/components/LanguageButton.vue';
 import TimeOffsetSelector from '@/components/Debug/TimeOffsetSelector.vue';
 

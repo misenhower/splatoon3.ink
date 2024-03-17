@@ -19,7 +19,7 @@
 
 <script setup>
 import { reactive, watchEffect } from 'vue';
-import { useTimeStore } from '../../stores/time.mjs';
+import { useTimeStore } from '@/stores/time.mjs';
 
 const time = useTimeStore();
 

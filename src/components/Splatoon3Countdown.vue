@@ -33,7 +33,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import { useTimeStore } from '../stores/time';
+import { useTimeStore } from '@/stores/time';
 
 const announceDate = new Date('2021-02-17');
 const releaseDate = new Date('2022-09-09');

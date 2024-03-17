@@ -3,6 +3,9 @@ const createAliasSetting = require('@vue/eslint-config-airbnb/createAliasSetting
 
 module.exports = {
   'root': true,
+  'plugins': [
+    '@dword-design/import-alias',
+  ],
   'extends': [
     'plugin:vue/vue3-recommended',
     'eslint:recommended',
@@ -39,6 +42,16 @@ module.exports = {
     'module': 'readonly',
     'Buffer': 'readonly',
   },
+  'overrides': [
+    {
+      'files': ['src/**'],
+      'rules': {
+        '@dword-design/import-alias/prefer-alias': ['warn', { 'alias': {
+          '@': './src',
+        } }],
+      },
+    },
+  ],
   'env': {
     'vue/setup-compiler-macros': true,
   },

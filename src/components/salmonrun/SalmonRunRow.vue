@@ -38,9 +38,9 @@
 </template>
 
 <script setup>
-import StageImage from '../StageImage.vue';
 import KingSalmonid from './KingSalmonid.vue';
 import SalmonRunWeapons from './SalmonRunWeapons.vue';
+import StageImage from '@/components/StageImage.vue';
 import { formatDurationFromNow } from '@/common/time';
 
 defineProps({

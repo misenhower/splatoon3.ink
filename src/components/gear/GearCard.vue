@@ -80,8 +80,8 @@
 
 <script setup>
 import { computed } from 'vue';
-import SquidTape from '../SquidTape.vue';
-import { formatShortDurationFromNow } from '../../common/time';
+import SquidTape from '@/components/SquidTape.vue';
+import { formatShortDurationFromNow } from '@/common/time';
 import { getGesotownGearUrl } from '@/common/links';
 
 const props = defineProps({

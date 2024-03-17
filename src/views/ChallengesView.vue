@@ -29,7 +29,7 @@
 <script setup>
 import { computed } from 'vue';
 
-import ProductContainer from '../components/ProductContainer.vue';
+import ProductContainer from '@/components/ProductContainer.vue';
 import MainLayout from '@/layouts/MainLayout.vue';
 import ChallengeScheduleBox from '@/components/challenge/ChallengeScheduleBox.vue';
 

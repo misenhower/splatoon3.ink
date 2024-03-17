@@ -55,9 +55,9 @@
 
 <script setup>
 import { computed } from 'vue';
-import ProductContainer from '../ProductContainer.vue';
-import SquidTape from '../SquidTape.vue';
 import GearCardHorizontal from './GearCardHorizontal.vue';
+import ProductContainer from '@/components/ProductContainer.vue';
+import SquidTape from '@/components/SquidTape.vue';
 import { useGearStore } from '@/stores/gear.mjs';
 
 const gearStore = useGearStore();
