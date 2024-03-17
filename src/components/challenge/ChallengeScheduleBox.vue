@@ -7,10 +7,9 @@
           <div class="font-splatoon1 lg:text-2xl xl:text-3xl text-shadow">
             {{ $t(`splatnet.events.${event.settings.leagueMatchEvent.id}.name`, event.settings.leagueMatchEvent.name) }}
 
-            <div
-              class="font-splatoon2 lg:text-md xl:text-xl text-shadow"
-              v-html="$t(`splatnet.events.${event.settings.leagueMatchEvent.id}.desc`, event.settings.leagueMatchEvent.desc)"
-            />
+            <div class="font-splatoon2 lg:text-md xl:text-xl text-shadow whitespace-pre-line">
+              {{ br2nl($t(`splatnet.events.${event.settings.leagueMatchEvent.id}.desc`, event.settings.leagueMatchEvent.desc)) }}
+            </div>
           </div>
         </div>
 
@@ -82,10 +81,9 @@
           </div>
         </div>
 
-        <div
-          class="font-splatoon2 mx-2 p-2 text-zinc-200 bg-zinc-900 bg-opacity-50 backdrop-blur-sm rounded-lg"
-          v-html="$t(`splatnet.events.${event.settings.leagueMatchEvent.id}.regulation`, event.settings.leagueMatchEvent.regulation)"
-        />
+        <div class="font-splatoon2 mx-2 p-2 text-zinc-200 bg-zinc-900 bg-opacity-50 backdrop-blur-sm rounded-lg whitespace-pre-line">
+          {{ br2nl($t(`splatnet.events.${event.settings.leagueMatchEvent.id}.regulation`, event.settings.leagueMatchEvent.regulation)) }}
+        </div>
       </div>
     </ProductContainer>
   </template>
@@ -99,6 +97,7 @@ import RuleIcon from '../RuleIcon.vue';
 import SquidTape from '../SquidTape.vue';
 import { useScheduleTypes } from '../concerns/scheduleTypes.mjs';
 import ChallengeScheduleRow from './ChallengeScheduleRow.vue';
+import { br2nl } from '../../common/util.mjs';
 
 const props = defineProps({
   type: {
