@@ -1,5 +1,6 @@
 import { createI18n } from 'vue-i18n';
-import languages from '@/assets/i18n/index.mjs';
+//eslint-disable-next-line @dword-design/import-alias/prefer-alias
+import languages from '../assets/i18n/index.mjs';
 
 const LANGUAGE_KEY = 'lang';
 
