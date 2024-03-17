@@ -41,7 +41,7 @@ export default class EggstraWorkStatus extends StatusGenerator
   async _getMedia(screenshotHelper) {
     let media = new Media;
     media.file = await screenshotHelper.capture('salmonrun', {
-      params: {eggstra: 'true'},
+      params: { eggstra: 'true' },
     });
 
     return media;

@@ -16,6 +16,7 @@ module.exports = {
     'no-unused-vars': ['warn', { 'args': 'none' }],
     'semi': 'warn',
     'quotes': ['warn' , 'single'],
+    'object-curly-spacing': ['warn', 'always'],
 
     // Vue
     'vue/multi-word-component-names': 'off',

@@ -26,7 +26,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import {uniqBy} from 'lodash';
+import { uniqBy } from 'lodash';
 import ScreenshotLayout from '../../layouts/ScreenshotLayout.vue';
 import ScreenshotScheduleBox from '../../components/screenshots/ScreenshotScheduleBox.vue';
 import ScreenshotTricolorBox from '../../components/screenshots/ScreenshotTricolorBox.vue';

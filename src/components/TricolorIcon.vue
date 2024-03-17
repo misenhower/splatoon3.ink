@@ -39,7 +39,7 @@ function toRgba(color) {
   return `rgba(${color.r * 255}, ${color.g * 255}, ${color.b * 255}, ${color.a})`;
 }
 
-const _default = {r: 1, g: 1, b: 1, a: 1};
+const _default = { r: 1, g: 1, b: 1, a: 1 };
 
 const a_css = computed(() => toRgba(props.a ?? _default));
 const b_css = computed(() => toRgba(props.b ?? _default));

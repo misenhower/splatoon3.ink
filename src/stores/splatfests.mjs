@@ -57,7 +57,7 @@ function defineSplatfestRegionStore(region) {
 
     // TODO: Eventually this needs to be handled on a per-region basis.
     const tricolor = computed(() => {
-      let {currentFest: fest, vsStages} = useSchedulesDataStore().data ?? {};
+      let { currentFest: fest, vsStages } = useSchedulesDataStore().data ?? {};
 
       if (!fest) {
         return null;

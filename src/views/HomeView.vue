@@ -56,7 +56,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import {uniqBy} from 'lodash';
+import { uniqBy } from 'lodash';
 import ScheduleBox from '../components/ScheduleBox.vue';
 import TricolorBox from '../components/TricolorBox.vue';
 import SplatfestBox from '../components/SplatfestBox.vue';
