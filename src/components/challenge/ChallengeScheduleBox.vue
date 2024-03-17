@@ -96,8 +96,8 @@ import StageImage from '../StageImage.vue';
 import RuleIcon from '../RuleIcon.vue';
 import SquidTape from '../SquidTape.vue';
 import { useScheduleTypes } from '../concerns/scheduleTypes.mjs';
-import ChallengeScheduleRow from './ChallengeScheduleRow.vue';
 import { br2nl } from '../../common/util.mjs';
+import ChallengeScheduleRow from './ChallengeScheduleRow.vue';
 
 const props = defineProps({
   type: {

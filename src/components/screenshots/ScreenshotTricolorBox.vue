@@ -47,10 +47,10 @@
 
 <script setup>
 import { computed } from 'vue';
-import { useUSSplatfestsStore } from '@/stores/splatfests';
 import ProductContainer from '../ProductContainer.vue';
 import StageImage from '../StageImage.vue';
 import TricolorIcon from '../TricolorIcon.vue';
+import { useUSSplatfestsStore } from '@/stores/splatfests';
 import { useScheduleTypes } from '@/components/concerns/scheduleTypes.mjs';
 
 

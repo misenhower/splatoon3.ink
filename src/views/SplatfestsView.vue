@@ -21,12 +21,12 @@
 
 <script setup>
 import { computed } from 'vue';
-import MainLayout from '@/layouts/MainLayout.vue'
-
-import { useUSSplatfestsStore, useEUSplatfestsStore, useJPSplatfestsStore, useAPSplatfestsStore } from '@/stores/splatfests';
+import { sortBy, uniqBy } from "lodash";
 import SplatfestBox from '../components/SplatfestBox.vue';
 import SplatfestResultsBox from '../components/SplatfestResultsBox.vue';
-import { sortBy, uniqBy } from "lodash";
+import MainLayout from '@/layouts/MainLayout.vue'
+import { useUSSplatfestsStore, useEUSplatfestsStore, useJPSplatfestsStore, useAPSplatfestsStore } from '@/stores/splatfests';
+
 const usSplatfests = useUSSplatfestsStore();
 const euSplatfests = useEUSplatfestsStore();
 const jpSplatfests = useJPSplatfestsStore();

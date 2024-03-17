@@ -53,11 +53,11 @@
 </template>
 
 <script setup>
-import MainLayout from '@/layouts/MainLayout.vue'
-import ProductContainer from '@/components/ProductContainer.vue'
+import { computed } from 'vue';
 import Splat3 from '../components/splats/Splat3.vue';
 import Splat6 from '../components/splats/Splat6.vue';
-import { computed } from 'vue';
+import MainLayout from '@/layouts/MainLayout.vue'
+import ProductContainer from '@/components/ProductContainer.vue'
 
 const socials = [
   {

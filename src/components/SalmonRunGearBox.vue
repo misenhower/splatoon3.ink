@@ -16,10 +16,10 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import ProductContainer from '@/components/ProductContainer.vue';
 import SquidTape from '@/components/SquidTape.vue';
 import { useCoopGearStore } from '@/stores/gear.mjs';
-import { computed } from 'vue';
 
 const gear = computed(() => useCoopGearStore().monthlyGear);
 </script>

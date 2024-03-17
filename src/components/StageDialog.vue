@@ -23,8 +23,8 @@
 
 <script setup>
 import { computed } from 'vue';
-import ModalDialog from './ModalDialog.vue';
 import { XMarkIcon } from '@heroicons/vue/24/outline'
+import ModalDialog from './ModalDialog.vue';
 
 const props = defineProps({
   stage: Object,

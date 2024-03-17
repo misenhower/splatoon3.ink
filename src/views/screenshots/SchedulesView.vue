@@ -26,14 +26,12 @@
 
 <script setup>
 import { computed } from 'vue';
+import {uniqBy} from 'lodash';
 import ScreenshotLayout from '../../layouts/ScreenshotLayout.vue';
 import ScreenshotScheduleBox from '../../components/screenshots/ScreenshotScheduleBox.vue';
-
-import {uniqBy} from 'lodash';
-
+import ScreenshotTricolorBox from '../../components/screenshots/ScreenshotTricolorBox.vue';
 import { useUSSplatfestsStore, useEUSplatfestsStore, useJPSplatfestsStore, useAPSplatfestsStore } from '@/stores/splatfests';
 import SplatfestMultiBox from '@/components/SplatfestMultiBox.vue';
-import ScreenshotTricolorBox from '../../components/screenshots/ScreenshotTricolorBox.vue';
 
 const usSplatfests = useUSSplatfestsStore();
 const euSplatfests = useEUSplatfestsStore();

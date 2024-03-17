@@ -38,10 +38,10 @@
 </template>
 
 <script setup>
-import { formatDurationFromNow } from '@/common/time';
 import StageImage from '../StageImage.vue';
 import KingSalmonid from './KingSalmonid.vue';
 import SalmonRunWeapons from './SalmonRunWeapons.vue';
+import { formatDurationFromNow } from '@/common/time';
 
 defineProps({
   schedule: Object,

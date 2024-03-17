@@ -49,11 +49,11 @@
 
 <script setup>
 import { computed } from 'vue';
-import { useUSSplatfestsStore } from '@/stores/splatfests';
 import ProductContainer from './ProductContainer.vue';
 import StageImage from './StageImage.vue';
 import { useScheduleTypes } from './concerns/scheduleTypes.mjs';
 import TricolorIcon from './TricolorIcon.vue';
+import { useUSSplatfestsStore } from '@/stores/splatfests';
 
 
 const { types } = useScheduleTypes();

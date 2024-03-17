@@ -1,8 +1,8 @@
-import StatusGenerator from "./StatusGenerator.mjs";
 import Media from "../Media.mjs";
 import { useAnarchyOpenSchedulesStore, useAnarchySeriesSchedulesStore, useRegularSchedulesStore, useSplatfestOpenSchedulesStore, useSplatfestProSchedulesStore, useXSchedulesStore } from "../../../src/stores/schedules.mjs";
 import { useUSSplatfestsStore } from '../../../src/stores/splatfests.mjs';
 import ScreenshotHelper from "../../screenshots/ScreenshotHelper.mjs";
+import StatusGenerator from "./StatusGenerator.mjs";
 export default class SchedulesStatus extends StatusGenerator
 {
   key = 'schedules';

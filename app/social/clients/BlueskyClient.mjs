@@ -1,6 +1,6 @@
 import atprotoApi from "@atproto/api";
-import Client from "./Client.mjs";
 import sharp from "sharp";
+import Client from "./Client.mjs";
 
 const { BskyAgent, RichText } = atprotoApi;
 

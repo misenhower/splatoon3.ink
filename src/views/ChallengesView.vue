@@ -29,8 +29,8 @@
 <script setup>
 import { computed } from 'vue';
 
-import MainLayout from '@/layouts/MainLayout.vue'
 import ProductContainer from '../components/ProductContainer.vue';
+import MainLayout from '@/layouts/MainLayout.vue'
 import ChallengeScheduleBox from '@/components/challenge/ChallengeScheduleBox.vue'
 
 import { useScheduleTypes } from '@/components/concerns/scheduleTypes.mjs';

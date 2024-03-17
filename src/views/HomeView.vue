@@ -56,15 +56,14 @@
 
 <script setup>
 import { computed } from 'vue';
-import MainLayout from '@/layouts/MainLayout.vue'
+import {uniqBy} from 'lodash';
 import ScheduleBox from '../components/ScheduleBox.vue';
 import TricolorBox from '../components/TricolorBox.vue';
-
-import {uniqBy} from 'lodash';
-
-import { useUSSplatfestsStore, useEUSplatfestsStore, useJPSplatfestsStore, useAPSplatfestsStore } from '@/stores/splatfests';
 import SplatfestBox from '../components/SplatfestBox.vue';
 import SplatfestResultsBox from '../components/SplatfestResultsBox.vue';
+import { useUSSplatfestsStore, useEUSplatfestsStore, useJPSplatfestsStore, useAPSplatfestsStore } from '@/stores/splatfests';
+import MainLayout from '@/layouts/MainLayout.vue'
+
 const usSplatfests = useUSSplatfestsStore();
 const euSplatfests = useEUSplatfestsStore();
 const jpSplatfests = useJPSplatfestsStore();

@@ -1,5 +1,5 @@
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import fs from 'fs/promises';
+import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import prefixedConsole from "../common/prefixedConsole.mjs";
 
 export function archiveData() {

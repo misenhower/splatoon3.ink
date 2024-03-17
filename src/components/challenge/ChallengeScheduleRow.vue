@@ -25,8 +25,8 @@
 <script setup>
 import { computed } from 'vue';
 import RuleIcon from '../RuleIcon.vue';
-import { formatDurationFromNow } from '@/common/time';
 import { useTimeStore } from '../../stores/time.mjs';
+import { formatDurationFromNow } from '@/common/time';
 
 const props = defineProps({
   event: {

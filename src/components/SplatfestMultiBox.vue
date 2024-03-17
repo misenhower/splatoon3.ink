@@ -39,8 +39,8 @@
 <script setup>
 import { computed } from 'vue';
 import ProductContainer from './ProductContainer.vue';
-import { STATUS_PAST, STATUS_ACTIVE, STATUS_UPCOMING } from '@/stores/splatfests';
 import SquidTape from './SquidTape.vue';
+import { STATUS_PAST, STATUS_ACTIVE, STATUS_UPCOMING } from '@/stores/splatfests';
 
 const props = defineProps({
   festivals: Array,

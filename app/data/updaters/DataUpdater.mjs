@@ -1,5 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
+import { Console } from 'node:console';
 import mkdirp from 'mkdirp';
 import jsonpath from 'jsonpath';
 import ical from 'ical-generator';
@@ -10,7 +11,6 @@ import NsoClient from '../../splatnet/NsoClient.mjs';
 import { locales, regionalLocales, defaultLocale } from '../../../src/common/i18n.mjs';
 import { LocalizationProcessor } from '../LocalizationProcessor.mjs';
 import { deriveId, getDateParts, getTopOfCurrentHour } from '../../common/util.mjs';
-import { Console } from 'node:console';
 
 export default class DataUpdater
 {

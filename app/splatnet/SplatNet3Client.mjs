@@ -1,6 +1,6 @@
+import fs from 'fs/promises';
 import ValueCache from "../common/ValueCache.mjs";
 import prefixedConsole from '../common/prefixedConsole.mjs';
-import fs from 'fs/promises';
 
 export const SPLATNET3_WEB_SERVICE_ID = '4834290508791808';
 

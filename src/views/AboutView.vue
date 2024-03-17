@@ -91,10 +91,10 @@
 </template>
 
 <script setup>
-import MainLayout from '@/layouts/MainLayout.vue'
-import ProductContainer from '@/components/ProductContainer.vue'
 import Splat2 from '../components/splats/Splat2.vue';
 import Splat5 from '../components/splats/Splat5.vue';
+import MainLayout from '@/layouts/MainLayout.vue'
+import ProductContainer from '@/components/ProductContainer.vue'
 </script>
 
 <style scoped>

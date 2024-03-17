@@ -1,10 +1,10 @@
 import fs from 'fs/promises';
 import jsonpath from 'jsonpath';
-import DataUpdater from "./DataUpdater.mjs";
-import FestivalRankingUpdater from './FestivalRankingUpdater.mjs';
 import { getFestId } from '../../common/util.mjs';
 import ValueCache from '../../common/ValueCache.mjs';
 import { regionTokens } from '../../splatnet/NsoClient.mjs';
+import FestivalRankingUpdater from './FestivalRankingUpdater.mjs';
+import DataUpdater from "./DataUpdater.mjs";
 
 function generateFestUrl(id) {
   return process.env.DEBUG ?

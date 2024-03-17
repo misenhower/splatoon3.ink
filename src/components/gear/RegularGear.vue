@@ -55,11 +55,11 @@
 </template>
 
 <script setup>
-import { useGearStore } from '@/stores/gear.mjs';
 import { computed } from 'vue';
+import SquidTape from '../SquidTape.vue';
 import GearCard from './GearCard.vue';
 import GearCardHorizontal from './GearCardHorizontal.vue';
-import SquidTape from '../SquidTape.vue';
+import { useGearStore } from '@/stores/gear.mjs';
 
 const gearStore = useGearStore();
 const gears = computed(() => gearStore.regularGear);

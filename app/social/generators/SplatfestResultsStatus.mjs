@@ -1,7 +1,7 @@
-import StatusGenerator from "./StatusGenerator.mjs";
 import Media from "../Media.mjs";
 import { useUSSplatfestsStore, useEUSplatfestsStore, useJPSplatfestsStore, useAPSplatfestsStore } from '../../../src/stores/splatfests.mjs';
 import ScreenshotHelper from "../../screenshots/ScreenshotHelper.mjs";
+import StatusGenerator from "./StatusGenerator.mjs";
 
 export default class SplatfestResultsStatus extends StatusGenerator
 {

@@ -53,11 +53,11 @@
 </template>
 
 <script setup>
-import { formatDurationFromNow, formatDurationHoursFromNow } from '@/common/time';
 import { useTimeStore } from '../../stores/time.mjs';
 import StageImage from '../StageImage.vue';
 import KingSalmonid from './KingSalmonid.vue';
 import SalmonRunWeapons from './SalmonRunWeapons.vue';
+import { formatDurationFromNow, formatDurationHoursFromNow } from '@/common/time';
 
 defineProps({
   schedule: Object,

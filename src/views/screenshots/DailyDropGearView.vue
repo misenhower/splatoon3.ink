@@ -19,10 +19,10 @@
 </template>
 
 <script setup>
-import ScreenshotLayout from '../../layouts/ScreenshotLayout.vue';
-import DailyDropGear from '@/components/screenshots/DailyDropGear.vue';
-import { useGearStore } from '../../stores/gear.mjs';
 import { computed } from 'vue';
+import ScreenshotLayout from '../../layouts/ScreenshotLayout.vue';
+import { useGearStore } from '../../stores/gear.mjs';
+import DailyDropGear from '@/components/screenshots/DailyDropGear.vue';
 
 const gearStore = useGearStore();
 const brand = computed(() => gearStore.dailyDropBrand);

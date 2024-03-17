@@ -18,12 +18,12 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import ScreenshotLayout from '../../layouts/ScreenshotLayout.vue';
 
 import { useUSSplatfestsStore, useEUSplatfestsStore, useJPSplatfestsStore, useAPSplatfestsStore } from '@/stores/splatfests';
 import SplatfestBox from '@/components/SplatfestBox.vue';
 import SplatfestResultsBox from '@/components/SplatfestResultsBox.vue';
-import { computed } from 'vue';
 
 const usSplatfests = useUSSplatfestsStore();
 const euSplatfests = useEUSplatfestsStore();

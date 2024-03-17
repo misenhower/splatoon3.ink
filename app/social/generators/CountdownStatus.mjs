@@ -1,6 +1,6 @@
-import StatusGenerator from "./StatusGenerator.mjs";
 import Media from "../Media.mjs";
 import ScreenshotHelper from "../../screenshots/ScreenshotHelper.mjs";
+import StatusGenerator from "./StatusGenerator.mjs";
 
 const releaseDate = new Date('2022-09-09');
 

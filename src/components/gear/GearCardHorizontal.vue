@@ -95,8 +95,8 @@
 <script setup>
 import { computed } from 'vue';
 import SquidTape from '../SquidTape.vue';
-import { getGesotownGearUrl } from '@/common/links';
 import { formatShortDurationFromNow } from '../../common/time';
+import { getGesotownGearUrl } from '@/common/links';
 
 const props = defineProps({
   gear: Object,
