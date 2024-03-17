@@ -1,8 +1,8 @@
-import blue from "@atproto/api";
+import atprotoApi from "@atproto/api";
 import Client from "./Client.mjs";
 import sharp from "sharp";
 
-const BskyAgent = blue.BskyAgent;
+const { BskyAgent, RichText } = atprotoApi;
 
 export default class BlueskyClient extends Client
 {
@@ -49,8 +49,15 @@ export default class BlueskyClient extends Client
     );
 
     // Send status
-    await this.#agent.post({
+    const rt = new RichText({
       text: status.status,
+    });
+
+    await rt.detectFacets(this.#agent);
+
+    await this.#agent.post({
+      text: rt.text,
+      facets: rt.facets,
       embed: {
         images,
         $type: 'app.bsky.embed.images',
