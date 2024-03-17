@@ -1,9 +1,12 @@
 /* eslint-env node */
+const createAliasSetting = require('@vue/eslint-config-airbnb/createAliasSetting')
+
 module.exports = {
   "root": true,
   "extends": [
     "plugin:vue/vue3-recommended",
     "eslint:recommended",
+    "plugin:import/recommended",
     "plugin:jsdoc/recommended",
   ],
   "rules": {
@@ -38,5 +41,10 @@ module.exports = {
   ],
   "parserOptions": {
     "ecmaVersion": 13,
+  },
+  settings: {
+    ...createAliasSetting({
+      '@': './src',
+    }),
   },
 }
