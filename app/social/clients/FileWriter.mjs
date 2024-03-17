@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import mkdirp from 'mkdirp';
-import Client from "./Client.mjs";
+import Client from './Client.mjs';
 
 export default class FileWriter extends Client {
   key = 'file';

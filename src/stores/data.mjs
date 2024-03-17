@@ -1,4 +1,4 @@
-import { acceptHMRUpdate, defineStore } from 'pinia'
+import { acceptHMRUpdate, defineStore } from 'pinia';
 import { computed, ref, shallowRef } from 'vue';
 
 // Endpoint store definition (used for each individual data endpoint)
@@ -100,7 +100,7 @@ export const useDataStore = defineStore('data', () => {
     gear: computed(() => stores.gear.data),
     coop: computed(() => stores.coop.data),
     festivals: computed(() => stores.festivals.data),
-  }
+  };
 });
 
 

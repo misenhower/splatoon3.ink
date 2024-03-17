@@ -1,5 +1,5 @@
-import NsoClient, { regionTokens } from "./NsoClient.mjs";
-import SplatNet3Client, { SPLATNET3_WEB_SERVICE_ID } from "./SplatNet3Client.mjs";
+import NsoClient, { regionTokens } from './NsoClient.mjs';
+import SplatNet3Client, { SPLATNET3_WEB_SERVICE_ID } from './SplatNet3Client.mjs';
 
 /**
  * Cache Warming

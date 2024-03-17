@@ -1,5 +1,5 @@
-import { TwitterApi } from "twitter-api-v2";
-import Client from "./Client.mjs";
+import { TwitterApi } from 'twitter-api-v2';
+import Client from './Client.mjs';
 
 export default class TwitterClient extends Client
 {

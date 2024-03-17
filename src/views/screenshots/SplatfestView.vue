@@ -38,10 +38,10 @@ const props = defineProps({
 const festival = computed(() => {
   let store;
   switch(props.region) {
-    case "NA": store = usSplatfests; break;
-    case "EU": store = euSplatfests; break;
-    case "JP": store = jpSplatfests; break;
-    case "AP": store = apSplatfests; break;
+    case 'NA': store = usSplatfests; break;
+    case 'EU': store = euSplatfests; break;
+    case 'JP': store = jpSplatfests; break;
+    case 'AP': store = apSplatfests; break;
     default: return null;
   }
   return store.upcomingFestival ?? store.activeFestival ?? store.recentFestival;

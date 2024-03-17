@@ -30,11 +30,11 @@
 import { computed } from 'vue';
 
 import ProductContainer from '../components/ProductContainer.vue';
-import MainLayout from '@/layouts/MainLayout.vue'
-import ChallengeScheduleBox from '@/components/challenge/ChallengeScheduleBox.vue'
+import MainLayout from '@/layouts/MainLayout.vue';
+import ChallengeScheduleBox from '@/components/challenge/ChallengeScheduleBox.vue';
 
 import { useScheduleTypes } from '@/components/concerns/scheduleTypes.mjs';
-import { useEventSchedulesStore } from '@/stores/schedules.mjs'
+import { useEventSchedulesStore } from '@/stores/schedules.mjs';
 
 const store = useEventSchedulesStore();
 const { types } = useScheduleTypes();

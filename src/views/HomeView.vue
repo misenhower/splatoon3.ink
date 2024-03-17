@@ -62,7 +62,7 @@ import TricolorBox from '../components/TricolorBox.vue';
 import SplatfestBox from '../components/SplatfestBox.vue';
 import SplatfestResultsBox from '../components/SplatfestResultsBox.vue';
 import { useUSSplatfestsStore, useEUSplatfestsStore, useJPSplatfestsStore, useAPSplatfestsStore } from '@/stores/splatfests';
-import MainLayout from '@/layouts/MainLayout.vue'
+import MainLayout from '@/layouts/MainLayout.vue';
 
 const usSplatfests = useUSSplatfestsStore();
 const euSplatfests = useEUSplatfestsStore();

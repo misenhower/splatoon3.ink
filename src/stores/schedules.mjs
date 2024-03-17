@@ -1,10 +1,10 @@
-import { acceptHMRUpdate, defineStore } from "pinia";
-import { computed } from "vue";
+import { acceptHMRUpdate, defineStore } from 'pinia';
+import { computed } from 'vue';
 import sortBy from 'lodash/sortBy.js';
 import min from 'lodash/min.js';
 import max from 'lodash/max.js';
-import { useTimeStore } from "./time.mjs";
-import { useSchedulesDataStore } from "./data.mjs";
+import { useTimeStore } from './time.mjs';
+import { useSchedulesDataStore } from './data.mjs';
 
 // Schedule store definition (used for each type of schedule)
 function defineScheduleStore(id, options) {

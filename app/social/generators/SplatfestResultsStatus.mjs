@@ -1,7 +1,7 @@
-import Media from "../Media.mjs";
+import Media from '../Media.mjs';
 import { useUSSplatfestsStore, useEUSplatfestsStore, useJPSplatfestsStore, useAPSplatfestsStore } from '../../../src/stores/splatfests.mjs';
-import ScreenshotHelper from "../../screenshots/ScreenshotHelper.mjs";
-import StatusGenerator from "./StatusGenerator.mjs";
+import ScreenshotHelper from '../../screenshots/ScreenshotHelper.mjs';
+import StatusGenerator from './StatusGenerator.mjs';
 
 export default class SplatfestResultsStatus extends StatusGenerator
 {
@@ -20,10 +20,10 @@ export default class SplatfestResultsStatus extends StatusGenerator
 
     let store;
     switch(this.region) {
-      case "NA": store = useUSSplatfestsStore(); break;
-      case "EU": store = useEUSplatfestsStore(); break;
-      case "JP": store = useJPSplatfestsStore(); break;
-      case "AP": store = useAPSplatfestsStore(); break;
+      case 'NA': store = useUSSplatfestsStore(); break;
+      case 'EU': store = useEUSplatfestsStore(); break;
+      case 'JP': store = useJPSplatfestsStore(); break;
+      case 'AP': store = useAPSplatfestsStore(); break;
     }
 
     return store.recentFestival;
@@ -49,7 +49,7 @@ export default class SplatfestResultsStatus extends StatusGenerator
     let winningTeam = festival.teams.find(t => t.result.isWinner);
 
     const global = festival.regions.length == 4;
-    const regionText = global ? 'Global' : festival.regions.join("/");
+    const regionText = global ? 'Global' : festival.regions.join('/');
 
     return `${regionText} Splatfest results: Team ${winningTeam.teamName} wins! #splatfest #splatoon3`;
   }

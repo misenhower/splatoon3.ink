@@ -4,8 +4,8 @@ import { Console } from 'node:console';
 import mkdirp from 'mkdirp';
 import jsonpath from 'jsonpath';
 import ical from 'ical-generator';
-import prefixedConsole from "../../common/prefixedConsole.mjs";
-import SplatNet3Client from "../../splatnet/SplatNet3Client.mjs";
+import prefixedConsole from '../../common/prefixedConsole.mjs';
+import SplatNet3Client from '../../splatnet/SplatNet3Client.mjs';
 import ImageProcessor from '../ImageProcessor.mjs';
 import NsoClient from '../../splatnet/NsoClient.mjs';
 import { locales, regionalLocales, defaultLocale } from '../../../src/common/i18n.mjs';
@@ -212,7 +212,7 @@ export default class DataUpdater
   }
 
   async writeFile(file, data) {
-    await mkdirp(path.dirname(file))
+    await mkdirp(path.dirname(file));
     await fs.writeFile(file, data);
   }
 

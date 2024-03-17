@@ -49,7 +49,7 @@ const props = defineProps({
   header: {
     type: String,
   },
-})
+});
 
 const route = useRoute();
 const time = useTimeStore();

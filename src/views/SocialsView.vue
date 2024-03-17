@@ -56,8 +56,8 @@
 import { computed } from 'vue';
 import Splat3 from '../components/splats/Splat3.vue';
 import Splat6 from '../components/splats/Splat6.vue';
-import MainLayout from '@/layouts/MainLayout.vue'
-import ProductContainer from '@/components/ProductContainer.vue'
+import MainLayout from '@/layouts/MainLayout.vue';
+import ProductContainer from '@/components/ProductContainer.vue';
 
 const socials = [
   {
@@ -85,7 +85,7 @@ const socials = [
 const displaySocials = computed(() => {
   // Return the socials in a random order
   return socials.slice().sort(() => Math.random() - 0.5);
-})
+});
 </script>
 
 <style scoped>

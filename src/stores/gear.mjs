@@ -1,7 +1,7 @@
-import { acceptHMRUpdate, defineStore } from "pinia";
-import { computed } from "vue";
-import { useCoopDataStore, useGearDataStore } from "./data.mjs";
-import { useTimeStore } from "./time.mjs";
+import { acceptHMRUpdate, defineStore } from 'pinia';
+import { computed } from 'vue';
+import { useCoopDataStore, useGearDataStore } from './data.mjs';
+import { useTimeStore } from './time.mjs';
 
 function whenCurrent(node) {
   const time = useTimeStore();

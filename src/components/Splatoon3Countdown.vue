@@ -45,7 +45,7 @@ const remainingTime = computed(() => {
   let adjustment = (new Date).getTimezoneOffset() * 60 * 1000;
 
   return releaseDate - time.now + adjustment;
-})
+});
 const completedTime = computed(() => totalTime - remainingTime.value);
 const percent = computed(() => Math.min(100, 100 * completedTime.value / totalTime));
 const isReleased = computed(() => remainingTime.value <= 0);
@@ -62,7 +62,7 @@ function formatDate(date) {
   return date.toLocaleDateString(undefined, {
     timeZone: 'UTC',
     dateStyle: 'long',
-  })
+  });
 }
 </script>
 

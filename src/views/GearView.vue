@@ -19,5 +19,5 @@
 <script setup>
 import DailyDropGear from '../components/gear/DailyDropGear.vue';
 import RegularGear from '../components/gear/RegularGear.vue';
-import MainLayout from '@/layouts/MainLayout.vue'
+import MainLayout from '@/layouts/MainLayout.vue';
 </script>

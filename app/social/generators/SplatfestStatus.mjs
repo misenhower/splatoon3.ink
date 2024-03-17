@@ -1,8 +1,8 @@
-import Media from "../Media.mjs";
+import Media from '../Media.mjs';
 import { useUSSplatfestsStore, useEUSplatfestsStore, useJPSplatfestsStore, useAPSplatfestsStore, STATUS_ACTIVE, STATUS_PAST } from '../../../src/stores/splatfests.mjs';
-import { useTimeStore } from "../../../src/stores/time.mjs";
-import ScreenshotHelper from "../../screenshots/ScreenshotHelper.mjs";
-import StatusGenerator from "./StatusGenerator.mjs";
+import { useTimeStore } from '../../../src/stores/time.mjs';
+import ScreenshotHelper from '../../screenshots/ScreenshotHelper.mjs';
+import StatusGenerator from './StatusGenerator.mjs';
 
 export default class SplatfestStatus extends StatusGenerator
 {
@@ -20,10 +20,10 @@ export default class SplatfestStatus extends StatusGenerator
     await this.preparePinia();
     let store;
     switch(this.region) {
-      case "NA": store = useUSSplatfestsStore(); break;
-      case "EU": store = useEUSplatfestsStore(); break;
-      case "JP": store = useJPSplatfestsStore(); break;
-      case "AP": store = useAPSplatfestsStore(); break;
+      case 'NA': store = useUSSplatfestsStore(); break;
+      case 'EU': store = useEUSplatfestsStore(); break;
+      case 'JP': store = useJPSplatfestsStore(); break;
+      case 'AP': store = useAPSplatfestsStore(); break;
     }
     return store.upcomingFestival
       || store.activeFestival
@@ -87,19 +87,19 @@ export default class SplatfestStatus extends StatusGenerator
     }
 
     const global = festival.regions.length == 4;
-    const regionText = global ? 'global' : festival.regions.join("/");
+    const regionText = global ? 'global' : festival.regions.join('/');
 
     switch (state) {
       case 'upcoming':
         return `You can now vote in the next ${regionText} Splatfest: ${festival.title} #splatfest #splatoon3`;
       case 'upcoming:3d':
-        return `Reminder: The next ${regionText} Splatfest starts in 3 DAYS! ${festival.title} #splatfest #splatoon3`
+        return `Reminder: The next ${regionText} Splatfest starts in 3 DAYS! ${festival.title} #splatfest #splatoon3`;
       case 'upcoming:1d':
-        return `Reminder: The next ${regionText} Splatfest starts in 24 HOURS! ${festival.title} #splatfest #splatoon3`
+        return `Reminder: The next ${regionText} Splatfest starts in 24 HOURS! ${festival.title} #splatfest #splatoon3`;
       case 'active':
-        return `The ${regionText} Splatfest is NOW OPEN! ${festival.title} #splatfest #splatoon3`
+        return `The ${regionText} Splatfest is NOW OPEN! ${festival.title} #splatfest #splatoon3`;
       case 'ended':
-        return `The ${regionText} Splatfest is now closed. Results are usually posted within 2 hours! #splatfest #splatoon3`
+        return `The ${regionText} Splatfest is now closed. Results are usually posted within 2 hours! #splatfest #splatoon3`;
     }
   }
 

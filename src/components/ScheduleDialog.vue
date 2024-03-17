@@ -39,7 +39,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import { XMarkIcon } from '@heroicons/vue/24/outline'
+import { XMarkIcon } from '@heroicons/vue/24/outline';
 import ScheduleRow from './ScheduleRow.vue';
 import SquidTape from './SquidTape.vue';
 import { useScheduleTypes } from './concerns/scheduleTypes.mjs';

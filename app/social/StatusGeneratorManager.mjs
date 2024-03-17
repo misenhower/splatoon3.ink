@@ -1,7 +1,7 @@
-import prefixedConsole from "../common/prefixedConsole.mjs";
-import ScreenshotHelper from "../screenshots/ScreenshotHelper.mjs";
-import Client from "./clients/Client.mjs";
-import StatusGenerator from "./generators/StatusGenerator.mjs";
+import prefixedConsole from '../common/prefixedConsole.mjs';
+import ScreenshotHelper from '../screenshots/ScreenshotHelper.mjs';
+import Client from './clients/Client.mjs';
+import StatusGenerator from './generators/StatusGenerator.mjs';
 
 export default class StatusGeneratorManager
 {

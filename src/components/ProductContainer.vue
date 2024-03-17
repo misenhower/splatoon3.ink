@@ -12,7 +12,7 @@ const props = defineProps({
     default: 'bg-splatoon-blue',
   },
   bgStyle: String,
-})
+});
 </script>
 
 <style scoped>

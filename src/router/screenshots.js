@@ -1,13 +1,13 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
-import ScreenshotsHomeView from '@/views/screenshots/ScreenshotsHomeView.vue'
-import CountdownView from '@/views/screenshots/CountdownView.vue'
-import SchedulesView from '@/views/screenshots/SchedulesView.vue'
-import ChallengesView from '@/views/screenshots/ChallengesView.vue'
-import SalmonRunView from '@/views/screenshots/SalmonRunView.vue'
-import SalmonRunGearView from '@/views/screenshots/SalmonRunGearView.vue'
-import RegularGearView from '@/views/screenshots/RegularGearView.vue'
-import DailyDropGearView from '@/views/screenshots/DailyDropGearView.vue'
-import SplatfestView from '@/views/screenshots/SplatfestView.vue'
+import { createRouter, createWebHashHistory } from 'vue-router';
+import ScreenshotsHomeView from '@/views/screenshots/ScreenshotsHomeView.vue';
+import CountdownView from '@/views/screenshots/CountdownView.vue';
+import SchedulesView from '@/views/screenshots/SchedulesView.vue';
+import ChallengesView from '@/views/screenshots/ChallengesView.vue';
+import SalmonRunView from '@/views/screenshots/SalmonRunView.vue';
+import SalmonRunGearView from '@/views/screenshots/SalmonRunGearView.vue';
+import RegularGearView from '@/views/screenshots/RegularGearView.vue';
+import DailyDropGearView from '@/views/screenshots/DailyDropGearView.vue';
+import SplatfestView from '@/views/screenshots/SplatfestView.vue';
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL + 'screenshots/'),
@@ -73,6 +73,6 @@ const router = createRouter({
       },
     },
   ],
-})
+});
 
-export default router
+export default router;

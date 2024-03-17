@@ -1,7 +1,7 @@
-import prefixedConsole from "../../common/prefixedConsole.mjs";
+import prefixedConsole from '../../common/prefixedConsole.mjs';
 import { getXRankSeasonId } from '../../common/util.mjs';
-import DataUpdater from "./DataUpdater.mjs";
-import XRankDetailUpdater from "./XRankDetailUpdater.mjs";
+import DataUpdater from './DataUpdater.mjs';
+import XRankDetailUpdater from './XRankDetailUpdater.mjs';
 
 export default class XRankUpdater extends DataUpdater
 {

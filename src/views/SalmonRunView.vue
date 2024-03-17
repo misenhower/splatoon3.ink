@@ -18,6 +18,6 @@
 <script setup>
 import SalmonRunBox from '../components/salmonrun/SalmonRunBox.vue';
 import { useEggstraWorkSchedulesStore } from '@/stores/schedules.mjs';
-import MainLayout from '@/layouts/MainLayout.vue'
+import MainLayout from '@/layouts/MainLayout.vue';
 const eggstraWork = useEggstraWorkSchedulesStore();
 </script>

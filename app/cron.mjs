@@ -1,8 +1,8 @@
-import { CronJob } from "cron";
-import { update } from "./data/index.mjs";
-import { warmCaches } from "./splatnet/index.mjs";
-import { sendStatuses } from "./social/index.mjs";
-import { archiveData } from "./data/DataArchiver.mjs";
+import { CronJob } from 'cron';
+import { update } from './data/index.mjs';
+import { warmCaches } from './splatnet/index.mjs';
+import { sendStatuses } from './social/index.mjs';
+import { archiveData } from './data/DataArchiver.mjs';
 
 let updating = false;
 

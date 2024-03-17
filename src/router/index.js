@@ -1,11 +1,11 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import SalmonRunView from '../views/SalmonRunView.vue'
-import GearView from '../views/GearView.vue'
-import AboutView from '../views/AboutView.vue'
-import SplatfestsView from '../views/SplatfestsView.vue'
-import ChallengesView from '../views/ChallengesView.vue'
-import SocialsView from '../views/SocialsView.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import HomeView from '../views/HomeView.vue';
+import SalmonRunView from '../views/SalmonRunView.vue';
+import GearView from '../views/GearView.vue';
+import AboutView from '../views/AboutView.vue';
+import SplatfestsView from '../views/SplatfestsView.vue';
+import ChallengesView from '../views/ChallengesView.vue';
+import SocialsView from '../views/SocialsView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -50,6 +50,6 @@ const router = createRouter({
       redirect: { name: 'about' },
     },
   ],
-})
+});
 
-export default router
+export default router;

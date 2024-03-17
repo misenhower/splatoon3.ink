@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import DataUpdater from "./DataUpdater.mjs";
+import DataUpdater from './DataUpdater.mjs';
 
 export default class StageScheduleUpdater extends DataUpdater
 {

@@ -1,7 +1,7 @@
-import Media from "../Media.mjs";
-import { useEggstraWorkSchedulesStore } from "../../../src/stores/schedules.mjs";
-import ScreenshotHelper from "../../screenshots/ScreenshotHelper.mjs";
-import StatusGenerator from "./StatusGenerator.mjs";
+import Media from '../Media.mjs';
+import { useEggstraWorkSchedulesStore } from '../../../src/stores/schedules.mjs';
+import ScreenshotHelper from '../../screenshots/ScreenshotHelper.mjs';
+import StatusGenerator from './StatusGenerator.mjs';
 
 export default class EggstraWorkStatus extends StatusGenerator
 {
@@ -25,7 +25,7 @@ export default class EggstraWorkStatus extends StatusGenerator
 
     let lines = [];
 
-    let mode = 'EGGSTRA WORK'
+    let mode = 'EGGSTRA WORK';
 
     lines.push(`${mode} is now open on ${schedule.settings.coopStage.name}! #salmonrun #splatoon3`);
 
@@ -41,7 +41,7 @@ export default class EggstraWorkStatus extends StatusGenerator
   async _getMedia(screenshotHelper) {
     let media = new Media;
     media.file = await screenshotHelper.capture('salmonrun', {
-      params: {eggstra: "true"},
+      params: {eggstra: 'true'},
     });
 
     return media;

@@ -1,6 +1,6 @@
-import atprotoApi from "@atproto/api";
-import sharp from "sharp";
-import Client from "./Client.mjs";
+import atprotoApi from '@atproto/api';
+import sharp from 'sharp';
+import Client from './Client.mjs';
 
 const { BskyAgent, RichText } = atprotoApi;
 
@@ -39,7 +39,7 @@ export default class BlueskyClient extends Client
         // We have to convert the PNG to a JPG for Bluesky because of size limits
         let jpeg = await sharp(m.file).jpeg().toBuffer();
 
-        let response = await this.#agent.uploadBlob(jpeg, { encoding: 'image/jpeg' })
+        let response = await this.#agent.uploadBlob(jpeg, { encoding: 'image/jpeg' });
 
         return {
           image: response.data.blob,

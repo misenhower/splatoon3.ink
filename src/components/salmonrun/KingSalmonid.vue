@@ -30,7 +30,7 @@ const props = defineProps({
     type: String,
     default: 'w-6',
   },
-})
+});
 
-const boss = computed(() => props.schedule.settings.boss)
+const boss = computed(() => props.schedule.settings.boss);
 </script>

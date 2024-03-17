@@ -21,16 +21,16 @@
 
 <script setup>
 import { computed } from 'vue';
-import { sortBy, uniqBy } from "lodash";
+import { sortBy, uniqBy } from 'lodash';
 import SplatfestBox from '../components/SplatfestBox.vue';
 import SplatfestResultsBox from '../components/SplatfestResultsBox.vue';
-import MainLayout from '@/layouts/MainLayout.vue'
+import MainLayout from '@/layouts/MainLayout.vue';
 import { useUSSplatfestsStore, useEUSplatfestsStore, useJPSplatfestsStore, useAPSplatfestsStore } from '@/stores/splatfests';
 
 const usSplatfests = useUSSplatfestsStore();
 const euSplatfests = useEUSplatfestsStore();
 const jpSplatfests = useJPSplatfestsStore();
 const apSplatfests = useAPSplatfestsStore();
-const festivalsWithResults = computed(() => sortBy(uniqBy([...usSplatfests.festivals, ...euSplatfests.festivals, ...jpSplatfests.festivals, ...apSplatfests.festivals].filter(festival => festival?.hasResults), '__splatoon3ink_id'), 'startTime').reverse())
+const festivalsWithResults = computed(() => sortBy(uniqBy([...usSplatfests.festivals, ...euSplatfests.festivals, ...jpSplatfests.festivals, ...apSplatfests.festivals].filter(festival => festival?.hasResults), '__splatoon3ink_id'), 'startTime').reverse());
 
 </script>

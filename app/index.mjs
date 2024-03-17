@@ -3,7 +3,7 @@ import consoleStamp from 'console-stamp';
 import cron from './cron.mjs';
 import { sendStatuses, testStatuses } from './social/index.mjs';
 import { update } from './data/index.mjs';
-import { warmCaches } from "./splatnet/index.mjs";
+import { warmCaches } from './splatnet/index.mjs';
 import MastodonClient from './social/clients/MastodonClient.mjs';
 import ImageWriter from './social/clients/ImageWriter.mjs';
 import BlueskyClient from './social/clients/BlueskyClient.mjs';
@@ -26,7 +26,7 @@ const actions = {
   splatnet: update,
   warmCaches,
   dataArchive: archiveData,
-}
+};
 
 const command = process.argv[2];
 const params = process.argv.slice(3);

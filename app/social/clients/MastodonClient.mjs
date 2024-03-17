@@ -1,5 +1,5 @@
 import { createRestAPIClient } from 'masto';
-import Client from "./Client.mjs";
+import Client from './Client.mjs';
 
 export default class MastodonClient extends Client
 {

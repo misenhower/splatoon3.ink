@@ -9,8 +9,8 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
-import { useI18n } from "vue-i18n"
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { locales, setPreferredLocale } from '@/common/i18n';
 
 const i18n = useI18n();

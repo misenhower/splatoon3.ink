@@ -1,10 +1,10 @@
-import sharp from "sharp";
-import threads from "threads-api";
-import Client from "./Client.mjs";
+import sharp from 'sharp';
+import threads from 'threads-api';
+import Client from './Client.mjs';
 
 export default class ThreadsClient extends Client {
-  key = "threads";
-  name = "Threads";
+  key = 'threads';
+  name = 'Threads';
 
   #api;
 
@@ -33,7 +33,7 @@ export default class ThreadsClient extends Client {
 
     await this.#api.publish({
       text: status.status,
-      image: { type: "image/jpeg", data: jpeg },
+      image: { type: 'image/jpeg', data: jpeg },
     });
   }
 }

@@ -1,7 +1,7 @@
-import { olderThan } from "../../common/fs.mjs";
-import prefixedConsole from "../../common/prefixedConsole.mjs";
-import { getXRankSeasonId } from "../../common/util.mjs";
-import DataUpdater from "./DataUpdater.mjs";
+import { olderThan } from '../../common/fs.mjs';
+import prefixedConsole from '../../common/prefixedConsole.mjs';
+import { getXRankSeasonId } from '../../common/util.mjs';
+import DataUpdater from './DataUpdater.mjs';
 
 export default class XRankDetailUpdater extends DataUpdater
 {

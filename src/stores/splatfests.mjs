@@ -1,7 +1,7 @@
-import { acceptHMRUpdate, defineStore } from "pinia";
-import { computed } from "vue";
-import { useFestivalsDataStore, useSchedulesDataStore } from "./data.mjs";
-import { useTimeStore } from "./time.mjs";
+import { acceptHMRUpdate, defineStore } from 'pinia';
+import { computed } from 'vue';
+import { useFestivalsDataStore, useSchedulesDataStore } from './data.mjs';
+import { useTimeStore } from './time.mjs';
 
 export const STATUS_PAST = 'past';
 export const STATUS_ACTIVE = 'active';
@@ -25,13 +25,13 @@ function defineSplatfestRegionStore(region) {
 
     function getRegions(node) {
       let result = [];
-      const regions = node.__splatoon3ink_id.split("-")[0];
+      const regions = node.__splatoon3ink_id.split('-')[0];
 
       // The order here is important for SplatfestStatus/SplatfestResultsStatus posts
-      if (regions.includes("U")) result.push("NA");
-      if (regions.includes("J")) result.push("JP");
-      if (regions.includes("E")) result.push("EU");
-      if (regions.includes("A")) result.push("AP");
+      if (regions.includes('U')) result.push('NA');
+      if (regions.includes('J')) result.push('JP');
+      if (regions.includes('E')) result.push('EU');
+      if (regions.includes('A')) result.push('AP');
 
       return result;
     }

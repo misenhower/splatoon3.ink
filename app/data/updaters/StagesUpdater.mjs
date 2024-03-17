@@ -1,4 +1,4 @@
-import DataUpdater from "./DataUpdater.mjs";
+import DataUpdater from './DataUpdater.mjs';
 
 export default class StagesUpdater extends DataUpdater
 {

@@ -1,5 +1,5 @@
-import Status from "../Status.mjs";
-import StatusGenerator from "../generators/StatusGenerator.mjs";
+import Status from '../Status.mjs';
+import StatusGenerator from '../generators/StatusGenerator.mjs';
 
 export default class Client
 {

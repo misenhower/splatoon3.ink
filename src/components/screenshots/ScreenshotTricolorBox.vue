@@ -56,7 +56,7 @@ import { useScheduleTypes } from '@/components/concerns/scheduleTypes.mjs';
 
 const { types } = useScheduleTypes();
 
-const type = computed(() => types["splatfestTricolor"]);
+const type = computed(() => types['splatfestTricolor']);
 const tricolor = computed(() => useUSSplatfestsStore().tricolor);
 </script>
 

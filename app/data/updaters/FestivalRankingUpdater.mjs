@@ -1,7 +1,7 @@
-import prefixedConsole from "../../common/prefixedConsole.mjs";
+import prefixedConsole from '../../common/prefixedConsole.mjs';
 import { getFestId, getFestTeamId } from '../../common/util.mjs';
 import { olderThan } from '../../common/fs.mjs';
-import DataUpdater from "./DataUpdater.mjs";
+import DataUpdater from './DataUpdater.mjs';
 
 export default class FestivalRankingUpdater extends DataUpdater
 {

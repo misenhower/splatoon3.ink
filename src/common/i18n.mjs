@@ -1,5 +1,5 @@
-import { createI18n } from 'vue-i18n'
-import languages from '../assets/i18n/index.mjs'
+import { createI18n } from 'vue-i18n';
+import languages from '../assets/i18n/index.mjs';
 
 const LANGUAGE_KEY = 'lang';
 
@@ -79,19 +79,19 @@ export function initializeI18n() {
 // Adapted from: https://vue-i18n.intlify.dev/guide/essentials/pluralization.html#custom-pluralization
 function ruPluralization(choice, choicesLength, orgRule) {
   if (choice === 0) {
-    return 0
+    return 0;
   }
 
-  const teen = choice > 10 && choice < 20
-  const endsWithOne = choice % 10 === 1
+  const teen = choice > 10 && choice < 20;
+  const endsWithOne = choice % 10 === 1;
   if (!teen && endsWithOne) {
-    return 1
+    return 1;
   }
   if (!teen && choice % 10 >= 2 && choice % 10 <= 4) {
-    return 2
+    return 2;
   }
 
-  return choicesLength < 4 ? 2 : 3
+  return choicesLength < 4 ? 2 : 3;
 }
 
 function reload() {
@@ -100,18 +100,18 @@ function reload() {
 
   switch (currentLocale().code) {
     case 'zh-CN':
-      document.documentElement.style.setProperty("--font-family-s1", "splatoon1, splatoon1chzh, sans-serif");
-      document.documentElement.style.setProperty("--font-family-s2", "splatoon2, splatoon2chzh, sans-serif");
+      document.documentElement.style.setProperty('--font-family-s1', 'splatoon1, splatoon1chzh, sans-serif');
+      document.documentElement.style.setProperty('--font-family-s2', 'splatoon2, splatoon2chzh, sans-serif');
       break;
 
     case 'zh-TW':
-      document.documentElement.style.setProperty("--font-family-s1", "splatoon1, splatoon1twzh, sans-serif");
-      document.documentElement.style.setProperty("--font-family-s2", "splatoon2, splatoon2twzh, sans-serif");
+      document.documentElement.style.setProperty('--font-family-s1', 'splatoon1, splatoon1twzh, sans-serif');
+      document.documentElement.style.setProperty('--font-family-s2', 'splatoon2, splatoon2twzh, sans-serif');
       break;
 
     default:
-      document.documentElement.style.setProperty("--font-family-s1", "splatoon1, splatoon1jpja, sans-serif");
-      document.documentElement.style.setProperty("--font-family-s2", "splatoon2, splatoon2jpja, sans-serif");
+      document.documentElement.style.setProperty('--font-family-s1', 'splatoon1, splatoon1jpja, sans-serif');
+      document.documentElement.style.setProperty('--font-family-s2', 'splatoon2, splatoon2jpja, sans-serif');
       break;
   }
 }

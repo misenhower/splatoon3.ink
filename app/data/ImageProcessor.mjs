@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import mkdirp from 'mkdirp';
-import prefixedConsole from "../common/prefixedConsole.mjs";
+import prefixedConsole from '../common/prefixedConsole.mjs';
 import { normalizeSplatnetResourcePath } from '../common/util.mjs';
 import { exists } from '../common/fs.mjs';
 
@@ -41,7 +41,7 @@ export default class ImageProcessor
   async maybeDownload(url, destination) {
     // If the file already exists, we don't need to download it again
     if (await exists(this.localPath(destination))) {
-      return
+      return;
     }
 
     return await this.download(url, destination);

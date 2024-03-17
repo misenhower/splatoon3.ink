@@ -58,7 +58,7 @@ import { useUSSplatfestsStore } from '@/stores/splatfests';
 
 const { types } = useScheduleTypes();
 
-const type = computed(() => types["splatfestTricolor"]);
+const type = computed(() => types['splatfestTricolor']);
 const tricolor = computed(() => useUSSplatfestsStore().tricolor);
 
 

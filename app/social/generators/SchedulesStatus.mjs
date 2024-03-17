@@ -1,8 +1,8 @@
-import Media from "../Media.mjs";
-import { useAnarchyOpenSchedulesStore, useAnarchySeriesSchedulesStore, useRegularSchedulesStore, useSplatfestOpenSchedulesStore, useSplatfestProSchedulesStore, useXSchedulesStore } from "../../../src/stores/schedules.mjs";
+import Media from '../Media.mjs';
+import { useAnarchyOpenSchedulesStore, useAnarchySeriesSchedulesStore, useRegularSchedulesStore, useSplatfestOpenSchedulesStore, useSplatfestProSchedulesStore, useXSchedulesStore } from '../../../src/stores/schedules.mjs';
 import { useUSSplatfestsStore } from '../../../src/stores/splatfests.mjs';
-import ScreenshotHelper from "../../screenshots/ScreenshotHelper.mjs";
-import StatusGenerator from "./StatusGenerator.mjs";
+import ScreenshotHelper from '../../screenshots/ScreenshotHelper.mjs';
+import StatusGenerator from './StatusGenerator.mjs';
 export default class SchedulesStatus extends StatusGenerator
 {
   key = 'schedules';
@@ -19,7 +19,7 @@ export default class SchedulesStatus extends StatusGenerator
       splatfestOpen: useSplatfestOpenSchedulesStore().activeSchedule,
       splatfestPro: useSplatfestProSchedulesStore().activeSchedule,
       tricolor: useUSSplatfestsStore().tricolor,
-    }
+    };
   }
 
   async getDataTime() {
@@ -42,7 +42,7 @@ export default class SchedulesStatus extends StatusGenerator
         '',
         `– Open: ${festOpenStages[0].name} and ${festOpenStages[1].name}`,
         `– Pro: ${festProStages[0].name} and ${festProStages[1].name}`,
-      ]
+      ];
 
       if(stages.tricolor?.isTricolorActive) {
         lines.push(`– Tricolor: ${stages.tricolor.tricolorStage.name}`);

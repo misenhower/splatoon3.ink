@@ -83,7 +83,7 @@ export class LocalizationProcessor {
 
     data = JSON.stringify(data, undefined, space);
 
-    await mkdirp(path.dirname(this.filename))
+    await mkdirp(path.dirname(this.filename));
     await fs.writeFile(this.filename, data);
   }
 

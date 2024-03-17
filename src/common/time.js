@@ -48,7 +48,7 @@ export function formatDurationFromNow(value, hideSeconds = false) {
 }
 
 export function formatShortDuration(value) {
-  const { t } = useI18n()
+  const { t } = useI18n();
   let { negative, days, hours, minutes, seconds } = getDurationParts(value);
 
   if (days)
@@ -67,7 +67,7 @@ export function formatShortDurationFromNow(value) {
 }
 
 export function formatDurationHours(value) {
-  const { t } = useI18n()
+  const { t } = useI18n();
   let { negative, days, hours } = getDurationParts(value);
 
   hours += 24 * days;
