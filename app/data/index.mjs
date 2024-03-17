@@ -4,7 +4,7 @@ import CoopUpdater from "./updaters/CoopUpdater.mjs";
 import FestivalUpdater from "./updaters/FestivalUpdater.mjs";
 import XRankUpdater from "./updaters/XRankUpdater.mjs";
 import StagesUpdater from "./updaters/StagesUpdater.mjs";
-import Sentry from '@sentry/node';
+import * as Sentry from "@sentry/node";
 
 function updaters() {
   return [
