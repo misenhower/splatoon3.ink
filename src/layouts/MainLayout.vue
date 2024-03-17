@@ -16,7 +16,7 @@
       <NavButtons />
     </div>
 
-      <slot />
+    <slot />
 
     <div class="m-2 text-center text-xs text-zinc-500">
       <div>
