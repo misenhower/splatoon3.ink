@@ -52,6 +52,8 @@ const props = defineProps({
   },
 });
 
+defineEmits(['close']);
+
 const { types } = useScheduleTypes();
 
 const type = computed(() => types[props.type]);

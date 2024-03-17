@@ -1,6 +1,7 @@
 import StatusGenerator from "./StatusGenerator.mjs";
 import Media from "../Media.mjs";
 import { useCoopGearStore } from "../../../src/stores/gear.mjs";
+import ScreenshotHelper from "../../screenshots/ScreenshotHelper.mjs";
 
 export default class SalmonRunGearStatus extends StatusGenerator
 {

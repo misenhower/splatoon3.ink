@@ -30,5 +30,7 @@ const props = defineProps({
   stage: Object,
 });
 
+defineEmits(['close']);
+
 const imgUrl = computed(() => props.stage?.image.url);
 </script>

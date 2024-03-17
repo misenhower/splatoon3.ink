@@ -18,6 +18,7 @@ const props = defineProps({
     required: true,
   },
   weaponClass: {
+    type: String,
     default: 'w-10',
   },
 });

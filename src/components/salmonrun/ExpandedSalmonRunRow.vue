@@ -21,8 +21,10 @@
         </div>
       </div>
 
-      <div v-if="schedule.isBigRun"
-        class="bg-zinc-800 bg-opacity-80 text-sm text-white rounded-lg px-2 border-2 border-splatoon-bigRun">
+      <div
+        v-if="schedule.isBigRun"
+        class="bg-zinc-800 bg-opacity-80 text-sm text-white rounded-lg px-2 border-2 border-splatoon-bigRun"
+      >
         <img src="@/assets/img/modes/coop.bigrun.svg" :title="$t('salmonrun.bigrun')" class="w-4 inline-block" />
         {{ $t('salmonrun.bigrun') }}
       </div>

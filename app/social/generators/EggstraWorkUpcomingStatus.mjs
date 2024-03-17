@@ -2,6 +2,7 @@ import StatusGenerator from "./StatusGenerator.mjs";
 import Media from "../Media.mjs";
 import { useEggstraWorkSchedulesStore } from "../../../src/stores/schedules.mjs";
 import { useTimeStore } from "../../../src/stores/time.mjs";
+import ScreenshotHelper from "../../screenshots/ScreenshotHelper.mjs";
 
 export default class EggstraWorkUpcomingStatus extends StatusGenerator
 {

@@ -99,7 +99,6 @@ import RuleIcon from '../RuleIcon.vue';
 import SquidTape from '../SquidTape.vue';
 import { useScheduleTypes } from '../concerns/scheduleTypes.mjs';
 import ChallengeScheduleRow from './ChallengeScheduleRow.vue';
-import { formatDurationFromNow } from '../../common/time';
 
 const props = defineProps({
   type: {
@@ -107,6 +106,7 @@ const props = defineProps({
     required: true,
   },
   event: {
+    type: Object,
     required: true,
   },
 });

@@ -3,7 +3,7 @@ import ecstatic from 'ecstatic';
 
 export default class HttpServer
 {
-  /** @var {http.Server} */
+  /** @member {http.Server} */
   #server = null;
 
   get port() {

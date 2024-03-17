@@ -87,6 +87,7 @@ import { useTimeStore } from '../stores/time.mjs';
 
 const props = defineProps({
   schedule: {
+    type: Object,
     required: true,
   },
 });
