@@ -21,6 +21,9 @@ module.exports = {
     "vue/max-attributes-per-line": ["warn", { singleline: { max: 4 } }],
     "vue/html-self-closing": ["warn", { html: { void: "always" } }],
 
+    // Imports
+    "import/order": "warn",
+
     // JSDoc
     "jsdoc/require-jsdoc": "off",
     "jsdoc/require-returns": "off",
