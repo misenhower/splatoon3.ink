@@ -1,4 +1,4 @@
-import { login } from 'masto/fetch';
+import { createRestAPIClient } from 'masto';
 import Client from "./Client.mjs";
 
 export default class MastodonClient extends Client
@@ -8,12 +8,14 @@ export default class MastodonClient extends Client
 
   #url;
   #accessToken;
+  #visibility;
 
   constructor() {
     super();
 
     this.#url = process.env.MASTODON_URL;
     this.#accessToken = process.env.MASTODON_ACCESS_TOKEN;
+    this.#visibility = process.env.MASTODON_VISIBILITY || 'public';
   }
 
   async canSend() {
@@ -22,7 +24,7 @@ export default class MastodonClient extends Client
 
   async send(status, generator) {
     // Mastodon API
-    const masto = await login({
+    const masto = await createRestAPIClient({
       url: this.#url,
       accessToken: this.#accessToken,
       disableVersionCheck: true,
@@ -37,18 +39,19 @@ export default class MastodonClient extends Client
           request.description = m.altText;
         }
 
-        let attachment = await masto.mediaAttachments.create(request);
+        let attachment = await masto.v2.media.create(request);
 
         return attachment.id;
       }),
     );
 
     // Send status
-    await masto.statuses.create({
+    await masto.v1.statuses.create({
       status: status.status,
       spoilerText: status.contentWrapper,
       sensitive: !!status.contentWrapper, // Without the sensitive property the image is still visible
       mediaIds,
+      visibility: this.#visibility,
     });
   }
 }
