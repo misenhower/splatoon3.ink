@@ -61,14 +61,14 @@ watchEffect(() => {
   }
 });
 
-function formatDateTime(date) {
-  date = new Date(date);
+// function formatDateTime(date) {
+//   date = new Date(date);
 
-  return date.toLocaleString(undefined, {
-    dateStyle: 'long',
-    timeStyle: 'short',
-  })
-}
+//   return date.toLocaleString(undefined, {
+//     dateStyle: 'long',
+//     timeStyle: 'short',
+//   })
+// }
 
 const isDev = import.meta.env.DEV;
 </script>

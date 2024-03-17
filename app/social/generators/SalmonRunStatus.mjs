@@ -1,6 +1,7 @@
 import StatusGenerator from "./StatusGenerator.mjs";
 import Media from "../Media.mjs";
 import { useSalmonRunSchedulesStore } from "../../../src/stores/schedules.mjs";
+import ScreenshotHelper from "../../screenshots/ScreenshotHelper.mjs";
 
 export default class SalmonRunStatus extends StatusGenerator
 {

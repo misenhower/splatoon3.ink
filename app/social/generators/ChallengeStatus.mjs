@@ -1,7 +1,8 @@
 import StatusGenerator from "./StatusGenerator.mjs";
 import Media from "../Media.mjs";
 import { useEventSchedulesStore } from "../../../src/stores/schedules.mjs";
-import { br2nl } from "../../common/util.mjs";
+import { br2nl } from "../../../src/common/util.mjs";
+import ScreenshotHelper from "../../screenshots/ScreenshotHelper.mjs";
 export default class ChallengeStatus extends StatusGenerator
 {
   key = 'challenge';

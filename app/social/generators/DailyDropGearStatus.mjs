@@ -2,6 +2,7 @@ import StatusGenerator from "./StatusGenerator.mjs";
 import Media from "../Media.mjs";
 import { useGearStore } from "../../../src/stores/gear.mjs";
 import { getGearIcon } from "../../common/util.mjs";
+import ScreenshotHelper from "../../screenshots/ScreenshotHelper.mjs";
 
 export default class DailyDropGearStatus extends StatusGenerator
 {

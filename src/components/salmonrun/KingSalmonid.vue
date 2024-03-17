@@ -27,6 +27,7 @@ import { computed } from 'vue';
 const props = defineProps({
   schedule: Object,
   size: {
+    type: String,
     default: 'w-6',
   },
 })

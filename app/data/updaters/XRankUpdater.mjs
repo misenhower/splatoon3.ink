@@ -1,4 +1,3 @@
-import jsonpath from 'jsonpath';
 import prefixedConsole from "../../common/prefixedConsole.mjs";
 import { getXRankSeasonId } from '../../common/util.mjs';
 import DataUpdater from "./DataUpdater.mjs";

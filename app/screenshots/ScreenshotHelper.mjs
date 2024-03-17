@@ -1,7 +1,6 @@
 import { URL } from 'url';
 import puppeteer from 'puppeteer';
 import HttpServer from './HttpServer.mjs';
-import timers from 'timers/promises';
 
 const defaultViewport = {
   // Using a 16:9 ratio here by default to match Twitter's image card dimensions

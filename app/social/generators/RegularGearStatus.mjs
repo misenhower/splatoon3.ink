@@ -27,7 +27,7 @@ export default class RegularGearStatus extends StatusGenerator
     let icon = getGearIcon(gear);
     let name = gear.gear.name;
     let power = gear.gear.primaryGearPower.name;
-    let url = `https://splatoon3.ink/nso/g/${gear.id}`;
+    // let url = `https://splatoon3.ink/nso/g/${gear.id}`;
 
     return [
       `Up now on SplatNet: ${icon} ${name} with ${power} #splatnet3`,
@@ -36,7 +36,7 @@ export default class RegularGearStatus extends StatusGenerator
     ].join('\n');
   }
 
-  /** @param {ScreenshotHelper} screenshotHelper */
+  /** @param {screenshotHelper} screenshotHelper */
   async _getMedia(screenshotHelper) {
     let media = new Media;
     media.file = await screenshotHelper.capture('gear/regular');

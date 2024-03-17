@@ -6,7 +6,7 @@ export default class TwitterClient extends Client
   key = 'twitter';
   name = 'Twitter';
 
-  /** @var {TwitterApi} */
+  /** @member {TwitterApi} */
   #api;
 
   async canSend() {

@@ -2,7 +2,6 @@ import { useAnarchyOpenSchedulesStore, useAnarchySeriesSchedulesStore, useRegula
 import battleRegularSvg from '@/assets/img/modes/regular.svg';
 import battleBankaraSvg from '@/assets/img/modes/bankara.svg';
 import battleXSvg from '@/assets/img/modes/x.svg';
-import battleLeagueSvg from '@/assets/img/modes/league.svg';
 import battleEventSvg from '@/assets/img/modes/event.svg';
 
 export function useScheduleTypes() {

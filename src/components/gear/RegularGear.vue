@@ -14,8 +14,13 @@
 
     <div class="pb-24 lg:pb-36">
       <div class="text-center py-4">
-        <SquidTape class="font-splatoon1 text-2xl text-black rounded-sm -rotate-2 z-10" bg="bg-splatoon-orange"
-          squid-bg="bg-black" border="border border-black" squid-size="15px">
+        <SquidTape
+          class="font-splatoon1 text-2xl text-black rounded-sm -rotate-2 z-10"
+          bg="bg-splatoon-orange"
+          squid-bg="bg-black"
+          border="border border-black"
+          squid-size="15px"
+        >
           <div class="px-1">
             {{ $t("gear.sale") }}
           </div>

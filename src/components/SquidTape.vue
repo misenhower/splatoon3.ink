@@ -15,15 +15,19 @@ import { computed } from 'vue';
 
 const props = defineProps({
   bg: {
+    type: String,
     default: 'bg-splatoon-blue',
   },
   squidBg: {
+    type: String,
     default: 'bg-white',
   },
   border: {
+    type: String,
     default: 'border-white',
   },
   squidSize: {
+    type: String,
     default: '10px',
   },
 });
