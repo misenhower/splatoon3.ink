@@ -8,8 +8,8 @@
       "CatalogRefetchQuery" : "c4f5474dfc5d7937618d8a38357ad1e78cc83d6019833b1b68d86a0ce8d4b9e5",
       "ChallengeQuery" : "4bab7a084fc42a2fe22d78498ce7e429dc9b0c994db87985bdf64a1566612b03",
       "ChallengeRefetchQuery" : "818b2bc11b278fad6dc16cf84a2030b70a506e8bc6e20f490c07d7934337a5cd",
-      "CheckinQuery" : "6dfce83d02761395758ae21454cb46924e81c22c3f151f91330b0602278a060e",
-      "CheckinWithQRCodeMutation" : "63a60eea7926b0f2600cfb64d8bf3b6736afc1e1040beabd5dfa40fbfdcb92d8",
+      "CheckinQuery" : "dc832041ee7c499cec8d5ea1f7042eb686792f8bfad5c8f5cd43c24a91f3d9ce",
+      "CheckinWithQRCodeMutation" : "b9a6f95611387d59c38902e41ea9506edd3ec139650c92e150fd337156b9edc6",
       "ConfigureAnalyticsQuery" : "2a9302bdd09a13f8b344642d4ed483b9464f20889ac17401e993dfa5c2bb3607",
       "CoopHistoryDetailQuery" : "f2d55873a9281213ae27edc171e2b19131b3021a2ae263757543cdd3bf015cc8",
       "CoopHistoryDetailRefetchQuery" : "4bf516ccfd9a3f4efc32b215c59ae42c2a06dd2d8f73de95c2676dea6db74446",
@@ -110,5 +110,5 @@
       "useShareMyOutfitQuery" : "5502b09121f5e18bec8fefbe80cce21e1641624b579c57c1992b30dcff612b44"
     }
   },
-  "version" : "6.0.0-9f87c815"
+  "version" : "6.0.0-f734f04c"
 }
