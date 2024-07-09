@@ -11,13 +11,13 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Download file from URL
       run: curl -o app/splatnet/queryHashes.json https://raw.githubusercontent.com/imink-app/SplatNet3/master/Data/splatnet3_webview_data.json
 
     - name: Create PR
-      uses: peter-evans/create-pull-request@v4
+      uses: peter-evans/create-pull-request@v6
       with:
         title: Update query hashes
         commit-message: Update query hashes
