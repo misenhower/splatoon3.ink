@@ -59,7 +59,20 @@ export default class FestivalUpdater extends DataUpdater
   }
 
   async getData(locale) {
-    let result = await this.splatnet(locale).getFestRecordData();
+    let cursor = null;
+    let hasNextPage = true;
+    let result = { data: { festRecords: { nodes: [] } } };
+
+    while (hasNextPage) {
+      let data = await this.splatnet(locale).getFestRecordDataPage(cursor);
+
+      // Grab the nodes from the current page
+      result.data.festRecords.nodes.push(...jsonpath.query(data, '$..festRecords.edges.*.node'));
+
+      // Update the cursor and next page indicator
+      cursor = data.data.festRecords.pageInfo.endCursor;
+      hasNextPage = data.data.festRecords.pageInfo.hasNextPage;
+    }
 
     this.deriveFestivalIds(result);
 

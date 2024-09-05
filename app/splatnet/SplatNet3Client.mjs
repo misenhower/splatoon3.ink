@@ -156,8 +156,8 @@ export default class SplatNet3Client
     return this.getGraphQLPersistedQuery(1, 'CoopHistoryQuery');
   }
 
-  getFestRecordData() {
-    return this.getGraphQLPersistedQuery(1, 'FestRecordQuery');
+  getFestRecordDataPage(cursor = null) {
+    return this.getGraphQLPersistedQuery(1, 'FestRecordPaginationQuery', { cursor, first: 100 });
   }
 
   getFestDetailData(festId) {
