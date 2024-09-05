@@ -25,7 +25,7 @@ function defaultStatusGenerators() {
     new ChallengeStatus,
     new SalmonRunStatus,
     new SalmonRunUpcomingStatus,
-    new SalmonRunGearStatus,
+    // new SalmonRunGearStatus,
     new SplatfestStatus('NA'),
     new SplatfestStatus('EU'),
     new SplatfestStatus('JP'),
