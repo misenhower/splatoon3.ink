@@ -25,7 +25,7 @@ function defineScheduleStore(id, options) {
     };
 
     const time = useTimeStore();
-    const schedules = computed(() => options.nodes()?.map(n => transform(n)));
+    const schedules = computed(() => options.nodes()?.map(n => transform(n)).filter(s => s.settings));
 
     const currentSchedules = computed(() => schedules.value?.filter(s => time.isCurrent(s.endTime)));
     const activeSchedule = computed(() => schedules.value?.find(s => time.isActive(s.startTime, s.endTime)));
