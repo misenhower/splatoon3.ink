@@ -57,7 +57,7 @@ export default class XRankUpdater extends DataUpdater
   getSeasons(data) {
     return [
       data.xRanking.currentSeason,
-      ...data.xRanking.pastSeasons.nodes,
+      ...data.xRanking.pastSeasons.edges.map(edge => edge.node),
     ];
   }
 
