@@ -72,13 +72,13 @@ function defineSplatfestRegionStore(region) {
       }
 
       if (fest.tricolorStages) {
-        fest.tricolorStages.forEach(stage => { if (!stage.thumbnailImage) stage.thumbnailImage = stage.image }); 
+        fest.tricolorStages.forEach(stage => stage.thumbnailImage = stage.image); 
       }
 
       return {
         ...fest,
-        isTricolorActive: time.startTime == time.midtermTime ? time.isActive(fest.startTime, fest.endTime) : time.isActive(time.midtermTime),
-        startTime: time.startTime == time.midtermTime ? fest.startTime : fest.midtermTime,
+        isTricolorActive: fest.tricolorStages ? time.isActive(fest.startTime, fest.endTime) : time.isActive(time.midtermTime, time.endTime),
+        startTime: fest.tricolorStages ? fest.startTime : fest.midtermTime,
         endTime: fest.endTime,
       };
     });
