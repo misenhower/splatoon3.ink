@@ -33,7 +33,7 @@
           </div>
         </div>
 
-        <div class="space-y-8" v-if="tricolor?.tricolorStage">
+        <div v-if="tricolor?.tricolorStage" class="space-y-8">
           <StageImage
             img-class="rounded-2xl"
             :stage="tricolor?.tricolorStage"
@@ -41,7 +41,7 @@
           />
         </div>
 
-        <div class="space-y-8" v-if="tricolor?.tricolorStages">
+        <div v-if="tricolor?.tricolorStages" class="space-y-8">
           <StageImage
             img-class="rounded-2xl"
             :stage="tricolor?.tricolorStages[0]"

@@ -34,7 +34,7 @@
           </div>
         </div>
 
-        <div class="flex space-x-1" v-if="tricolor?.tricolorStage">
+        <div v-if="tricolor?.tricolorStage" class="flex space-x-1">
           <div class="flex-1 relative">
             <StageImage
               img-class="rounded-xl"
@@ -43,7 +43,7 @@
           </div>
         </div>
 
-        <div class="flex space-x-1" v-if="tricolor?.tricolorStages">
+        <div v-if="tricolor?.tricolorStages" class="flex space-x-1">
           <div class="flex-1 relative">
             <StageImage
               img-class="rounded-xl"
@@ -51,7 +51,6 @@
             />
           </div>
         </div>
-        
       </div>
     </div>
   </ProductContainer>
