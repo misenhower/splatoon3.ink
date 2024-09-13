@@ -25,7 +25,8 @@ export default class SchedulesStatus extends StatusGenerator
   async getDataTime() {
     await this.preparePinia();
 
-    let schedule = (await this.getStages()).regular;
+    let stages = await this.getStages();
+    let schedule = stages.regular || stages.splatfestOpen;
 
     return Date.parse(schedule.startTime);
   }
