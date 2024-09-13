@@ -72,9 +72,10 @@ export default class SchedulesStatus extends StatusGenerator
     let stages = await this.getStages();
 
     // If the Tricolor stage is active, we need to make the image size a little taller
-    let viewport = stages.tricolor?.isTricolorActive
-      ? { height: 925 }
-      : { };
+    // let viewport = stages.tricolor?.isTricolorActive
+    //   ? { height: 925 }
+    //   : { };
+    let viewport = {}; // Disabling for now
 
     let media = new Media;
     media.file = await screenshotHelper.capture('schedules', { viewport });
@@ -88,10 +89,6 @@ export default class SchedulesStatus extends StatusGenerator
         `Splatfest Battle (Open): ${detail(stages.splatfestOpen)}`,
         `Splatfest Battle (Pro): ${detail(stages.splatfestPro)}`,
       ]);
-
-      if (stages.tricolor?.isTricolorActive) {
-        lines.push(`Splatfest Battle (Tricolor): Tricolor Turf War on ${stages.tricolor.tricolorStage.name}`);
-      }
     } else {
       lines.push(...[
         `Regular Battle: ${detail(stages.regular)}`,
