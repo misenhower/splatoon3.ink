@@ -15,10 +15,10 @@
           </template>
           <template v-else>
             <div class="flex flex-wrap justify-center items-center gap-6">
-              <SplatfestBox :festival="activeFestivals[0]" class="md:max-w-md 2xl:max-w-lg md:-rotate-1" />
+              <SplatfestBox :festival="activeFestivals[0]" class="md:max-w-md 2xl:max-w-lg md:rotate-1" />
               <ScheduleBox type="splatfestOpen" class="md:max-w-md 2xl:max-w-lg md:-rotate-1" />
-              <ScheduleBox type="splatfestPro" class="md:max-w-md 2xl:max-w-lg md:-rotate-1" />
-              <TricolorBox v-if="isTricolorActive" class="md:max-w-md 2xl:max-w-lg md:rotate-1" />
+              <ScheduleBox type="splatfestPro" class="md:max-w-md 2xl:max-w-lg md:rotate-1" />
+              <TricolorBox v-if="isTricolorActive" class="md:max-w-md 2xl:max-w-lg md:-rotate-1" />
             </div>
           </template>
         </template>
