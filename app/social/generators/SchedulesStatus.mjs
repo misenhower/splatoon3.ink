@@ -45,8 +45,12 @@ export default class SchedulesStatus extends StatusGenerator
         `– Pro: ${festProStages[0].name} and ${festProStages[1].name}`,
       ];
 
-      if(stages.tricolor?.isTricolorActive) {
+      if(stages.tricolor?.isTricolorActive && stages.tricolor.tricolorStage) {
         lines.push(`– Tricolor: ${stages.tricolor.tricolorStage.name}`);
+      }
+
+      if(stages.tricolor?.isTricolorActive && stages.tricolor.tricolorStages) {
+        lines.push(`– Tricolor: ${stages.tricolor.tricolorStages[0].name}`);
       }
       return lines.join('\n');
 

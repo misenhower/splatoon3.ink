@@ -34,11 +34,20 @@
           </div>
         </div>
 
-        <div class="flex space-x-1">
+        <div v-if="tricolor?.tricolorStage" class="flex space-x-1">
           <div class="flex-1 relative">
             <StageImage
               img-class="rounded-xl"
               :stage="tricolor?.tricolorStage"
+            />
+          </div>
+        </div>
+
+        <div v-if="tricolor?.tricolorStages" class="flex space-x-1">
+          <div class="flex-1 relative">
+            <StageImage
+              img-class="rounded-xl"
+              :stage="tricolor?.tricolorStages?.[0]"
             />
           </div>
         </div>

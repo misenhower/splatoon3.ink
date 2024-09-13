@@ -33,10 +33,18 @@
           </div>
         </div>
 
-        <div class="space-y-8">
+        <div v-if="tricolor?.tricolorStage" class="space-y-8">
           <StageImage
             img-class="rounded-2xl"
             :stage="tricolor?.tricolorStage"
+            text-size="text-xl"
+          />
+        </div>
+
+        <div v-if="tricolor?.tricolorStages" class="space-y-8">
+          <StageImage
+            img-class="rounded-2xl"
+            :stage="tricolor?.tricolorStages[0]"
             text-size="text-xl"
           />
         </div>
