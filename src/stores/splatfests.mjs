@@ -65,16 +65,20 @@ function defineSplatfestRegionStore(region) {
 
       // Move the thumbnail image to "thumbnailImage" and pull in the high-res image for the stage
       if (fest.tricolorStage && !fest.tricolorStage.thumbnailImage) {
-        fest.tricolorStage.thumbnailImage = fest.tricolorStage.image;
+        fest.tricolorStage.thumbnailImage = fest.tricolorStage.image.url;
         fest.tricolorStage.image =
           vsStages.nodes.find(s => s.id === fest.tricolorStage.id)?.originalImage ||
           fest.tricolorStage.image;
       }
 
+      if (fest.tricolorStages) {
+        fest.tricolorStages.forEach(stage => { if (!stage.thumbnailImage) stage.thumbnailImage = stage.image }); 
+      }
+
       return {
         ...fest,
-        isTricolorActive: time.isActive(fest.midtermTime, fest.endTime),
-        startTime: fest.midtermTime,
+        isTricolorActive: time.startTime == time.midtermTime ? time.isActive(fest.startTime, fest.endTime) : time.isActive(time.midtermTime),
+        startTime: time.startTime == time.midtermTime ? fest.startTime : fest.midtermTime,
         endTime: fest.endTime,
       };
     });
