@@ -1,5 +1,15 @@
 <template>
-  <ProductContainer class="pt-10 pb-4" bg="bg-camo-purple" :bg-style="`background-color: ${toRgba(winner.color)};`">
+  <ProductContainer class="pt-10 pb-4" :bg="`bg-camo-purple ${!showSpoiler ? 'bg-zinc-500' : ''}`" :bg-style="showSpoiler ? `background-color: ${toRgba(winner.color)};` : ''">
+    <div v-if="!showSpoiler" class="absolute inset-0 w-full h-full flex flex-col gap-4 items-center justify-center z-10 backdrop-blur-lg rounded-2xl">
+      <div class="font-splatoon1 text-3xl lg:text-4xl text-shadow">
+        Splatfest Results
+      </div>
+
+      <button class="px-4 py-1 rounded-full bg-zinc-300/20 font-splatoon2" @click="showSpoiler = true">
+        Reveal Results
+      </button>
+    </div>
+
     <div class="space-y-2">
       <div class="font-splatoon1 text-2xl lg:text-3xl text-shadow mx-2">
         {{ $t('festival.results.title') }}
@@ -23,7 +33,7 @@
 
             <div class="flex bg-zinc-700 bg-opacity-70 rounded-full py-1">
               <div v-for="(result, i) in row.results" :key="i" class="w-16 lg:w-20 sm:mx-2">
-                <div :class="result.isTop ? 'text-splatoon-yellow' : 'text-zinc-300'">
+                <div :class="result.isTop && showSpoiler ? 'text-splatoon-yellow' : 'text-zinc-300'">
                   {{ (result.ratio * 100).toFixed(2) }}%
                 </div>
               </div>
@@ -40,8 +50,10 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import ProductContainer from './ProductContainer.vue';
+
+const showSpoiler = ref(false);
 
 const props = defineProps({
   festival: Object,
