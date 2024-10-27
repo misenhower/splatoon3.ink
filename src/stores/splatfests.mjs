@@ -77,8 +77,8 @@ function defineSplatfestRegionStore(region) {
 
       return {
         ...fest,
-        isTricolorActive: fest.tricolorStages ? time.isActive(fest.startTime, fest.endTime) : time.isActive(time.midtermTime, time.endTime),
-        startTime: fest.tricolorStages ? fest.startTime : fest.midtermTime,
+        isTricolorActive: time.isActive(fest.midtermTime, fest.endTime),
+        startTime: fest.midtermTime,
         endTime: fest.endTime,
       };
     });
