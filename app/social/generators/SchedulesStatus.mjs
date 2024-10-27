@@ -50,7 +50,11 @@ export default class SchedulesStatus extends StatusGenerator
       }
 
       if(stages.tricolor?.isTricolorActive && stages.tricolor.tricolorStages) {
-        lines.push(`– Tricolor: ${stages.tricolor.tricolorStages[0].name}`);
+        if(stages.tricolor.tricolorStages.length == 1) {
+          lines.push(`– Tricolor: ${stages.tricolor.tricolorStages[0].name}`);
+        } else {
+          lines.push(`– Tricolor: ${stages.tricolor.tricolorStages[0].name} and ${stages.tricolor.tricolorStages[1].name}`);
+        }
       }
       return lines.join('\n');
 
