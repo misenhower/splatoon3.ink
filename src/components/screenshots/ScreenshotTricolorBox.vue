@@ -43,8 +43,11 @@
 
         <div v-if="tricolor?.tricolorStages" class="space-y-8">
           <StageImage
+            v-for="tricolorStage in tricolor.tricolorStages"
+            :key="tricolorStage.id"
+            class="flex-1"
             img-class="rounded-2xl"
-            :stage="tricolor?.tricolorStages[0]"
+            :stage="tricolorStage"
             text-size="text-xl"
           />
         </div>
