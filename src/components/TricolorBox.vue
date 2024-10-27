@@ -62,7 +62,6 @@
             />
           </div>
         </div>
-
       </div>
     </div>
   </ProductContainer>
