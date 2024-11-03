@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/node';
 import prefixedConsole from '../common/prefixedConsole.mjs';
 import ScreenshotHelper from '../screenshots/ScreenshotHelper.mjs';
 import Client from './clients/Client.mjs';
@@ -31,6 +32,7 @@ export default class StatusGeneratorManager
         await this.#generateAndSend(generator, force);
       } catch (e) {
         this.console(generator).error(`Error generating status: ${e}`);
+        Sentry.captureException(e);
       }
     }
 
@@ -66,6 +68,7 @@ export default class StatusGeneratorManager
         await generator.updatelastPostCache(client);
       } catch (e) {
         this.console(generator, client).error(`Error posting: ${e}`);
+        Sentry.captureException(e);
       }
     }
   }
