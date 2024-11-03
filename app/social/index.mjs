@@ -4,7 +4,7 @@ import MastodonClient from './clients/MastodonClient.mjs';
 import TwitterClient from './clients/TwitterClient.mjs';
 import DailyDropGearStatus from './generators/DailyDropGearStatus.mjs';
 import RegularGearStatus from './generators/RegularGearStatus.mjs';
-import SalmonRunGearStatus from './generators/SalmonRunGearStatus.mjs';
+// import SalmonRunGearStatus from './generators/SalmonRunGearStatus.mjs';
 import SalmonRunStatus from './generators/SalmonRunStatus.mjs';
 import SchedulesStatus from './generators/SchedulesStatus.mjs';
 import SplatfestStatus from './generators/SplatfestStatus.mjs';
