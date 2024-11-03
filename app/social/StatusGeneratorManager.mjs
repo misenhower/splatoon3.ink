@@ -61,15 +61,17 @@ export default class StatusGeneratorManager
 
     let status = await generator.getStatus(this.screenshotHelper);
 
-    for (let client of clientsToPost) {
-      this.console(generator, client).info('Posting...');
-      try {
-        await client.send(status, generator);
-        await generator.updatelastPostCache(client);
-      } catch (e) {
-        this.console(generator, client).error(`Error posting: ${e}`);
-        Sentry.captureException(e);
-      }
+    await Promise.all(clientsToPost.map(client => this.#sendToClient(generator, status, client)));
+  }
+
+  async #sendToClient(generator, status, client) {
+    this.console(generator, client).info('Posting...');
+    try {
+      await client.send(status, generator);
+      await generator.updatelastPostCache(client);
+    } catch (e) {
+      this.console(generator, client).error(`Error posting: ${e}`);
+      Sentry.captureException(e);
     }
   }
 }
