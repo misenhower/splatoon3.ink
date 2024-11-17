@@ -1,0 +1,21 @@
+# Example Docker Compose override file for local development
+
+services:
+  app:
+    platform: linux/amd64 # Needed for Apple Silicon
+    build:
+      dockerfile: docker/app/Dockerfile
+    init: true
+    restart: unless-stopped
+    environment:
+      BROWSERLESS_ENDPOINT: ws://browserless:3000
+      SCREENSHOT_HOST: app
+    depends_on:
+      - browserless
+    volumes:
+      - .:/app
+
+  browserless:
+    platform: linux/arm64 # Needed for Apple Silicon
+    ports:
+      - 3000:3000

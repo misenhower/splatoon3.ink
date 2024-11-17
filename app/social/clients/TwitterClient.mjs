@@ -33,7 +33,7 @@ export default class TwitterClient extends Client
     // Upload images
     let mediaIds = await Promise.all(
       status.media.map(async m => {
-        let id = await this.api().v1.uploadMedia(m.file, { mimeType: m.type });
+        let id = await this.api().v1.uploadMedia(Buffer.from(m.file), { mimeType: m.type });
 
         if (m.altText) {
           await this.api().v1.createMediaMetadata(id, { alt_text: { text: m.altText } });

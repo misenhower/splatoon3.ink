@@ -1,0 +1,23 @@
+# Example Docker Compose override file for production
+
+services:
+  app:
+    image: ghcr.io/misenhower/splatoon2.ink:main
+    init: true
+    restart: unless-stopped
+    environment:
+      BROWSERLESS_ENDPOINT: ws://browserless:3000
+      SCREENSHOT_HOST: app
+    depends_on:
+      - browserless
+    labels: [ "com.centurylinklabs.watchtower.scope=splatoon3ink" ]
+
+  browserless:
+    labels: [ "com.centurylinklabs.watchtower.scope=splatoon3ink" ]
+
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 30 --scope splatoon3ink
+    labels: [ "com.centurylinklabs.watchtower.scope=splatoon3ink" ]

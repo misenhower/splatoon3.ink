@@ -38,7 +38,7 @@
     "mkdirp": "^1.0.4",
     "nxapi": "^1.4.0",
     "pinia": "^2.0.22",
-    "puppeteer": "^18.0.3",
+    "puppeteer-core": "^23.8.0",
     "sharp": "^0.32.0",
     "threads-api": "^1.4.0",
     "twitter-api-v2": "^1.12.7",
