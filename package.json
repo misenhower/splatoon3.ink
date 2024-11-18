@@ -8,6 +8,7 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --ignore-path .gitignore",
     "lint-fix": "npm run lint -- --fix",
     "cron": "node app/index.mjs cron",
+    "start": "npm run sync:download && npm run splatnet:quick && npm run social && npm run cron",
     "social": "node app/index.mjs social",
     "social:test": "node app/index.mjs socialTest",
     "social:test:image": "node app/index.mjs socialTestImage",
