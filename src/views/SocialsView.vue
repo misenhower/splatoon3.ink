@@ -27,6 +27,13 @@
                   </div>
 
                   <div>
+                    You can also follow us on Twitter (now known as &ldquo;X&rdquo;) at
+                    <a href="https://twitter.com/splatoon3ink" target="_blank">@splatoon3ink</a>,
+                    but due to new restrictions on that platform the bot is no longer able to reliably post there.
+                    Use any of the other platforms above to continue getting updates!
+                  </div>
+
+                  <div>
                     <router-link to="/">
                       &laquo; {{ $t('about.schedules') }}
                     </router-link>
@@ -60,11 +67,11 @@ import MainLayout from '@/layouts/MainLayout.vue';
 import ProductContainer from '@/components/ProductContainer.vue';
 
 const socials = [
-  {
-    title: 'Twitter',
-    handle: '@splatoon3ink',
-    url: 'https://twitter.com/splatoon3ink',
-  },
+  // {
+  //   title: 'Twitter',
+  //   handle: '@splatoon3ink',
+  //   url: 'https://twitter.com/splatoon3ink',
+  // },
   {
     title: 'Threads',
     handle: '@splatoon3ink',
@@ -77,7 +84,7 @@ const socials = [
   },
   {
     title: 'Bluesky',
-    handle: '@splatoon3ink',
+    handle: '@splatoon3.ink',
     url: 'https://bsky.app/profile/splatoon3.ink',
   },
 ];
