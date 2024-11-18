@@ -2,7 +2,7 @@
 
 services:
   app:
-    image: ghcr.io/misenhower/splatoon2.ink:main
+    image: ghcr.io/misenhower/splatoon3.ink:main
     init: true
     restart: unless-stopped
     environment:
@@ -10,6 +10,8 @@ services:
       SCREENSHOT_HOST: app
     depends_on:
       - browserless
+    env_file:
+      - .env
     labels: [ "com.centurylinklabs.watchtower.scope=splatoon3ink" ]
 
   browserless:
