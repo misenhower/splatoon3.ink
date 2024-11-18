@@ -45,7 +45,7 @@ export default class S3Syncer
     });
   }
 
-  /** @returns {S3SyncClient} */
+  /** @member {S3SyncClient} */
   get syncClient() {
     return this._syncClient ??= new S3SyncClient({ client: this.s3Client });
   }
