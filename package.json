@@ -41,6 +41,7 @@
     "masto": "^6.7.0",
     "mkdirp": "^1.0.4",
     "nxapi": "^1.4.0",
+    "p-queue": "^8.0.1",
     "pinia": "^2.0.22",
     "puppeteer-core": "^23.8.0",
     "s3-sync-client": "^4.3.1",

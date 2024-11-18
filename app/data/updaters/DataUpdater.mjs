@@ -166,6 +166,8 @@ export default class DataUpdater
       jsonpath.apply(data, expression, url => mapping[url]);
     }
 
+    await ImageProcessor.onIdle();
+
     return images;
   }
 

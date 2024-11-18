@@ -7,6 +7,7 @@ import CoopUpdater from './updaters/CoopUpdater.mjs';
 import FestivalUpdater from './updaters/FestivalUpdater.mjs';
 import XRankUpdater from './updaters/XRankUpdater.mjs';
 import StagesUpdater from './updaters/StagesUpdater.mjs';
+import ImageProcessor from './ImageProcessor.mjs';
 
 function updaters() {
   return [
@@ -53,6 +54,7 @@ export async function update(config = 'default') {
   }
 
   if (canSync()) {
+    await ImageProcessor.onIdle();
     await (new S3Syncer).upload();
   }
 
