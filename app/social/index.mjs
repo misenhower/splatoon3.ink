@@ -1,3 +1,5 @@
+import S3Syncer from '../sync/S3Syncer.mjs';
+import { canSync } from '../sync/index.mjs';
 import FileWriter from './clients/FileWriter.mjs';
 import ImageWriter from './clients/ImageWriter.mjs';
 import MastodonClient from './clients/MastodonClient.mjs';
@@ -16,8 +18,6 @@ import EggstraWorkUpcomingStatus from './generators/EggstraWorkUpcomingStatus.mj
 import BlueskyClient from './clients/BlueskyClient.mjs';
 import ChallengeStatus from './generators/ChallengeStatus.mjs';
 import ThreadsClient from './clients/ThreadsClient.mjs';
-import S3Syncer from '../sync/S3Syncer.mjs';
-import { canSync } from '../sync/index.mjs';
 
 function defaultStatusGenerators() {
   return [
