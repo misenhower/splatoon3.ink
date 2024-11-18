@@ -38,7 +38,7 @@ export default class DataArchiver
   get canRun() {
     return process.env.AWS_S3_ENDPOINT
       && process.env.AWS_S3_REGION
-      && process.env.AWS_S3_BUCKET
+      && process.env.AWS_S3_ARCHIVE_BUCKET
       && process.env.AWS_ACCESS_KEY_ID
       && process.env.AWS_SECRET_ACCESS_KEY;
   }
@@ -88,7 +88,7 @@ export default class DataArchiver
 
   async uploadViaS3(file, destination) {
     return this.s3Client.send(new PutObjectCommand({
-      Bucket: process.env.AWS_S3_BUCKET,
+      Bucket: process.env.AWS_S3_ARCHIVE_BUCKET,
       Key: destination,
       Body: await fs.readFile(file),
       ACL: 'public-read',
