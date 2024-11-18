@@ -5,6 +5,8 @@ import CoopUpdater from './updaters/CoopUpdater.mjs';
 import FestivalUpdater from './updaters/FestivalUpdater.mjs';
 import XRankUpdater from './updaters/XRankUpdater.mjs';
 import StagesUpdater from './updaters/StagesUpdater.mjs';
+import S3Syncer from '../sync/S3Syncer.mjs';
+import { canSync } from '../sync/index.mjs';
 
 function updaters() {
   return [
@@ -48,6 +50,10 @@ export async function update(config = 'default') {
       console.error(e);
       Sentry.captureException(e);
     }
+  }
+
+  if (canSync()) {
+    await (new S3Syncer).upload();
   }
 
   console.info(`Done running ${config} updaters`);

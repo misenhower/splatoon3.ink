@@ -10,6 +10,7 @@ import BlueskyClient from './social/clients/BlueskyClient.mjs';
 import ThreadsClient from './social/clients/ThreadsClient.mjs';
 import { archiveData } from './data/DataArchiver.mjs';
 import { sentryInit } from './common/sentry.mjs';
+import { sync, syncUpload, syncDownload } from './sync/index.mjs';
 
 consoleStamp(console);
 dotenv.config();
@@ -26,6 +27,9 @@ const actions = {
   splatnet: update,
   warmCaches,
   dataArchive: archiveData,
+  sync,
+  syncUpload,
+  syncDownload,
 };
 
 const command = process.argv[2];

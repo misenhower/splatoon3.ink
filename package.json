@@ -19,7 +19,10 @@
     "splatnet": "node app/index.mjs splatnet default",
     "splatnet:all": "node app/index.mjs splatnet all",
     "warmCaches": "node app/index.mjs warmCaches",
-    "data:archive": "node app/index.mjs dataArchive"
+    "data:archive": "node app/index.mjs dataArchive",
+    "sync": "node app/index.mjs sync",
+    "sync:upload": "node app/index.mjs syncUpload",
+    "sync:download": "node app/index.mjs syncDownload"
   },
   "dependencies": {
     "@atproto/api": "^0.11.2",
@@ -40,6 +43,7 @@
     "nxapi": "^1.4.0",
     "pinia": "^2.0.22",
     "puppeteer-core": "^23.8.0",
+    "s3-sync-client": "^4.3.1",
     "sharp": "^0.32.0",
     "threads-api": "^1.4.0",
     "twitter-api-v2": "^1.12.7",
