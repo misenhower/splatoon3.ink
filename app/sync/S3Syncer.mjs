@@ -67,6 +67,7 @@ export default class S3Syncer
       { exclude: () => true }, // Exclude everything by default
       { include: (key) => key.startsWith('assets/splatnet/') },
       { include: (key) => key.startsWith('data/') },
+      { exclude: (key) => key.startsWith('data/archive/') },
       { include: (key) => key.startsWith('status-screenshots/') },
     ];
   }
