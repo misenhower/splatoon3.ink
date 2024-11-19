@@ -66,6 +66,10 @@ export default class ImageProcessor
     try {
       let result = await fetch(url);
 
+      if (!result.ok) {
+        throw new Error(`Invalid image response code: ${result.status}`);
+      }
+
       await mkdirp(path.dirname(this.localPath(destination)));
       await fs.writeFile(this.localPath(destination), result.body);
     } catch (e) {
