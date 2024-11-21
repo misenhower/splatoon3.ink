@@ -70,7 +70,6 @@ export default class DataUpdater
 
   async updateIfNeeded() {
     if (!(await this.shouldUpdate())) {
-      this.console.info('No need to update data');
       return;
     }
 
