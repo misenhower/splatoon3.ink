@@ -79,7 +79,7 @@ export default class FestivalUpdater extends DataUpdater
     // Get the detailed data for each Splatfest
     // (unless we're getting localization-specific data)
     if (locale === this.defaultLocale) {
-      for (let node of result.data.festRecords.nodes) {
+      await Promise.all(result.data.festRecords.nodes.map(async node => {
         let detailResult = await this.getFestivalDetails(node);
 
         Object.assign(node, detailResult.data.fest);
@@ -93,7 +93,7 @@ export default class FestivalUpdater extends DataUpdater
             this.console.error(e);
           }
         }
-      }
+      }));
     }
 
     return result;

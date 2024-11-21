@@ -43,7 +43,7 @@ export default class FestivalRankingUpdater extends DataUpdater
   async getData(locale) {
     const data = await this.splatnet(locale).getFestRankingData(this.festID);
 
-    for (const team of data.data.fest.teams) {
+    await Promise.all(data.data.fest.teams.map(async (team) => {
       let pageInfo = team.result?.rankingHolders?.pageInfo;
 
       while (pageInfo?.hasNextPage) {
@@ -62,7 +62,7 @@ export default class FestivalRankingUpdater extends DataUpdater
 
         pageInfo = page.data.node.result.rankingHolders.pageInfo;
       }
-    }
+    }));
 
     return data;
   }
