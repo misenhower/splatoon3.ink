@@ -41,6 +41,8 @@
     "masto": "^6.7.0",
     "mkdirp": "^1.0.4",
     "nxapi": "^1.4.0",
+    "p-filter": "^4.1.0",
+    "p-limit": "^6.1.0",
     "p-queue": "^8.0.1",
     "pinia": "^2.0.22",
     "puppeteer-core": "^23.8.0",

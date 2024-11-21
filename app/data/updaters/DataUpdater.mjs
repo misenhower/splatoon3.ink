@@ -4,6 +4,7 @@ import { Console } from 'node:console';
 import mkdirp from 'mkdirp';
 import jsonpath from 'jsonpath';
 import ical from 'ical-generator';
+import pFilter from 'p-filter';
 import prefixedConsole from '../../common/prefixedConsole.mjs';
 import SplatNet3Client from '../../splatnet/SplatNet3Client.mjs';
 import ImageProcessor from '../ImageProcessor.mjs';
@@ -11,7 +12,6 @@ import NsoClient from '../../splatnet/NsoClient.mjs';
 import { locales, regionalLocales, defaultLocale } from '../../../src/common/i18n.mjs';
 import { LocalizationProcessor } from '../LocalizationProcessor.mjs';
 import { deriveId, getDateParts, getTopOfCurrentHour } from '../../common/util.mjs';
-
 export default class DataUpdater
 {
   name = null;
@@ -135,16 +135,18 @@ export default class DataUpdater
     }
 
     // Retrieve data for missing languages
-    for (let locale of this.locales.filter(l => l !== initialLocale)) {
-      processor = new LocalizationProcessor(locale, this.localizations);
+    let processors = this.locales.filter(l => l !== initialLocale)
+      .map(l => new LocalizationProcessor(l, this.localizations));
+    let missing = await pFilter(processors, p => p.hasMissingLocalizations(data));
 
-      if (await processor.hasMissingLocalizations(data)) {
-        this.console.info(`Retrieving localized data for ${locale.code}`);
-
-        let regionalData = await this.getData(locale);
+    if (missing.length > 0) {
+      await Promise.all(missing.map(async (processor) => {
+        let regionalData = await this.getData(processor.locale);
         this.deriveIds(regionalData);
         await processor.updateLocalizations(regionalData);
-      }
+
+        this.console.info(`Retrieved localized data for: ${processor.locale.code}`);
+      }));
     }
   }
 
