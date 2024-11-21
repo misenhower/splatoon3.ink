@@ -1,12 +1,12 @@
 import fs from 'fs/promises';
 import path from 'path';
 import mkdirp from 'mkdirp';
-import pQueue from 'p-queue';
+import PQueue from 'p-queue';
 import prefixedConsole from '../common/prefixedConsole.mjs';
 import { normalizeSplatnetResourcePath } from '../common/util.mjs';
 import { exists } from '../common/fs.mjs';
 
-const queue = new pQueue({ concurrency: 4 });
+const queue = new PQueue({ concurrency: 4 });
 
 export default class ImageProcessor
 {
