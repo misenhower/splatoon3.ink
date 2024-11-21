@@ -12,7 +12,9 @@ export default class S3Syncer
       this.syncClient.sync(this.publicBucket, `${this.localPath}/dist`, {
         filters: this.filters,
       }),
-      this.syncClient.sync(this.privateBucket, `${this.localPath}/storage`),
+      this.syncClient.sync(this.privateBucket, `${this.localPath}/storage`, {
+        filters: this.privateFilters
+      }),
     ]);
   }
 
@@ -30,7 +32,9 @@ export default class S3Syncer
             : undefined,
         }),
       }),
-      this.syncClient.sync(`${this.localPath}/storage`, this.privateBucket),
+      this.syncClient.sync(`${this.localPath}/storage`, this.privateBucket, {
+        filters: this.privateFilters,
+      }),
     ]);
   }
 
@@ -69,6 +73,12 @@ export default class S3Syncer
       { include: (key) => key.startsWith('data/') },
       { exclude: (key) => key.startsWith('data/archive/') },
       { include: (key) => key.startsWith('status-screenshots/') },
+    ];
+  }
+
+  get privateFilters() {
+    return [
+      { exclude: (key) => key.startsWith('archive/') },
     ];
   }
 
