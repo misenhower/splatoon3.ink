@@ -4,6 +4,9 @@ import mkdirp from 'mkdirp';
 import jsonpath from 'jsonpath';
 import get from 'lodash/get.js';
 import set from 'lodash/set.js';
+import pLimit from 'p-limit';
+
+const limit = pLimit(1);
 
 function makeArray(value) {
   return Array.isArray(value) ? value : [value];
@@ -55,6 +58,12 @@ export class LocalizationProcessor {
   }
 
   async updateLocalizations(data) {
+    // We're reading, modifying, and writing back to the same file,
+    // so we have to make sure the whole operation is atomic.
+    return limit(() => this._updateLocalizations(data));
+  }
+
+  async _updateLocalizations(data) {
     let localizations = await this.readData();
 
     for (let { path, value } of this.dataIterations(data)) {

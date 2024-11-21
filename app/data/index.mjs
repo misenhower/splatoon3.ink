@@ -43,7 +43,7 @@ export async function update(config = 'default') {
 
   let settings = configs[config];
 
-  for (let updater of updaters()) {
+  await Promise.all(updaters().map(async updater => {
     updater.settings = settings;
     try {
       await updater.updateIfNeeded();
@@ -51,7 +51,7 @@ export async function update(config = 'default') {
       console.error(e);
       Sentry.captureException(e);
     }
-  }
+  }));
 
   if (canSync()) {
     await ImageProcessor.onIdle();
