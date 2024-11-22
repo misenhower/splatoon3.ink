@@ -17,7 +17,7 @@ export default class EggstraWorkStatus extends StatusGenerator
   async getDataTime() {
     let schedule = await this.getActiveSchedule();
 
-    return Date.parse(schedule.startTime);
+    return Date.parse(schedule?.startTime);
   }
 
   async _getStatus() {

@@ -13,7 +13,7 @@ export default class ChallengeStatus extends StatusGenerator
 
     let schedule = useEventSchedulesStore().activeSchedule;
 
-    if (schedule.activeTimePeriod) {
+    if (schedule?.activeTimePeriod) {
       return schedule;
     }
   }
