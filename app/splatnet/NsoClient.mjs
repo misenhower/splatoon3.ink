@@ -1,8 +1,12 @@
 // eslint-disable-next-line import/no-unresolved
 import CoralApi from 'nxapi/coral';
 import { addUserAgent } from 'nxapi';
+import pLimit from 'p-limit';
 import ValueCache from '../common/ValueCache.mjs';
 import prefixedConsole from '../common/prefixedConsole.mjs';
+
+const coralLimit = pLimit(1);
+const webServiceLimit = pLimit(1);
 
 let _nxapiInitialized = false;
 
@@ -72,15 +76,17 @@ export default class NsoClient
   }
 
   async getCoralApi(useCache = true) {
-    let data = useCache
-      ? await this._getCoralCache().getData()
-      : null;
+    return coralLimit(async () => {
+      let data = useCache
+        ? await this._getCoralCache().getData()
+        : null;
 
-    if (!data) {
-      data = await this._createCoralSession();
-    }
+      if (!data) {
+        data = await this._createCoralSession();
+      }
 
-    return CoralApi.createWithSavedToken(data);
+      return CoralApi.createWithSavedToken(data);
+    });
   }
 
   async _createCoralSession() {
@@ -101,16 +107,18 @@ export default class NsoClient
   }
 
   async getWebServiceToken(id, useCache = true) {
-    let tokenCache = this._getWebServiceTokenCache(id);
-    let token = useCache
-      ? await tokenCache.getData()
-      : null;
+    return webServiceLimit(async () => {
+      let tokenCache = this._getWebServiceTokenCache(id);
+      let token = useCache
+        ? await tokenCache.getData()
+        : null;
 
-    if (!token) {
-      token = await this._createWebServiceToken(id, tokenCache);
-    }
+      if (!token) {
+        token = await this._createWebServiceToken(id, tokenCache);
+      }
 
-    return token.accessToken;
+      return token.accessToken;
+    });
   }
 
   async _createWebServiceToken(id, tokenCache) {
