@@ -13,7 +13,7 @@ export default class S3Syncer
         filters: this.filters,
       }),
       this.syncClient.sync(this.privateBucket, `${this.localPath}/storage`, {
-        filters: this.privateFilters
+        filters: this.privateFilters,
       }),
     ]);
   }
