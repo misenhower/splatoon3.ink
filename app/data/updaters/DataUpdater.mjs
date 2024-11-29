@@ -180,7 +180,9 @@ export default class DataUpdater
     await this.writeFile(this.getPath(this.filename), s);
 
     // Write a secondary file for archival
-    await this.writeFile(this.getArchivePath(this.filename), s);
+    if (process.env.ARCHIVE_DATA) {
+      await this.writeFile(this.getArchivePath(this.filename), s);
+    }
   }
 
   getPath(filename) {
