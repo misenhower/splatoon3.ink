@@ -37,13 +37,16 @@ export default class BlueskyClient extends Client
     let images = await Promise.all(
       status.media.map(async m => {
         // We have to convert the PNG to a JPG for Bluesky because of size limits
-        let jpeg = await sharp(m.file).jpeg().toBuffer();
+        let jpeg = sharp(m.file).jpeg();
+        let metadata = await jpeg.metadata();
+        let buffer = await jpeg.toBuffer();
 
-        let response = await this.#agent.uploadBlob(jpeg, { encoding: 'image/jpeg' });
+        let response = await this.#agent.uploadBlob(buffer, { encoding: 'image/jpeg' });
 
         return {
           image: response.data.blob,
           alt: m.altText || '',
+          aspectRatio: { width: metadata.width, height: metadata.height },
         };
       }),
     );
