@@ -1,8 +1,12 @@
 import fs from 'fs/promises';
+import pLimit from 'p-limit';
 import ValueCache from '../common/ValueCache.mjs';
 import prefixedConsole from '../common/prefixedConsole.mjs';
 
 export const SPLATNET3_WEB_SERVICE_ID = '4834290508791808';
+
+// Concurrent request limit
+const limit = pLimit(5);
 
 export default class SplatNet3Client
 {
@@ -108,17 +112,18 @@ export default class SplatNet3Client
 
   async getGraphQL(body = {}) {
     await this._maybeStartSession();
+    let webViewVersion = await this._webViewVersion();
 
-    let response = await fetch(this.baseUrl + '/api/graphql', {
+    let response = await limit(() => fetch(this.baseUrl + '/api/graphql', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${this.bulletToken.bulletToken}`,
-        'X-Web-View-Ver': await this._webViewVersion(),
+        'X-Web-View-Ver': webViewVersion,
         'Content-Type': 'application/json',
         'Accept-Language': this.acceptLanguage,
       },
       body: JSON.stringify(body),
-    });
+    }));
 
     if (!response.ok) {
       throw new Error(`Invalid GraphQL response code: ${response.status}`);

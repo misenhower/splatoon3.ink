@@ -1,9 +1,13 @@
 import fs from 'fs/promises';
 import path from 'path';
 import mkdirp from 'mkdirp';
+// eslint-disable-next-line import/no-unresolved
+import PQueue from 'p-queue';
 import prefixedConsole from '../common/prefixedConsole.mjs';
 import { normalizeSplatnetResourcePath } from '../common/util.mjs';
 import { exists } from '../common/fs.mjs';
+
+const queue = new PQueue({ concurrency: 4 });
 
 export default class ImageProcessor
 {
@@ -15,15 +19,25 @@ export default class ImageProcessor
     this.siteUrl = process.env.SITE_URL;
   }
 
-  async process(url) {
+  async process(url, defer = true) {
     // Normalize the path
     let destination = this.normalize(url);
 
     // Download the image if necessary
-    await this.maybeDownload(url, destination);
+    let job = () => this.maybeDownload(url, destination);
+    // defer ? queue.add(job) : await job();
+    if (defer) {
+      queue.add(job);
+    } else {
+      await job();
+    }
 
     // Return the new public URL
     return [destination, this.publicUrl(destination)];
+  }
+
+  static onIdle() {
+    return queue.onIdle();
   }
 
   normalize(url) {
@@ -52,6 +66,10 @@ export default class ImageProcessor
 
     try {
       let result = await fetch(url);
+
+      if (!result.ok) {
+        throw new Error(`Invalid image response code: ${result.status}`);
+      }
 
       await mkdirp(path.dirname(this.localPath(destination)));
       await fs.writeFile(this.localPath(destination), result.body);

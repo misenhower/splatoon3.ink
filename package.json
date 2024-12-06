@@ -8,6 +8,7 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --ignore-path .gitignore",
     "lint-fix": "npm run lint -- --fix",
     "cron": "node app/index.mjs cron",
+    "start": "npm run sync:download && npm run splatnet:quick && npm run social && npm run cron",
     "social": "node app/index.mjs social",
     "social:test": "node app/index.mjs socialTest",
     "social:test:image": "node app/index.mjs socialTestImage",
@@ -18,7 +19,10 @@
     "splatnet": "node app/index.mjs splatnet default",
     "splatnet:all": "node app/index.mjs splatnet all",
     "warmCaches": "node app/index.mjs warmCaches",
-    "data:archive": "node app/index.mjs dataArchive"
+    "data:archive": "node app/index.mjs dataArchive",
+    "sync": "node app/index.mjs sync",
+    "sync:upload": "node app/index.mjs syncUpload",
+    "sync:download": "node app/index.mjs syncDownload"
   },
   "dependencies": {
     "@atproto/api": "^0.11.2",
@@ -37,8 +41,12 @@
     "masto": "^6.7.0",
     "mkdirp": "^1.0.4",
     "nxapi": "^1.4.0",
+    "p-filter": "^4.1.0",
+    "p-limit": "^6.1.0",
+    "p-queue": "^8.0.1",
     "pinia": "^2.0.22",
-    "puppeteer": "^18.0.3",
+    "puppeteer-core": "^23.8.0",
+    "s3-sync-client": "^4.3.1",
     "sharp": "^0.32.0",
     "threads-api": "^1.4.0",
     "twitter-api-v2": "^1.12.7",

@@ -14,7 +14,7 @@
 
         <div v-if="time.isUpcoming(schedule.startTime)" class="inline-block">
           {{ $t('salmonrun.opens') }}
-          {{ $t('time.in', { time: formatDurationHoursFromNow(schedule.startTime, true) }) }}
+          {{ $t('time.in', { time: formatShortDurationFromNow(schedule.startTime, true, true) }) }}
         </div>
         <div v-else class="inline-block">
           {{ $t('time.remaining', { time: formatDurationHoursFromNow(schedule.endTime) }) }}
@@ -57,7 +57,7 @@ import KingSalmonid from './KingSalmonid.vue';
 import SalmonRunWeapons from './SalmonRunWeapons.vue';
 import { useTimeStore } from '@/stores/time.mjs';
 import StageImage from '@/components/StageImage.vue';
-import { formatDurationFromNow, formatDurationHoursFromNow } from '@/common/time';
+import { formatDurationFromNow, formatDurationHoursFromNow, formatShortDurationFromNow } from '@/common/time';
 
 defineProps({
   schedule: Object,

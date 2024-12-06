@@ -12,9 +12,6 @@ export default class StatusGeneratorManager
   /** @type {Client[]} */
   clients;
 
-  /** @type {ScreenshotHelper} */
-  screenshotHelper;
-
   console(generator = null, client = null) {
     let prefixes = ['Social', generator?.name, client?.name].filter(s => s);
     return prefixedConsole(...prefixes);
@@ -23,45 +20,82 @@ export default class StatusGeneratorManager
   constructor(generators = [], clients = []) {
     this.generators = generators;
     this.clients = clients;
-    this.screenshotHelper = new ScreenshotHelper;
   }
 
   async sendStatuses(force = false) {
-    for (let generator of this.generators) {
-      try {
-        await this.#generateAndSend(generator, force);
-      } catch (e) {
-        this.console(generator).error(`Error generating status: ${e}`);
-        Sentry.captureException(e);
-      }
-    }
+    let availableClients = await this.#getAvailableClients();
 
-    await this.screenshotHelper.close();
+    // Create screenshots in parallel (via Browserless)
+    let statusPromises = this.#getStatuses(availableClients, force);
+
+    // Process each client in parallel (while maintaining post order)
+    await this.#sendStatusesToClients(statusPromises, availableClients);
   }
 
-  async #generateAndSend(generator, force) {
-    let clientsToPost = [];
+  async #getAvailableClients() {
+    let clients = [];
 
     for (let client of this.clients) {
       if (!(await client.canSend())) {
-        this.console(generator, client).warn('Client cannot send (missing credentials)');
+        this.console(client).warn('Client cannot send (missing credentials)');
         continue;
       }
 
-      if (force || await generator.shouldPost(client)) {
-        clientsToPost.push(client);
+      clients.push(client);
+    }
+
+    return clients;
+  }
+
+  #getStatuses(availableClients, force) {
+    return this.generators.map(generator => this.#getStatus(availableClients, generator, force));
+  }
+
+  async #getStatus(availableClients, generator, force) {
+    let screenshotHelper = new ScreenshotHelper;
+    try {
+      let clients = [];
+
+      for (let client of availableClients) {
+        if (force || await generator.shouldPost(client)) {
+          clients.push(client);
+        }
+      }
+
+      if (clients.length === 0) {
+        this.console(generator).info('No status to post, skipping');
+
+        return null;
+      }
+
+      await screenshotHelper.open();
+      let status = await generator.getStatus(screenshotHelper);
+
+      return { generator, status, clients };
+    } catch (e) {
+      this.console(generator).error(`Error generating status: ${e}`);
+      Sentry.captureException(e);
+    } finally {
+      await screenshotHelper.close();
+    }
+
+    return null;
+  }
+
+  #sendStatusesToClients(statusPromises, availableClients) {
+    return Promise.allSettled(availableClients.map(client => this.#sendStatusesToClient(statusPromises, client)));
+  }
+
+  async #sendStatusesToClient(statusPromises, client) {
+    for (let promise of statusPromises) {
+      let statusDetails = await promise;
+
+      if (statusDetails && statusDetails.clients.includes(client)) {
+        let { generator, status } = statusDetails;
+
+        await this.#sendToClient(generator, status, client);
       }
     }
-
-    if (clientsToPost.length === 0) {
-      this.console(generator).info('No status to post, skipping');
-
-      return;
-    }
-
-    let status = await generator.getStatus(this.screenshotHelper);
-
-    await Promise.all(clientsToPost.map(client => this.#sendToClient(generator, status, client)));
   }
 
   async #sendToClient(generator, status, client) {

@@ -1,18 +1,9 @@
-version: "3.8"
+# See docker-compose.override.yml.* example files for dev/prod environments
 
 services:
-  app:
-    build: docker/app
-    init: true
+  browserless:
+    image: ghcr.io/browserless/chromium
     restart: unless-stopped
-    working_dir: /app
-    volumes:
-      - ./:/app
-    command: npm run cron
-
-  nginx:
-    image: nginx
-    restart: unless-stopped
-    volumes:
-      - ./docker/nginx/conf.d:/etc/nginx/conf.d:ro
-      - ./dist:/usr/share/nginx/html:ro
+    environment:
+      CONCURRENT: ${BROWSERLESS_CONCURRENT:-1}
+      QUEUED: ${BROWSERLESS_QUEUED:-100}

@@ -1,5 +1,5 @@
 import { URL } from 'url';
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
 import HttpServer from './HttpServer.mjs';
 
 const defaultViewport = {
@@ -36,12 +36,9 @@ export default class ScreenshotHelper
     this.#httpServer = new HttpServer;
     await this.#httpServer.open();
 
-    // Launch a new Chrome instance
-    this.#browser = await puppeteer.launch({
-      args: [
-        '--no-sandbox', // Allow running as root inside the Docker container
-      ],
-      // headless: false, // For testing
+    // Connect to Browserless
+    this.#browser = await puppeteer.connect({
+      browserWSEndpoint: process.env.BROWSERLESS_ENDPOINT,
     });
 
     // Create a new page and set the viewport
@@ -66,7 +63,8 @@ export default class ScreenshotHelper
     await this.applyViewport(options.viewport);
 
     // Navigate to the URL
-    let url = new URL(`http://localhost:${this.#httpServer.port}/screenshots/`);
+    let host = process.env.SCREENSHOT_HOST || 'localhost';
+    let url = new URL(`http://${host}:${this.#httpServer.port}/screenshots/`);
     url.hash = path;
 
     let params = {

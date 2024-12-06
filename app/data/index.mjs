@@ -1,10 +1,13 @@
 import * as Sentry from '@sentry/node';
+import S3Syncer from '../sync/S3Syncer.mjs';
+import { canSync } from '../sync/index.mjs';
 import GearUpdater from './updaters/GearUpdater.mjs';
 import StageScheduleUpdater from './updaters/StageScheduleUpdater.mjs';
 import CoopUpdater from './updaters/CoopUpdater.mjs';
 import FestivalUpdater from './updaters/FestivalUpdater.mjs';
 import XRankUpdater from './updaters/XRankUpdater.mjs';
 import StagesUpdater from './updaters/StagesUpdater.mjs';
+import ImageProcessor from './ImageProcessor.mjs';
 
 function updaters() {
   return [
@@ -40,7 +43,7 @@ export async function update(config = 'default') {
 
   let settings = configs[config];
 
-  for (let updater of updaters()) {
+  await Promise.all(updaters().map(async updater => {
     updater.settings = settings;
     try {
       await updater.updateIfNeeded();
@@ -48,6 +51,11 @@ export async function update(config = 'default') {
       console.error(e);
       Sentry.captureException(e);
     }
+  }));
+
+  if (canSync()) {
+    await ImageProcessor.onIdle();
+    await (new S3Syncer).upload();
   }
 
   console.info(`Done running ${config} updaters`);

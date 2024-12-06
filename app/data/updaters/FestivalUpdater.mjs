@@ -1,10 +1,13 @@
 import fs from 'fs/promises';
 import jsonpath from 'jsonpath';
+import pLimit from 'p-limit';
 import { getFestId } from '../../common/util.mjs';
 import ValueCache from '../../common/ValueCache.mjs';
 import { regionTokens } from '../../splatnet/NsoClient.mjs';
 import FestivalRankingUpdater from './FestivalRankingUpdater.mjs';
 import DataUpdater from './DataUpdater.mjs';
+
+const limit = pLimit(1);
 
 function generateFestUrl(id) {
   return process.env.DEBUG ?
@@ -79,7 +82,7 @@ export default class FestivalUpdater extends DataUpdater
     // Get the detailed data for each Splatfest
     // (unless we're getting localization-specific data)
     if (locale === this.defaultLocale) {
-      for (let node of result.data.festRecords.nodes) {
+      await Promise.all(result.data.festRecords.nodes.map(async node => {
         let detailResult = await this.getFestivalDetails(node);
 
         Object.assign(node, detailResult.data.fest);
@@ -93,7 +96,7 @@ export default class FestivalUpdater extends DataUpdater
             this.console.error(e);
           }
         }
-      }
+      }));
     }
 
     return result;
@@ -128,7 +131,11 @@ export default class FestivalUpdater extends DataUpdater
     return data;
   }
 
-  async formatDataForWrite(data) {
+  formatDataForWrite(data) {
+    return limit(() => this._formatDataForWrite(data));
+  }
+
+  async _formatDataForWrite(data) {
     // Combine this region's data with the other regions' data.
     let result = null;
     try {

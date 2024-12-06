@@ -46,10 +46,9 @@ export default class XRankUpdater extends DataUpdater
     let result = await this.splatnet(locale).getXRankingData(this.divisionKey);
     let seasons = this.getSeasons(result.data);
 
-    for (let season of seasons) {
-      this.deriveSeasonId(season);
-      await this.updateSeasonDetail(season);
-    }
+    seasons.forEach(s => this.deriveSeasonId(s));
+
+    await Promise.all(seasons.map(season => this.updateSeasonDetail(season)));
 
     return result;
   }
@@ -66,9 +65,9 @@ export default class XRankUpdater extends DataUpdater
   }
 
   async updateSeasonDetail(season) {
-    for (let type of this.splatnet().getXRankingDetailQueryTypes()) {
+    await Promise.all(this.splatnet().getXRankingDetailQueryTypes().map(type => {
       let updater = new XRankDetailUpdater(season.id, season.endTime, type);
-      await updater.updateIfNeeded();
-    }
+      return updater.updateIfNeeded();
+    }));
   }
 }

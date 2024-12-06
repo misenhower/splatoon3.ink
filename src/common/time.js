@@ -51,13 +51,18 @@ export function formatShortDuration(value) {
   const { t } = useI18n();
   let { negative, days, hours, minutes, seconds } = getDurationParts(value);
 
+  days = days && t('time.days', days);
+  hours = hours && t('time.hours', hours);
+  minutes = minutes && t('time.minutes', { n: minutes }, minutes);
+  seconds = t('time.seconds', { n: seconds }, seconds);
+
   if (days)
-    return t('time.days', { n: `${negative}${days}` }, days);
+    return hours ? `${negative}${days} ${hours}` : `${negative}${days}`;
   if (hours)
-    return t('time.hours', { n: `${negative}${hours}` }, hours);
+    return `${negative}${hours}`;
   if (minutes)
-    return t('time.minutes', { n: `${negative}${minutes}` }, minutes);
-  return t('time.seconds', { n: `${negative}${seconds}` }, seconds);
+    return `${negative}${minutes}`;
+  return `${negative}${seconds}`;
 }
 
 export function formatShortDurationFromNow(value) {
