@@ -5,14 +5,14 @@ import mime  from 'mime-types';
 
 export default class S3Syncer
 {
-  download() {
+  download(dist = true, storage = true) {
     this.log('Downloading files...');
 
     return Promise.all([
-      this.syncClient.sync(this.publicBucket, `${this.localPath}/dist`, {
+      dist && this.syncClient.sync(this.publicBucket, `${this.localPath}/dist`, {
         filters: this.filters,
       }),
-      this.syncClient.sync(this.privateBucket, `${this.localPath}/storage`, {
+      storage && this.syncClient.sync(this.privateBucket, `${this.localPath}/storage`, {
         filters: this.privateFilters,
       }),
     ]);

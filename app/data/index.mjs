@@ -43,6 +43,11 @@ export async function update(config = 'default') {
 
   let settings = configs[config];
 
+  // Download private files to get updated tokens if needed
+  if (canSync()) {
+    await (new S3Syncer).download(false);
+  }
+
   await Promise.all(updaters().map(async updater => {
     updater.settings = settings;
     try {
