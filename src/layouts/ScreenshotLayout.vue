@@ -15,16 +15,16 @@
               {{ props.header }}
             </div>
             <div>
-              <img src="@/assets/img/twitter-white.png" width="20" height="20" class="inline" />
-              @splatoon3ink
+              <img src="@/assets/img/bluesky-white.svg" width="15" height="15" class="inline" />
+              @splatoon3.ink
             </div>
-            <div>
+            <!-- <div>
               <img src="@/assets/img/fediverse-white.svg" width="14" height="14" class="inline m-[3px]" />
               @splatoon3ink@splatoon3.ink
-            </div>
-            <div>
+            </div> -->
+            <!-- <div>
               splatoon3.ink
-            </div>
+            </div> -->
           </div>
         </div>
         <!-- <div class="flex justify-end items-center mr-6">
