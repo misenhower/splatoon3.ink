@@ -3,7 +3,7 @@ import { canSync } from '../sync/index.mjs';
 import FileWriter from './clients/FileWriter.mjs';
 import ImageWriter from './clients/ImageWriter.mjs';
 import MastodonClient from './clients/MastodonClient.mjs';
-import TwitterClient from './clients/TwitterClient.mjs';
+// import TwitterClient from './clients/TwitterClient.mjs';
 import DailyDropGearStatus from './generators/DailyDropGearStatus.mjs';
 import RegularGearStatus from './generators/RegularGearStatus.mjs';
 // import SalmonRunGearStatus from './generators/SalmonRunGearStatus.mjs';
@@ -43,7 +43,7 @@ function defaultStatusGenerators() {
 
 function defaultClients() {
   return [
-    new TwitterClient,
+    // new TwitterClient,
     new MastodonClient,
     new BlueskyClient,
     new ThreadsClient,
