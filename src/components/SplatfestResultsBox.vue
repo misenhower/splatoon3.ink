@@ -1,5 +1,5 @@
 <template>
-  <ProductContainer class="pt-10 pb-4" bg="bg-camo-purple" :bg-style="`background-color: ${toRgba(winner.color)};`">
+  <ProductContainer v-if="winner" class="pt-10 pb-4" bg="bg-camo-purple" :bg-style="`background-color: ${toRgba(winner.color)};`">
     <div class="space-y-2">
       <div class="font-splatoon1 text-2xl lg:text-3xl text-shadow mx-2">
         {{ $t('festival.results.title') }}
@@ -89,7 +89,7 @@ const resultRows = computed(() => {
 });
 
 const winnerIndex = computed(() => props.festival.teams.findIndex(t => t.result.isWinner));
-const winner = computed(() => props.festival.teams[winnerIndex.value]);
+const winner = computed(() => winnerIndex.value >= 0 ? props.festival.teams[winnerIndex.value] : null);
 </script>
 
 <style scoped>
