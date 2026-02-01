@@ -4,6 +4,7 @@ import { addUserAgent } from 'nxapi';
 import pLimit from 'p-limit';
 import ValueCache from '../common/ValueCache.mjs';
 import prefixedConsole from '../common/prefixedConsole.mjs';
+import { calculateCacheExpiry } from '../common/util.mjs';
 
 const coralLimit = pLimit(1);
 const webServiceLimit = pLimit(1);
@@ -62,13 +63,6 @@ export default class NsoClient
     return `nso.${token}`;
   }
 
-  _calculateCacheExpiry(expiresIn) {
-    let expires = Date.now() + expiresIn * 1000;
-
-    // Expire 5min early to make sure we have time to execute requests
-    return expires - 5 * 60 * 1000;
-  }
-
   // Coral API
 
   _getCoralCache() {
@@ -93,7 +87,7 @@ export default class NsoClient
     this.console.info('Creating Coral session...');
     let { data } = await CoralApi.createWithSessionToken(this.nintendoToken);
 
-    let expires = this._calculateCacheExpiry(data.credential.expiresIn);
+    let expires = calculateCacheExpiry(data.credential.expiresIn);
     this.console.debug(`Caching Coral session until: ${expires}`);
     await this._getCoralCache().setData(data, expires);
 
@@ -127,7 +121,7 @@ export default class NsoClient
     this.console.info(`Creating web service token for ID ${id}...`);
     let { result } = await coral.getWebServiceToken(id);
 
-    let expires = this._calculateCacheExpiry(result.expiresIn);
+    let expires = calculateCacheExpiry(result.expiresIn);
     this.console.debug(`Caching web service token for ID ${id} until: ${expires}`);
     await tokenCache.setData(result, expires);
 

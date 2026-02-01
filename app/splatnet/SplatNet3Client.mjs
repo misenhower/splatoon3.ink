@@ -2,6 +2,7 @@ import fs from 'fs/promises';
 import pLimit from 'p-limit';
 import ValueCache from '../common/ValueCache.mjs';
 import prefixedConsole from '../common/prefixedConsole.mjs';
+import { calculateCacheExpiry } from '../common/util.mjs';
 
 export const SPLATNET3_WEB_SERVICE_ID = '4834290508791808';
 
@@ -22,13 +23,6 @@ export default class SplatNet3Client
 
   get hasSession() {
     return !!this.bulletToken;
-  }
-
-  _calculateCacheExpiry(expiresIn) {
-    let expires = Date.now() + expiresIn * 1000;
-
-    // Expire 5min early to make sure we have time to execute requests
-    return expires - 5 * 60 * 1000;
   }
 
   // Query hashes
@@ -100,7 +94,7 @@ export default class SplatNet3Client
     let bulletToken = await response.json();
 
     // We can assume the token expires after 7200 seconds
-    let expiry = this._calculateCacheExpiry(7200);
+    let expiry = calculateCacheExpiry(7200);
     await bulletTokenCache.setData(bulletToken, expiry);
 
     this.console.debug(`Caching bullet token until: ${expiry}`);
