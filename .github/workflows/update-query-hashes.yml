@@ -32,3 +32,4 @@ jobs:
         branch: update-query-hashes
         body: Update query hashes
         delete-branch: true
+        reviewers: misenhower
