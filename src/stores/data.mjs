@@ -15,7 +15,7 @@ function defineEndpointStore(id, endpoint, transform = null) {
         let response = await fetch(baseUrl + endpoint);
 
         if (!response.ok) {
-          console.error(response);
+          console.error(`Failed to fetch ${endpoint}: ${response.status} ${response.statusText}`);
 
           return;
         }
