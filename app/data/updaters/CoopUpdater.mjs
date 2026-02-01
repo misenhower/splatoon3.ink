@@ -22,7 +22,7 @@ export default class CoopUpdater extends DataUpdater
     },
   ];
 
-  getData(locale) {
+  async getData(locale) {
     return this.splatnet(locale).getCoopHistoryData();
   }
 }

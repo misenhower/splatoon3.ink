@@ -36,4 +36,5 @@ export const useCoopGearStore = defineStore('coopGear', () => {
 
 if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useGearStore, import.meta.hot));
+  import.meta.hot.accept(acceptHMRUpdate(useCoopGearStore, import.meta.hot));
 }

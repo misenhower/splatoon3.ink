@@ -41,7 +41,7 @@ export default class GearUpdater extends DataUpdater
     },
   ];
 
-  getData(locale) {
+  async getData(locale) {
     return this.splatnet(locale).getGesotownData();
   }
 }
