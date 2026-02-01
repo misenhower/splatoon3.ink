@@ -82,3 +82,15 @@ export function getXRankSeasonId(id) {
     ? `${parts[1]}-${parts[2]}`
     : id;
 }
+
+/**
+ * Calculate cache expiry timestamp with 5-minute buffer.
+ * @param {number} expiresIn - Seconds until expiry
+ * @returns {number} Timestamp to expire the cache (5 minutes early)
+ */
+export function calculateCacheExpiry(expiresIn) {
+  let expires = Date.now() + expiresIn * 1000;
+
+  // Expire 5min early to make sure we have time to execute requests
+  return expires - 5 * 60 * 1000;
+}

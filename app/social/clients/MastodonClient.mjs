@@ -23,35 +23,45 @@ export default class MastodonClient extends Client
   }
 
   async send(status, generator) {
-    // Mastodon API
-    const masto = await createRestAPIClient({
-      url: this.#url,
-      accessToken: this.#accessToken,
-      disableVersionCheck: true,
-      disableExperimentalWarning: true,
-    });
+    if (!status.media?.length) {
+      console.error(`[${this.name}] No media provided for ${generator.key}`);
+      return;
+    }
 
-    // Upload images
-    let mediaIds = await Promise.all(
-      status.media.map(async m => {
-        let request = { file: new Blob([m.file]) };
-        if (m.altText) {
-          request.description = m.altText;
-        }
+    try {
+      // Mastodon API
+      const masto = await createRestAPIClient({
+        url: this.#url,
+        accessToken: this.#accessToken,
+        disableVersionCheck: true,
+        disableExperimentalWarning: true,
+      });
 
-        let attachment = await masto.v2.media.create(request);
+      // Upload images
+      let mediaIds = await Promise.all(
+        status.media.map(async m => {
+          let request = { file: new Blob([m.file]) };
+          if (m.altText) {
+            request.description = m.altText;
+          }
 
-        return attachment.id;
-      }),
-    );
+          let attachment = await masto.v2.media.create(request);
 
-    // Send status
-    await masto.v1.statuses.create({
-      status: status.status,
-      spoilerText: status.contentWrapper,
-      sensitive: !!status.contentWrapper, // Without the sensitive property the image is still visible
-      mediaIds,
-      visibility: this.#visibility,
-    });
+          return attachment.id;
+        }),
+      );
+
+      // Send status
+      await masto.v1.statuses.create({
+        status: status.status,
+        spoilerText: status.contentWrapper,
+        sensitive: !!status.contentWrapper, // Without the sensitive property the image is still visible
+        mediaIds,
+        visibility: this.#visibility,
+      });
+    } catch (error) {
+      console.error(`[${this.name}] Failed to post ${generator.key}:`, error.message);
+      throw error;
+    }
   }
 }

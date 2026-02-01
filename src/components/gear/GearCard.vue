@@ -54,23 +54,8 @@
       </div>
     </div>
 
-    <!-- Time left/Order button -->
-    <div class="absolute top-1 left-6 space-y-2">
-      <div v-if="false" class="hidden mobile:block -ml-4">
-        <a :href="shopUrl">
-          <SquidTape
-            class="font-splatoon2 text-sm text-black rounded-sm -rotate-3"
-            bg="bg-splatoon-yellow"
-            squid-bg="bg-black"
-            border="border border-black"
-          >
-            <div class="px-1">
-              {{ $t('gear.order') }}
-            </div>
-          </SquidTape>
-        </a>
-      </div>
-
+    <!-- Time left -->
+    <div class="absolute top-1 left-6">
       <div class="inline-block text-xs bg-zinc-200 bg-opacity-30 rounded px-1 py-px font-semibold">
         {{ $t('time.left', { time: formatDurationHoursFromNow(props.gear.saleEndTime) }) }}
       </div>
@@ -80,9 +65,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import SquidTape from '@/components/SquidTape.vue';
 import { formatDurationHoursFromNow } from '@/common/time';
-import { getGesotownGearUrl } from '@/common/links';
 
 const props = defineProps({
   gear: Object,
@@ -90,8 +73,6 @@ const props = defineProps({
 
 const price = computed(() => props.gear.price);
 const gear = computed(() => props.gear.gear);
-
-const shopUrl = computed(() => getGesotownGearUrl(props.gear.id));
 </script>
 
 <style scoped>

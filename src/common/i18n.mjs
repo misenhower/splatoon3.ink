@@ -56,6 +56,7 @@ const datetimeFormats = {
 };
 
 let i18n = null;
+let storageListenerAdded = false;
 
 export function initializeI18n() {
   if (!i18n) {
@@ -69,8 +70,11 @@ export function initializeI18n() {
       },
     });
 
-    // Listen for local storage changes
-    window.addEventListener('storage', reload);
+    // Listen for local storage changes (guard prevents duplicate listeners in HMR)
+    if (!storageListenerAdded) {
+      window.addEventListener('storage', reload);
+      storageListenerAdded = true;
+    }
     reload();
   }
 
@@ -122,7 +126,7 @@ async function loadLocale() {
   let response = await fetch(`/data/locale/${locale}.json`);
 
   if (!response.ok) {
-    console.error(response);
+    console.error(`Failed to load locale ${locale}: ${response.status} ${response.statusText}`);
 
     return;
   }

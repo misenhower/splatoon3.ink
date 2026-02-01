@@ -29,11 +29,21 @@ export default class ThreadsClient extends Client {
   }
 
   async send(status, generator) {
-    let jpeg = await sharp(status.media[0].file).jpeg().toBuffer();
+    if (!status.media?.length) {
+      console.error(`[${this.name}] No media provided for ${generator.key}`);
+      return;
+    }
 
-    await this.#api.publish({
-      text: status.status,
-      image: { type: 'image/jpeg', data: jpeg },
-    });
+    try {
+      let jpeg = await sharp(status.media[0].file).jpeg().toBuffer();
+
+      await this.#api.publish({
+        text: status.status,
+        image: { type: 'image/jpeg', data: jpeg },
+      });
+    } catch (error) {
+      console.error(`[${this.name}] Failed to post ${generator.key}:`, error.message);
+      throw error;
+    }
   }
 }

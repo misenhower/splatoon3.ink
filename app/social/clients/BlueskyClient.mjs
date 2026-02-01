@@ -31,40 +31,50 @@ export default class BlueskyClient extends Client
   }
 
   async send(status, generator) {
-    await this.login();
+    if (!status.media?.length) {
+      console.error(`[${this.name}] No media provided for ${generator.key}`);
+      return;
+    }
 
-    // Upload images
-    let images = await Promise.all(
-      status.media.map(async m => {
-        // We have to convert the PNG to a JPG for Bluesky because of size limits
-        let jpeg = sharp(m.file).jpeg();
-        let metadata = await jpeg.metadata();
-        let buffer = await jpeg.toBuffer();
+    try {
+      await this.login();
 
-        let response = await this.#agent.uploadBlob(buffer, { encoding: 'image/jpeg' });
+      // Upload images
+      let images = await Promise.all(
+        status.media.map(async m => {
+          // We have to convert the PNG to a JPG for Bluesky because of size limits
+          let jpeg = sharp(m.file).jpeg();
+          let metadata = await jpeg.metadata();
+          let buffer = await jpeg.toBuffer();
 
-        return {
-          image: response.data.blob,
-          alt: m.altText || '',
-          aspectRatio: { width: metadata.width, height: metadata.height },
-        };
-      }),
-    );
+          let response = await this.#agent.uploadBlob(buffer, { encoding: 'image/jpeg' });
 
-    // Send status
-    const rt = new RichText({
-      text: status.status,
-    });
+          return {
+            image: response.data.blob,
+            alt: m.altText || '',
+            aspectRatio: { width: metadata.width, height: metadata.height },
+          };
+        }),
+      );
 
-    await rt.detectFacets(this.#agent);
+      // Send status
+      const rt = new RichText({
+        text: status.status,
+      });
 
-    await this.#agent.post({
-      text: rt.text,
-      facets: rt.facets,
-      embed: {
-        images,
-        $type: 'app.bsky.embed.images',
-      },
-    });
+      await rt.detectFacets(this.#agent);
+
+      await this.#agent.post({
+        text: rt.text,
+        facets: rt.facets,
+        embed: {
+          images,
+          $type: 'app.bsky.embed.images',
+        },
+      });
+    } catch (error) {
+      console.error(`[${this.name}] Failed to post ${generator.key}:`, error.message);
+      throw error;
+    }
   }
 }

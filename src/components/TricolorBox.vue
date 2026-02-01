@@ -44,7 +44,7 @@
         </div>
 
         <div v-if="tricolor?.tricolorStages">
-          <div v-if="tricolor?.tricolorStages.length == 1" class="flex space-x-1">
+          <div v-if="tricolor?.tricolorStages.length === 1" class="flex space-x-1">
             <StageImage
               img-class="rounded-xl"
               :stage="tricolor?.tricolorStages?.[0]"
