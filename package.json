@@ -51,7 +51,7 @@
     "threads-api": "^1.4.0",
     "twitter-api-v2": "^1.29.0",
     "vue": "^3.5.28",
-    "vue-i18n": "^9.2.2",
+    "vue-i18n": "^11.2.8",
     "vue-router": "^4.6.4"
   },
   "devDependencies": {
