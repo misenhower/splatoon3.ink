@@ -27,8 +27,8 @@
   "dependencies": {
     "@atproto/api": "^0.11.2",
     "@aws-sdk/client-s3": "^3.341.0",
-    "@headlessui/vue": "^1.7.3",
-    "@heroicons/vue": "^2.0.12",
+    "@headlessui/vue": "^1.7.23",
+    "@heroicons/vue": "^2.2.0",
     "@intlify/vite-plugin-vue-i18n": "^6.0.3",
     "@sentry/node": "^7.61.0",
     "console-stamp": "^3.0.6",
@@ -44,15 +44,15 @@
     "p-filter": "^4.1.0",
     "p-limit": "^6.1.0",
     "p-queue": "^8.0.1",
-    "pinia": "^2.0.22",
+    "pinia": "^2.3.1",
     "puppeteer-core": "^23.8.0",
     "s3-sync-client": "^4.3.1",
     "sharp": "^0.32.0",
     "threads-api": "^1.4.0",
     "twitter-api-v2": "^1.12.7",
-    "vue": "^3.2.39",
+    "vue": "^3.5.28",
     "vue-i18n": "^9.2.2",
-    "vue-router": "^4.1.5"
+    "vue-router": "^4.6.4"
   },
   "devDependencies": {
     "@dword-design/eslint-plugin-import-alias": "^5.0.0",
