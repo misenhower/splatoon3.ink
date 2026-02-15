@@ -35,7 +35,7 @@
     "cron": "^2.1.0",
     "dotenv": "^16.0.2",
     "ical-generator": "^3.6.0",
-    "jsonpath-plus": "^10.3.0",
+    "jsonpath": "^1.2.1",
     "lodash": "^4.17.21",
     "masto": "^7.10.1",
     "nxapi": "^1.6.1-next.170",

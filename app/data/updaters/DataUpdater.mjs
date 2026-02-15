@@ -10,7 +10,8 @@ import ImageProcessor from '../ImageProcessor.mjs';
 import NsoClient from '../../splatnet/NsoClient.mjs';
 import { locales, regionalLocales, defaultLocale } from '../../../src/common/i18n.mjs';
 import { LocalizationProcessor } from '../LocalizationProcessor.mjs';
-import { deriveId, getDateParts, getTopOfCurrentHour, jsonpathQuery, jsonpathApply } from '../../common/util.mjs';
+import jsonpath from 'jsonpath';
+import { deriveId, getDateParts, getTopOfCurrentHour } from '../../common/util.mjs';
 export default class DataUpdater
 {
   name = null;
@@ -119,7 +120,7 @@ export default class DataUpdater
 
   deriveIds(data) {
     for (let expression of this.derivedIds) {
-      jsonpathApply(data, expression, deriveId);
+      jsonpath.apply(data, expression, deriveId);
     }
   }
 
@@ -156,14 +157,14 @@ export default class DataUpdater
       // This JSONPath library is completely synchronous, so we have to
       // build a mapping here after transforming all URLs.
       let mapping = {};
-      for (let url of jsonpathQuery(data, expression)) {
+      for (let url of jsonpath.query(data, expression)) {
         let [path, publicUrl] = await this.imageProcessor.process(url);
         mapping[url] = publicUrl;
         images[publicUrl] = path;
       }
 
       // Now apply the URL transformations
-      jsonpathApply(data, expression, url => mapping[url]);
+      jsonpath.apply(data, expression, url => mapping[url]);
     }
 
     await ImageProcessor.onIdle();

@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { mkdirp } from '../common/fs.mjs';
-import { jsonpathQuery } from '../common/util.mjs';
+import jsonpath from 'jsonpath';
 import get from 'lodash/get.js';
 import set from 'lodash/set.js';
 import pLimit from 'p-limit';
@@ -41,7 +41,7 @@ export class LocalizationProcessor {
 
   *dataIterations(data) {
     for (let ruleset of this.rulesetIterations()) {
-      for (let node of jsonpathQuery(data, ruleset.node)) {
+      for (let node of jsonpath.query(data, ruleset.node)) {
         if (!node) continue;
 
         let id = get(node, ruleset.id);
