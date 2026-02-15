@@ -7,6 +7,8 @@
     "preview": "vite preview --port 5050",
     "lint": "eslint .",
     "lint-fix": "npm run lint -- --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "cron": "node app/index.mjs cron",
     "start": "npm run sync:download && npm run splatnet:quick && npm run social && npm run cron",
     "social": "node app/index.mjs social",
@@ -65,6 +67,7 @@
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3",
     "vite": "^7.3.1",
+    "vitest": "^4.0.18",
     "vue-eslint-parser": "^10.4.0"
   }
 }
