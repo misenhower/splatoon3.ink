@@ -1,7 +1,7 @@
 import { useI18n } from 'vue-i18n';
 import { useTimeStore } from '@/stores/time';
 
-function getDurationParts(value) {
+export function getDurationParts(value) {
   let negative = (value < 0) ? '-' : '';
   value = Math.abs(value);
 
