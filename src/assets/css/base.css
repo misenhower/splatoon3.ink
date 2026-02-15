@@ -1,8 +1,51 @@
-@import url('./fonts.css');
+@import url('@/assets/css/fonts.css');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@custom-variant mobile (&:is(body.is-mobile *));
+@custom-variant ss (&:is(body.for-screenshots *));
+
+@theme {
+  --color-splatoon-blue: #603bff;
+  --color-splatoon-purple: #af50ff;
+  --color-splatoon-yellow: #eaff3d;
+  --color-splatoon-green: #6af7ce;
+  --color-splatoon-orange: #ff9750;
+  --color-splatoon-red: #ff505e;
+  --color-splatoon-brown: #7f413f;
+
+  --color-splatoon-battle-regular: #19d719;
+  --color-splatoon-battle-ranked: #f54910;
+  --color-splatoon-battle-xmatch: #0fdb9b;
+  --color-splatoon-battle-league: #f02d7d;
+
+  --color-splatoon-salmonRun: #ff5600;
+  --color-splatoon-bigRun: #b322ff;
+  --color-splatoon-eggstraWork: #be8800;
+
+  --font-splatoon1: var(--font-family-s1);
+  --font-splatoon2: var(--font-family-s2);
+
+  --drop-shadow-ruleIcon: 1px 1px 0 rgb(0, 0, 0);
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
 
 body {
   @apply text-zinc-100;

@@ -12,20 +12,20 @@
         {{ $d(schedule.endTime, 'dateTimeShort') }}
       </div>
 
-      <div class="hidden sm:block text-xs bg-zinc-100 bg-opacity-80 rounded text-black px-2">
+      <div class="hidden sm:block text-xs bg-zinc-100/80 rounded-sm text-black px-2">
         {{ $t('time.in', { time: formatDurationFromNow(schedule.startTime, true) }) }}
       </div>
     </div>
 
     <div class="flex items-center space-x-2">
-      <StageImage class="w-1/5" img-class="rounded" :stage="schedule.settings.coopStage" hide-label />
+      <StageImage class="w-1/5" img-class="rounded-sm" :stage="schedule.settings.coopStage" hide-label />
 
       <div class="flex-1 text-sm text-zinc-300 text-shadow">
         <KingSalmonid :schedule="schedule" class="inline-block align-middle drop-shadow-ruleIcon" size="w-5" />
 
         {{ $t(`splatnet.stages.${schedule.settings.coopStage.id}.name`, schedule.settings.coopStage.name) }}
 
-        <span v-if="schedule.isBigRun" class="text-xs inline-block bg-splatoon-bigRun bg-opacity-80 text-white rounded px-2">
+        <span v-if="schedule.isBigRun" class="text-xs inline-block bg-splatoon-bigRun/80 text-white rounded-sm px-2">
           {{ $t('salmonrun.bigrun') }}
         </span>
       </div>

@@ -96,6 +96,8 @@ const displaySocials = computed(() => {
 </script>
 
 <style scoped>
+@reference "@/assets/css/base.css";
+
 .bg-octoarrow {
   background-image: url('@/assets/img/camo-transparent-bg.png');
   background-size: 800px;

@@ -6,12 +6,12 @@
         <div class="font-splatoon1 lg:text-2xl xl:text-3xl text-shadow">
           {{ $t(type.name) }}
         </div>
-        <div v-if="type.badge" class="font-splatoon2 text-xs lg:text-sm xl:text-base bg-splatoon-blue rounded px-1 drop-shadow">
+        <div v-if="type.badge" class="font-splatoon2 text-xs lg:text-sm xl:text-base bg-splatoon-blue rounded-sm px-1 drop-shadow-sm">
           {{ $t(type.badge) }}
         </div>
       </div>
 
-      <div class="bg-zinc-900 bg-opacity-70 backdrop-blur-sm pt-2 pb-6 px-2 mx-1 rounded-lg space-y-2">
+      <div class="bg-zinc-900/70 backdrop-blur-xs pt-2 pb-6 px-2 mx-1 rounded-lg space-y-2">
         <div class="flex items-center justify-between font-splatoon2">
           <div class="flex items-center space-x-2 text-sm lg:text-lg">
             <template v-if="store.activeSchedule && store.activeSchedule.settings">
@@ -24,13 +24,13 @@
             </template>
 
             <template v-else>
-              <div class="w-32 bg-zinc-600 rounded animate-pulse">
+              <div class="w-32 bg-zinc-600 rounded-sm animate-pulse">
 &nbsp;
               </div>
             </template>
           </div>
 
-          <div v-if="store.activeSchedule" class="justify-end text-xs lg:text-sm bg-zinc-100 bg-opacity-80 rounded text-black px-2">
+          <div v-if="store.activeSchedule" class="justify-end text-xs lg:text-sm bg-zinc-100/80 rounded-sm text-black px-2">
             {{ $d(store.activeSchedule.startTime, 'time') }}
             &ndash;
             {{ $d(store.activeSchedule.endTime, 'time') }}
@@ -52,7 +52,7 @@
       </div>
 
       <div v-if="nextSchedule && nextSchedule.settings" class="mx-2 space-y-2">
-        <SquidTape class="font-splatoon2 text-sm drop-shadow -rotate-6 -mx-2">
+        <SquidTape class="font-splatoon2 text-sm drop-shadow-sm -rotate-6 -mx-2">
           <div class="px-2">
             {{ $t('times.next') }}
           </div>
@@ -62,8 +62,8 @@
       </div>
 
       <div class="text-center pt-2">
-        <button class="bg-zinc-300 bg-opacity-50 hover:bg-opacity-70 px-2 py-1 rounded-full font-splatoon2 text-shadow" @click="open = true">
-          <span class="inline-block rotate-[25deg] text-red">&#57445;</span>
+        <button class="bg-zinc-300/50 hover:bg-zinc-300/70 px-2 py-1 rounded-full font-splatoon2 text-shadow" @click="open = true">
+          <span class="inline-block rotate-25 text-red">&#57445;</span>
           {{ $t('schedule.all-upcoming') }}
         </button>
       </div>

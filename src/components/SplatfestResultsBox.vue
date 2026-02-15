@@ -5,11 +5,11 @@
         {{ $t('festival.results.title') }}
       </div>
 
-      <div class="mx-2 px-1 bg-zinc-700 bg-opacity-50 backdrop-blur-sm rounded-lg">
+      <div class="mx-2 px-1 bg-zinc-700/50 backdrop-blur-xs rounded-lg">
         <div class="flex justify-center md:justify-center py-2">
           <div class="w-36 sm:mx-4 lg:-mx-1" />
           <template v-for="team in festival.teams" :key="team.id">
-            <div class="w-12 mx-2 sm:w-20 flex justify-center py-1 rounded" :style="`background-color: ${toRgba(team.color)};`">
+            <div class="w-12 mx-2 sm:w-20 flex justify-center py-1 rounded-sm" :style="`background-color: ${toRgba(team.color)};`">
               <img :src="team.image.url" class="w-6 h-6" />
             </div>
           </template>
@@ -21,7 +21,7 @@
               {{ $t(row.title) }}
             </div>
 
-            <div class="flex bg-zinc-700 bg-opacity-70 rounded-full py-1">
+            <div class="flex bg-zinc-700/70 rounded-full py-1">
               <div v-for="(result, i) in row.results" :key="i" class="w-16 lg:w-20 sm:mx-2">
                 <div :class="result.isTop ? 'text-splatoon-yellow' : 'text-zinc-300'">
                   {{ (result.ratio * 100).toFixed(2) }}%

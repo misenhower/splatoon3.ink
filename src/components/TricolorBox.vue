@@ -6,12 +6,12 @@
         <div class="font-splatoon1 lg:text-2xl xl:text-3xl text-shadow">
           {{ $t(type.name) }}
         </div>
-        <div v-if="type.badge" class="font-splatoon2 text-xs lg:text-sm xl:text-base bg-splatoon-blue rounded px-1 drop-shadow">
+        <div v-if="type.badge" class="font-splatoon2 text-xs lg:text-sm xl:text-base bg-splatoon-blue rounded-sm px-1 drop-shadow-sm">
           {{ $t(type.badge) }}
         </div>
       </div>
 
-      <div class="bg-zinc-900 bg-opacity-70 backdrop-blur-sm pt-2 pb-6 px-2 mx-1 rounded-lg space-y-2">
+      <div class="bg-zinc-900/70 backdrop-blur-xs pt-2 pb-6 px-2 mx-1 rounded-lg space-y-2">
         <div class="flex items-center justify-between font-splatoon2">
           <div class="flex items-center space-x-2 text-sm lg:text-lg">
             <div>
@@ -27,7 +27,7 @@
             </div>
           </div>
 
-          <div v-if="tricolor.startTime && tricolor.endTime" class="justify-end text-xs lg:text-sm bg-zinc-100 bg-opacity-80 rounded text-black px-2">
+          <div v-if="tricolor.startTime && tricolor.endTime" class="justify-end text-xs lg:text-sm bg-zinc-100/80 rounded-sm text-black px-2">
             {{ $d(tricolor.startTime, 'dateTimeShort') }}
             &ndash;
             {{ $d(tricolor.endTime, 'dateTimeShort') }}

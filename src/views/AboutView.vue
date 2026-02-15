@@ -98,6 +98,8 @@ import ProductContainer from '@/components/ProductContainer.vue';
 </script>
 
 <style scoped>
+@reference "@/assets/css/base.css";
+
 .bg-octoarrow {
   background-image: url('@/assets/img/octoarrow-transparent.png');
   background-size: 200px;

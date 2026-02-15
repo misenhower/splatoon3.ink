@@ -1,7 +1,7 @@
 <template>
   <MainLayout :title="$t('events.title')">
     <div class="grow flex items-center justify-center">
-      <div class="mx-4 md:mx-12 max-w-screen-2xl w-full my-6">
+      <div class="mx-4 md:mx-12 max-w-(--breakpoint-2xl) w-full my-6">
         <div v-if="store.currentSchedules?.length" class="flex flex-col lg:flex-row items-center justify-center gap-10">
           <div v-for="(event, i) in store.currentSchedules" :key="i" class="max-w-xl">
             <ChallengeScheduleBox

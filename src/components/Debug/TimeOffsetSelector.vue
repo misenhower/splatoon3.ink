@@ -1,7 +1,7 @@
 <template>
   <div class="flex justify-center text-xs">
-    <div class="flex space-x-2 bg-zinc-700 p-1 rounded">
-      <div class="bg-zinc-500 rounded font-semibold px-1">
+    <div class="flex space-x-2 bg-zinc-700 p-1 rounded-sm">
+      <div class="bg-zinc-500 rounded-sm font-semibold px-1">
         Time Offset
       </div>
 

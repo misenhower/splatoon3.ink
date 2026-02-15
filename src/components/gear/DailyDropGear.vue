@@ -7,7 +7,7 @@
         </div>
         <div class="flex flex-col items-center -space-y-2">
           <SquidTape
-            class="font-splatoon2 text-sm text-black rounded-sm -rotate-2 z-10"
+            class="font-splatoon2 text-sm text-black rounded-xs -rotate-2 z-10"
             bg="bg-splatoon-green"
             squid-bg="bg-black"
             border="border border-black"
@@ -36,7 +36,7 @@
           <GearCardHorizontal
             v-for="gear in gears"
             :key="gear.id"
-            class="bg-zinc-100 bg-opacity-20 backdrop-blur-sm border border-zinc-50 border-opacity-20 rounded-lg"
+            class="bg-zinc-100/20 backdrop-blur-xs border border-zinc-50/20 rounded-lg"
             :gear="gear"
           />
         </div>

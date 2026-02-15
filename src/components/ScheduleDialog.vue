@@ -8,7 +8,7 @@
             <div class="font-splatoon1 lg:text-2xl xl:text-3xl text-shadow">
               {{ $t(type.name) }}
             </div>
-            <div v-if="type.badge" class="font-splatoon2 text-xs lg:text-sm xl:text-base bg-splatoon-blue rounded px-1 drop-shadow">
+            <div v-if="type.badge" class="font-splatoon2 text-xs lg:text-sm xl:text-base bg-splatoon-blue rounded-sm px-1 drop-shadow-sm">
               {{ $t(type.badge) }}
             </div>
           </div>
@@ -22,7 +22,7 @@
         <div class="h-full overflow-y-auto pt-24 pb-8">
           <template v-for="{ title, schedules } in sections" :key="title">
             <div class="mt-6 mx-2 space-y-2 text-left">
-              <SquidTape class="font-splatoon2 text-sm drop-shadow -rotate-6 -mx-2">
+              <SquidTape class="font-splatoon2 text-sm drop-shadow-sm -rotate-6 -mx-2">
                 <div class="px-2">
                   {{ $t(title) }}
                 </div>

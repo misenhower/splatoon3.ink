@@ -67,6 +67,8 @@ const isDev = import.meta.env.DEV;
 </script>
 
 <style scoped>
+@reference "@/assets/css/base.css";
+
 .footer-links a span {
   @apply text-zinc-300;
 }
