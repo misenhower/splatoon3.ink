@@ -1,6 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { Console } from 'node:console';
+import { mkdirp } from '../../common/fs.mjs';
 import ical from 'ical-generator';
 import pFilter from 'p-filter';
 import prefixedConsole from '../../common/prefixedConsole.mjs';
@@ -215,7 +216,7 @@ export default class DataUpdater
   }
 
   async writeFile(file, data) {
-    await fs.mkdir(path.dirname(file), { recursive: true });
+    await mkdirp(path.dirname(file));
     await fs.writeFile(file, data);
   }
 

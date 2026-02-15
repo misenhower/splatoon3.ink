@@ -1,5 +1,9 @@
 import fs from 'fs/promises';
 
+export function mkdirp(dir) {
+  return fs.mkdir(dir, { recursive: true });
+}
+
 export async function exists(file) {
   try {
     await fs.access(file);

@@ -1,5 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
+import { mkdirp } from '../common/fs.mjs';
 import { jsonpathQuery } from '../common/util.mjs';
 import get from 'lodash/get.js';
 import set from 'lodash/set.js';
@@ -91,7 +92,7 @@ export class LocalizationProcessor {
 
     data = JSON.stringify(data, undefined, space);
 
-    await fs.mkdir(path.dirname(this.filename), { recursive: true });
+    await mkdirp(path.dirname(this.filename));
     await fs.writeFile(this.filename, data);
   }
 

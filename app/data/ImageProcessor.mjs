@@ -3,7 +3,7 @@ import path from 'path';
 import PQueue from 'p-queue';
 import prefixedConsole from '../common/prefixedConsole.mjs';
 import { normalizeSplatnetResourcePath } from '../common/util.mjs';
-import { exists } from '../common/fs.mjs';
+import { exists, mkdirp } from '../common/fs.mjs';
 
 const queue = new PQueue({ concurrency: 4 });
 
@@ -69,7 +69,7 @@ export default class ImageProcessor
         throw new Error(`Invalid image response code: ${result.status}`);
       }
 
-      await fs.mkdir(path.dirname(this.localPath(destination)), { recursive: true });
+      await mkdirp(path.dirname(this.localPath(destination)));
       await fs.writeFile(this.localPath(destination), result.body);
     } catch (e) {
       this.console.error(`Image download failed for ${destination}`, e);

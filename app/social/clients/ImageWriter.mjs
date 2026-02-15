@@ -1,4 +1,5 @@
 import fs from 'fs/promises';
+import { mkdirp } from '../../common/fs.mjs';
 import Client from './Client.mjs';
 
 export default class ImageWriter extends Client {
@@ -12,7 +13,7 @@ export default class ImageWriter extends Client {
       return;
     }
 
-    await fs.mkdir(this.dir, { recursive: true });
+    await mkdirp(this.dir);
 
     let imgFilename = `${this.dir}/${generator.key}.png`;
     await fs.writeFile(imgFilename, status.media[0].file);
