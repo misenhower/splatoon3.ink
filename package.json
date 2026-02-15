@@ -5,7 +5,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview --port 5050",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --ignore-path .gitignore",
+    "lint": "eslint .",
     "lint-fix": "npm run lint -- --fix",
     "cron": "node app/index.mjs cron",
     "start": "npm run sync:download && npm run splatnet:quick && npm run social && npm run cron",
@@ -55,16 +55,18 @@
     "vue-router": "^4.6.4"
   },
   "devDependencies": {
-    "@dword-design/eslint-plugin-import-alias": "^5.0.0",
+    "@dword-design/eslint-plugin-import-alias": "^8.1.3",
+    "@eslint/js": "^9.39.2",
     "@vitejs/plugin-vue": "^5.2.4",
-    "@vue/eslint-config-airbnb": "^8.0.0",
     "autoprefixer": "^10.4.12",
-    "eslint": "^8.23.1",
-    "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-jsdoc": "^48.2.1",
-    "eslint-plugin-vue": "^9.5.1",
+    "eslint": "^9.39.2",
+    "eslint-plugin-jsdoc": "^62.5.5",
+    "eslint-plugin-vue": "^10.8.0",
+    "globals": "^17.3.0",
     "postcss": "^8.4.16",
     "tailwindcss": "^3.1.8",
-    "vite": "^6.4.1"
+    "typescript": "^5.9.3",
+    "vite": "^6.4.1",
+    "vue-eslint-parser": "^10.4.0"
   }
 }

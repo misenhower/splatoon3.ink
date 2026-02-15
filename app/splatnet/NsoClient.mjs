@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-unresolved
 import CoralApi from 'nxapi/coral';
 import { addUserAgent } from 'nxapi';
 import pLimit from 'p-limit';

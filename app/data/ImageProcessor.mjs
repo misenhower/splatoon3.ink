@@ -1,7 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
 import mkdirp from 'mkdirp';
-// eslint-disable-next-line import/no-unresolved
 import PQueue from 'p-queue';
 import prefixedConsole from '../common/prefixedConsole.mjs';
 import { normalizeSplatnetResourcePath } from '../common/util.mjs';
