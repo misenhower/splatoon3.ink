@@ -1,6 +1,5 @@
 import fs from 'fs/promises';
 import path from 'path';
-import mkdirp from 'mkdirp';
 export default class ValueCache
 {
   constructor(key) {
@@ -48,7 +47,7 @@ export default class ValueCache
     let cachedAt = new Date;
     let serialized = JSON.stringify({ expires, data, cachedAt }, undefined, 2);
 
-    await mkdirp(path.dirname(this.path));
+    await fs.mkdir(path.dirname(this.path), { recursive: true });
     await fs.writeFile(this.path, serialized);
   }
 }

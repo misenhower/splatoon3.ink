@@ -1,5 +1,5 @@
 import http from 'http';
-import ecstatic from 'ecstatic';
+import sirv from 'sirv';
 
 export default class HttpServer
 {
@@ -16,7 +16,7 @@ export default class HttpServer
         return resolve();
       }
 
-      const handler = ecstatic({ root: './dist' });
+      const handler = sirv('./dist');
       this.#server = http.createServer(handler);
       this.#server.on('listening', () => resolve());
       this.#server.listen();

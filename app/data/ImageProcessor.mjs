@@ -1,6 +1,5 @@
 import fs from 'fs/promises';
 import path from 'path';
-import mkdirp from 'mkdirp';
 import PQueue from 'p-queue';
 import prefixedConsole from '../common/prefixedConsole.mjs';
 import { normalizeSplatnetResourcePath } from '../common/util.mjs';
@@ -70,7 +69,7 @@ export default class ImageProcessor
         throw new Error(`Invalid image response code: ${result.status}`);
       }
 
-      await mkdirp(path.dirname(this.localPath(destination)));
+      await fs.mkdir(path.dirname(this.localPath(destination)), { recursive: true });
       await fs.writeFile(this.localPath(destination), result.body);
     } catch (e) {
       this.console.error(`Image download failed for ${destination}`, e);

@@ -1,8 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { Console } from 'node:console';
-import mkdirp from 'mkdirp';
-import jsonpath from 'jsonpath';
 import ical from 'ical-generator';
 import pFilter from 'p-filter';
 import prefixedConsole from '../../common/prefixedConsole.mjs';
@@ -11,7 +9,7 @@ import ImageProcessor from '../ImageProcessor.mjs';
 import NsoClient from '../../splatnet/NsoClient.mjs';
 import { locales, regionalLocales, defaultLocale } from '../../../src/common/i18n.mjs';
 import { LocalizationProcessor } from '../LocalizationProcessor.mjs';
-import { deriveId, getDateParts, getTopOfCurrentHour } from '../../common/util.mjs';
+import { deriveId, getDateParts, getTopOfCurrentHour, jsonpathQuery, jsonpathApply } from '../../common/util.mjs';
 export default class DataUpdater
 {
   name = null;
@@ -120,7 +118,7 @@ export default class DataUpdater
 
   deriveIds(data) {
     for (let expression of this.derivedIds) {
-      jsonpath.apply(data, expression, deriveId);
+      jsonpathApply(data, expression, deriveId);
     }
   }
 
@@ -157,14 +155,14 @@ export default class DataUpdater
       // This JSONPath library is completely synchronous, so we have to
       // build a mapping here after transforming all URLs.
       let mapping = {};
-      for (let url of jsonpath.query(data, expression)) {
+      for (let url of jsonpathQuery(data, expression)) {
         let [path, publicUrl] = await this.imageProcessor.process(url);
         mapping[url] = publicUrl;
         images[publicUrl] = path;
       }
 
       // Now apply the URL transformations
-      jsonpath.apply(data, expression, url => mapping[url]);
+      jsonpathApply(data, expression, url => mapping[url]);
     }
 
     await ImageProcessor.onIdle();
@@ -217,7 +215,7 @@ export default class DataUpdater
   }
 
   async writeFile(file, data) {
-    await mkdirp(path.dirname(file));
+    await fs.mkdir(path.dirname(file), { recursive: true });
     await fs.writeFile(file, data);
   }
 

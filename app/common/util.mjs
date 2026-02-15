@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import { JSONPath } from 'jsonpath-plus';
 
 export function getTopOfCurrentHour(date = null) {
   date ??= new Date;
@@ -88,6 +89,16 @@ export function getXRankSeasonId(id) {
  * @param {number} expiresIn - Seconds until expiry
  * @returns {number} Timestamp to expire the cache (5 minutes early)
  */
+export function jsonpathQuery(data, path) {
+  return JSONPath({ path, json: data });
+}
+
+export function jsonpathApply(data, path, fn) {
+  JSONPath({ path, json: data, resultType: 'all', callback: (result) => {
+    result.parent[result.parentProperty] = fn(result.value);
+  }});
+}
+
 export function calculateCacheExpiry(expiresIn) {
   let expires = Date.now() + expiresIn * 1000;
 

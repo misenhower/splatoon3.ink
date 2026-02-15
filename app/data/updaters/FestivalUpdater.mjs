@@ -1,7 +1,6 @@
 import fs from 'fs/promises';
-import jsonpath from 'jsonpath';
 import pLimit from 'p-limit';
-import { getFestId } from '../../common/util.mjs';
+import { getFestId, jsonpathQuery, jsonpathApply } from '../../common/util.mjs';
 import ValueCache from '../../common/ValueCache.mjs';
 import { regionTokens } from '../../splatnet/NsoClient.mjs';
 import FestivalRankingUpdater from './FestivalRankingUpdater.mjs';
@@ -70,7 +69,7 @@ export default class FestivalUpdater extends DataUpdater
       let data = await this.splatnet(locale).getFestRecordDataPage(cursor);
 
       // Grab the nodes from the current page
-      result.data.festRecords.nodes.push(...jsonpath.query(data, '$..festRecords.edges.*.node'));
+      result.data.festRecords.nodes.push(...jsonpathQuery(data, '$..festRecords.edges.*.node'));
 
       // Update the cursor and next page indicator
       cursor = data.data.festRecords.pageInfo.endCursor;
@@ -103,7 +102,7 @@ export default class FestivalUpdater extends DataUpdater
   }
 
   deriveFestivalIds(data) {
-    jsonpath.apply(data, '$..nodes.*', node => ({
+    jsonpathApply(data, '$..nodes.*', node => ({
       '__splatoon3ink_id': getFestId(node.id),
       ...node,
     }));
