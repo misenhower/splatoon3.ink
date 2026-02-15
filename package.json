@@ -30,7 +30,7 @@
     "@headlessui/vue": "^1.7.23",
     "@heroicons/vue": "^2.2.0",
     "@intlify/vite-plugin-vue-i18n": "^6.0.3",
-    "@sentry/node": "^7.61.0",
+    "@sentry/node": "^10.38.0",
     "console-stamp": "^3.0.6",
     "cron": "^2.1.0",
     "dotenv": "^16.0.2",
