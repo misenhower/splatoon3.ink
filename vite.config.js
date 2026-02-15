@@ -3,7 +3,7 @@ import { fileURLToPath, URL } from 'url';
 
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import vueI18n from '@intlify/vite-plugin-vue-i18n';
+import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
 
 const redirectToDist = [
   '/assets/splatnet/',
@@ -14,8 +14,8 @@ const redirectToDist = [
 export default defineConfig({
   plugins: [
     vue(),
-    vueI18n({
-      include: resolve(__dirname, './src/assets/i18n/**'),
+    VueI18nPlugin({
+      include: resolve(__dirname, './src/assets/i18n/*.json'),
     }),
     {
       // Quick hack to redirect dynamic assets to the /dist/ directory
