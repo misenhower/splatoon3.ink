@@ -87,6 +87,8 @@ export function getXRankSeasonId(id) {
 /**
  * Calculate cache expiry timestamp with 5-minute buffer.
  * @param {number} expiresIn - Seconds until expiry
+ * @param data
+ * @param path
  * @returns {number} Timestamp to expire the cache (5 minutes early)
  */
 export function jsonpathQuery(data, path) {
@@ -96,7 +98,7 @@ export function jsonpathQuery(data, path) {
 export function jsonpathApply(data, path, fn) {
   JSONPath({ path, json: data, resultType: 'all', callback: (result) => {
     result.parent[result.parentProperty] = fn(result.value);
-  }});
+  } });
 }
 
 export function calculateCacheExpiry(expiresIn) {
