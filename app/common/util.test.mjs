@@ -8,8 +8,6 @@ import {
   getFestId,
   getFestTeamId,
   getXRankSeasonId,
-  jsonpathQuery,
-  jsonpathApply,
   calculateCacheExpiry,
 } from './util.mjs';
 
@@ -160,29 +158,6 @@ describe('getXRankSeasonId', () => {
 
   it('returns original value on non-match', () => {
     expect(getXRankSeasonId('invalid')).toBe('invalid');
-  });
-});
-
-describe('jsonpathQuery', () => {
-  it('returns matching values from nested objects', () => {
-    const data = { store: { books: [{ title: 'A' }, { title: 'B' }] } };
-    const result = jsonpathQuery(data, '$.store.books[*].title');
-    expect(result).toEqual(['A', 'B']);
-  });
-
-  it('returns empty array for no match', () => {
-    const data = { a: 1 };
-    const result = jsonpathQuery(data, '$.b');
-    expect(result).toEqual([]);
-  });
-});
-
-describe('jsonpathApply', () => {
-  it('transforms matching values in-place', () => {
-    const data = { items: [{ price: 10 }, { price: 20 }] };
-    jsonpathApply(data, '$.items[*].price', v => v * 2);
-    expect(data.items[0].price).toBe(20);
-    expect(data.items[1].price).toBe(40);
   });
 });
 
