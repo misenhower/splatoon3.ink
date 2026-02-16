@@ -13,7 +13,7 @@ import { sentryInit } from './common/sentry.mjs';
 import { sync, syncUpload, syncDownload } from './sync/index.mjs';
 
 consoleStamp(console);
-dotenv.config();
+dotenv.config({ quiet: true });
 sentryInit();
 
 const actions = {

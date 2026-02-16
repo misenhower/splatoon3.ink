@@ -4,7 +4,7 @@
 
     <div class="h-16" />
 
-    <div class="h-12 m-4 bg-black bg-opacity-50 backdrop-blur-sm rounded-full absolute bottom-0 inset-x-0">
+    <div class="h-12 m-4 bg-black/50 backdrop-blur-xs rounded-full absolute bottom-0 inset-x-0">
       <div class="flex justify-between h-full font-splatoon2 text-sm text-zinc-300">
         <div class="flex justify-start items-center space-x-6 ml-4">
           <div>
@@ -74,6 +74,8 @@ const isDev = import.meta.env.DEV;
 </script>
 
 <style scoped>
+@reference "@/assets/css/base.css";
+
 .footer-links a span {
   @apply text-zinc-300;
 }

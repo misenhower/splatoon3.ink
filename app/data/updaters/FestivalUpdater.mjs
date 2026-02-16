@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
-import jsonpath from 'jsonpath';
 import pLimit from 'p-limit';
+import jsonpath from 'jsonpath';
 import { getFestId } from '../../common/util.mjs';
 import ValueCache from '../../common/ValueCache.mjs';
 import { regionTokens } from '../../splatnet/NsoClient.mjs';

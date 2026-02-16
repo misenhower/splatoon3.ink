@@ -1,8 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { Console } from 'node:console';
-import mkdirp from 'mkdirp';
-import jsonpath from 'jsonpath';
+import { mkdirp } from '../../common/fs.mjs';
 import ical from 'ical-generator';
 import pFilter from 'p-filter';
 import prefixedConsole from '../../common/prefixedConsole.mjs';
@@ -11,6 +10,7 @@ import ImageProcessor from '../ImageProcessor.mjs';
 import NsoClient from '../../splatnet/NsoClient.mjs';
 import { locales, regionalLocales, defaultLocale } from '../../../src/common/i18n.mjs';
 import { LocalizationProcessor } from '../LocalizationProcessor.mjs';
+import jsonpath from 'jsonpath';
 import { deriveId, getDateParts, getTopOfCurrentHour } from '../../common/util.mjs';
 export default class DataUpdater
 {
@@ -241,7 +241,7 @@ export default class DataUpdater
 
   async getiCalData(events, images) {
     // Create a calendar object
-    const calendar = new ical({
+    const calendar = ical({
       name: this.calendarName ?? this.name,
       url: process.env.SITE_URL,
       prodId: {
@@ -257,14 +257,14 @@ export default class DataUpdater
 
     // Add event entries
     for (let event of events) {
-      calendar.createEvent(({
+      let calEvent = calendar.createEvent({
         id: event.id,
         summary: event.title,
         start: event.start,
         end: event.end,
         url: event.url,
-        attachments: [event.imageUrl],
-      }));
+      });
+      calEvent.createAttachment(event.imageUrl);
 
       const filename = images[event.imageUrl];
       if (filename) {

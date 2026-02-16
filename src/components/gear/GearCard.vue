@@ -56,7 +56,7 @@
 
     <!-- Time left -->
     <div class="absolute top-1 left-6">
-      <div class="inline-block text-xs bg-zinc-200 bg-opacity-30 rounded px-1 py-px font-semibold">
+      <div class="inline-block text-xs bg-zinc-200/30 rounded-sm px-1 py-px font-semibold">
         {{ $t('time.left', { time: formatDurationHoursFromNow(props.gear.saleEndTime) }) }}
       </div>
     </div>

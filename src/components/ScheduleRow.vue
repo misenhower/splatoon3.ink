@@ -21,7 +21,7 @@
         </div>
       </div>
     </div>
-    <div v-else class="sm:hidden bg-zinc-500 rounded animate-pulse w-32">
+    <div v-else class="sm:hidden bg-zinc-500 rounded-sm animate-pulse w-32">
       &nbsp;
     </div>
 
@@ -55,13 +55,13 @@
           </template>
 
           <template v-else>
-            <div class="text-xs lg:text-lg bg-zinc-500 rounded animate-pulse">
+            <div class="text-xs lg:text-lg bg-zinc-500 rounded-sm animate-pulse">
 &nbsp;
             </div>
-            <div class="text-sm mx-8 bg-zinc-500 rounded animate-pulse">
+            <div class="text-sm mx-8 bg-zinc-500 rounded-sm animate-pulse">
 &nbsp;
             </div>
-            <div class="text-sm mx-4 bg-zinc-500 rounded animate-pulse">
+            <div class="text-sm mx-4 bg-zinc-500 rounded-sm animate-pulse">
 &nbsp;
             </div>
           </template>

@@ -13,7 +13,7 @@
           </div>
         </div>
 
-        <div class="bg-zinc-900 bg-opacity-70 backdrop-blur-sm pt-2 pb-1 px-2 mx-2 rounded-lg space-y-2">
+        <div class="bg-zinc-900/70 backdrop-blur-xs pt-2 pb-1 px-2 mx-2 rounded-lg space-y-2">
           <div class="flex items-center justify-between font-splatoon2">
             <div class="flex items-center space-x-2 text-sm lg:text-lg">
               <template v-if="event">
@@ -26,14 +26,14 @@
               </template>
 
               <template v-else>
-                <div class="w-32 bg-zinc-600 rounded animate-pulse">
+                <div class="w-32 bg-zinc-600 rounded-sm animate-pulse">
                   &nbsp;
                 </div>
               </template>
             </div>
 
             <div v-if="event.activeTimePeriod">
-              <SquidTape class="font-splatoon2 text-sm drop-shadow rotate-6">
+              <SquidTape class="font-splatoon2 text-sm drop-shadow-sm rotate-6">
                 <div class="px-2">
                   {{ $t('events.now_open') }}
                 </div>
@@ -66,7 +66,7 @@
 
             <!-- Current/future time periods -->
             <template v-if="event.currentTimePeriods?.length">
-              <SquidTape class="font-splatoon2 text-sm drop-shadow -rotate-6 -mx-2 mt-4">
+              <SquidTape class="font-splatoon2 text-sm drop-shadow-sm -rotate-6 -mx-2 mt-4">
                 <div class="px-2">
                   {{ event.activeTimePeriod ? $t('events.now') : $t('events.available') }}
                 </div>
@@ -81,7 +81,7 @@
           </div>
         </div>
 
-        <div class="font-splatoon2 mx-2 p-2 text-zinc-200 bg-zinc-900 bg-opacity-50 backdrop-blur-sm rounded-lg whitespace-pre-line">
+        <div class="font-splatoon2 mx-2 p-2 text-zinc-200 bg-zinc-900/50 backdrop-blur-xs rounded-lg whitespace-pre-line">
           {{ br2nl($t(`splatnet.events.${event.settings.leagueMatchEvent.id}.regulation`, event.settings.leagueMatchEvent.regulation)) }}
         </div>
       </div>

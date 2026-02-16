@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
-import mkdirp from 'mkdirp';
+import { mkdirp } from './fs.mjs';
 export default class ValueCache
 {
   constructor(key) {

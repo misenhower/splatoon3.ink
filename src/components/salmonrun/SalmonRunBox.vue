@@ -16,7 +16,7 @@
         <!-- Main content -->
         <div class="md:w-2/3 mx-2 pb-2">
           <div v-if="activeSchedule" class="mb-6 space-y-2">
-            <SquidTape class="font-splatoon2 text-sm drop-shadow -rotate-6 -mx-2">
+            <SquidTape class="font-splatoon2 text-sm drop-shadow-sm -rotate-6 -mx-2">
               <div class="px-2">
                 {{ $t('times.now') }}
               </div>
@@ -25,8 +25,8 @@
             <ExpandedSalmonRunRow :schedule="activeSchedule" :eggstra="eggstra" />
           </div>
 
-          <div v-if="upcomingSchedules.length" class="py-1 bg-zinc-900 bg-opacity-70 rounded-lg backdrop-blur-sm">
-            <SquidTape class="font-splatoon2 text-sm drop-shadow -rotate-6 -mx-2">
+          <div v-if="upcomingSchedules.length" class="py-1 bg-zinc-900/70 rounded-lg backdrop-blur-xs">
+            <SquidTape class="font-splatoon2 text-sm drop-shadow-sm -rotate-6 -mx-2">
               <div class="px-2">
                 {{ $t('times.future') }}
               </div>

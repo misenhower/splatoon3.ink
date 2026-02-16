@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
-import mkdirp from 'mkdirp';
+import { mkdirp } from '../common/fs.mjs';
 import jsonpath from 'jsonpath';
 import get from 'lodash/get.js';
 import set from 'lodash/set.js';

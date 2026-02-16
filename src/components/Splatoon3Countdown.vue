@@ -67,6 +67,8 @@ function formatDate(date) {
 </script>
 
 <style scoped>
+@reference "@/assets/css/base.css";
+
 .bg-blue-pattern {
   @apply bg-splatoon-blue;
   background-image: url("@/assets/img/battle-bg-pattern-blue.jpg");

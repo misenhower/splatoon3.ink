@@ -23,7 +23,7 @@
 
       <div
         v-if="schedule.isBigRun"
-        class="bg-zinc-800 bg-opacity-80 text-sm text-white rounded-lg px-2 border-2 border-splatoon-bigRun"
+        class="bg-zinc-800/80 text-sm text-white rounded-lg px-2 border-2 border-splatoon-bigRun"
       >
         <img src="@/assets/img/modes/coop.bigrun.svg" :title="$t('salmonrun.bigrun')" class="w-4 inline-block" />
         {{ $t('salmonrun.bigrun') }}
@@ -44,7 +44,7 @@
           {{ $t('salmonrun.weapons') }}
         </div>
 
-        <div class="bg-zinc-900 bg-opacity-30 rounded-full backdrop-blur-sm px-2">
+        <div class="bg-zinc-900/30 rounded-full backdrop-blur-xs px-2">
           <SalmonRunWeapons :weapons="schedule.settings.weapons" weapon-class="w-10 sm:w-14" />
         </div>
       </div>

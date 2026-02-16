@@ -8,17 +8,17 @@
     <!-- Details -->
     <div class="grow min-w-0 flex flex-col justify-evenly space-y-2">
       <div class="flex">
-        <div class="inline-block text-xs bg-zinc-200 bg-opacity-30 rounded px-1 py-px font-semibold">
+        <div class="inline-block text-xs bg-zinc-200/30 rounded-sm px-1 py-px font-semibold">
           {{ $t('time.left', { time: formatDurationHoursFromNow(props.gear.saleEndTime) }) }}
         </div>
       </div>
 
       <div class="flex items-center space-x-2">
-        <div class="bg-white h-6 aspect-square rounded">
+        <div class="bg-white h-6 aspect-square rounded-sm">
           <img :src="gear.brand.image.url" :title="$t(`splatnet.brands.${gear.brand.id}.name`, gear.brand.name)" />
         </div>
 
-        <div class="flex-1 font-splatoon2 text-shadow overflow-hidden overflow-ellipsis whitespace-nowrap">
+        <div class="flex-1 font-splatoon2 text-shadow overflow-hidden text-ellipsis whitespace-nowrap">
           {{ $t(`splatnet.gear.${gear.__splatoon3ink_id}.name`, gear.name) }}
         </div>
       </div>
@@ -49,7 +49,7 @@
     <div v-if="false" class="absolute top-0 right-0 hidden mobile:block">
       <a :href="shopUrl">
         <SquidTape
-          class="font-splatoon2 text-sm text-black rounded-sm -rotate-2"
+          class="font-splatoon2 text-sm text-black rounded-xs -rotate-2"
           bg="bg-splatoon-yellow"
           squid-bg="bg-black"
           border="border border-black"
@@ -67,7 +67,7 @@
         <div v-if="false" class="hidden mobile:block">
           <a :href="shopUrl">
             <SquidTape
-              class="font-splatoon2 text-sm text-black rounded-sm -rotate-2"
+              class="font-splatoon2 text-sm text-black rounded-xs -rotate-2"
               bg="bg-splatoon-yellow"
               squid-bg="bg-black"
               border="border border-black"

@@ -7,7 +7,7 @@
       </div>
 
       <div class="flex justify-center mx-2">
-        <div class="font-splatoon2 text-zinc-200 text-center text-shadow text-sm lg:text-lg bg-zinc-700 px-4 py-1 rounded-full bg-opacity-50 backdrop-blur-sm">
+        <div class="font-splatoon2 text-zinc-200 text-center text-shadow text-sm lg:text-lg bg-zinc-700/50 px-4 py-1 rounded-full backdrop-blur-xs">
           {{ $t(`splatnet.festivals.${festival.__splatoon3ink_id}.title`, festival.title) }}
         </div>
       </div>
