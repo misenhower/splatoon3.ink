@@ -1,17 +1,17 @@
-import deDE from './de-DE.json' assert { type: 'json' };
-import enGB from './en-GB.json' assert { type: 'json' };
-import enUS from './en-US.json' assert { type: 'json' };
-import esES from './es-ES.json' assert { type: 'json' };
-import esMX from './es-MX.json' assert { type: 'json' };
-import frCA from './fr-CA.json' assert { type: 'json' };
-import frFR from './fr-FR.json' assert { type: 'json' };
-import itIT from './it-IT.json' assert { type: 'json' };
-import jaJP from './ja-JP.json' assert { type: 'json' };
-import koKR from './ko-KR.json' assert { type: 'json' };
-import nlNL from './nl-NL.json' assert { type: 'json' };
-import ruRU from './ru-RU.json' assert { type: 'json' };
-import zhCN from './zh-CN.json' assert { type: 'json' };
-import zhTW from './zh-TW.json' assert { type: 'json' };
+import deDE from './de-DE.json' with { type: 'json' };
+import enGB from './en-GB.json' with { type: 'json' };
+import enUS from './en-US.json' with { type: 'json' };
+import esES from './es-ES.json' with { type: 'json' };
+import esMX from './es-MX.json' with { type: 'json' };
+import frCA from './fr-CA.json' with { type: 'json' };
+import frFR from './fr-FR.json' with { type: 'json' };
+import itIT from './it-IT.json' with { type: 'json' };
+import jaJP from './ja-JP.json' with { type: 'json' };
+import koKR from './ko-KR.json' with { type: 'json' };
+import nlNL from './nl-NL.json' with { type: 'json' };
+import ruRU from './ru-RU.json' with { type: 'json' };
+import zhCN from './zh-CN.json' with { type: 'json' };
+import zhTW from './zh-TW.json' with { type: 'json' };
 
 export default {
   'de-DE': deDE,
