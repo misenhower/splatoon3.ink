@@ -28,7 +28,6 @@ describe('getTopOfCurrentHour', () => {
   });
 
   it('uses current date when no argument', () => {
-    const before = new Date();
     const result = getTopOfCurrentHour();
     expect(result.getUTCMinutes()).toBe(0);
     expect(result.getUTCSeconds()).toBe(0);
