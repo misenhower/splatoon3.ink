@@ -241,7 +241,7 @@ export default class DataUpdater
 
   async getiCalData(events, images) {
     // Create a calendar object
-    const calendar = new ical({
+    const calendar = ical({
       name: this.calendarName ?? this.name,
       url: process.env.SITE_URL,
       prodId: {
@@ -257,14 +257,14 @@ export default class DataUpdater
 
     // Add event entries
     for (let event of events) {
-      calendar.createEvent(({
+      let calEvent = calendar.createEvent({
         id: event.id,
         summary: event.title,
         start: event.start,
         end: event.end,
         url: event.url,
-        attachments: [event.imageUrl],
-      }));
+      });
+      calEvent.createAttachment(event.imageUrl);
 
       const filename = images[event.imageUrl];
       if (filename) {
