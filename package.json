@@ -42,7 +42,7 @@
     "p-filter": "^4.1.0",
     "p-limit": "^7.3.0",
     "p-queue": "^9.1.0",
-    "pinia": "^2.3.1",
+    "pinia": "^3.0.4",
     "puppeteer-core": "^24.37.3",
     "s3-sync-client": "^4.3.1",
     "sharp": "^0.34.5",
@@ -51,7 +51,7 @@
     "twitter-api-v2": "^1.29.0",
     "vue": "^3.5.28",
     "vue-i18n": "^11.2.8",
-    "vue-router": "^4.6.4"
+    "vue-router": "^5.0.2"
   },
   "devDependencies": {
     "@dword-design/eslint-plugin-import-alias": "^8.1.3",
