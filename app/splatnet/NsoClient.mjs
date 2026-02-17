@@ -1,5 +1,6 @@
+import { createHmac } from 'node:crypto';
 import CoralApi from 'nxapi/coral';
-import { addUserAgent } from 'nxapi';
+import { addUserAgent, setClientAuthentication } from 'nxapi';
 import pLimit from 'p-limit';
 import ValueCache from '../common/ValueCache.mjs';
 import prefixedConsole from '../common/prefixedConsole.mjs';
@@ -10,9 +11,47 @@ const webServiceLimit = pLimit(1);
 
 let _nxapiInitialized = false;
 
+class SharedSecretAssertionProvider {
+  constructor(clientId, sharedSecret) {
+    this.clientId = clientId;
+    this.sharedSecret = sharedSecret;
+    this.scope = 'ca:gf ca:er ca:dr';
+  }
+
+  async create(aud, exp = 300) {
+    const now = Math.floor(Date.now() / 1000);
+
+    const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url');
+    const payload = Buffer.from(JSON.stringify({
+      typ: 'client_assertion',
+      iss: this.clientId,
+      aud,
+      exp: now + exp,
+      iat: now,
+    })).toString('base64url');
+
+    const signData = `${header}.${payload}`;
+    const signature = createHmac('sha256', this.sharedSecret)
+      .update(signData)
+      .digest()
+      .toString('base64url');
+
+    return {
+      assertion: `${signData}.${signature}`,
+      type: 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
+    };
+  }
+}
+
 function initializeNxapi() {
   if (!_nxapiInitialized) {
     addUserAgent(process.env.USER_AGENT);
+
+    if (process.env.NXAPI_CLIENT_ID && process.env.NXAPI_SHARED_SECRET) {
+      setClientAuthentication(
+        new SharedSecretAssertionProvider(process.env.NXAPI_CLIENT_ID, process.env.NXAPI_SHARED_SECRET),
+      );
+    }
   }
 
   _nxapiInitialized = true;
