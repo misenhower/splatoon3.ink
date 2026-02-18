@@ -73,7 +73,7 @@ export default class StatusGeneratorManager
 
       return { generator, status, clients };
     } catch (e) {
-      this.console(generator).error(`Error generating status: ${e}`);
+      this.console(generator).error('Error generating status:', e);
       Sentry.captureException(e);
     } finally {
       await screenshotHelper.close();
@@ -104,7 +104,7 @@ export default class StatusGeneratorManager
       await client.send(status, generator);
       await generator.updatelastPostCache(client);
     } catch (e) {
-      this.console(generator, client).error(`Error posting: ${e}`);
+      this.console(generator, client).error('Error posting:', e);
       Sentry.captureException(e);
     }
   }
