@@ -1,6 +1,7 @@
 import sharp from 'sharp';
 import { DeleteObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import Client from './Client.mjs';
+import prefixedConsole from '../../common/prefixedConsole.mjs';
 import ValueCache from '../../common/ValueCache.mjs';
 
 export default class ThreadsClient extends Client {
@@ -10,6 +11,10 @@ export default class ThreadsClient extends Client {
   #baseUrl = 'https://graph.threads.net/v1.0';
   #tokenCache = new ValueCache('threads.token');
   #accessToken;
+
+  get console() {
+    return this._console ??= prefixedConsole('Social', this.name);
+  }
 
   async canSend() {
     return process.env.THREADS_USER_ID
@@ -47,7 +52,7 @@ export default class ThreadsClient extends Client {
     let data = await response.json();
 
     if (data.error) {
-      console.error(`[${this.name}] Failed to refresh token:`, data.error.message);
+      this.console.error('Failed to refresh token:', data.error.message);
       return;
     }
 
@@ -57,12 +62,12 @@ export default class ThreadsClient extends Client {
     let expires = new Date(Date.now() + data.expires_in * 1000);
     await this.#tokenCache.setData(data.access_token, expires);
 
-    console.log(`[${this.name}] Token refreshed, expires ${expires.toISOString()}`);
+    this.console.log(`Token refreshed, expires ${expires.toISOString()}`);
   }
 
   async send(status, generator) {
     if (!status.media?.length) {
-      console.error(`[${this.name}] No media provided for ${generator.key}`);
+      this.console.error(`No media provided for ${generator.key}`);
       return;
     }
 
@@ -94,7 +99,7 @@ export default class ThreadsClient extends Client {
         await this.#deleteImage(s3Key);
       }
     } catch (error) {
-      console.error(`[${this.name}] Failed to post ${generator.key}:`, error.message);
+      this.console.error(`Failed to post ${generator.key}:`, error.message);
       throw error;
     }
   }
@@ -121,6 +126,7 @@ export default class ThreadsClient extends Client {
 
     // Construct the public URL (path-style to avoid SSL issues with dotted bucket names)
     let imageUrl = `${process.env.AWS_S3_ENDPOINT}/${process.env.AWS_S3_BUCKET}/${s3Key}`;
+    this.console.log(`Image uploaded: ${imageUrl}`);
     return { imageUrl, s3Key };
   }
 
@@ -138,8 +144,9 @@ export default class ThreadsClient extends Client {
         Bucket: process.env.AWS_S3_BUCKET,
         Key: s3Key,
       }));
+      this.console.log(`Temporary image deleted: ${s3Key}`);
     } catch (error) {
-      console.error(`[${this.name}] Failed to delete temporary image:`, error.message);
+      this.console.error('Failed to delete temporary image:', error.message);
     }
   }
 
