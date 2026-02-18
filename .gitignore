@@ -31,3 +31,6 @@ docker-compose.override.yml
 *.njsproj
 *.sln
 *.sw?
+
+# Personal
+/TODO.md
