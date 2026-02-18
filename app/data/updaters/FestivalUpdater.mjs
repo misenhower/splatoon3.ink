@@ -137,14 +137,12 @@ export default class FestivalUpdater extends DataUpdater
 
   async _formatDataForWrite(data) {
     // Combine this region's data with the other regions' data.
-    let result = null;
+    let result = {};
     try {
-      result = await fs.readFile(this.getPath(this.filename));
-    } catch (e) {
+      result = JSON.parse(await fs.readFile(this.getPath(this.filename)));
+    } catch {
       //
     }
-
-    result = result ? JSON.parse(result) : {};
 
     result[this.region] = data;
 
