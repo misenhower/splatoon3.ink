@@ -1,5 +1,5 @@
 import sharp from 'sharp';
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { DeleteObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import Client from './Client.mjs';
 import ValueCache from '../../common/ValueCache.mjs';
 
@@ -78,16 +78,21 @@ export default class ThreadsClient extends Client {
       let jpeg = await sharp(status.media[0].file).jpeg().toBuffer();
 
       // Upload image to S3 so it's publicly accessible
-      let imageUrl = await this.#uploadImage(jpeg, generator.key);
+      let { imageUrl, s3Key } = await this.#uploadImage(jpeg, generator.key);
 
-      // Create a media container
-      let containerId = await this.#createContainer(status.status, imageUrl, accessToken);
+      try {
+        // Create a media container
+        let containerId = await this.#createContainer(status.status, imageUrl, accessToken);
 
-      // Wait for the container to finish processing
-      await this.#waitForContainer(containerId, accessToken);
+        // Wait for the container to finish processing
+        await this.#waitForContainer(containerId, accessToken);
 
-      // Publish the container
-      await this.#publish(containerId, accessToken);
+        // Publish the container
+        await this.#publish(containerId, accessToken);
+      } finally {
+        // Clean up the temporary image from S3
+        await this.#deleteImage(s3Key);
+      }
     } catch (error) {
       console.error(`[${this.name}] Failed to post ${generator.key}:`, error.message);
       throw error;
@@ -104,7 +109,7 @@ export default class ThreadsClient extends Client {
       },
     });
 
-    let s3Key = `status-screenshots/${key}.jpg`;
+    let s3Key = `threads-tmp/${key}.jpg`;
 
     await s3.send(new PutObjectCommand({
       Bucket: process.env.AWS_S3_BUCKET,
@@ -115,7 +120,27 @@ export default class ThreadsClient extends Client {
     }));
 
     // Construct the public URL (path-style to avoid SSL issues with dotted bucket names)
-    return `${process.env.AWS_S3_ENDPOINT}/${process.env.AWS_S3_BUCKET}/${s3Key}`;
+    let imageUrl = `${process.env.AWS_S3_ENDPOINT}/${process.env.AWS_S3_BUCKET}/${s3Key}`;
+    return { imageUrl, s3Key };
+  }
+
+  async #deleteImage(s3Key) {
+    try {
+      let s3 = new S3Client({
+        endpoint: process.env.AWS_S3_ENDPOINT,
+        region: process.env.AWS_REGION,
+        credentials: {
+          accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+          secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+        },
+      });
+      await s3.send(new DeleteObjectCommand({
+        Bucket: process.env.AWS_S3_BUCKET,
+        Key: s3Key,
+      }));
+    } catch (error) {
+      console.error(`[${this.name}] Failed to delete temporary image:`, error.message);
+    }
   }
 
   async #createContainer(text, imageUrl, accessToken) {
