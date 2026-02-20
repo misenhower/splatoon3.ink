@@ -11,6 +11,7 @@ import ThreadsClient from './social/clients/ThreadsClient.mjs';
 import { archiveData } from './data/DataArchiver.mjs';
 import { sentryInit } from './common/sentry.mjs';
 import { sync, syncUpload, syncDownload } from './sync/index.mjs';
+import { updateAvatars } from './social/updateAvatars.mjs';
 
 consoleStamp(console);
 dotenv.config({ quiet: true });
@@ -30,6 +31,7 @@ const actions = {
   sync,
   syncUpload,
   syncDownload,
+  updateAvatars,
 };
 
 const command = process.argv[2];

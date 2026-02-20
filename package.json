@@ -17,6 +17,7 @@
     "social:test:mastodon": "node app/index.mjs socialTestMastodon",
     "social:test:bluesky": "node app/index.mjs socialTestBluesky",
     "social:test:threads": "node app/index.mjs socialTestThreads",
+    "social:avatars": "node app/index.mjs updateAvatars",
     "splatnet:quick": "node app/index.mjs splatnet quick",
     "splatnet": "node app/index.mjs splatnet default",
     "splatnet:all": "node app/index.mjs splatnet all",

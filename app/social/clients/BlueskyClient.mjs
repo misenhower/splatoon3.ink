@@ -30,6 +30,21 @@ export default class BlueskyClient extends Client
     }
   }
 
+  async updateProfile(avatarBuffer, displayName) {
+    await this.login();
+
+    let jpeg = await sharp(avatarBuffer).jpeg().toBuffer();
+    let uploadResponse = await this.#agent.uploadBlob(jpeg, { encoding: 'image/jpeg' });
+
+    await this.#agent.upsertProfile((existing) => {
+      return {
+        ...existing,
+        avatar: uploadResponse.data.blob,
+        displayName,
+      };
+    });
+  }
+
   async send(status, generator) {
     if (!status.media?.length) {
       console.error(`[${this.name}] No media provided for ${generator.key}`);

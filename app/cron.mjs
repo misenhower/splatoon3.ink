@@ -3,6 +3,7 @@ import { update } from './data/index.mjs';
 import { warmCaches } from './splatnet/index.mjs';
 import { sendStatuses } from './social/index.mjs';
 import { archiveData } from './data/DataArchiver.mjs';
+import { updateAvatars } from './social/updateAvatars.mjs';
 
 let updating = false;
 
@@ -35,4 +36,6 @@ export default function() {
   new CronJob('20 * * * *', () => {
     return updateIfNotUpdating('all');
   }, null, true);
+
+  new CronJob('30 * * * *', updateAvatars, null, true);
 }

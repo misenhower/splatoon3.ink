@@ -22,6 +22,20 @@ export default class MastodonClient extends Client
     return this.#url && this.#accessToken;
   }
 
+  async updateProfile(avatarBuffer, displayName) {
+    const masto = await createRestAPIClient({
+      url: this.#url,
+      accessToken: this.#accessToken,
+      disableVersionCheck: true,
+      disableExperimentalWarning: true,
+    });
+
+    await masto.v1.accounts.updateCredentials({
+      avatar: new Blob([avatarBuffer]),
+      displayName,
+    });
+  }
+
   async send(status, generator) {
     if (!status.media?.length) {
       console.error(`[${this.name}] No media provided for ${generator.key}`);

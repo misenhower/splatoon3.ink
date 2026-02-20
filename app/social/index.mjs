@@ -41,7 +41,7 @@ function defaultStatusGenerators() {
   ];
 }
 
-function defaultClients() {
+export function defaultClients() {
   return [
     // new TwitterClient,
     new MastodonClient,
