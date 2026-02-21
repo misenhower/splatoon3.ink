@@ -52,7 +52,8 @@ export const useDataStore = defineStore('data', () => {
     coop: useCoopDataStore(),
     festivals: useFestivalsDataStore(),
   };
-  let updateDataTimer;
+  let refreshTimer;
+  let lastRefresh = 0;
 
   function updateAll() {
     return Promise.all(Object.values(stores).map(s => s.update()));
@@ -60,35 +61,49 @@ export const useDataStore = defineStore('data', () => {
 
   const isUpdating = computed(() => Object.values(stores).some(s => s.isUpdating));
 
-  function startUpdating() {
-    if (updateDataTimer) {
-      return;
-    }
-
+  function refresh() {
+    const now = Date.now();
+    if (now - lastRefresh < 60_000) return;
+    lastRefresh = now;
     updateAll();
+  }
 
-    let date = new Date;
+  function msUntilNextHour() {
+    const next = new Date();
+    next.setMinutes(0, 0, 0);
+    next.setHours(next.getHours() + 1);
+    return next - new Date();
+  }
 
-    // If we're more than 20 seconds past the current hour, schedule the update for the next hour
-    if (date.getMinutes() !== 0 || date.getSeconds() >= 20)
-      date.setHours(date.getHours() + 1);
-    date.setMinutes(0);
+  function scheduleNextRefresh() {
+    const fiveMinutes = 5 * 60_000;
+    const jitter = Math.floor(Math.random() * 36 + 25) * 1000;
+    const untilHour = msUntilNextHour() + jitter;
+    const delay = Math.min(fiveMinutes, untilHour);
 
-    // Random number of seconds past the hour (so all open browsers don't hit the server at the same time)
-    let minSec = 25;
-    let maxSec = 60;
-    date.setSeconds(Math.floor(Math.random() * (maxSec - minSec + 1)) + minSec);
+    refreshTimer = setTimeout(() => {
+      refresh();
+      scheduleNextRefresh();
+    }, delay);
+  }
 
-    // Set the timeout
-    updateDataTimer = setTimeout(() => {
-      updateDataTimer = null;
-      startUpdating();
-    }, (date - new Date));
+  function onVisibilityChange() {
+    if (document.visibilityState === 'visible') {
+      refresh();
+    }
+  }
+
+  function startUpdating() {
+    if (refreshTimer) return;
+    refresh();
+    scheduleNextRefresh();
+    document.addEventListener('visibilitychange', onVisibilityChange);
   }
 
   function stopUpdating() {
-    clearInterval(updateDataTimer);
-    updateDataTimer = null;
+    clearTimeout(refreshTimer);
+    refreshTimer = null;
+    document.removeEventListener('visibilitychange', onVisibilityChange);
   }
 
   return {
