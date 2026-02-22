@@ -89,13 +89,13 @@ export default class DataUpdater
     await this.updateLocalizations(this.defaultLocale, data);
 
     // Download any new images
-    const images = await this.downloadImages(data);
+    await this.downloadImages(data);
 
     // Write the data to disk
     await this.saveData(data);
 
     // Update iCal data
-    await this.updateCalendarEvents(data, images);
+    await this.updateCalendarEvents(data);
 
     this.console.info('Done');
   }
@@ -223,11 +223,11 @@ export default class DataUpdater
 
   // Calendar output
 
-  async updateCalendarEvents(data, images) {
+  async updateCalendarEvents(data) {
     const events = this.getCalendarEntries(data);
     if (!events) return;
 
-    const ical = await this.getiCalData(events, images);
+    const ical = await this.getiCalData(events);
     await this.writeFile(this.getCalendarPath(this.calendarFilename ?? this.filename), ical);
   }
 
@@ -239,7 +239,7 @@ export default class DataUpdater
     //
   }
 
-  async getiCalData(events, images) {
+  async getiCalData(events) {
     // Create a calendar object
     const calendar = ical({
       name: this.calendarName ?? this.name,
@@ -252,9 +252,6 @@ export default class DataUpdater
       timezone: 'UTC',
     });
 
-    // Create a map of image URLs to image data
-    const imageData = {};
-
     // Add event entries
     for (let event of events) {
       let calEvent = calendar.createEvent({
@@ -265,33 +262,10 @@ export default class DataUpdater
         url: event.url,
       });
       calEvent.createAttachment(event.imageUrl);
-
-      const filename = images[event.imageUrl];
-      if (filename) {
-        try {
-          const data = await fs.readFile(this.imageProcessor.localPath(filename));
-          imageData[event.imageUrl] = data;
-        } catch {
-          // Image not available locally (may only exist in S3); skip inline embed
-        }
-      }
     }
 
     // Convert the calendar to an ICS string
     let ics = calendar.toString();
-
-    // Embed image attachments
-    ics = ics.replaceAll(/^ATTACH:((.|\r\n )*)$/gm, (match, url) => {
-      url = url.replaceAll('\r\n ', '');
-
-      const filename = images[url];
-      const data = imageData[url];
-      if (!filename || !data) return match;
-
-      const ical = `ATTACH;ENCODING=BASE64;VALUE=BINARY;X-APPLE-FILENAME=${path.basename(filename)}:${data.toString('base64')}`;
-
-      return ical.replace(/(.{72})/g, '$1\r\n ').trim();
-    });
 
     return ics;
   }
