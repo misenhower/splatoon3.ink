@@ -1,10 +1,11 @@
 import { S3Client, ListObjectsV2Command } from '@aws-sdk/client-s3';
 
+const prefixes = ['assets/splatnet/', 'data/'];
+
 class VirtualFileSystem {
   // Map of S3 key to { lastModified: Date, size: number }
   _listing = new Map();
-  _loaded = false;
-  _trackedPrefixes = [];
+  _loadPromise = null;
   _localPrefix = 'dist';
 
   get _canUseS3() {
@@ -27,16 +28,18 @@ class VirtualFileSystem {
   }
 
   /**
-   * Load S3 listing for the given prefixes.
-   * Call once at startup before any exists/olderThan checks.
-   * @param {string[]} prefixes
+   * Ensure the S3 listing is loaded. Loads once on first call,
+   * subsequent calls return the same promise.
    */
-  async loadFromS3(prefixes) {
-    if (!this._canUseS3) {
-      return;
-    }
+  async _ensureLoaded() {
+    if (!this._canUseS3) return false;
 
-    this._trackedPrefixes = prefixes;
+    this._loadPromise ??= this._loadFromS3();
+    await this._loadPromise;
+    return true;
+  }
+
+  async _loadFromS3() {
     const bucket = process.env.AWS_S3_BUCKET;
 
     console.log('[VFS] Loading S3 listing...');
@@ -67,18 +70,16 @@ class VirtualFileSystem {
 
       console.log(`[VFS] Loaded ${count} entries for prefix "${prefix}"`);
     }
-
-    this._loaded = true;
   }
 
   /**
    * Check if a local file path is known to exist in the VFS listing.
    * Returns true/false if the path is within a tracked prefix,
-   * or null if VFS has no opinion (not loaded, or path outside tracked prefixes).
+   * or null if VFS is not available.
    * @param {string} localPath
    */
-  has(localPath) {
-    if (!this._loaded) return null;
+  async has(localPath) {
+    if (!(await this._ensureLoaded())) return null;
 
     const key = this._localPathToKey(localPath);
     if (key === null) return null;
@@ -89,11 +90,11 @@ class VirtualFileSystem {
 
   /**
    * Get the last modified time for a file from the S3 listing.
-   * Returns Date if found, null if not tracked or VFS not loaded.
+   * Returns Date if found, null if not tracked or VFS not available.
    * @param {string} localPath
    */
-  getMtime(localPath) {
-    if (!this._loaded) return null;
+  async getMtime(localPath) {
+    if (!(await this._ensureLoaded())) return null;
 
     const key = this._localPathToKey(localPath);
     if (key === null) return null;
@@ -117,7 +118,7 @@ class VirtualFileSystem {
   }
 
   _isTrackedKey(key) {
-    return this._trackedPrefixes.some(prefix => key.startsWith(prefix));
+    return prefixes.some(prefix => key.startsWith(prefix));
   }
 }
 

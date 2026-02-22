@@ -12,7 +12,7 @@ export async function exists(file) {
     return true;
   } catch (e) {
     // Not on local disk; check VFS (S3 listing) as fallback
-    return vfs.has(file) ?? false;
+    return (await vfs.has(file)) ?? false;
   }
 }
 
@@ -24,7 +24,7 @@ export async function olderThan(file, cutoff) {
     return stat.mtime < cutoff;
   } catch (e) {
     // Not on local disk; check VFS (S3 listing) as fallback
-    const mtime = vfs.getMtime(file);
+    const mtime = await vfs.getMtime(file);
     if (mtime !== null) {
       return mtime < cutoff;
     }

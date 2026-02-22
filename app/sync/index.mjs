@@ -1,5 +1,4 @@
 import S3Syncer from './S3Syncer.mjs';
-import vfs from '../common/vfs.mjs';
 
 export function canSync() {
   return !!(
@@ -19,9 +18,6 @@ async function doSync(download, upload) {
   const syncer = new S3Syncer();
 
   if (download) {
-    // Load VFS listing for prefixes that won't be downloaded
-    await vfs.loadFromS3(['assets/splatnet/', 'data/']);
-
     console.info('Downloading files...');
     await syncer.download();
   }
