@@ -104,23 +104,6 @@ class VirtualFileSystem {
   }
 
   /**
-   * Track a file that was just written locally.
-   * Ensures subsequent has() calls return true without hitting disk.
-   * @param {string} localPath
-   */
-  track(localPath) {
-    if (!this._loaded) return;
-
-    const key = this._localPathToKey(localPath);
-    if (key === null) return;
-
-    this._listing.set(key, {
-      lastModified: new Date(),
-      size: 0,
-    });
-  }
-
-  /**
    * Convert a local path (e.g. 'dist/assets/splatnet/foo.png')
    * to an S3 key (e.g. 'assets/splatnet/foo.png').
    * @param {string} localPath
