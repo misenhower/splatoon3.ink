@@ -268,8 +268,12 @@ export default class DataUpdater
 
       const filename = images[event.imageUrl];
       if (filename) {
-        const data = await fs.readFile(this.imageProcessor.localPath(filename));
-        imageData[event.imageUrl] = data;
+        try {
+          const data = await fs.readFile(this.imageProcessor.localPath(filename));
+          imageData[event.imageUrl] = data;
+        } catch {
+          // Image not available locally (may only exist in S3); skip inline embed
+        }
       }
     }
 

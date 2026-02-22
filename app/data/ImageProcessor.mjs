@@ -4,6 +4,7 @@ import PQueue from 'p-queue';
 import prefixedConsole from '../common/prefixedConsole.mjs';
 import { normalizeSplatnetResourcePath } from '../common/util.mjs';
 import { exists, mkdirp } from '../common/fs.mjs';
+import vfs from '../common/vfs.mjs';
 
 const queue = new PQueue({ concurrency: 4 });
 
@@ -71,6 +72,7 @@ export default class ImageProcessor
 
       await mkdirp(path.dirname(this.localPath(destination)));
       await fs.writeFile(this.localPath(destination), result.body);
+      vfs.track(this.localPath(destination));
     } catch (e) {
       this.console.error(`Image download failed for ${destination}`, e);
     }
