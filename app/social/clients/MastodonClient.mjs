@@ -6,26 +6,26 @@ export default class MastodonClient extends Client
   key = 'mastodon';
   name = 'Mastodon';
 
-  #url;
-  #accessToken;
-  #visibility;
+  _url;
+  _accessToken;
+  _visibility;
 
   constructor() {
     super();
 
-    this.#url = process.env.MASTODON_URL;
-    this.#accessToken = process.env.MASTODON_ACCESS_TOKEN;
-    this.#visibility = process.env.MASTODON_VISIBILITY || 'public';
+    this._url = process.env.MASTODON_URL;
+    this._accessToken = process.env.MASTODON_ACCESS_TOKEN;
+    this._visibility = process.env.MASTODON_VISIBILITY || 'public';
   }
 
   async canSend() {
-    return this.#url && this.#accessToken;
+    return this._url && this._accessToken;
   }
 
   async updateProfile(avatarBuffer, displayName) {
     const masto = await createRestAPIClient({
-      url: this.#url,
-      accessToken: this.#accessToken,
+      url: this._url,
+      accessToken: this._accessToken,
       disableVersionCheck: true,
       disableExperimentalWarning: true,
     });
@@ -45,8 +45,8 @@ export default class MastodonClient extends Client
     try {
       // Mastodon API
       const masto = await createRestAPIClient({
-        url: this.#url,
-        accessToken: this.#accessToken,
+        url: this._url,
+        accessToken: this._accessToken,
         disableVersionCheck: true,
         disableExperimentalWarning: true,
       });
@@ -71,7 +71,7 @@ export default class MastodonClient extends Client
         spoilerText: status.contentWrapper,
         sensitive: !!status.contentWrapper, // Without the sensitive property the image is still visible
         mediaIds,
-        visibility: this.#visibility,
+        visibility: this._visibility,
       });
     } catch (error) {
       console.error(`[${this.name}] Failed to post ${generator.key}:`, error.message);

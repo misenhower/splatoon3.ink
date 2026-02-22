@@ -23,16 +23,16 @@ export default class StatusGeneratorManager
   }
 
   async sendStatuses(force = false) {
-    let availableClients = await this.#getAvailableClients();
+    let availableClients = await this._getAvailableClients();
 
     // Create screenshots in parallel (via Browserless)
-    let statusPromises = this.#getStatuses(availableClients, force);
+    let statusPromises = this._getStatuses(availableClients, force);
 
     // Process each client in parallel (while maintaining post order)
-    await this.#sendStatusesToClients(statusPromises, availableClients);
+    await this._sendStatusesToClients(statusPromises, availableClients);
   }
 
-  async #getAvailableClients() {
+  async _getAvailableClients() {
     let clients = [];
 
     for (let client of this.clients) {
@@ -47,11 +47,11 @@ export default class StatusGeneratorManager
     return clients;
   }
 
-  #getStatuses(availableClients, force) {
-    return this.generators.map(generator => this.#getStatus(availableClients, generator, force));
+  _getStatuses(availableClients, force) {
+    return this.generators.map(generator => this._getStatus(availableClients, generator, force));
   }
 
-  async #getStatus(availableClients, generator, force) {
+  async _getStatus(availableClients, generator, force) {
     let screenshotHelper = new ScreenshotHelper;
     try {
       let clients = [];
@@ -82,23 +82,23 @@ export default class StatusGeneratorManager
     return null;
   }
 
-  #sendStatusesToClients(statusPromises, availableClients) {
-    return Promise.allSettled(availableClients.map(client => this.#sendStatusesToClient(statusPromises, client)));
+  _sendStatusesToClients(statusPromises, availableClients) {
+    return Promise.allSettled(availableClients.map(client => this._sendStatusesToClient(statusPromises, client)));
   }
 
-  async #sendStatusesToClient(statusPromises, client) {
+  async _sendStatusesToClient(statusPromises, client) {
     for (let promise of statusPromises) {
       let statusDetails = await promise;
 
       if (statusDetails && statusDetails.clients.includes(client)) {
         let { generator, status } = statusDetails;
 
-        await this.#sendToClient(generator, status, client);
+        await this._sendToClient(generator, status, client);
       }
     }
   }
 
-  async #sendToClient(generator, status, client) {
+  async _sendToClient(generator, status, client) {
     this.console(generator, client).info('Posting...');
     try {
       await client.send(status, generator);

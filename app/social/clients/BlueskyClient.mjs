@@ -9,7 +9,7 @@ export default class BlueskyClient extends Client
   key = 'bluesky';
   name = 'Bluesky';
 
-  #agent;
+  _agent;
 
   async canSend() {
     return process.env.BLUESKY_SERVICE
@@ -18,12 +18,12 @@ export default class BlueskyClient extends Client
   }
 
   async login() {
-    if (!this.#agent) {
-      this.#agent = new BskyAgent({
+    if (!this._agent) {
+      this._agent = new BskyAgent({
         service: process.env.BLUESKY_SERVICE,
       });
 
-      await this.#agent.login({
+      await this._agent.login({
         identifier: process.env.BLUESKY_IDENTIFIER,
         password: process.env.BLUESKY_PASSWORD,
       });
@@ -34,9 +34,9 @@ export default class BlueskyClient extends Client
     await this.login();
 
     let jpeg = await sharp(avatarBuffer).jpeg().toBuffer();
-    let uploadResponse = await this.#agent.uploadBlob(jpeg, { encoding: 'image/jpeg' });
+    let uploadResponse = await this._agent.uploadBlob(jpeg, { encoding: 'image/jpeg' });
 
-    await this.#agent.upsertProfile((existing) => {
+    await this._agent.upsertProfile((existing) => {
       return {
         ...existing,
         avatar: uploadResponse.data.blob,
@@ -62,7 +62,7 @@ export default class BlueskyClient extends Client
           let metadata = await jpeg.metadata();
           let buffer = await jpeg.toBuffer();
 
-          let response = await this.#agent.uploadBlob(buffer, { encoding: 'image/jpeg' });
+          let response = await this._agent.uploadBlob(buffer, { encoding: 'image/jpeg' });
 
           return {
             image: response.data.blob,
@@ -77,9 +77,9 @@ export default class BlueskyClient extends Client
         text: status.status,
       });
 
-      await rt.detectFacets(this.#agent);
+      await rt.detectFacets(this._agent);
 
-      await this.#agent.post({
+      await this._agent.post({
         text: rt.text,
         facets: rt.facets,
         embed: {

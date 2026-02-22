@@ -7,7 +7,7 @@ export default class TwitterClient extends Client
   name = 'Twitter';
 
   /** @member {TwitterApi} */
-  #api;
+  _api;
 
   async canSend() {
     return process.env.TWITTER_CONSUMER_KEY
@@ -17,8 +17,8 @@ export default class TwitterClient extends Client
   }
 
   api() {
-    if (!this.#api) {
-      this.#api = new TwitterApi({
+    if (!this._api) {
+      this._api = new TwitterApi({
         appKey: process.env.TWITTER_CONSUMER_KEY,
         appSecret: process.env.TWITTER_CONSUMER_SECRET,
         accessToken: process.env.TWITTER_ACCESS_TOKEN_KEY,
@@ -26,7 +26,7 @@ export default class TwitterClient extends Client
       });
     }
 
-    return this.#api;
+    return this._api;
   }
 
   async send(status, generator) {

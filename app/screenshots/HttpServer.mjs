@@ -4,29 +4,29 @@ import sirv from 'sirv';
 export default class HttpServer
 {
   /** @member {http.Server} */
-  #server = null;
+  _server = null;
 
   get port() {
-    return this.#server.address().port;
+    return this._server.address().port;
   }
 
   open() {
     return new Promise((resolve, reject) => {
-      if (this.#server) {
+      if (this._server) {
         return resolve();
       }
 
       const handler = sirv('./dist');
-      this.#server = http.createServer(handler);
-      this.#server.on('listening', () => resolve());
-      this.#server.listen();
+      this._server = http.createServer(handler);
+      this._server.on('listening', () => resolve());
+      this._server.listen();
     });
   }
 
   async close() {
-    if (this.#server) {
-      await this.#server.close();
-      this.#server = null;
+    if (this._server) {
+      await this._server.close();
+      this._server = null;
     }
   }
 }

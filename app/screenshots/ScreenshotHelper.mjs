@@ -12,43 +12,43 @@ const defaultViewport = {
 export default class ScreenshotHelper
 {
   /** @type {HttpServer} */
-  #httpServer = null;
+  _httpServer = null;
   /** @type {puppeteer.Browser} */
-  #browser = null;
+  _browser = null;
   /** @type {puppeteer.Page} */
-  #page = null;
+  _page = null;
 
   defaultParams = null;
 
   get isOpen() {
-    return !!this.#browser;
+    return !!this._browser;
   }
 
   /** @type {puppeteer.Page} */
   get page() {
-    return this.#page;
+    return this._page;
   }
 
   async open() {
     await this.close();
 
     // Start the HTTP server
-    this.#httpServer = new HttpServer;
-    await this.#httpServer.open();
+    this._httpServer = new HttpServer;
+    await this._httpServer.open();
 
     // Connect to Browserless
-    this.#browser = await puppeteer.connect({
+    this._browser = await puppeteer.connect({
       browserWSEndpoint: process.env.BROWSERLESS_ENDPOINT,
     });
 
     // Create a new page and set the viewport
-    this.#page = await this.#browser.newPage();
+    this._page = await this._browser.newPage();
     await this.applyViewport();
   }
 
   async applyViewport(viewport = {}) {
-    if (this.#page) {
-      await this.#page.setViewport({
+    if (this._page) {
+      await this._page.setViewport({
         ...defaultViewport,
         ...viewport,
       });
@@ -64,7 +64,7 @@ export default class ScreenshotHelper
 
     // Navigate to the URL
     let host = process.env.SCREENSHOT_HOST || 'localhost';
-    let url = new URL(`http://${host}:${this.#httpServer.port}/screenshots/`);
+    let url = new URL(`http://${host}:${this._httpServer.port}/screenshots/`);
     url.hash = path;
 
     let params = {
@@ -80,31 +80,31 @@ export default class ScreenshotHelper
         .join('&');
     }
 
-    await this.#page.goto(url, {
+    await this._page.goto(url, {
       waitUntil: 'networkidle0', // Wait until the network is idle
     });
 
     // Wait an additional 1000ms
-    await this.#page.waitForNetworkIdle({ idleTime: 1000 });
+    await this._page.waitForNetworkIdle({ idleTime: 1000 });
 
     // Take the screenshot
-    return await this.#page.screenshot();
+    return await this._page.screenshot();
   }
 
   async close() {
-    if (this.#httpServer) {
-      await this.#httpServer.close();
+    if (this._httpServer) {
+      await this._httpServer.close();
     }
-    this.#httpServer = null;
+    this._httpServer = null;
 
-    if (this.#page) {
-      await this.#page.close();
+    if (this._page) {
+      await this._page.close();
     }
-    this.#page = null;
+    this._page = null;
 
-    if (this.#browser) {
-      await this.#browser.close();
+    if (this._browser) {
+      await this._browser.close();
     }
-    this.#browser = null;
+    this._browser = null;
   }
 }

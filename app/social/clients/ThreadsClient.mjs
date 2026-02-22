@@ -8,9 +8,9 @@ export default class ThreadsClient extends Client {
   key = 'threads';
   name = 'Threads';
 
-  #baseUrl = 'https://graph.threads.net/v1.0';
-  #tokenCache = new ValueCache('threads.token');
-  #accessToken;
+  _baseUrl = 'https://graph.threads.net/v1.0';
+  _tokenCache = new ValueCache('threads.token');
+  _accessToken;
 
   get console() {
     return this._console ??= prefixedConsole('Social', this.name);
@@ -23,32 +23,32 @@ export default class ThreadsClient extends Client {
       && process.env.AWS_S3_ENDPOINT;
   }
 
-  async #getAccessToken() {
-    if (this.#accessToken) {
-      return this.#accessToken;
+  async _getAccessToken() {
+    if (this._accessToken) {
+      return this._accessToken;
     }
 
     // Try to use a previously refreshed token from cache
-    let cached = await this.#tokenCache.getData();
+    let cached = await this._tokenCache.getData();
     if (cached) {
-      this.#accessToken = cached;
-      return this.#accessToken;
+      this._accessToken = cached;
+      return this._accessToken;
     }
 
     // Fall back to the .env token
-    this.#accessToken = process.env.THREADS_ACCESS_TOKEN;
-    return this.#accessToken;
+    this._accessToken = process.env.THREADS_ACCESS_TOKEN;
+    return this._accessToken;
   }
 
-  async #refreshToken() {
-    let currentToken = await this.#getAccessToken();
+  async _refreshToken() {
+    let currentToken = await this._getAccessToken();
 
     let params = new URLSearchParams({
       grant_type: 'th_refresh_token',
       access_token: currentToken,
     });
 
-    let response = await fetch(`${this.#baseUrl}/refresh_access_token?${params}`);
+    let response = await fetch(`${this._baseUrl}/refresh_access_token?${params}`);
     let data = await response.json();
 
     if (data.error) {
@@ -56,11 +56,11 @@ export default class ThreadsClient extends Client {
       return;
     }
 
-    this.#accessToken = data.access_token;
+    this._accessToken = data.access_token;
 
     // Cache the token with its expiry
     let expires = new Date(Date.now() + data.expires_in * 1000);
-    await this.#tokenCache.setData(data.access_token, expires);
+    await this._tokenCache.setData(data.access_token, expires);
 
     this.console.log(`Token refreshed, expires ${expires.toISOString()}`);
   }
@@ -73,30 +73,30 @@ export default class ThreadsClient extends Client {
 
     try {
       // Refresh the token if it hasn't been refreshed in the last 24 hours
-      let lastRefresh = await this.#tokenCache.getCachedAt();
+      let lastRefresh = await this._tokenCache.getCachedAt();
       let oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
       if (!lastRefresh || lastRefresh < oneDayAgo) {
-        await this.#refreshToken();
+        await this._refreshToken();
       }
 
-      let accessToken = await this.#getAccessToken();
+      let accessToken = await this._getAccessToken();
       let jpeg = await sharp(status.media[0].file).jpeg().toBuffer();
 
       // Upload image to S3 so it's publicly accessible
-      let { imageUrl, s3Key } = await this.#uploadImage(jpeg, generator.key);
+      let { imageUrl, s3Key } = await this._uploadImage(jpeg, generator.key);
 
       try {
         // Create a media container
-        let containerId = await this.#createContainer(status.status, imageUrl, accessToken);
+        let containerId = await this._createContainer(status.status, imageUrl, accessToken);
 
         // Wait for the container to finish processing
-        await this.#waitForContainer(containerId, accessToken);
+        await this._waitForContainer(containerId, accessToken);
 
         // Publish the container
-        await this.#publish(containerId, accessToken);
+        await this._publish(containerId, accessToken);
       } finally {
         // Clean up the temporary image from S3
-        await this.#deleteImage(s3Key);
+        await this._deleteImage(s3Key);
       }
     } catch (error) {
       this.console.error(`Failed to post ${generator.key}:`, error.message);
@@ -104,7 +104,7 @@ export default class ThreadsClient extends Client {
     }
   }
 
-  async #uploadImage(buffer, key) {
+  async _uploadImage(buffer, key) {
     let s3 = new S3Client({
       endpoint: process.env.AWS_S3_ENDPOINT,
       region: process.env.AWS_REGION,
@@ -130,7 +130,7 @@ export default class ThreadsClient extends Client {
     return { imageUrl, s3Key };
   }
 
-  async #deleteImage(s3Key) {
+  async _deleteImage(s3Key) {
     try {
       let s3 = new S3Client({
         endpoint: process.env.AWS_S3_ENDPOINT,
@@ -150,7 +150,7 @@ export default class ThreadsClient extends Client {
     }
   }
 
-  async #createContainer(text, imageUrl, accessToken) {
+  async _createContainer(text, imageUrl, accessToken) {
     let userId = process.env.THREADS_USER_ID;
     let params = new URLSearchParams({
       media_type: 'IMAGE',
@@ -159,7 +159,7 @@ export default class ThreadsClient extends Client {
       access_token: accessToken,
     });
 
-    let response = await fetch(`${this.#baseUrl}/${userId}/threads`, {
+    let response = await fetch(`${this._baseUrl}/${userId}/threads`, {
       method: 'POST',
       body: params,
     });
@@ -177,7 +177,7 @@ export default class ThreadsClient extends Client {
     return data.id;
   }
 
-  async #waitForContainer(containerId, accessToken) {
+  async _waitForContainer(containerId, accessToken) {
     // Poll container status until it's ready (or timeout after 60s)
     let maxAttempts = 12;
 
@@ -187,7 +187,7 @@ export default class ThreadsClient extends Client {
         access_token: accessToken,
       });
 
-      let response = await fetch(`${this.#baseUrl}/${containerId}?${params}`);
+      let response = await fetch(`${this._baseUrl}/${containerId}?${params}`);
       let data = await response.json();
 
       if (data.status === 'FINISHED') {
@@ -205,14 +205,14 @@ export default class ThreadsClient extends Client {
     throw new Error('Container processing timed out');
   }
 
-  async #publish(containerId, accessToken) {
+  async _publish(containerId, accessToken) {
     let userId = process.env.THREADS_USER_ID;
     let params = new URLSearchParams({
       creation_id: containerId,
       access_token: accessToken,
     });
 
-    let response = await fetch(`${this.#baseUrl}/${userId}/threads_publish`, {
+    let response = await fetch(`${this._baseUrl}/${userId}/threads_publish`, {
       method: 'POST',
       body: params,
     });
