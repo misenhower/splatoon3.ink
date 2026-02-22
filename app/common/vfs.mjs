@@ -1,4 +1,5 @@
 import { S3Client, ListObjectsV2Command } from '@aws-sdk/client-s3';
+import prefixedConsole from './prefixedConsole.mjs';
 
 const prefixes = ['assets/splatnet/', 'data/'];
 
@@ -7,6 +8,10 @@ class VirtualFileSystem {
   _listing = new Map();
   _loadPromise = null;
   _localPrefix = 'dist';
+
+  get _console() {
+    return this.__console ??= prefixedConsole('VFS');
+  }
 
   get _canUseS3() {
     return !!(
@@ -42,7 +47,7 @@ class VirtualFileSystem {
   async _loadFromS3() {
     const bucket = process.env.AWS_S3_BUCKET;
 
-    console.log('[VFS] Loading S3 listing...');
+    this._console.info('Loading S3 listing...');
 
     for (const prefix of prefixes) {
       let continuationToken;
@@ -68,7 +73,7 @@ class VirtualFileSystem {
           : undefined;
       } while (continuationToken);
 
-      console.log(`[VFS] Loaded ${count} entries for prefix "${prefix}"`);
+      this._console.info(`Loaded ${count} entries for prefix "${prefix}"`);
     }
   }
 
