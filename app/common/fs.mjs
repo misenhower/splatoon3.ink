@@ -10,7 +10,7 @@ export async function exists(file) {
     await fs.access(file);
 
     return true;
-  } catch (e) {
+  } catch {
     // Not on local disk; check VFS (S3 listing) as fallback
     return (await vfs.has(file)) ?? false;
   }
@@ -22,7 +22,7 @@ export async function olderThan(file, cutoff) {
     let stat = await fs.stat(file);
 
     return stat.mtime < cutoff;
-  } catch (e) {
+  } catch {
     // Not on local disk; check VFS (S3 listing) as fallback
     const mtime = await vfs.getMtime(file);
     if (mtime !== null) {
