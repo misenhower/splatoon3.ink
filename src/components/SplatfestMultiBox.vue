@@ -12,7 +12,7 @@
         </div>
 
         <div>
-          <img :src="festival.image.url" />
+          <img :src="festival.image.url" loading="lazy" />
 
           <div class="flex -mt-3 mb-4">
             <template v-for="(team, i) in festival.teams" :key="team.id">

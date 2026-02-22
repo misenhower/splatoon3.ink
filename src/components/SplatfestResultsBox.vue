@@ -10,7 +10,7 @@
           <div class="w-36 sm:mx-4 lg:-mx-1" />
           <template v-for="team in festival.teams" :key="team.id">
             <div class="w-12 mx-2 sm:w-20 flex justify-center py-1 rounded-sm" :style="`background-color: ${toRgba(team.color)};`">
-              <img :src="team.image.url" class="w-6 h-6" />
+              <img :src="team.image.url" class="w-6 h-6" loading="lazy" />
             </div>
           </template>
         </div>
