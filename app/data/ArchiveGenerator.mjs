@@ -38,32 +38,40 @@ function processCompletion(child, name) {
   });
 }
 
-export function generateArchives(maxDays = Infinity) {
+export function generateArchives(maxDays = Infinity, dryRun = false) {
   let generator = new ArchiveGenerator;
   generator.maxDays = maxDays;
+  generator.dryRun = dryRun;
 
   return generator.process();
 }
 
 export function generateArchivesFromCli(args) {
-  if (args.length === 0) {
-    return generateArchives();
+  let dryRun = false;
+  let maxDays = Infinity;
+
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '--dry-run') {
+      dryRun = true;
+    } else if (args[i] === '--max-days' && /^\d+$/.test(args[i + 1])) {
+      maxDays = Number(args[++i]);
+    } else {
+      throw new Error(
+        'Usage: npm run data:archive:generate -- [--dry-run] [--max-days DAYS]',
+      );
+    }
   }
 
-  if (args.length !== 2 || args[0] !== '--max-days' || !/^\d+$/.test(args[1])) {
-    throw new Error('Usage: npm run data:archive:generate -- [--max-days DAYS]');
-  }
-
-  let maxDays = Number(args[1]);
   if (maxDays < 1) {
     throw new Error('--max-days must be at least 1');
   }
 
-  return generateArchives(maxDays);
+  return generateArchives(maxDays, dryRun);
 }
 
 export default class ArchiveGenerator
 {
+  dryRun = false;
   maxDays = Infinity;
 
   async process() {
@@ -86,7 +94,10 @@ export default class ArchiveGenerator
         }
 
         currentDate = candidate.date;
-        if (await this.archiveDate(candidate)) {
+        let completed = this.dryRun
+          ? await this.previewDate(candidate)
+          : await this.archiveDate(candidate);
+        if (completed) {
           generated++;
         }
       }
@@ -102,7 +113,9 @@ export default class ArchiveGenerator
       throw e;
     }
 
-    this.console.log(`Generated ${generated} archives`);
+    this.console.log(
+      this.dryRun ? `Would generate ${generated} archives` : `Generated ${generated} archives`,
+    );
   }
 
   // Properties
@@ -136,16 +149,23 @@ export default class ArchiveGenerator
 
   // Archive generation
 
-  async archiveDate(candidate) {
-    let objects = await this.getSourceObjects(candidate.prefix);
-    if (objects.length === 0) {
+  async previewDate(candidate) {
+    let objects = await this.getReadyObjects(candidate);
+    if (!objects) {
       return false;
     }
 
-    let newestObject = Math.max(...objects.map(object => object.lastModified.getTime()));
-    if (newestObject > Date.now() - quietPeriod) {
-      this.console.log(`Skipping ${candidate.date}; its source files are still changing`);
+    this.console.log(
+      `Would generate ${candidate.archiveKey} and ${candidate.manifestKey} `
+      + `from ${objects.length} files`,
+    );
 
+    return true;
+  }
+
+  async archiveDate(candidate) {
+    let objects = await this.getReadyObjects(candidate);
+    if (!objects) {
       return false;
     }
 
@@ -189,6 +209,22 @@ export default class ArchiveGenerator
     } finally {
       await fs.rm(temporaryDirectory, { force: true, recursive: true });
     }
+  }
+
+  async getReadyObjects(candidate) {
+    let objects = await this.getSourceObjects(candidate.prefix);
+    if (objects.length === 0) {
+      return null;
+    }
+
+    let newestObject = Math.max(...objects.map(object => object.lastModified.getTime()));
+    if (newestObject > Date.now() - quietPeriod) {
+      this.console.log(`Skipping ${candidate.date}; its source files are still changing`);
+
+      return null;
+    }
+
+    return objects;
   }
 
   async downloadObjects(prefix, objects, sourceDirectory) {
