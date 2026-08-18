@@ -4,6 +4,7 @@ import { update } from './data/index.mjs';
 import { warmCaches } from './splatnet/index.mjs';
 import { sendStatuses } from './social/index.mjs';
 import { archiveData } from './data/DataArchiver.mjs';
+import { generateArchives } from './data/ArchiveGenerator.mjs';
 import { updateAvatars } from './social/updateAvatars.mjs';
 
 let updating = false;
@@ -62,5 +63,6 @@ export default function() {
   }, null, true);
 
   new CronJob('30 * * * *', updateAvatars, null, true);
+  new CronJob('30 0 * * *', () => generateArchives(10), null, true, 'UTC');
   new CronJob('0 55 4 * * *', restartToRefreshConfig, null, true);
 }

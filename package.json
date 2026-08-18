@@ -23,6 +23,7 @@
     "splatnet:all": "node app/index.mjs splatnet all",
     "warmCaches": "node app/index.mjs warmCaches",
     "data:archive": "node app/index.mjs dataArchive",
+    "data:archive:generate": "node app/index.mjs archiveGenerate",
     "sync": "node app/index.mjs sync",
     "sync:upload": "node app/index.mjs syncUpload",
     "sync:download": "node app/index.mjs syncDownload"
