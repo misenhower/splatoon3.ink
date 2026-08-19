@@ -38,15 +38,15 @@ function processCompletion(child, name) {
   });
 }
 
-export function generateArchives(maxDays = Infinity, dryRun = false) {
-  let generator = new ArchiveGenerator;
-  generator.maxDays = maxDays;
-  generator.dryRun = dryRun;
+export function compressArchives(maxDays = Infinity, dryRun = false) {
+  let compressor = new ArchiveCompressor;
+  compressor.maxDays = maxDays;
+  compressor.dryRun = dryRun;
 
-  return generator.process();
+  return compressor.process();
 }
 
-export function generateArchivesFromCli(args) {
+export function compressArchivesFromCli(args) {
   let dryRun = false;
   let maxDays = Infinity;
 
@@ -57,7 +57,7 @@ export function generateArchivesFromCli(args) {
       maxDays = Number(args[++i]);
     } else {
       throw new Error(
-        'Usage: npm run data:archive:generate -- [--dry-run] [--max-days DAYS]',
+        'Usage: npm run data:archive:compress -- [--dry-run] [--max-days DAYS]',
       );
     }
   }
@@ -66,30 +66,30 @@ export function generateArchivesFromCli(args) {
     throw new Error('--max-days must be at least 1');
   }
 
-  return generateArchives(maxDays, dryRun);
+  return compressArchives(maxDays, dryRun);
 }
 
-export default class ArchiveGenerator
+export default class ArchiveCompressor
 {
   dryRun = false;
   maxDays = Infinity;
 
   async process() {
     if (!this.canRun) {
-      this.console.log('Skipping archive generator');
+      this.console.log('Skipping archive compressor');
 
       return;
     }
 
     let currentDate;
-    let generated = 0;
+    let compressed = 0;
 
     try {
       let candidates = await this.getCandidates();
       this.console.log(`Found ${candidates.length} dates to archive`);
 
       for (let candidate of candidates) {
-        if (generated >= this.maxDays) {
+        if (compressed >= this.maxDays) {
           break;
         }
 
@@ -98,7 +98,7 @@ export default class ArchiveGenerator
           ? await this.previewDate(candidate)
           : await this.archiveDate(candidate);
         if (completed) {
-          generated++;
+          compressed++;
         }
       }
     } catch (e) {
@@ -114,14 +114,16 @@ export default class ArchiveGenerator
     }
 
     this.console.log(
-      this.dryRun ? `Would generate ${generated} archives` : `Generated ${generated} archives`,
+      this.dryRun
+        ? `Would compress ${compressed} daily archives`
+        : `Compressed ${compressed} daily archives`,
     );
   }
 
   // Properties
 
   get console() {
-    this._console ??= prefixedConsole('Archive Generator');
+    this._console ??= prefixedConsole('Archive Compressor');
 
     return this._console;
   }
@@ -147,7 +149,7 @@ export default class ArchiveGenerator
     });
   }
 
-  // Archive generation
+  // Archive compression
 
   async previewDate(candidate) {
     let objects = await this.getReadyObjects(candidate);
@@ -156,7 +158,7 @@ export default class ArchiveGenerator
     }
 
     this.console.log(
-      `Would generate ${candidate.archiveKey} and ${candidate.manifestKey} `
+      `Would create ${candidate.archiveKey} and ${candidate.manifestKey} `
       + `from ${objects.length} files`,
     );
 
