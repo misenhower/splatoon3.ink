@@ -28,7 +28,7 @@ const locales = {
 async function readFile(file) {
   try {
     return JSON.parse(await fs.readFile(file));
-  } catch (e) {
+  } catch {
     return {};
   }
 }
