@@ -16,7 +16,7 @@ export default class ValueCache
       let data = await fs.readFile(this.path);
 
       return JSON.parse(data);
-    } catch (e) {
+    } catch {
       return null;
     }
   }
