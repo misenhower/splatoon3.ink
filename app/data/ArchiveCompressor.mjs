@@ -3,7 +3,6 @@ import { createReadStream, createWriteStream } from 'node:fs';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { spawn } from 'node:child_process';
 import { pipeline } from 'node:stream/promises';
 import * as Sentry from '@sentry/node';
 import {
@@ -13,30 +12,11 @@ import {
   S3Client,
 } from '@aws-sdk/client-s3';
 import prefixedConsole from '../common/prefixedConsole.mjs';
+import { createArchiveManifest } from './ArchiveManifest.mjs';
+import TarZstdWriter from './TarZstdWriter.mjs';
 
 const downloadLimit = 5;
 const quietPeriod = 30 * 60 * 1000;
-
-function processCompletion(child, name) {
-  let stderr = '';
-  child.stderr.setEncoding('utf8');
-  child.stderr.on('data', chunk => {
-    stderr += chunk;
-  });
-
-  return new Promise((resolve, reject) => {
-    child.once('error', reject);
-    child.once('close', (code, signal) => {
-      if (code === 0) {
-        resolve();
-      } else {
-        reject(new Error(
-          `${name} failed (${signal ? `signal ${signal}` : `exit ${code}`}): ${stderr.trim()}`,
-        ));
-      }
-    });
-  });
-}
 
 export function compressArchives(maxDays = Infinity, dryRun = false) {
   let compressor = new ArchiveCompressor;
@@ -73,6 +53,11 @@ export default class ArchiveCompressor
 {
   dryRun = false;
   maxDays = Infinity;
+
+  constructor(s3Client, archiveWriter = new TarZstdWriter) {
+    this._client = s3Client;
+    this.archiveWriter = archiveWriter;
+  }
 
   async process() {
     if (!this.canRun) {
@@ -184,20 +169,14 @@ export default class ArchiveCompressor
       files.sort((a, b) => a.path.localeCompare(b.path));
 
       this.console.log(`Compressing ${candidate.date}`);
-      await this.compress(sourceDirectory, archivePath, files.map(file => file.path));
+      await this.archiveWriter.write(sourceDirectory, archivePath, files.map(file => file.path));
 
       let archive = {
         path: candidate.archiveKey,
         bytes: (await fs.stat(archivePath)).size,
         hash: `sha256:${await this.hashFile(archivePath)}`,
       };
-      let manifest = {
-        version: 1,
-        date: candidate.date,
-        createdAt: new Date().toISOString(),
-        archive,
-        files,
-      };
+      let manifest = createArchiveManifest(candidate.date, archive, files);
 
       this.console.log(`Uploading ${candidate.archiveKey}`);
       await this.upload(candidate.archiveKey, await fs.readFile(archivePath), 'application/zstd');
@@ -277,33 +256,6 @@ export default class ArchiveCompressor
       bytes,
       hash: `sha256:${await this.hashFile(destination)}`,
     };
-  }
-
-  async compress(sourceDirectory, archivePath, files) {
-    let tar = spawn('tar', ['-cf', '-', '-C', sourceDirectory, '--', ...files], {
-      stdio: ['ignore', 'pipe', 'pipe'],
-    });
-    let zstd = spawn('zstd', [
-      '-19',
-      '--long=27',
-      '--single-thread',
-      '-f',
-      '-o', archivePath,
-    ], {
-      stdio: ['pipe', 'ignore', 'pipe'],
-    });
-
-    let results = await Promise.allSettled([
-      processCompletion(tar, 'tar'),
-      pipeline(tar.stdout, zstd.stdin),
-      processCompletion(zstd, 'zstd'),
-    ]);
-    let errors = results
-      .filter(result => result.status === 'rejected')
-      .map(result => result.reason);
-    if (errors.length > 0) {
-      throw new AggregateError(errors, `Could not create ${path.basename(archivePath)}`);
-    }
   }
 
   async hashFile(file) {

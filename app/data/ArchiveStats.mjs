@@ -5,6 +5,7 @@ import {
 } from '@aws-sdk/client-s3';
 import pLimit from 'p-limit';
 import prefixedConsole from '../common/prefixedConsole.mjs';
+import { getArchiveManifestStats, parseArchiveManifest } from './ArchiveManifest.mjs';
 
 const manifestSuffix = '.tar.zst.manifest.json';
 const requestLimit = pLimit(10);
@@ -115,22 +116,10 @@ export default class ArchiveStats
       throw new Error(`S3 returned no body for ${key}`);
     }
 
-    let manifest = JSON.parse(await response.Body.transformToString());
     let archivePath = key.slice(0, -'.manifest.json'.length);
-    if (manifest.archive?.path !== archivePath
-      || !Number.isSafeInteger(manifest.archive?.bytes)
-      || manifest.archive.bytes < 1
-      || !Array.isArray(manifest.files)
-      || manifest.files.some(file => !Number.isSafeInteger(file.bytes) || file.bytes < 0)) {
-      throw new Error(`Invalid archive manifest: ${key}`);
-    }
+    let manifest = parseArchiveManifest(await response.Body.transformToString(), archivePath);
 
-    return {
-      path: manifest.archive.path,
-      compressedBytes: manifest.archive.bytes,
-      fileCount: manifest.files.length,
-      originalBytes: manifest.files.reduce((total, file) => total + file.bytes, 0),
-    };
+    return getArchiveManifestStats(manifest);
   }
 
   async list(prefix, delimiter) {
