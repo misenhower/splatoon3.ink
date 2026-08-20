@@ -9,6 +9,8 @@ import ImageWriter from './social/clients/ImageWriter.mjs';
 import BlueskyClient from './social/clients/BlueskyClient.mjs';
 import ThreadsClient from './social/clients/ThreadsClient.mjs';
 import { archiveData } from './data/DataArchiver.mjs';
+import { compressArchivesFromCli } from './data/ArchiveCompressor.mjs';
+import { reportArchiveStatsFromCli } from './data/ArchiveStats.mjs';
 import { sentryInit } from './common/sentry.mjs';
 import { sync, syncUpload, syncDownload } from './sync/index.mjs';
 import { updateAvatars } from './social/updateAvatars.mjs';
@@ -28,6 +30,8 @@ const actions = {
   splatnet: update,
   warmCaches,
   dataArchive: archiveData,
+  archiveCompress: (...args) => compressArchivesFromCli(args),
+  archiveStats: (...args) => reportArchiveStatsFromCli(args),
   sync,
   syncUpload,
   syncDownload,
@@ -38,8 +42,7 @@ const command = process.argv[2];
 const params = process.argv.slice(3);
 const action = actions[command];
 if (action) {
-  action(...params);
+  await action(...params);
 } else {
   console.error(`Unrecognized command: ${command}`);
 }
-

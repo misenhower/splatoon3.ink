@@ -4,6 +4,11 @@ FROM node:22
 WORKDIR /app
 ENV PUPPETEER_SKIP_DOWNLOAD=true
 
+# Archive compression
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends zstd \
+  && rm -rf /var/lib/apt/lists/*
+
 # Install NPM dependencies
 COPY package*.json ./
 RUN npm ci
