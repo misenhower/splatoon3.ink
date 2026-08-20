@@ -54,8 +54,9 @@ export default class ArchiveStats
 
     this.console.log(
       `${archives.length} archives containing ${fileCount} files: `
-      + `${this.formatBytes(originalBytes)} -> ${this.formatBytes(compressedBytes)}; `
-      + `saved ${this.formatBytes(savedBytes)} (${this.formatPercent(savedBytes, originalBytes)}), `
+      + `${this.formatBytes(originalBytes)} source data -> ${this.formatBytes(compressedBytes)} compressed; `
+      + `projected source-file savings after pruning ${this.formatBytes(savedBytes)} `
+      + `(${this.formatPercent(savedBytes, originalBytes)}; manifests excluded), `
       + `${this.formatRatio(originalBytes, compressedBytes)}:1 compression`,
     );
   }
@@ -158,12 +159,12 @@ export default class ArchiveStats
   }
 
   formatBytes(bytes) {
-    let units = ['B', 'KB', 'MB', 'GB', 'TB'];
+    let units = ['B', 'KiB', 'MiB', 'GiB', 'TiB'];
     let unit = 0;
     let value = bytes;
 
-    while (Math.abs(value) >= 1000 && unit < units.length - 1) {
-      value /= 1000;
+    while (Math.abs(value) >= 1024 && unit < units.length - 1) {
+      value /= 1024;
       unit++;
     }
 
