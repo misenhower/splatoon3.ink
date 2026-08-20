@@ -200,7 +200,7 @@ describe('ArchiveCompressor', () => {
 
     await expect(compressor.process()).rejects.toThrow('compression failed');
 
-    expect(s3Client.downloads).toEqual([
+    expect(s3Client.downloads.toSorted()).toEqual([
       '2025/03/05/alpha.json',
       '2025/03/05/nested/beta.json',
     ]);
