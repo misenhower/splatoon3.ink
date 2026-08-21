@@ -17,6 +17,26 @@
     var BUCKET_WEBSITE_URL = 'https://splatoon3.ink';
   </script>
   <script type="text/javascript" src="https://rufuspollock.github.io/s3-bucket-listing/list.js"></script>
+  <script type="text/javascript">
+    var listing = document.querySelector('#listing');
+
+    function rewriteArchiveLink() {
+      var archiveLink = Array.from(listing.querySelectorAll('a'))
+        .find(link => link.textContent.trim() === 'archive/');
+
+      if (archiveLink) {
+        archiveLink.href = '/data/archive/index.html';
+        return true;
+      }
+
+      return false;
+    }
+
+    rewriteArchiveLink();
+
+    var archiveLinkObserver = new MutationObserver(rewriteArchiveLink);
+    archiveLinkObserver.observe(listing, { childList: true, subtree: true });
+  </script>
 </body>
 
 </html>
