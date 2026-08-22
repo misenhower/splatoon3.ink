@@ -27,6 +27,7 @@ export default class TarZstdWriter
 {
   async write(sourceDirectory, archivePath, files) {
     let tar = spawn('tar', ['-cf', '-', '-C', sourceDirectory, '--', ...files], {
+      env: { ...process.env, COPYFILE_DISABLE: '1' },
       stdio: ['ignore', 'pipe', 'pipe'],
     });
     let zstd = spawn('zstd', [

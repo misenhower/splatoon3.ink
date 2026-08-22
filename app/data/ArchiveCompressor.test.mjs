@@ -6,7 +6,29 @@ import {
   PutObjectCommand,
 } from '@aws-sdk/client-s3';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import ArchiveBuilder from './ArchiveBuilder.mjs';
 import ArchiveCompressor from './ArchiveCompressor.mjs';
+
+const archiveKey = '2025/03/2025-03-05.tar.zst';
+const manifestKey = `${archiveKey}.manifest.json`;
+
+function completedManifest() {
+  return {
+    version: 1,
+    date: '2025-03-05',
+    createdAt: '2026-08-20T00:00:00.000Z',
+    archive: {
+      path: archiveKey,
+      bytes: 7,
+      hash: `sha256:${'a'.repeat(64)}`,
+    },
+    files: [{
+      path: 'alpha.json',
+      bytes: 6,
+      hash: `sha256:${'b'.repeat(64)}`,
+    }],
+  };
+}
 
 class FakeS3Client
 {
@@ -16,6 +38,7 @@ class FakeS3Client
     ['2025/03/05/alpha.json', Buffer.from('alpha\n')],
     ['2025/03/05/nested/beta.json', Buffer.from('beta\n')],
   ]);
+  manifestLastModified = new Date('2026-08-20T00:00:00.000Z');
   secondDay = false;
   uploads = [];
 
@@ -26,6 +49,17 @@ class FakeS3Client
 
     if (command instanceof GetObjectCommand) {
       this.downloads.push(command.input.Key);
+
+      if (command.input.Key === manifestKey) {
+        return {
+          Body: {
+            transformToString: async () => JSON.stringify(completedManifest()),
+          },
+        };
+      }
+      if (command.input.Key === archiveKey) {
+        return { Body: Readable.from('archive') };
+      }
 
       return { Body: Readable.from(this.files.get(command.input.Key)) };
     }
@@ -54,7 +88,10 @@ class FakeS3Client
         ],
         Contents: this.completed ? [
           { Key: '2025/03/2025-03-05.tar.zst' },
-          { Key: '2025/03/2025-03-05.tar.zst.manifest.json' },
+          {
+            Key: '2025/03/2025-03-05.tar.zst.manifest.json',
+            LastModified: this.manifestLastModified,
+          },
         ] : [],
       };
     }
@@ -62,6 +99,7 @@ class FakeS3Client
       return { Contents: [...this.files]
         .filter(([Key]) => Key.startsWith(prefix))
         .map(([Key, body]) => ({
+          ETag: '"9f9f90dbe3e5ee1218c86b8839db1995"',
           Key,
           LastModified: new Date('2025-03-05T23:45:00.000Z'),
           Size: body.length,
@@ -120,7 +158,9 @@ describe('ArchiveCompressor', () => {
         await fs.writeFile(archivePath, 'fake compressed archive');
       },
     };
-    let compressor = new ArchiveCompressor(s3Client, archiveWriter);
+    let archiveBuilder = new ArchiveBuilder(s3Client, archiveWriter);
+    archiveBuilder._console = { log: vi.fn() };
+    let compressor = new ArchiveCompressor(s3Client, archiveBuilder);
     compressor._console = { error: vi.fn(), log: vi.fn() };
 
     await compressor.process();
@@ -157,8 +197,8 @@ describe('ArchiveCompressor', () => {
 
   it('does not download or upload files during a dry run', async () => {
     let s3Client = new FakeS3Client;
-    let archiveWriter = { write: vi.fn() };
-    let compressor = new ArchiveCompressor(s3Client, archiveWriter);
+    let archiveBuilder = { build: vi.fn() };
+    let compressor = new ArchiveCompressor(s3Client, archiveBuilder);
     compressor.dryRun = true;
     compressor._console = { error: vi.fn(), log: vi.fn() };
 
@@ -166,21 +206,21 @@ describe('ArchiveCompressor', () => {
 
     expect(s3Client.downloads).toEqual([]);
     expect(s3Client.uploads).toEqual([]);
-    expect(archiveWriter.write).not.toHaveBeenCalled();
+    expect(archiveBuilder.build).not.toHaveBeenCalled();
   });
 
   it('leaves a completed archive alone', async () => {
     let s3Client = new FakeS3Client;
     s3Client.completed = true;
-    let archiveWriter = { write: vi.fn() };
-    let compressor = new ArchiveCompressor(s3Client, archiveWriter);
+    let archiveBuilder = { build: vi.fn() };
+    let compressor = new ArchiveCompressor(s3Client, archiveBuilder);
     compressor._console = { error: vi.fn(), log: vi.fn() };
 
     await compressor.process();
 
     expect(s3Client.downloads).toEqual([]);
     expect(s3Client.uploads).toEqual([]);
-    expect(archiveWriter.write).not.toHaveBeenCalled();
+    expect(archiveBuilder.build).not.toHaveBeenCalled();
   });
 
   it('stops after a failed day and removes its temporary files', async () => {
@@ -195,7 +235,9 @@ describe('ArchiveCompressor', () => {
         throw new Error('compression failed');
       },
     };
-    let compressor = new ArchiveCompressor(s3Client, archiveWriter);
+    let archiveBuilder = new ArchiveBuilder(s3Client, archiveWriter);
+    archiveBuilder._console = { log: vi.fn() };
+    let compressor = new ArchiveCompressor(s3Client, archiveBuilder);
     compressor._console = { error: vi.fn(), log: vi.fn() };
 
     await expect(compressor.process()).rejects.toThrow('compression failed');
@@ -215,7 +257,9 @@ describe('ArchiveCompressor', () => {
         await fs.writeFile(archivePath, 'archive');
       },
     };
-    let compressor = new ArchiveCompressor(s3Client, archiveWriter);
+    let archiveBuilder = new ArchiveBuilder(s3Client, archiveWriter);
+    archiveBuilder._console = { log: vi.fn() };
+    let compressor = new ArchiveCompressor(s3Client, archiveBuilder);
     compressor._console = { error: vi.fn(), log: vi.fn() };
 
     await compressor.process();
@@ -235,7 +279,9 @@ describe('ArchiveCompressor', () => {
         await fs.writeFile(archivePath, 'archive');
       },
     };
-    let compressor = new ArchiveCompressor(s3Client, archiveWriter);
+    let archiveBuilder = new ArchiveBuilder(s3Client, archiveWriter);
+    archiveBuilder._console = { log: vi.fn() };
+    let compressor = new ArchiveCompressor(s3Client, archiveBuilder);
     compressor.maxDays = 1;
     compressor._console = { error: vi.fn(), log: vi.fn() };
 
