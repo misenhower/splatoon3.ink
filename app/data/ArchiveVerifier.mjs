@@ -4,6 +4,8 @@ import { Transform } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import * as tar from 'tar-stream';
 
+class ArchiveContentError extends Error {}
+
 function processCompletion(child) {
   let stderr = '';
   child.stderr.setEncoding('utf8');
@@ -69,6 +71,11 @@ export default class ArchiveVerifier
       decompressor.completed,
       this.verifyTar(decompressor.stream, inventory),
     ]);
+    let verificationResult = results[2];
+    if (verificationResult.status === 'rejected'
+      && verificationResult.reason instanceof ArchiveContentError) {
+      throw verificationResult.reason;
+    }
     let errors = results
       .filter(result => result.status === 'rejected')
       .map(result => result.reason);
@@ -115,22 +122,22 @@ export default class ArchiveVerifier
     await pipeline(stream, extract);
 
     if (verified.size !== manifestByPath.size) {
-      throw new Error('Tar archive is missing files from its manifest');
+      throw new ArchiveContentError('Tar archive is missing files from its manifest');
     }
   }
 
   async verifyEntry(header, entry, manifestByPath, sourceByPath, verified) {
     if (header.type !== 'file') {
-      throw new Error(`Tar archive contains a non-file entry: ${header.name}`);
+      throw new ArchiveContentError(`Tar archive contains a non-file entry: ${header.name}`);
     }
     if (verified.has(header.name)) {
-      throw new Error(`Tar archive contains a duplicate file: ${header.name}`);
+      throw new ArchiveContentError(`Tar archive contains a duplicate file: ${header.name}`);
     }
 
     let manifestFile = manifestByPath.get(header.name);
     let sourceObject = sourceByPath.get(header.name);
     if (!manifestFile || !sourceObject) {
-      throw new Error(`Tar archive contains an unexpected file: ${header.name}`);
+      throw new ArchiveContentError(`Tar archive contains an unexpected file: ${header.name}`);
     }
     verified.add(header.name);
 
@@ -144,10 +151,10 @@ export default class ArchiveVerifier
     }
 
     if (bytes !== manifestFile.bytes) {
-      throw new Error(`Size does not match the manifest for ${header.name}`);
+      throw new ArchiveContentError(`Size does not match the manifest for ${header.name}`);
     }
     if (`sha256:${sha256.digest('hex')}` !== manifestFile.hash) {
-      throw new Error(`SHA-256 does not match the manifest for ${header.name}`);
+      throw new ArchiveContentError(`SHA-256 does not match the manifest for ${header.name}`);
     }
 
     let etag = sourceObject.etag;
@@ -155,10 +162,10 @@ export default class ArchiveVerifier
       etag = etag.slice(1, -1);
     }
     if (!/^[a-fA-F0-9]{32}$/.test(etag)) {
-      throw new Error(`S3 ETag is not an MD5 hash for ${header.name}`);
+      throw new ArchiveContentError(`S3 ETag is not an MD5 hash for ${header.name}`);
     }
     if (md5.digest('hex') !== etag.toLowerCase()) {
-      throw new Error(`MD5 does not match the S3 ETag for ${header.name}`);
+      throw new ArchiveContentError(`MD5 does not match the S3 ETag for ${header.name}`);
     }
   }
 }

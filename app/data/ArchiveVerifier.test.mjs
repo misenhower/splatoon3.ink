@@ -97,12 +97,15 @@ describe('ArchiveVerifier', () => {
     )).rejects.toThrow('S3 ETag is not an MD5 hash for alpha.json');
   });
 
-  it('rejects a file that exists only in the tar archive', async () => {
+  it('reports an unexpected tar file instead of the resulting broken pipe', async () => {
     let archive = await createTar([
       ['alpha.json', 'alpha\n'],
       ['extra.json', 'extra\n'],
     ]);
-    let verifier = new ArchiveVerifier(identityDecompressor);
+    let verifier = new ArchiveVerifier(stream => ({
+      completed: Promise.reject(new Error('zstd failed (exit 70): Broken pipe')),
+      stream,
+    }));
 
     await expect(verifier.verify(
       Readable.from(archive),

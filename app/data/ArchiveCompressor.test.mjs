@@ -16,6 +16,7 @@ class FakeS3Client
     ['2025/03/05/alpha.json', Buffer.from('alpha\n')],
     ['2025/03/05/nested/beta.json', Buffer.from('beta\n')],
   ]);
+  manifestLastModified = new Date('2026-08-20T00:00:00.000Z');
   secondDay = false;
   uploads = [];
 
@@ -54,7 +55,10 @@ class FakeS3Client
         ],
         Contents: this.completed ? [
           { Key: '2025/03/2025-03-05.tar.zst' },
-          { Key: '2025/03/2025-03-05.tar.zst.manifest.json' },
+          {
+            Key: '2025/03/2025-03-05.tar.zst.manifest.json',
+            LastModified: this.manifestLastModified,
+          },
         ] : [],
       };
     }
@@ -179,6 +183,41 @@ describe('ArchiveCompressor', () => {
     await compressor.process();
 
     expect(s3Client.downloads).toEqual([]);
+    expect(s3Client.uploads).toEqual([]);
+    expect(archiveWriter.write).not.toHaveBeenCalled();
+  });
+
+  it('rebuilds a completed archive older than the repair cutoff', async () => {
+    let s3Client = new FakeS3Client;
+    s3Client.completed = true;
+    let archiveWriter = {
+      async write(sourceDirectory, archivePath) {
+        await fs.writeFile(archivePath, 'replacement archive');
+      },
+    };
+    let compressor = new ArchiveCompressor(s3Client, archiveWriter);
+    compressor.rebuildBefore = Date.parse('2026-08-22T16:49:12.000Z');
+    compressor._console = { error: vi.fn(), log: vi.fn() };
+
+    await compressor.process();
+
+    expect(s3Client.uploads.map(upload => upload.Key)).toEqual([
+      '2025/03/2025-03-05.tar.zst',
+      '2025/03/2025-03-05.tar.zst.manifest.json',
+    ]);
+  });
+
+  it('leaves a rebuilt archive newer than the repair cutoff alone', async () => {
+    let s3Client = new FakeS3Client;
+    s3Client.completed = true;
+    s3Client.manifestLastModified = new Date('2026-08-23T00:00:00.000Z');
+    let archiveWriter = { write: vi.fn() };
+    let compressor = new ArchiveCompressor(s3Client, archiveWriter);
+    compressor.rebuildBefore = Date.parse('2026-08-22T16:49:12.000Z');
+    compressor._console = { error: vi.fn(), log: vi.fn() };
+
+    await compressor.process();
+
     expect(s3Client.uploads).toEqual([]);
     expect(archiveWriter.write).not.toHaveBeenCalled();
   });

@@ -18,10 +18,11 @@ import TarZstdWriter from './TarZstdWriter.mjs';
 const downloadLimit = 5;
 const quietPeriod = 30 * 60 * 1000;
 
-export function compressArchives(maxDays = Infinity, dryRun = false) {
+export function compressArchives(maxDays = Infinity, dryRun = false, rebuildBefore = null) {
   let compressor = new ArchiveCompressor;
   compressor.maxDays = maxDays;
   compressor.dryRun = dryRun;
+  compressor.rebuildBefore = rebuildBefore;
 
   return compressor.process();
 }
@@ -29,15 +30,19 @@ export function compressArchives(maxDays = Infinity, dryRun = false) {
 export function compressArchivesFromCli(args) {
   let dryRun = false;
   let maxDays = Infinity;
+  let rebuildBefore = null;
 
   for (let i = 0; i < args.length; i++) {
     if (args[i] === '--dry-run') {
       dryRun = true;
+    } else if (args[i] === '--rebuild-before' && Number.isFinite(Date.parse(args[i + 1]))) {
+      rebuildBefore = Date.parse(args[++i]);
     } else if (args[i] === '--max-days' && /^\d+$/.test(args[i + 1])) {
       maxDays = Number(args[++i]);
     } else {
       throw new Error(
-        'Usage: npm run data:archive:compress -- [--dry-run] [--max-days DAYS]',
+        'Usage: npm run data:archive:compress -- '
+        + '[--dry-run] [--max-days DAYS] [--rebuild-before TIMESTAMP]',
       );
     }
   }
@@ -46,13 +51,14 @@ export function compressArchivesFromCli(args) {
     throw new Error('--max-days must be at least 1');
   }
 
-  return compressArchives(maxDays, dryRun);
+  return compressArchives(maxDays, dryRun, rebuildBefore);
 }
 
 export default class ArchiveCompressor
 {
   dryRun = false;
   maxDays = Infinity;
+  rebuildBefore = null;
 
   constructor(s3Client, archiveWriter = new TarZstdWriter) {
     this._client = s3Client;
@@ -143,7 +149,8 @@ export default class ArchiveCompressor
     }
 
     this.console.log(
-      `Would create ${candidate.archiveKey} and ${candidate.manifestKey} `
+      `Would ${candidate.exists ? 'replace' : 'create'} `
+      + `${candidate.archiveKey} and ${candidate.manifestKey} `
       + `from ${objects.length} files`,
     );
 
@@ -178,7 +185,7 @@ export default class ArchiveCompressor
       };
       let manifest = createArchiveManifest(candidate.date, archive, files);
 
-      this.console.log(`Uploading ${candidate.archiveKey}`);
+      this.console.log(`${candidate.exists ? 'Replacing' : 'Uploading'} ${candidate.archiveKey}`);
       await this.upload(candidate.archiveKey, await fs.readFile(archivePath), 'application/zstd');
       await this.upload(
         candidate.manifestKey,
@@ -290,7 +297,7 @@ export default class ArchiveCompressor
 
       for (let month of months.sort()) {
         let listing = await this.list(month, '/');
-        let existing = new Set(listing.objects.map(object => object.Key));
+        let existing = new Map(listing.objects.map(object => [object.Key, object]));
 
         for (let prefix of listing.prefixes.sort()) {
           let date = this.dateFromPrefix(prefix);
@@ -300,11 +307,22 @@ export default class ArchiveCompressor
 
           let archiveKey = `${month}${date}.tar.zst`;
           let manifestKey = `${archiveKey}.manifest.json`;
-          if (existing.has(archiveKey) && existing.has(manifestKey)) {
-            continue;
+          let exists = existing.has(archiveKey) && existing.has(manifestKey);
+          if (exists) {
+            if (this.rebuildBefore === null) {
+              continue;
+            }
+
+            let modified = existing.get(manifestKey).LastModified?.getTime();
+            if (!Number.isFinite(modified)) {
+              throw new Error(`S3 returned incomplete metadata for ${manifestKey}`);
+            }
+            if (modified >= this.rebuildBefore) {
+              continue;
+            }
           }
 
-          candidates.push({ archiveKey, date, manifestKey, prefix });
+          candidates.push({ archiveKey, date, exists, manifestKey, prefix });
         }
       }
     }
