@@ -1,7 +1,7 @@
 import { Readable } from 'node:stream';
 import { describe, expect, it } from 'vitest';
 import * as tar from 'tar-stream';
-import ArchiveVerifier from './ArchiveVerifier.mjs';
+import ArchiveVerifier, { AppleDoubleArchiveError } from './ArchiveVerifier.mjs';
 
 async function createTar(files) {
   let pack = tar.pack();
@@ -112,6 +112,23 @@ describe('ArchiveVerifier', () => {
       manifestFor(archive),
       [sourceObject()],
     )).rejects.toThrow('Tar archive contains an unexpected file: extra.json');
+  });
+
+  it('identifies unexpected macOS AppleDouble files', async () => {
+    let archive = await createTar([
+      ['._alpha.json', 'metadata'],
+      ['alpha.json', 'alpha\n'],
+    ]);
+    let verifier = new ArchiveVerifier(identityDecompressor);
+
+    let error = await verifier.verify(
+      Readable.from(archive),
+      manifestFor(archive),
+      [sourceObject()],
+    ).catch(reason => reason);
+
+    expect(error).toBeInstanceOf(AppleDoubleArchiveError);
+    expect(error.path).toBe('._alpha.json');
   });
 
   it('rejects a file whose MD5 does not match its S3 ETag', async () => {

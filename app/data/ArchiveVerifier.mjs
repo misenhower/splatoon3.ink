@@ -1,10 +1,19 @@
 import crypto from 'node:crypto';
 import { spawn } from 'node:child_process';
+import path from 'node:path';
 import { Transform } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import * as tar from 'tar-stream';
 
 class ArchiveContentError extends Error {}
+
+export class AppleDoubleArchiveError extends ArchiveContentError
+{
+  constructor(filePath) {
+    super(`Tar archive contains an unexpected file: ${filePath}`);
+    this.path = filePath;
+  }
+}
 
 function processCompletion(child) {
   let stderr = '';
@@ -137,6 +146,10 @@ export default class ArchiveVerifier
     let manifestFile = manifestByPath.get(header.name);
     let sourceObject = sourceByPath.get(header.name);
     if (!manifestFile || !sourceObject) {
+      if (path.posix.basename(header.name).startsWith('._')) {
+        throw new AppleDoubleArchiveError(header.name);
+      }
+
       throw new ArchiveContentError(`Tar archive contains an unexpected file: ${header.name}`);
     }
     verified.add(header.name);

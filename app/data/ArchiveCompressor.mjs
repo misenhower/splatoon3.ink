@@ -12,7 +12,8 @@ import {
   S3Client,
 } from '@aws-sdk/client-s3';
 import prefixedConsole from '../common/prefixedConsole.mjs';
-import { createArchiveManifest } from './ArchiveManifest.mjs';
+import { createArchiveManifest, parseArchiveManifest } from './ArchiveManifest.mjs';
+import ArchiveVerifier, { AppleDoubleArchiveError } from './ArchiveVerifier.mjs';
 import TarZstdWriter from './TarZstdWriter.mjs';
 
 const downloadLimit = 5;
@@ -60,9 +61,14 @@ export default class ArchiveCompressor
   maxDays = Infinity;
   rebuildBefore = null;
 
-  constructor(s3Client, archiveWriter = new TarZstdWriter) {
+  constructor(
+    s3Client,
+    archiveWriter = new TarZstdWriter,
+    archiveVerifier = new ArchiveVerifier,
+  ) {
     this._client = s3Client;
     this.archiveWriter = archiveWriter;
+    this.archiveVerifier = archiveVerifier;
   }
 
   async process() {
@@ -77,7 +83,9 @@ export default class ArchiveCompressor
 
     try {
       let candidates = await this.getCandidates();
-      this.console.log(`Found ${candidates.length} dates to archive`);
+      this.console.log(
+        `Found ${candidates.length} dates to ${this.rebuildBefore === null ? 'archive' : 'inspect'}`,
+      );
 
       for (let candidate of candidates) {
         if (compressed >= this.maxDays) {
@@ -144,7 +152,7 @@ export default class ArchiveCompressor
 
   async previewDate(candidate) {
     let objects = await this.getReadyObjects(candidate);
-    if (!objects) {
+    if (!objects || candidate.exists && !await this.needsRebuild(candidate, objects)) {
       return false;
     }
 
@@ -159,7 +167,7 @@ export default class ArchiveCompressor
 
   async archiveDate(candidate) {
     let objects = await this.getReadyObjects(candidate);
-    if (!objects) {
+    if (!objects || candidate.exists && !await this.needsRebuild(candidate, objects)) {
       return false;
     }
 
@@ -213,6 +221,63 @@ export default class ArchiveCompressor
     }
 
     return objects;
+  }
+
+  async needsRebuild(candidate, objects) {
+    let manifest = await this.getManifest(candidate);
+    let archiveStream = await this.getArchive(candidate.archiveKey);
+    let sourceObjects = objects.map(object => {
+      if (typeof object.etag !== 'string') {
+        throw new Error(`S3 returned incomplete metadata for ${object.key}`);
+      }
+
+      return {
+        path: object.path,
+        bytes: object.bytes,
+        etag: object.etag,
+      };
+    });
+
+    try {
+      await this.archiveVerifier.verify(archiveStream, manifest, sourceObjects);
+    } catch (error) {
+      if (error instanceof AppleDoubleArchiveError) {
+        return true;
+      }
+
+      throw error;
+    }
+
+    this.console.log(`Skipping ${candidate.date}; existing archive is valid`);
+
+    return false;
+  }
+
+  async getManifest(candidate) {
+    let response = await this.s3Client.send(new GetObjectCommand({
+      Bucket: process.env.AWS_S3_ARCHIVE_BUCKET,
+      Key: candidate.manifestKey,
+    }));
+    if (!response.Body) {
+      throw new Error(`S3 returned no body for ${candidate.manifestKey}`);
+    }
+
+    return parseArchiveManifest(
+      await response.Body.transformToString(),
+      candidate.archiveKey,
+    );
+  }
+
+  async getArchive(key) {
+    let response = await this.s3Client.send(new GetObjectCommand({
+      Bucket: process.env.AWS_S3_ARCHIVE_BUCKET,
+      Key: key,
+    }));
+    if (!response.Body) {
+      throw new Error(`S3 returned no body for ${key}`);
+    }
+
+    return response.Body;
   }
 
   async downloadObjects(prefix, objects, sourceDirectory) {
@@ -341,8 +406,10 @@ export default class ArchiveCompressor
         }
 
         return {
+          path: this.relativePath(prefix, object.Key),
           key: object.Key,
           bytes: object.Size,
+          etag: object.ETag,
           lastModified: object.LastModified,
         };
       });
