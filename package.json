@@ -28,6 +28,8 @@
     "data:archive:prune": "node app/index.mjs archivePrune",
     "data:archive:prune:dry-run": "node app/index.mjs archivePrune --dry-run",
     "data:archive:stats": "node app/index.mjs archiveStats",
+    "data:archive:verify": "node app/index.mjs archiveVerify",
+    "data:archive:verify:repair": "node app/index.mjs archiveVerify --repair",
     "sync": "node app/index.mjs sync",
     "sync:upload": "node app/index.mjs syncUpload",
     "sync:download": "node app/index.mjs syncDownload"

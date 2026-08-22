@@ -80,6 +80,7 @@ class FakeS3Client
         Contents: [{
           ETag: '"9f9f90dbe3e5ee1218c86b8839db1995"',
           Key: '2025/03/05/alpha.json',
+          LastModified: new Date('2025-03-05T00:00:00.000Z'),
           Size: 6,
         }],
       };
@@ -106,7 +107,10 @@ describe('ArchivePruner', () => {
 
   it('fully verifies recent archives during a dry run without deleting files', async () => {
     let s3Client = new FakeS3Client;
-    let verifier = { verify: vi.fn() };
+    let verifier = {
+      getManifest: vi.fn(async () => s3Client.manifest),
+      verify: vi.fn(),
+    };
     let pruner = new ArchivePruner(s3Client, verifier);
     pruner.dryRun = true;
     pruner._console = { error: vi.fn(), log: vi.fn() };
@@ -120,10 +124,29 @@ describe('ArchivePruner', () => {
     );
   });
 
+  it('skips recent archives before downloading and verifying them', async () => {
+    let s3Client = new FakeS3Client;
+    let verifier = {
+      getManifest: vi.fn(async () => s3Client.manifest),
+      verify: vi.fn(),
+    };
+    let pruner = new ArchivePruner(s3Client, verifier);
+    pruner._console = { error: vi.fn(), log: vi.fn() };
+
+    await pruner.process();
+
+    expect(verifier.verify).not.toHaveBeenCalled();
+    expect(s3Client.deletes).toEqual([]);
+    expect(pruner._console.log).toHaveBeenCalledWith(
+      'Skipping 2025-03-05; not eligible for deletion until 2026-08-28',
+    );
+  });
+
   it('deletes an eligible day only after its archive is verified', async () => {
     let s3Client = new FakeS3Client;
     s3Client.manifest = manifest('2026-08-01T00:00:00.000Z');
     let verifier = {
+      getManifest: vi.fn(async () => s3Client.manifest),
       verify: vi.fn(async () => {
         s3Client.events.push('verify');
       }),
@@ -141,7 +164,7 @@ describe('ArchivePruner', () => {
   it('stops when an archive exists without its manifest', async () => {
     let s3Client = new FakeS3Client;
     s3Client.manifestMissing = true;
-    let verifier = { verify: vi.fn() };
+    let verifier = { getManifest: vi.fn(), verify: vi.fn() };
     let pruner = new ArchivePruner(s3Client, verifier);
     pruner._console = { error: vi.fn(), log: vi.fn() };
 
@@ -157,6 +180,7 @@ describe('ArchivePruner', () => {
     let s3Client = new FakeS3Client;
     s3Client.manifest = manifest('2026-08-01T00:00:00.000Z');
     let verifier = {
+      getManifest: vi.fn(async () => s3Client.manifest),
       verify: vi.fn(async () => {
         throw new Error('archive does not match');
       }),

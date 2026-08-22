@@ -50,7 +50,7 @@ function decompressZstd(stream) {
   };
 }
 
-export default class ArchiveVerifier
+export default class ArchiveContentVerifier
 {
   constructor(decompress = decompressZstd) {
     this.decompress = decompress;
@@ -105,6 +105,14 @@ export default class ArchiveVerifier
 
   matchFiles(manifestFiles, sourceObjects) {
     let manifestByPath = new Map(manifestFiles.map(file => [file.path, file]));
+    if (sourceObjects === null) {
+      if (manifestByPath.size !== manifestFiles.length) {
+        throw new Error('Archive manifest contains duplicate file paths');
+      }
+
+      return { manifestByPath, sourceByPath: null };
+    }
+
     let sourceByPath = new Map(sourceObjects.map(object => [object.path, object]));
     if (manifestByPath.size !== manifestFiles.length
       || sourceByPath.size !== sourceObjects.length
@@ -144,8 +152,8 @@ export default class ArchiveVerifier
     }
 
     let manifestFile = manifestByPath.get(header.name);
-    let sourceObject = sourceByPath.get(header.name);
-    if (!manifestFile || !sourceObject) {
+    let sourceObject = sourceByPath?.get(header.name);
+    if (!manifestFile || sourceByPath && !sourceObject) {
       if (path.posix.basename(header.name).startsWith('._')) {
         throw new AppleDoubleArchiveError(header.name);
       }
@@ -170,15 +178,17 @@ export default class ArchiveVerifier
       throw new ArchiveContentError(`SHA-256 does not match the manifest for ${header.name}`);
     }
 
-    let etag = sourceObject.etag;
-    if (etag.startsWith('"') && etag.endsWith('"')) {
-      etag = etag.slice(1, -1);
-    }
-    if (!/^[a-fA-F0-9]{32}$/.test(etag)) {
-      throw new ArchiveContentError(`S3 ETag is not an MD5 hash for ${header.name}`);
-    }
-    if (md5.digest('hex') !== etag.toLowerCase()) {
-      throw new ArchiveContentError(`MD5 does not match the S3 ETag for ${header.name}`);
+    if (sourceObject) {
+      let etag = sourceObject.etag;
+      if (etag.startsWith('"') && etag.endsWith('"')) {
+        etag = etag.slice(1, -1);
+      }
+      if (!/^[a-fA-F0-9]{32}$/.test(etag)) {
+        throw new ArchiveContentError(`S3 ETag is not an MD5 hash for ${header.name}`);
+      }
+      if (md5.digest('hex') !== etag.toLowerCase()) {
+        throw new ArchiveContentError(`MD5 does not match the S3 ETag for ${header.name}`);
+      }
     }
   }
 }

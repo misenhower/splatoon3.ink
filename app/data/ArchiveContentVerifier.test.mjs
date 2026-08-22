@@ -1,7 +1,7 @@
 import { Readable } from 'node:stream';
 import { describe, expect, it } from 'vitest';
 import * as tar from 'tar-stream';
-import ArchiveVerifier, { AppleDoubleArchiveError } from './ArchiveVerifier.mjs';
+import ArchiveContentVerifier, { AppleDoubleArchiveError } from './ArchiveContentVerifier.mjs';
 
 async function createTar(files) {
   let pack = tar.pack();
@@ -46,10 +46,10 @@ function sourceObject(etag = '9f9f90dbe3e5ee1218c86b8839db1995') {
 
 const identityDecompressor = stream => ({ completed: Promise.resolve(), stream });
 
-describe('ArchiveVerifier', () => {
+describe('ArchiveContentVerifier', () => {
   it('verifies a tar stream against its manifest and live S3 objects', async () => {
     let archive = await createTar([['alpha.json', 'alpha\n']]);
-    let verifier = new ArchiveVerifier(identityDecompressor);
+    let verifier = new ArchiveContentVerifier(identityDecompressor);
 
     await expect(verifier.verify(
       Readable.from(archive),
@@ -58,10 +58,21 @@ describe('ArchiveVerifier', () => {
     )).resolves.toBeUndefined();
   });
 
+  it('verifies a pruned tar stream against its manifest', async () => {
+    let archive = await createTar([['alpha.json', 'alpha\n']]);
+    let verifier = new ArchiveContentVerifier(identityDecompressor);
+
+    await expect(verifier.verify(
+      Readable.from(archive),
+      manifestFor(archive),
+      null,
+    )).resolves.toBeUndefined();
+  });
+
   it('rejects duplicate live S3 paths', async () => {
     let archive = await createTar([['alpha.json', 'alpha\n']]);
     let source = sourceObject();
-    let verifier = new ArchiveVerifier(identityDecompressor);
+    let verifier = new ArchiveContentVerifier(identityDecompressor);
     let archiveStream = new Readable({
       read() {
         this.destroy(new Error('Archive should not be read'));
@@ -77,7 +88,7 @@ describe('ArchiveVerifier', () => {
 
   it('rejects a file whose SHA-256 does not match the manifest', async () => {
     let archive = await createTar([['alpha.json', 'alpha\n']]);
-    let verifier = new ArchiveVerifier(identityDecompressor);
+    let verifier = new ArchiveContentVerifier(identityDecompressor);
 
     await expect(verifier.verify(
       Readable.from(archive),
@@ -88,7 +99,7 @@ describe('ArchiveVerifier', () => {
 
   it('rejects an S3 ETag that is not a plain MD5 hash', async () => {
     let archive = await createTar([['alpha.json', 'alpha\n']]);
-    let verifier = new ArchiveVerifier(identityDecompressor);
+    let verifier = new ArchiveContentVerifier(identityDecompressor);
 
     await expect(verifier.verify(
       Readable.from(archive),
@@ -102,7 +113,7 @@ describe('ArchiveVerifier', () => {
       ['alpha.json', 'alpha\n'],
       ['extra.json', 'extra\n'],
     ]);
-    let verifier = new ArchiveVerifier(stream => ({
+    let verifier = new ArchiveContentVerifier(stream => ({
       completed: Promise.reject(new Error('zstd failed (exit 70): Broken pipe')),
       stream,
     }));
@@ -119,7 +130,7 @@ describe('ArchiveVerifier', () => {
       ['._alpha.json', 'metadata'],
       ['alpha.json', 'alpha\n'],
     ]);
-    let verifier = new ArchiveVerifier(identityDecompressor);
+    let verifier = new ArchiveContentVerifier(identityDecompressor);
 
     let error = await verifier.verify(
       Readable.from(archive),
@@ -133,7 +144,7 @@ describe('ArchiveVerifier', () => {
 
   it('rejects a file whose MD5 does not match its S3 ETag', async () => {
     let archive = await createTar([['alpha.json', 'alpha\n']]);
-    let verifier = new ArchiveVerifier(identityDecompressor);
+    let verifier = new ArchiveContentVerifier(identityDecompressor);
 
     await expect(verifier.verify(
       Readable.from(archive),

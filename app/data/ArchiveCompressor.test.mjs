@@ -6,8 +6,8 @@ import {
   PutObjectCommand,
 } from '@aws-sdk/client-s3';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import ArchiveBuilder from './ArchiveBuilder.mjs';
 import ArchiveCompressor from './ArchiveCompressor.mjs';
-import { AppleDoubleArchiveError } from './ArchiveVerifier.mjs';
 
 const archiveKey = '2025/03/2025-03-05.tar.zst';
 const manifestKey = `${archiveKey}.manifest.json`;
@@ -158,7 +158,9 @@ describe('ArchiveCompressor', () => {
         await fs.writeFile(archivePath, 'fake compressed archive');
       },
     };
-    let compressor = new ArchiveCompressor(s3Client, archiveWriter);
+    let archiveBuilder = new ArchiveBuilder(s3Client, archiveWriter);
+    archiveBuilder._console = { log: vi.fn() };
+    let compressor = new ArchiveCompressor(s3Client, archiveBuilder);
     compressor._console = { error: vi.fn(), log: vi.fn() };
 
     await compressor.process();
@@ -195,8 +197,8 @@ describe('ArchiveCompressor', () => {
 
   it('does not download or upload files during a dry run', async () => {
     let s3Client = new FakeS3Client;
-    let archiveWriter = { write: vi.fn() };
-    let compressor = new ArchiveCompressor(s3Client, archiveWriter);
+    let archiveBuilder = { build: vi.fn() };
+    let compressor = new ArchiveCompressor(s3Client, archiveBuilder);
     compressor.dryRun = true;
     compressor._console = { error: vi.fn(), log: vi.fn() };
 
@@ -204,77 +206,21 @@ describe('ArchiveCompressor', () => {
 
     expect(s3Client.downloads).toEqual([]);
     expect(s3Client.uploads).toEqual([]);
-    expect(archiveWriter.write).not.toHaveBeenCalled();
+    expect(archiveBuilder.build).not.toHaveBeenCalled();
   });
 
   it('leaves a completed archive alone', async () => {
     let s3Client = new FakeS3Client;
     s3Client.completed = true;
-    let archiveWriter = { write: vi.fn() };
-    let compressor = new ArchiveCompressor(s3Client, archiveWriter);
+    let archiveBuilder = { build: vi.fn() };
+    let compressor = new ArchiveCompressor(s3Client, archiveBuilder);
     compressor._console = { error: vi.fn(), log: vi.fn() };
 
     await compressor.process();
 
     expect(s3Client.downloads).toEqual([]);
     expect(s3Client.uploads).toEqual([]);
-    expect(archiveWriter.write).not.toHaveBeenCalled();
-  });
-
-  it('leaves a valid completed archive older than the repair cutoff alone', async () => {
-    let s3Client = new FakeS3Client;
-    s3Client.completed = true;
-    let verifier = { verify: vi.fn() };
-    let archiveWriter = { write: vi.fn() };
-    let compressor = new ArchiveCompressor(s3Client, archiveWriter, verifier);
-    compressor.rebuildBefore = Date.parse('2026-08-22T16:49:12.000Z');
-    compressor._console = { error: vi.fn(), log: vi.fn() };
-
-    await compressor.process();
-
-    expect(verifier.verify).toHaveBeenCalledOnce();
-    expect(s3Client.uploads).toEqual([]);
-    expect(archiveWriter.write).not.toHaveBeenCalled();
-  });
-
-  it('rebuilds a completed archive containing macOS metadata', async () => {
-    let s3Client = new FakeS3Client;
-    s3Client.completed = true;
-    let verifier = {
-      verify: vi.fn(async () => {
-        throw new AppleDoubleArchiveError('._alpha.json');
-      }),
-    };
-    let archiveWriter = {
-      async write(sourceDirectory, archivePath) {
-        await fs.writeFile(archivePath, 'replacement archive');
-      },
-    };
-    let compressor = new ArchiveCompressor(s3Client, archiveWriter, verifier);
-    compressor.rebuildBefore = Date.parse('2026-08-22T16:49:12.000Z');
-    compressor._console = { error: vi.fn(), log: vi.fn() };
-
-    await compressor.process();
-
-    expect(s3Client.uploads.map(upload => upload.Key)).toEqual([
-      '2025/03/2025-03-05.tar.zst',
-      '2025/03/2025-03-05.tar.zst.manifest.json',
-    ]);
-  });
-
-  it('leaves a rebuilt archive newer than the repair cutoff alone', async () => {
-    let s3Client = new FakeS3Client;
-    s3Client.completed = true;
-    s3Client.manifestLastModified = new Date('2026-08-23T00:00:00.000Z');
-    let archiveWriter = { write: vi.fn() };
-    let compressor = new ArchiveCompressor(s3Client, archiveWriter);
-    compressor.rebuildBefore = Date.parse('2026-08-22T16:49:12.000Z');
-    compressor._console = { error: vi.fn(), log: vi.fn() };
-
-    await compressor.process();
-
-    expect(s3Client.uploads).toEqual([]);
-    expect(archiveWriter.write).not.toHaveBeenCalled();
+    expect(archiveBuilder.build).not.toHaveBeenCalled();
   });
 
   it('stops after a failed day and removes its temporary files', async () => {
@@ -289,7 +235,9 @@ describe('ArchiveCompressor', () => {
         throw new Error('compression failed');
       },
     };
-    let compressor = new ArchiveCompressor(s3Client, archiveWriter);
+    let archiveBuilder = new ArchiveBuilder(s3Client, archiveWriter);
+    archiveBuilder._console = { log: vi.fn() };
+    let compressor = new ArchiveCompressor(s3Client, archiveBuilder);
     compressor._console = { error: vi.fn(), log: vi.fn() };
 
     await expect(compressor.process()).rejects.toThrow('compression failed');
@@ -309,7 +257,9 @@ describe('ArchiveCompressor', () => {
         await fs.writeFile(archivePath, 'archive');
       },
     };
-    let compressor = new ArchiveCompressor(s3Client, archiveWriter);
+    let archiveBuilder = new ArchiveBuilder(s3Client, archiveWriter);
+    archiveBuilder._console = { log: vi.fn() };
+    let compressor = new ArchiveCompressor(s3Client, archiveBuilder);
     compressor._console = { error: vi.fn(), log: vi.fn() };
 
     await compressor.process();
@@ -329,7 +279,9 @@ describe('ArchiveCompressor', () => {
         await fs.writeFile(archivePath, 'archive');
       },
     };
-    let compressor = new ArchiveCompressor(s3Client, archiveWriter);
+    let archiveBuilder = new ArchiveBuilder(s3Client, archiveWriter);
+    archiveBuilder._console = { log: vi.fn() };
+    let compressor = new ArchiveCompressor(s3Client, archiveBuilder);
     compressor.maxDays = 1;
     compressor._console = { error: vi.fn(), log: vi.fn() };
 

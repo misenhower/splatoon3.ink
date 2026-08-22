@@ -1,14 +1,11 @@
-import path from 'node:path';
 import * as Sentry from '@sentry/node';
 import {
   DeleteObjectsCommand,
-  GetObjectCommand,
-  ListObjectsV2Command,
   S3Client,
 } from '@aws-sdk/client-s3';
 import prefixedConsole from '../common/prefixedConsole.mjs';
-import { parseArchiveManifest } from './ArchiveManifest.mjs';
-import ArchiveVerifier from './ArchiveVerifier.mjs';
+import ArchiveInventory from './ArchiveInventory.mjs';
+import RemoteArchiveVerifier from './RemoteArchiveVerifier.mjs';
 
 const retentionPeriod = 7 * 24 * 60 * 60 * 1000;
 
@@ -48,9 +45,10 @@ export default class ArchivePruner
   dryRun = false;
   maxDays = Infinity;
 
-  constructor(s3Client, archiveVerifier = new ArchiveVerifier) {
+  constructor(s3Client, remoteArchiveVerifier, archiveInventory) {
     this._client = s3Client;
-    this.archiveVerifier = archiveVerifier;
+    this._remoteArchiveVerifier = remoteArchiveVerifier;
+    this._archiveInventory = archiveInventory;
   }
 
   async process() {
@@ -73,7 +71,7 @@ export default class ArchivePruner
         }
 
         currentDate = candidate.date;
-        let manifest = await this.getManifest(candidate);
+        let manifest = await this.remoteArchiveVerifier.getManifest(candidate);
         if (!this.dryRun && !this.isEligible(manifest)) {
           this.console.log(
             `Skipping ${candidate.date}; not eligible for deletion until ${this.eligibleDate(manifest)}`,
@@ -81,9 +79,8 @@ export default class ArchivePruner
           continue;
         }
 
-        let sourceObjects = await this.getSourceObjects(candidate.prefix);
-        let archiveStream = await this.getArchive(candidate.archiveKey);
-        await this.archiveVerifier.verify(archiveStream, manifest, sourceObjects);
+        let sourceObjects = await this.archiveInventory.getSourceObjects(candidate.prefix);
+        await this.remoteArchiveVerifier.verify(candidate, sourceObjects, manifest);
         processedDays++;
 
         if (this.dryRun) {
@@ -99,7 +96,7 @@ export default class ArchivePruner
           continue;
         }
 
-        let currentObjects = await this.getSourceObjects(candidate.prefix);
+        let currentObjects = await this.archiveInventory.getSourceObjects(candidate.prefix);
         this.assertObjectsUnchanged(sourceObjects, currentObjects, candidate.date);
         await this.deleteObjects(currentObjects);
         this.console.log(`Pruned ${candidate.date}; deleted ${this.fileCount(currentObjects)}`);
@@ -150,86 +147,17 @@ export default class ArchivePruner
     });
   }
 
+  get remoteArchiveVerifier() {
+    return this._remoteArchiveVerifier ??= new RemoteArchiveVerifier(this.s3Client);
+  }
+
+  get archiveInventory() {
+    return this._archiveInventory ??= new ArchiveInventory(this.s3Client);
+  }
+
   async getCandidates() {
-    let candidates = [];
-    let years = (await this.list('', '/')).prefixes.filter(prefix => /^\d{4}\/$/.test(prefix));
-
-    for (let year of years.sort()) {
-      let months = (await this.list(year, '/')).prefixes
-        .filter(prefix => /^\d{4}\/\d{2}\/$/.test(prefix));
-
-      for (let month of months.sort()) {
-        let listing = await this.list(month, '/');
-        let existing = new Set(listing.objects.map(object => object.Key));
-
-        for (let prefix of listing.prefixes.sort()) {
-          let date = this.dateFromPrefix(prefix);
-          if (!date) {
-            continue;
-          }
-
-          let archiveKey = `${month}${date}.tar.zst`;
-          let manifestKey = `${archiveKey}.manifest.json`;
-          let hasArchive = existing.has(archiveKey);
-          let hasManifest = existing.has(manifestKey);
-          if (hasArchive !== hasManifest) {
-            throw new Error(`Archive and manifest are incomplete for ${date}`);
-          }
-          if (hasArchive) {
-            candidates.push({ archiveKey, date, manifestKey, prefix });
-          }
-        }
-      }
-    }
-
-    return candidates.sort((a, b) => a.date.localeCompare(b.date));
-  }
-
-  async getManifest(candidate) {
-    let response = await this.s3Client.send(new GetObjectCommand({
-      Bucket: process.env.AWS_S3_ARCHIVE_BUCKET,
-      Key: candidate.manifestKey,
-    }));
-    if (!response.Body) {
-      throw new Error(`S3 returned no body for ${candidate.manifestKey}`);
-    }
-
-    return parseArchiveManifest(
-      await response.Body.transformToString(),
-      candidate.archiveKey,
-    );
-  }
-
-  async getArchive(key) {
-    let response = await this.s3Client.send(new GetObjectCommand({
-      Bucket: process.env.AWS_S3_ARCHIVE_BUCKET,
-      Key: key,
-    }));
-    if (!response.Body) {
-      throw new Error(`S3 returned no body for ${key}`);
-    }
-
-    return response.Body;
-  }
-
-  async getSourceObjects(prefix) {
-    let listing = await this.list(prefix);
-
-    return listing.objects
-      .filter(object => object.Key && object.Key !== prefix && !object.Key.endsWith('/'))
-      .map(object => {
-        if (!Number.isFinite(object.Size) || typeof object.ETag !== 'string') {
-          throw new Error(`S3 returned incomplete metadata for ${object.Key}`);
-        }
-
-        return {
-          path: this.relativePath(prefix, object.Key),
-          bytes: object.Size,
-          etag: object.ETag,
-          key: object.Key,
-        };
-      })
-      .sort((a, b) => a.path.localeCompare(b.path));
+    return (await this.archiveInventory.getDates())
+      .filter(item => item.hasSource && item.hasArchive);
   }
 
   async deleteObjects(objects) {
@@ -247,30 +175,6 @@ export default class ArchivePruner
         throw new Error(`Could not delete archive source files: ${failures}`);
       }
     }
-  }
-
-  async list(prefix, delimiter) {
-    let prefixes = [];
-    let objects = [];
-    let continuationToken;
-
-    do {
-      let response = await this.s3Client.send(new ListObjectsV2Command({
-        Bucket: process.env.AWS_S3_ARCHIVE_BUCKET,
-        ContinuationToken: continuationToken,
-        Delimiter: delimiter,
-        Prefix: prefix,
-      }));
-      prefixes.push(...(response.CommonPrefixes ?? []).map(item => item.Prefix).filter(Boolean));
-      objects.push(...(response.Contents ?? []));
-
-      if (response.IsTruncated && !response.NextContinuationToken) {
-        throw new Error(`S3 listing for ${prefix} was truncated without a continuation token`);
-      }
-      continuationToken = response.IsTruncated ? response.NextContinuationToken : undefined;
-    } while (continuationToken);
-
-    return { objects, prefixes };
   }
 
   isEligible(manifest) {
@@ -299,30 +203,4 @@ export default class ArchivePruner
     return `${objects.length} ${objects.length === 1 ? 'file' : 'files'}`;
   }
 
-  dateFromPrefix(prefix) {
-    let match = prefix.match(/^(\d{4})\/(\d{2})\/(\d{2})\/$/);
-    if (!match) {
-      return null;
-    }
-
-    let date = `${match[1]}-${match[2]}-${match[3]}`;
-    let parsedDate = new Date(`${date}T00:00:00.000Z`);
-
-    return !Number.isNaN(parsedDate.getTime()) && parsedDate.toISOString().slice(0, 10) === date
-      ? date
-      : null;
-  }
-
-  relativePath(prefix, key) {
-    let relativePath = key.slice(prefix.length);
-    if (!key.startsWith(prefix)
-      || !relativePath
-      || path.posix.normalize(relativePath) !== relativePath
-      || path.posix.isAbsolute(relativePath)
-      || relativePath.split('/').includes('..')) {
-      throw new Error(`Invalid archive object path: ${key}`);
-    }
-
-    return relativePath;
-  }
 }

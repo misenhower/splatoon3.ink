@@ -12,6 +12,7 @@ import { archiveData } from './data/DataArchiver.mjs';
 import { compressArchivesFromCli } from './data/ArchiveCompressor.mjs';
 import { pruneArchivesFromCli } from './data/ArchivePruner.mjs';
 import { reportArchiveStatsFromCli } from './data/ArchiveStats.mjs';
+import { verifyArchivesFromCli } from './data/ArchiveVerifyCommand.mjs';
 import { sentryInit } from './common/sentry.mjs';
 import { sync, syncUpload, syncDownload } from './sync/index.mjs';
 import { updateAvatars } from './social/updateAvatars.mjs';
@@ -34,6 +35,7 @@ const actions = {
   archiveCompress: (...args) => compressArchivesFromCli(args),
   archivePrune: (...args) => pruneArchivesFromCli(args),
   archiveStats: (...args) => reportArchiveStatsFromCli(args),
+  archiveVerify: (...args) => verifyArchivesFromCli(args),
   sync,
   syncUpload,
   syncDownload,
