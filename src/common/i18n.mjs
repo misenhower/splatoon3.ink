@@ -123,7 +123,8 @@ function reload() {
 
 async function loadLocale() {
   let locale = currentLocale().code;
-  let response = await fetch(`/data/locale/${locale}.json`);
+  let baseUrl = import.meta.env.VITE_DATA_FROM || '';
+  let response = await fetch(`${baseUrl}/data/locale/${locale}.json`);
 
   if (!response.ok) {
     console.error(`Failed to load locale ${locale}: ${response.status} ${response.statusText}`);
