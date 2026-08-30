@@ -15,6 +15,7 @@ export default class ImageProcessor
   constructor() {
     this.console = prefixedConsole('Images');
     this.siteUrl = process.env.SITE_URL;
+    this.assetUrl = process.env.ASSET_URL?.replace(/\/+$/, '');
   }
 
   async process(url, defer = true) {
@@ -47,6 +48,10 @@ export default class ImageProcessor
   }
 
   publicUrl(file) {
+    if (this.assetUrl) {
+      return `${this.assetUrl}/splatnet/${file}`;
+    }
+
     return `${this.siteUrl ?? ''}/${this.outputDirectory}/${file}`;
   }
 

@@ -1,27 +1,18 @@
 import path from 'node:path';
-import fs from 'node:fs';
 import { S3Client } from '@aws-sdk/client-s3';
 import { S3SyncClient } from 's3-sync-client';
 import mime from 'mime-types';
 
-// s3-sync-client cannot replace multipart upload bodies. Force direct PUTs so
-// rewritten data can never bypass the URL rewrite; R2 will reject an oversized object
-// instead of silently publishing legacy URLs.
-const forceSinglePartUploads = Number.MAX_SAFE_INTEGER;
 const dataCacheControl = 'no-cache, stale-while-revalidate=5, stale-if-error=86400';
-const rewrittenDataExtensions = ['.ics', '.json'];
-
-function baseUrl(url) {
-  return url.replace(/\/+$/, '');
-}
+const publicDataExtensions = ['.ics', '.json'];
 
 function isImage(key) {
   let contentType = mime.lookup(key);
   return typeof contentType === 'string' && contentType.startsWith('image/');
 }
 
-function isRewrittenData(key) {
-  return rewrittenDataExtensions.some(extension => key.endsWith(extension));
+function isPublicData(key) {
+  return publicDataExtensions.some(extension => key.endsWith(extension));
 }
 
 export default class R2Syncer
@@ -39,7 +30,6 @@ export default class R2Syncer
     return this.syncClient.sync(this.localPath, this.publicBucket, {
       filters: this.filters,
       relocations: this.relocations,
-      partSize: forceSinglePartUploads,
       commandInput: input => this.commandInput(input),
     });
   }
@@ -51,16 +41,6 @@ export default class R2Syncer
         ? dataCacheControl
         : undefined,
     };
-
-    if (isRewrittenData(input.Key)) {
-      let source = fs.readFileSync(input.Body.path, 'utf8');
-      result.Body = Buffer.from(source.replaceAll(
-        this.legacyAssetUrl,
-        this.r2AssetUrl,
-      ));
-      result.ContentLength = result.Body.length;
-      input.Body.resume();
-    }
 
     return result;
   }
@@ -91,19 +71,11 @@ export default class R2Syncer
     return this._localPath ?? path.resolve('dist');
   }
 
-  get legacyAssetUrl() {
-    return `${baseUrl(this.config.siteUrl)}/assets/splatnet/`;
-  }
-
-  get r2AssetUrl() {
-    return `${baseUrl(this.config.publicUrl)}/splatnet/`;
-  }
-
   get filters() {
     return [
       { exclude: () => true },
       { include: key => key.startsWith('assets/splatnet/') && isImage(key) },
-      { include: key => key.startsWith('data/') && isRewrittenData(key) },
+      { include: key => key.startsWith('data/') && isPublicData(key) },
       { exclude: key => key.startsWith('data/archive/') },
       { include: key => key.startsWith('status-screenshots/') && isImage(key) },
     ];
