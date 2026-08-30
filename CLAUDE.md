@@ -35,7 +35,7 @@ npm start              # Full production: sync → splatnet → social → cron
 
 **Data pipeline**: `NsoClient` (Nintendo auth) → `SplatNet3Client` (GraphQL queries) → DataUpdaters (`app/data/updaters/`) → JSON files in `dist/data/` → Frontend Pinia stores → Vue components. Images are processed via sharp. Data is optionally archived and synced to S3.
 
-**Social media**: StatusGenerators (`app/social/generators/`) create content from data. Clients (`app/social/clients/`) post to each platform. Screenshots are generated via puppeteer-core + a browserless service.
+**Social media**: StatusGenerators (`app/social/generators/`) create content from data. Clients (`app/social/clients/`) post to each platform. Production screenshots use Cloudflare Browser Run Quick Actions against the public site; local development can use puppeteer-core + Browserless.
 
 **Scheduling**: Cron jobs (`app/cron.mjs`) run data updates and social posting at intervals.
 
@@ -56,4 +56,4 @@ Tests use Vitest. Test files live alongside source: `app/**/*.test.mjs` and `src
 - Frontend: built to `dist/` and deployed to AWS S3 (static hosting)
 - Backend: Docker container (`docker/app/Dockerfile`) pushed to GitHub Container Registry
 - `dist/` is not emptied on build (preserves generated `dist/data/` from backend)
-- Browserless runs as a separate Docker service for screenshot generation
+- Browserless runs as a separate Docker service for local screenshot generation

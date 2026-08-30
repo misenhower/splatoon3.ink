@@ -25,7 +25,7 @@ export default class StatusGeneratorManager
   async sendStatuses(force = false) {
     let availableClients = await this._getAvailableClients();
 
-    // Create screenshots in parallel (via Browserless)
+    // Create screenshots in parallel
     let statusPromises = this._getStatuses(availableClients, force);
 
     // Process each client in parallel (while maintaining post order)

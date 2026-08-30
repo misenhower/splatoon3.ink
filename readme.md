@@ -27,6 +27,12 @@ npm run dev
 npm run build
 ```
 
+### Screenshot Generation
+
+Set `SCREENSHOT_PROVIDER` explicitly for social-media screenshots. Use `browserless` for local development with the Docker Compose development configuration. Use `cloudflare` in production to call Cloudflare Browser Run Quick Actions against `${SITE_URL}/screenshots/`.
+
+The Cloudflare provider requires `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_BROWSER_RUN_API_TOKEN`. Create the API token with the **Browser Rendering Write** permission. The provider does not automatically fall back to Browserless when a Cloudflare request fails.
+
 ### Lint with [ESLint](https://eslint.org/)
 
 ```sh

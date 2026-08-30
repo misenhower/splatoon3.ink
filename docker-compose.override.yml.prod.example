@@ -6,15 +6,9 @@ services:
     init: true
     restart: unless-stopped
     environment:
-      BROWSERLESS_ENDPOINT: ws://browserless:3000
-      SCREENSHOT_HOST: app
-    depends_on:
-      - browserless
+      SCREENSHOT_PROVIDER: cloudflare
     env_file:
       - .env
-    labels: [ "com.centurylinklabs.watchtower.scope=splatoon3ink" ]
-
-  browserless:
     labels: [ "com.centurylinklabs.watchtower.scope=splatoon3ink" ]
 
   watchtower:
