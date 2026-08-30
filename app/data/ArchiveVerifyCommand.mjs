@@ -89,7 +89,7 @@ export default class ArchiveVerifyCommand
             this.console.log(`${candidate.date} contains unexpected macOS metadata`);
           } else {
             if (!sourceObjects) {
-              throw new Error(`Cannot repair ${candidate.date}; its source files have been pruned`);
+              throw new Error(`Cannot repair ${candidate.date}; its source files have been pruned`, { cause: error });
             }
             await this.archiveBuilder.build(candidate, sourceObjects);
             repaired++;
