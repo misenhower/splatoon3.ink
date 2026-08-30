@@ -83,6 +83,24 @@ describe('LocalizationProcessor', () => {
   });
 
   describe('dataIterations', () => {
+    it('finds matching nodes at any depth', () => {
+      const processor = makeProcessor([
+        { key: 'stages', nodes: '$..stages.*', id: 'id', values: 'name' },
+      ]);
+
+      const data = {
+        schedules: [
+          { stages: [{ id: 'stage-1', name: 'Scorch Gorge' }] },
+          { nested: { stages: [{ id: 'stage-2', name: 'Eeltail Alley' }] } },
+        ],
+      };
+
+      expect([...processor.dataIterations(data)].map(({ id, value }) => ({ id, value }))).toEqual([
+        { id: 'stage-1', value: 'Scorch Gorge' },
+        { id: 'stage-2', value: 'Eeltail Alley' },
+      ]);
+    });
+
     it('yields entries with correct id, value, and path', () => {
       const processor = makeProcessor([
         { key: 'stages', nodes: '$.stages[*]', id: 'id', values: 'name' },

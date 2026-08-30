@@ -10,7 +10,7 @@ import ImageProcessor from '../ImageProcessor.mjs';
 import NsoClient from '../../splatnet/NsoClient.mjs';
 import { locales, regionalLocales, defaultLocale } from '../../../src/common/i18n.mjs';
 import { LocalizationProcessor } from '../LocalizationProcessor.mjs';
-import jsonpath from 'jsonpath';
+import jsonpath from '../../common/jsonpath.mjs';
 import { deriveId, getDateParts, getTopOfCurrentHour } from '../../common/util.mjs';
 export default class DataUpdater
 {

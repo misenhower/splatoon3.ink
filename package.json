@@ -44,7 +44,7 @@
     "cron": "^4.4.0",
     "dotenv": "^17.3.1",
     "ical-generator": "^11.1.1",
-    "jsonpath": "^1.2.1",
+    "jsonpath-plus": "^10.4.0",
     "lodash": "^4.17.21",
     "masto": "^8.0.0",
     "nxapi": "^1.6.1-next.248",
@@ -77,5 +77,13 @@
     "vite": "^8.2.2",
     "vitest": "^4.1.11",
     "vue-eslint-parser": "^10.4.0"
+  },
+  "overrides": {
+    "nxapi": {
+      "uuid": "^11.1.1",
+      "node-notifier": {
+        "uuid": "^11.1.1"
+      }
+    }
   }
 }

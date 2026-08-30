@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { mkdirp } from '../common/fs.mjs';
-import jsonpath from 'jsonpath';
+import jsonpath from '../common/jsonpath.mjs';
 import get from 'lodash/get.js';
 import set from 'lodash/set.js';
 import pLimit from 'p-limit';
