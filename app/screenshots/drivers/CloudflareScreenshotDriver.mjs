@@ -30,7 +30,7 @@ export default class CloudflareScreenshotDriver
   }
 
   async capture(route, viewport) {
-    let url = new URL('/screenshots/', this._config.siteUrl);
+    let url = new URL('/screenshots/index.html', this._config.siteUrl);
     url.hash = route;
 
     let endpoint = new URL(
