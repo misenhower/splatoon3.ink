@@ -13,11 +13,15 @@ const redirectToDist = [
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  input: {
+    main: resolve(import.meta.dirname, 'index.html'),
+    screenshots: resolve(import.meta.dirname, 'screenshots/index.html'),
+  },
   plugins: [
     vue(),
     tailwindcss(),
     VueI18nPlugin({
-      include: resolve(__dirname, './src/assets/i18n/*.json'),
+      include: resolve(import.meta.dirname, './src/assets/i18n/*.json'),
     }),
     {
       // Quick hack to redirect dynamic assets to the /dist/ directory
@@ -39,11 +43,5 @@ export default defineConfig({
   },
   build: {
     emptyOutDir: false,
-    rollupOptions: {
-      input: {
-        main: resolve(__dirname, 'index.html'),
-        screenshots: resolve(__dirname, 'screenshots/index.html'),
-      },
-    },
   },
 });
