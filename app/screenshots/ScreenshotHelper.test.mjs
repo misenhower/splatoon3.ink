@@ -13,7 +13,7 @@ describe('ScreenshotHelper', () => {
     let page = {
       setViewport: vi.fn(),
       goto: vi.fn(),
-      waitForNetworkIdle: vi.fn(),
+      waitForSelector: vi.fn(),
       screenshot: vi.fn().mockResolvedValue(png),
       close: vi.fn(),
     };
@@ -54,9 +54,12 @@ describe('ScreenshotHelper', () => {
     });
     expect(page.goto).toHaveBeenCalledWith(
       new URL('http://app:4321/screenshots/#schedules'),
-      { waitUntil: 'networkidle0' },
+      { waitUntil: 'load' },
     );
-    expect(page.waitForNetworkIdle).toHaveBeenCalledWith({ idleTime: 1000 });
+    expect(page.waitForSelector).toHaveBeenCalledWith(
+      '[data-screenshot-ready="true"]',
+      { timeout: 30_000 },
+    );
     expect(httpServer.close).toHaveBeenCalledOnce();
     expect(page.close).toHaveBeenCalledOnce();
     expect(browser.close).toHaveBeenCalledOnce();
@@ -90,14 +93,17 @@ describe('ScreenshotHelper', () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          url: 'https://splatoon3.ink/screenshots/#schedules?time=123&region=NA',
+          url: 'https://splatoon3.ink/screenshots/index.html#schedules?time=123&region=NA',
           viewport: {
             width: 600,
             height: 675,
             deviceScaleFactor: 2,
           },
-          gotoOptions: { waitUntil: 'networkidle0' },
-          waitForTimeout: 1000,
+          gotoOptions: { waitUntil: 'load' },
+          waitForSelector: {
+            selector: '[data-screenshot-ready="true"]',
+            timeout: 30_000,
+          },
           screenshotOptions: { type: 'png' },
         }),
       },

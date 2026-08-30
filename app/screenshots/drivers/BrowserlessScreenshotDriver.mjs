@@ -1,5 +1,6 @@
 import { URL } from 'url';
 import puppeteer from 'puppeteer-core';
+import { screenshotReadySelector, screenshotReadyTimeout } from '../../../src/common/screenshot.mjs';
 import HttpServer from '../HttpServer.mjs';
 
 export default class BrowserlessScreenshotDriver
@@ -42,9 +43,11 @@ export default class BrowserlessScreenshotDriver
 
     await this._page.setViewport(viewport);
     await this._page.goto(url, {
-      waitUntil: 'networkidle0',
+      waitUntil: 'load',
     });
-    await this._page.waitForNetworkIdle({ idleTime: 1000 });
+    await this._page.waitForSelector(screenshotReadySelector, {
+      timeout: screenshotReadyTimeout,
+    });
 
     return await this._page.screenshot();
   }

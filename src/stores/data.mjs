@@ -60,6 +60,7 @@ export const useDataStore = defineStore('data', () => {
   }
 
   const isUpdating = computed(() => Object.values(stores).some(s => s.isUpdating));
+  const isLoaded = computed(() => Object.values(stores).every(s => s.data !== null));
 
   function refresh() {
     const now = Date.now();
@@ -108,6 +109,7 @@ export const useDataStore = defineStore('data', () => {
 
   return {
     updateAll,
+    isLoaded,
     isUpdating,
     startUpdating,
     stopUpdating,

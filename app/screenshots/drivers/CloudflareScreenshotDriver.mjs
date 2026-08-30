@@ -1,4 +1,5 @@
 import { URL } from 'url';
+import { screenshotReadySelector, screenshotReadyTimeout } from '../../../src/common/screenshot.mjs';
 
 export default class CloudflareScreenshotDriver
 {
@@ -48,8 +49,11 @@ export default class CloudflareScreenshotDriver
       body: JSON.stringify({
         url: url.toString(),
         viewport,
-        gotoOptions: { waitUntil: 'networkidle0' },
-        waitForTimeout: 1000,
+        gotoOptions: { waitUntil: 'load' },
+        waitForSelector: {
+          selector: screenshotReadySelector,
+          timeout: screenshotReadyTimeout,
+        },
         screenshotOptions: { type: 'png' },
       }),
     });

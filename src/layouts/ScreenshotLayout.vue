@@ -40,8 +40,10 @@
 </template>
 
 <script setup>
-import { watchEffect } from 'vue';
+import { nextTick, onUnmounted, watch, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
+import { markScreenshotReady, screenshotReadyAttribute } from '@/common/screenshot.mjs';
+import { useDataStore } from '@/stores/data';
 import { useTimeStore } from '@/stores/time';
 import TimeOffsetSelector from '@/components/Debug/TimeOffsetSelector.vue';
 
@@ -52,7 +54,28 @@ const props = defineProps({
 });
 
 const route = useRoute();
+const data = useDataStore();
 const time = useTimeStore();
+let readinessVersion = 0;
+
+watch(
+  [() => data.isLoaded, () => data.isUpdating, () => route.fullPath],
+  async ([isLoaded, isUpdating]) => {
+    let version = ++readinessVersion;
+    document.documentElement.removeAttribute(screenshotReadyAttribute);
+
+    if (!isLoaded || isUpdating) return;
+
+    await nextTick();
+    await markScreenshotReady({ isCurrent: () => version === readinessVersion });
+  },
+  { immediate: true, flush: 'post' },
+);
+
+onUnmounted(() => {
+  readinessVersion++;
+  document.documentElement.removeAttribute(screenshotReadyAttribute);
+});
 
 watchEffect(() => {
   if (route.query.time) {
