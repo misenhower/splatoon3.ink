@@ -42,7 +42,6 @@ const environmentKeys = [
   'R2_SECRET_ACCESS_KEY',
   'R2_BUCKET',
   'R2_ENDPOINT',
-  'R2_PUBLIC_URL',
   'SITE_URL',
 ];
 
@@ -58,7 +57,6 @@ function configureR2() {
   process.env.R2_SECRET_ACCESS_KEY = 'r2-secret';
   process.env.R2_BUCKET = 'splatoon3-ink-assets';
   process.env.R2_ENDPOINT = 'https://account.r2.cloudflarestorage.com';
-  process.env.R2_PUBLIC_URL = 'https://assets.splatoon3.ink';
   process.env.SITE_URL = 'https://splatoon3.ink';
 }
 

@@ -1,7 +1,6 @@
 import path from 'node:path';
 import os from 'node:os';
 import fs from 'node:fs/promises';
-import { createReadStream } from 'node:fs';
 import { ListObjectsV2Command, PutObjectCommand } from '@aws-sdk/client-s3';
 import { S3SyncClient } from 's3-sync-client';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
@@ -73,8 +72,6 @@ describe('R2Syncer', () => {
     temporaryDirectories = [];
     config = {
       bucket: 'splatoon3-ink-assets',
-      publicUrl: 'https://assets.splatoon3.ink',
-      siteUrl: 'https://splatoon3.ink',
     };
   });
 
@@ -95,7 +92,7 @@ describe('R2Syncer', () => {
     let call = syncClient.calls[0];
     expect(call.source).toBe(path.resolve('dist'));
     expect(call.target).toBe('s3://splatoon3-ink-assets');
-    expect(call.options.partSize).toBe(Number.MAX_SAFE_INTEGER);
+    expect(call.options).not.toHaveProperty('partSize');
     expect(isIncluded(call.options.filters, 'data/schedules.json')).toBe(true);
     expect(isIncluded(call.options.filters, 'data/festivals.US.ics')).toBe(true);
     expect(isIncluded(call.options.filters, 'data/archive/old.json')).toBe(false);
@@ -111,33 +108,28 @@ describe('R2Syncer', () => {
       .toBe('data/schedules.json');
   });
 
-  it('rewrites legacy asset URLs and adjusts the upload content length', async () => {
+  it('does not transform public data upload bodies', async () => {
     let localPath = await fs.mkdtemp(path.join(os.tmpdir(), 'r2-syncer-'));
     temporaryDirectories.push(localPath);
     let jsonPath = path.join(localPath, 'schedules.json');
     await fs.writeFile(
       jsonPath,
-      '{"first":"https://splatoon3.ink/assets/splatnet/one.png",'
-      + '"second":"https://splatoon3.ink/assets/splatnet/two.png"}',
+      '{"image":"https://assets.splatoon3.ink/splatnet/one.png"}',
     );
-    config.publicUrl = 'https://cdn.example.com';
     let syncClient = new FakeSyncClient;
     let syncer = new R2Syncer({ config, syncClient });
     await syncer.upload();
     let commandInput = syncClient.calls[0].options.commandInput;
     let input = {
-      Body: createReadStream(jsonPath),
-      ContentLength: 137,
+      Body: { path: jsonPath },
+      ContentLength: 61,
       Key: 'data/schedules.json',
     };
 
     let result = commandInput(input);
 
-    expect(result.Body.toString()).toBe(
-      '{"first":"https://cdn.example.com/splatnet/one.png",'
-      + '"second":"https://cdn.example.com/splatnet/two.png"}',
-    );
-    expect(result.ContentLength).toBe(result.Body.length);
+    expect(result.Body).toBeUndefined();
+    expect(result.ContentLength).toBeUndefined();
     expect(result).toMatchObject({
       CacheControl: 'no-cache, stale-while-revalidate=5, stale-if-error=86400',
       ContentType: 'application/json',
@@ -162,19 +154,19 @@ describe('R2Syncer', () => {
     expect(result.ContentType).toBe('image/png');
   });
 
-  it('uploads rewritten data and relocated images through the real sync client', async () => {
+  it('uploads canonical data and relocated images through the real sync client', async () => {
     let localPath = await fs.mkdtemp(path.join(os.tmpdir(), 'r2-syncer-'));
     temporaryDirectories.push(localPath);
     await fs.mkdir(path.join(localPath, 'data'), { recursive: true });
     await fs.mkdir(path.join(localPath, 'assets/splatnet'), { recursive: true });
     await fs.writeFile(
       path.join(localPath, 'data/schedules.json'),
-      '{"image":"https://splatoon3.ink/assets/splatnet/stage.png"}',
+      '{"image":"https://assets.splatoon3.ink/splatnet/stage.png"}',
     );
     await fs.writeFile(
       path.join(localPath, 'data/festivals.US.ics'),
       'URL:https://splatoon3.ink\r\n'
-      + 'ATTACH:https://splatoon3.ink/assets/splatnet/fest.png\r\n',
+      + 'ATTACH:https://assets.splatoon3.ink/splatnet/fest.png\r\n',
     );
     await fs.writeFile(path.join(localPath, 'assets/splatnet/stage.png'), 'image');
     await fs.writeFile(path.join(localPath, 'assets/main.js'), 'static site');

@@ -13,6 +13,7 @@ describe('ImageProcessor', () => {
 
   beforeEach(() => {
     delete process.env.SITE_URL;
+    delete process.env.ASSET_URL;
     processor = new ImageProcessor();
   });
 
@@ -38,6 +39,13 @@ describe('ImageProcessor', () => {
       process.env.SITE_URL = 'https://splatoon3.ink';
       const proc = new ImageProcessor();
       expect(proc.publicUrl('v2/weapon/image.png')).toBe('https://splatoon3.ink/assets/splatnet/v2/weapon/image.png');
+    });
+
+    it('uses the canonical asset host when ASSET_URL is set', () => {
+      process.env.SITE_URL = 'https://splatoon3.ink';
+      process.env.ASSET_URL = 'https://assets.splatoon3.ink/';
+      const proc = new ImageProcessor();
+      expect(proc.publicUrl('v2/weapon/image.png')).toBe('https://assets.splatoon3.ink/splatnet/v2/weapon/image.png');
     });
   });
 });

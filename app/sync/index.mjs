@@ -16,8 +16,6 @@ function r2Configuration() {
     secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
     bucket: process.env.R2_BUCKET,
     endpoint: process.env.R2_ENDPOINT,
-    publicUrl: process.env.R2_PUBLIC_URL,
-    siteUrl: process.env.SITE_URL,
   };
 }
 
