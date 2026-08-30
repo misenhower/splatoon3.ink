@@ -1,5 +1,4 @@
-import S3Syncer from '../sync/S3Syncer.mjs';
-import { canSync } from '../sync/index.mjs';
+import { canUpload, upload } from '../sync/index.mjs';
 import FileWriter from './clients/FileWriter.mjs';
 import ImageWriter from './clients/ImageWriter.mjs';
 import MastodonClient from './clients/MastodonClient.mjs';
@@ -68,8 +67,8 @@ export function testStatusGeneratorManager(additionalClients) {
 export async function sendStatuses() {
   await defaultStatusGeneratorManager().sendStatuses();
 
-  if (canSync()) {
-    await (new S3Syncer).upload();
+  if (canUpload()) {
+    await upload();
   }
 }
 
