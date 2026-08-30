@@ -6,6 +6,62 @@ afterEach(() => {
 });
 
 describe('ScreenshotHelper', () => {
+  it('captures a local screenshot through Browserless', async () => {
+    vi.stubEnv('SCREENSHOT_PROVIDER', 'browserless');
+
+    let png = Buffer.from([137, 80, 78, 71]);
+    let page = {
+      setViewport: vi.fn(),
+      goto: vi.fn(),
+      waitForNetworkIdle: vi.fn(),
+      screenshot: vi.fn().mockResolvedValue(png),
+      close: vi.fn(),
+    };
+    let browser = {
+      newPage: vi.fn().mockResolvedValue(page),
+      close: vi.fn(),
+    };
+    let puppeteerClient = {
+      connect: vi.fn().mockResolvedValue(browser),
+    };
+    let httpServer = {
+      port: 4321,
+      open: vi.fn(),
+      close: vi.fn(),
+    };
+    let helper = new ScreenshotHelper({
+      env: {
+        BROWSERLESS_ENDPOINT: 'ws://browserless:3000',
+        SCREENSHOT_HOST: 'app',
+      },
+      httpServerFactory: () => httpServer,
+      puppeteerClient,
+    });
+
+    let screenshot = await helper.capture('schedules', {
+      viewport: { height: 400 },
+    });
+    await helper.close();
+
+    expect(screenshot).toEqual(png);
+    expect(puppeteerClient.connect).toHaveBeenCalledWith({
+      browserWSEndpoint: 'ws://browserless:3000',
+    });
+    expect(page.setViewport).toHaveBeenCalledWith({
+      width: 1200,
+      height: 400,
+      deviceScaleFactor: 2,
+    });
+    expect(page.goto).toHaveBeenCalledWith(
+      new URL('http://app:4321/screenshots/#schedules'),
+      { waitUntil: 'networkidle0' },
+    );
+    expect(page.waitForNetworkIdle).toHaveBeenCalledWith({ idleTime: 1000 });
+    expect(httpServer.close).toHaveBeenCalledOnce();
+    expect(page.close).toHaveBeenCalledOnce();
+    expect(browser.close).toHaveBeenCalledOnce();
+  });
+
   it('captures a public screenshot through Cloudflare Browser Run', async () => {
     vi.stubEnv('SCREENSHOT_PROVIDER', 'cloudflare');
     vi.stubEnv('SITE_URL', 'https://splatoon3.ink');
@@ -79,6 +135,16 @@ describe('ScreenshotHelper', () => {
 
     await expect(helper.open()).rejects.toThrow(
       'Missing Cloudflare screenshot configuration: SITE_URL, CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_BROWSER_RUN_API_TOKEN',
+    );
+  });
+
+  it('requires an explicitly supported screenshot provider', async () => {
+    vi.stubEnv('SCREENSHOT_PROVIDER', 'auto');
+
+    let helper = new ScreenshotHelper;
+
+    await expect(helper.open()).rejects.toThrow(
+      'SCREENSHOT_PROVIDER must be "cloudflare" or "browserless"',
     );
   });
 });

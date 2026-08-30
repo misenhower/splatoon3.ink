@@ -33,6 +33,27 @@ Set `SCREENSHOT_PROVIDER` explicitly for social-media screenshots. Use `browserl
 
 The Cloudflare provider requires `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_BROWSER_RUN_API_TOKEN`. Create the API token with the **Browser Rendering Write** permission. The provider does not automatically fall back to Browserless when a Cloudflare request fails.
 
+Wrangler can run a local browser for Puppeteer, Playwright, and CDP-based Workers, but Quick Actions are not supported by its local browser binding. Quick Actions require remote mode, so testing this provider still requires Cloudflare to reach the rendered page.
+
+To test the real Cloudflare provider against a local build, build and serve `dist` in one terminal:
+
+```sh
+npm run build
+npm run preview
+```
+
+Expose that server through a temporary Wrangler tunnel in a second terminal:
+
+```sh
+npx wrangler@latest tunnel quick-start http://localhost:5050
+```
+
+In a third terminal, use the printed `https://*.trycloudflare.com` URL for that run:
+
+```sh
+SCREENSHOT_PROVIDER=cloudflare SITE_URL=https://example.trycloudflare.com npm run social:test
+```
+
 ### Lint with [ESLint](https://eslint.org/)
 
 ```sh

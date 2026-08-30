@@ -35,7 +35,7 @@ npm start              # Full production: sync → splatnet → social → cron
 
 **Data pipeline**: `NsoClient` (Nintendo auth) → `SplatNet3Client` (GraphQL queries) → DataUpdaters (`app/data/updaters/`) → JSON files in `dist/data/` → Frontend Pinia stores → Vue components. Images are processed via sharp. Data is optionally archived and synced to S3.
 
-**Social media**: StatusGenerators (`app/social/generators/`) create content from data. Clients (`app/social/clients/`) post to each platform. Production screenshots use Cloudflare Browser Run Quick Actions against the public site; local development can use puppeteer-core + Browserless.
+**Social media**: StatusGenerators (`app/social/generators/`) create content from data. Clients (`app/social/clients/`) post to each platform. `ScreenshotHelper` delegates rendering to drivers in `app/screenshots/drivers/`: production uses Cloudflare Browser Run Quick Actions against the public site, while local development can use puppeteer-core + Browserless.
 
 **Scheduling**: Cron jobs (`app/cron.mjs`) run data updates and social posting at intervals.
 
