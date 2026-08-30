@@ -1,9 +1,3 @@
 # See docker-compose.override.yml.* example files for dev/prod environments
 
-services:
-  browserless:
-    image: ghcr.io/browserless/chromium
-    restart: unless-stopped
-    environment:
-      CONCURRENT: ${BROWSERLESS_CONCURRENT:-1}
-      QUEUED: ${BROWSERLESS_QUEUED:-100}
+services: {}

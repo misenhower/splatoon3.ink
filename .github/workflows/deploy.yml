@@ -26,6 +26,8 @@ jobs:
 
     - name: Build
       run: npm run build
+      env:
+        VITE_DATA_FROM: ${{ vars.VITE_DATA_FROM }}
 
     - name: Deploy
       uses: jakejarvis/s3-sync-action@master

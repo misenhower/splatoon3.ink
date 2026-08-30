@@ -8,6 +8,7 @@ services:
     init: true
     restart: unless-stopped
     environment:
+      SCREENSHOT_PROVIDER: browserless
       BROWSERLESS_ENDPOINT: ws://browserless:3000
       SCREENSHOT_HOST: app
     depends_on:
@@ -16,6 +17,11 @@ services:
       - .:/app
 
   browserless:
+    image: ghcr.io/browserless/chromium
     platform: linux/arm64 # Needed for Apple Silicon
+    restart: unless-stopped
+    environment:
+      CONCURRENT: ${BROWSERLESS_CONCURRENT:-1}
+      QUEUED: ${BROWSERLESS_QUEUED:-100}
     ports:
       - 3000:3000
