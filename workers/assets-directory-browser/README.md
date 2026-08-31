@@ -64,8 +64,14 @@ connects to the production bucket.
 
 ```sh
 npm run assets-browser:test
-npm run assets-browser:dry-run
+npm run assets-browser:deploy:dry-run
 ```
+
+`npm run assets-browser:deploy` performs the production deployment. Production
+deployments are handled by Cloudflare Workers Builds, configured from the
+repository root with `main` as the production branch,
+`npm run assets-browser:test` as the build command, and
+`npm run assets-browser:deploy` as the deploy command.
 
 ## Production rollout
 
