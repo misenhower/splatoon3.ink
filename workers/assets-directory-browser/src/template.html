@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <link rel="canonical" href="{{{canonicalUrl}}}">
+  <link rel="alternate" type="application/json" href="{{{jsonPath}}}?format=json{{#jsonCursor}}&amp;cursor={{jsonCursor}}{{/jsonCursor}}">
+  <title>{{title}}</title>
+  <style nonce="{{styleNonce}}">
+    :root {
+      color-scheme: light dark;
+      --background: #f3f5f9;
+      --background-accent: #e8e4ff;
+      --surface: rgba(255, 255, 255, 0.88);
+      --surface-strong: #fff;
+      --text: #18202f;
+      --muted: #657084;
+      --border: #dce1ea;
+      --accent: #6047d9;
+      --accent-soft: #eeeaff;
+      --folder: #8a6cff;
+      --file: #8290a6;
+      --row-hover: #f7f5ff;
+      --shadow: 0 24px 70px rgba(38, 29, 82, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      background:
+        radial-gradient(circle at 15% 0%, var(--background-accent), transparent 34rem),
+        var(--background);
+      color: var(--text);
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    a { color: inherit; }
+
+    .shell {
+      width: min(960px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 48px 0;
+    }
+
+    .browser {
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+
+    .browser-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      min-height: 68px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-strong);
+    }
+
+    .breadcrumbs {
+      display: flex;
+      min-width: 0;
+      align-items: center;
+      gap: 8px;
+      overflow: hidden;
+      font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    .breadcrumbs a {
+      color: var(--accent);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .breadcrumbs a:hover { text-decoration: underline; }
+    .breadcrumbs [aria-current="page"] { overflow: hidden; text-overflow: ellipsis; }
+    .breadcrumb-separator { color: var(--muted); }
+
+    .summary {
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .browser-meta {
+      display: flex;
+      flex: 0 0 auto;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .json-link {
+      border-radius: 999px;
+      padding: 3px 9px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+      font-size: 0.72rem;
+      font-weight: 750;
+      text-decoration: none;
+    }
+
+    .json-link:hover { text-decoration: underline; }
+
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th {
+      padding: 12px 20px;
+      color: var(--muted);
+      font-size: 0.7rem;
+      font-weight: 750;
+      letter-spacing: 0.08em;
+      text-align: left;
+      text-transform: uppercase;
+    }
+
+    th:nth-child(2), td:nth-child(2) { width: 110px; }
+    th:nth-child(3), td:nth-child(3) { width: 210px; }
+
+    td {
+      height: 56px;
+      padding: 8px 20px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    tr { transition: background-color 120ms ease; }
+    tbody tr:hover { background: var(--row-hover); }
+
+    .entry {
+      display: inline-flex;
+      max-width: min(560px, 58vw);
+      align-items: center;
+      gap: 12px;
+      color: var(--text);
+      font-weight: 620;
+      text-decoration: none;
+    }
+
+    .entry span:last-child { overflow: hidden; text-overflow: ellipsis; }
+    .entry:hover span:last-child { color: var(--accent); text-decoration: underline; }
+
+    .entry-icon {
+      position: relative;
+      display: inline-block;
+      flex: 0 0 18px;
+      width: 18px;
+      height: 18px;
+    }
+
+    .entry-icon--folder {
+      height: 13px;
+      margin-top: 3px;
+      border-radius: 3px;
+      background: var(--folder);
+    }
+
+    .entry-icon--folder::before {
+      position: absolute;
+      top: -4px;
+      left: 1px;
+      width: 8px;
+      height: 5px;
+      border-radius: 3px 3px 0 0;
+      background: var(--folder);
+      content: "";
+    }
+
+    .entry-icon--file {
+      border: 2px solid var(--file);
+      border-radius: 3px;
+    }
+
+    .entry-icon--file::after {
+      position: absolute;
+      right: 2px;
+      bottom: 3px;
+      left: 2px;
+      height: 2px;
+      background: var(--file);
+      box-shadow: 0 -4px 0 var(--file);
+      content: "";
+    }
+
+    .entry-icon--parent {
+      display: grid;
+      place-items: center;
+      border-radius: 5px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 800;
+    }
+
+    .parent-row .entry { color: var(--muted); font-weight: 560; }
+
+    .type-label {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 2px 8px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .empty-state { height: 120px; text-align: center; }
+
+    .browser-footer {
+      display: flex;
+      justify-content: flex-end;
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+      background: var(--surface-strong);
+    }
+
+    .browser-footer:empty { display: none; }
+
+    .next-page {
+      color: var(--accent);
+      font-size: 0.86rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .next-page:hover { text-decoration: underline; }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --background: #0b0e15;
+        --background-accent: #201a43;
+        --surface: rgba(20, 24, 35, 0.9);
+        --surface-strong: #151923;
+        --text: #f3f4f8;
+        --muted: #9ba4b5;
+        --border: #2b3240;
+        --accent: #a997ff;
+        --accent-soft: #292443;
+        --folder: #9b87ff;
+        --file: #8590a4;
+        --row-hover: #1d2030;
+        --shadow: 0 28px 80px rgba(0, 0, 0, 0.4);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .shell { width: min(100% - 24px, 960px); padding: 24px 0; }
+      .browser-header { align-items: flex-start; flex-direction: column; gap: 6px; }
+      .browser-meta { width: 100%; justify-content: space-between; }
+      th, td { padding-right: 14px; padding-left: 14px; }
+      th:nth-child(2), td:nth-child(2) { width: 92px; }
+      .entry { max-width: calc(100vw - 150px); }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="browser" aria-label="Directory contents">
+      <div class="browser-header">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">{{#breadcrumbs}}{{#separator}}<span class="breadcrumb-separator" aria-hidden="true">/</span>{{/separator}}{{#link}}<a href="{{{href}}}">{{name}}</a>{{/link}}{{#current}}<span aria-current="page">{{name}}</span>{{/current}}{{/breadcrumbs}}</nav>
+        <div class="browser-meta">
+          <span class="summary">{{summary}}</span>
+          <a class="json-link" href="{{{jsonPath}}}?format=json{{#jsonCursor}}&amp;cursor={{jsonCursor}}{{/jsonCursor}}">JSON</a>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Name</th><th>Size</th><th>Last modified</th></tr></thead>
+          <tbody>
+            {{#rows}}
+            <tr{{#isParent}} class="parent-row"{{/isParent}}>
+              <td><a class="entry" href="{{{href}}}">{{#isParent}}<span class="entry-icon entry-icon--parent" aria-hidden="true">↑</span>{{/isParent}}{{#isFolder}}<span class="entry-icon entry-icon--folder" aria-hidden="true"></span>{{/isFolder}}{{#isFile}}<span class="entry-icon entry-icon--file" aria-hidden="true"></span>{{/isFile}}<span>{{name}}</span></a></td>
+              <td>{{#isFolder}}<span class="type-label">Folder</span>{{/isFolder}}{{#isFile}}{{size}}{{/isFile}}</td>
+              <td>{{#isFile}}<time datetime="{{datetime}}">{{date}}</time>{{/isFile}}</td>
+            </tr>
+            {{/rows}}
+            {{^hasRows}}<tr><td class="empty-state" colspan="3">This directory is empty.</td></tr>{{/hasRows}}
+          </tbody>
+        </table>
+      </div>
+      <div class="browser-footer">{{#next}}<a class="next-page" rel="next" href="{{{href}}}">Next page <span aria-hidden="true">→</span></a>{{/next}}</div>
+    </section>
+  </main>
+</body>
+</html>
