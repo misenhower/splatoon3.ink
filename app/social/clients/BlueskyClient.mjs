@@ -1,8 +1,6 @@
-import atprotoApi from '@atproto/api';
+import { BskyAgent, RichText } from '@atproto/api';
 import sharp from 'sharp';
 import Client from './Client.mjs';
-
-const { BskyAgent, RichText } = atprotoApi;
 
 export default class BlueskyClient extends Client
 {
