@@ -112,50 +112,78 @@
 
     .json-link:hover { text-decoration: underline; }
 
-    .table-wrap { overflow-x: auto; }
+    .listing-wrap { overflow-x: auto; }
 
-    table {
+    .listing {
+      min-width: 520px;
       width: 100%;
-      border-collapse: collapse;
       font-size: 0.9rem;
     }
 
-    th {
+    .listing-items {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .listing-header, .listing-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 210px 110px;
+    }
+
+    .listing-header > span {
       padding: 12px 20px;
       color: var(--muted);
       font-size: 0.7rem;
       font-weight: 750;
       letter-spacing: 0.08em;
-      text-align: left;
       text-transform: uppercase;
     }
 
-    th:nth-child(2), td:nth-child(2) { width: 110px; }
-    th:nth-child(3), td:nth-child(3) { width: 210px; }
-
-    td {
-      height: 56px;
-      padding: 8px 20px;
+    .listing-row {
+      min-height: 56px;
       border-top: 1px solid var(--border);
       color: var(--muted);
+      text-decoration: none;
+      transition: background-color 120ms ease;
+    }
+
+    .listing-row:hover { background: var(--row-hover); }
+    .listing-row:focus-visible {
+      border-radius: 4px;
+      outline: 2px solid var(--accent);
+      outline-offset: -3px;
+    }
+
+    .listing-cell {
+      display: flex;
+      min-width: 0;
+      align-items: center;
+      padding: 8px 20px;
       white-space: nowrap;
     }
 
-    tr { transition: background-color 120ms ease; }
-    tbody tr:hover { background: var(--row-hover); }
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
 
     .entry {
-      display: inline-flex;
       max-width: min(560px, 58vw);
-      align-items: center;
       gap: 12px;
       color: var(--text);
       font-weight: 620;
-      text-decoration: none;
     }
 
-    .entry span:last-child { overflow: hidden; text-overflow: ellipsis; }
-    .entry:hover span:last-child { color: var(--accent); text-decoration: underline; }
+    .entry-name { overflow: hidden; text-overflow: ellipsis; }
+    .listing-row:hover .entry-name { color: var(--accent); text-decoration: underline; }
 
     .entry-icon {
       position: relative;
@@ -221,7 +249,13 @@
       font-weight: 700;
     }
 
-    .empty-state { height: 120px; text-align: center; }
+    .empty-state {
+      display: grid;
+      height: 120px;
+      place-items: center;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
 
     .browser-footer {
       display: flex;
@@ -264,8 +298,8 @@
       .shell { width: min(100% - 24px, 960px); padding: 24px 0; }
       .browser-header { align-items: flex-start; flex-direction: column; gap: 6px; }
       .browser-meta { width: 100%; justify-content: space-between; }
-      th, td { padding-right: 14px; padding-left: 14px; }
-      th:nth-child(2), td:nth-child(2) { width: 92px; }
+      .listing-header, .listing-row { grid-template-columns: minmax(0, 1fr) 190px 92px; }
+      .listing-header > span, .listing-cell { padding-right: 14px; padding-left: 14px; }
       .entry { max-width: calc(100vw - 150px); }
     }
   </style>
@@ -280,20 +314,22 @@
           <a class="json-link" href="{{{jsonPath}}}?format=json{{#jsonCursor}}&amp;cursor={{jsonCursor}}{{/jsonCursor}}">JSON</a>
         </div>
       </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Name</th><th>Size</th><th>Last modified</th></tr></thead>
-          <tbody>
-            {{#rows}}
-            <tr{{#isParent}} class="parent-row"{{/isParent}}>
-              <td><a class="entry" href="{{{href}}}">{{#isParent}}<span class="entry-icon entry-icon--parent" aria-hidden="true">↑</span>{{/isParent}}{{#isFolder}}<span class="entry-icon entry-icon--folder" aria-hidden="true"></span>{{/isFolder}}{{#isFile}}<span class="entry-icon entry-icon--file" aria-hidden="true"></span>{{/isFile}}<span>{{name}}</span></a></td>
-              <td>{{#isFolder}}<span class="type-label">Folder</span>{{/isFolder}}{{#isFile}}{{size}}{{/isFile}}</td>
-              <td>{{#isFile}}<time datetime="{{datetime}}">{{date}}</time>{{/isFile}}</td>
-            </tr>
-            {{/rows}}
-            {{^hasRows}}<tr><td class="empty-state" colspan="3">This directory is empty.</td></tr>{{/hasRows}}
-          </tbody>
-        </table>
+      <div class="listing-wrap">
+        <div class="listing">
+          <div class="listing-header"><span>Name</span><span>Last modified</span><span>Size</span></div>
+          <ul class="listing-items" aria-label="Directory entries">
+          {{#rows}}
+          <li>
+            <a class="listing-row{{#isParent}} parent-row{{/isParent}}" href="{{{href}}}">
+              <span class="listing-cell entry"><span class="visually-hidden">Name: </span>{{#isParent}}<span class="entry-icon entry-icon--parent" aria-hidden="true">↑</span>{{/isParent}}{{#isFolder}}<span class="entry-icon entry-icon--folder" aria-hidden="true"></span>{{/isFolder}}{{#isFile}}<span class="entry-icon entry-icon--file" aria-hidden="true"></span>{{/isFile}}<span class="entry-name">{{name}}</span></span>
+              <span class="listing-cell">{{#isFile}}<span class="visually-hidden">Last modified: </span><time datetime="{{datetime}}">{{date}}</time>{{/isFile}}</span>
+              <span class="listing-cell">{{#isFolder}}<span class="visually-hidden">Type: </span><span class="type-label">Folder</span>{{/isFolder}}{{#isFile}}<span class="visually-hidden">Size: </span>{{size}}{{/isFile}}</span>
+            </a>
+          </li>
+          {{/rows}}
+          {{^hasRows}}<li class="empty-state">This directory is empty.</li>{{/hasRows}}
+          </ul>
+        </div>
       </div>
       <div class="browser-footer">{{#next}}<a class="next-page" rel="next" href="{{{href}}}">Next page <span aria-hidden="true">→</span></a>{{/next}}</div>
     </section>
