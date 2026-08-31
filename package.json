@@ -4,10 +4,14 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "assets-browser:dev": "wrangler dev --local --var LOCAL_DEVELOPMENT:true --persist-to .wrangler/state --cwd workers/assets-directory-browser",
+    "assets-browser:test": "vitest run --config workers/assets-directory-browser/vitest.config.mjs",
+    "assets-browser:deploy": "wrangler deploy --cwd workers/assets-directory-browser",
+    "assets-browser:deploy:dry-run": "wrangler deploy --dry-run --cwd workers/assets-directory-browser",
     "preview": "vite preview --port 5050",
     "lint": "eslint .",
     "lint-fix": "npm run lint -- --fix",
-    "test": "vitest run",
+    "test": "vitest run && npm run assets-browser:test",
     "test:watch": "vitest",
     "cron": "node app/index.mjs cron",
     "start": "npm run sync:download && npm run splatnet:quick && npm run social && npm run cron",
@@ -47,6 +51,7 @@
     "jsonpath-plus": "^10.4.0",
     "lodash": "^4.17.21",
     "masto": "^8.0.0",
+    "mustache": "^4.2.0",
     "nxapi": "1.6.1-next.254",
     "p-filter": "^4.1.0",
     "p-limit": "^7.3.0",
@@ -63,6 +68,7 @@
     "vue-router": "^5.0.2"
   },
   "devDependencies": {
+    "@cloudflare/vitest-plugin": "^1.1.2",
     "@dword-design/eslint-plugin-import-alias": "^8.1.3",
     "@eslint/js": "^10.0.1",
     "@intlify/unplugin-vue-i18n": "^11.2.5",
@@ -76,7 +82,8 @@
     "typescript": "^6.0.3",
     "vite": "^8.2.2",
     "vitest": "^4.1.11",
-    "vue-eslint-parser": "^10.4.0"
+    "vue-eslint-parser": "^10.4.0",
+    "wrangler": "^4.127.1"
   },
   "overrides": {
     "sharp": "$sharp",

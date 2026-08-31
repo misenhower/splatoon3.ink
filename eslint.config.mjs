@@ -53,9 +53,24 @@ export default [
     },
   },
 
+  // Cloudflare runtime types referenced by Worker JSDoc.
+  {
+    files: ['workers/**/*.js'],
+    rules: {
+      'jsdoc/no-undefined-types': ['warn', { definedTypes: [
+        'Env',
+        'ExportedHandler',
+        'HeadersInit',
+        'R2Bucket',
+        'R2Objects',
+      ] }],
+    },
+  },
+
   // Ignored files
   {
     ignores: [
+      '**/.wrangler/**',
       'dist/**',
       'src/assets/i18n/index.mjs',
     ],

@@ -8,6 +8,9 @@ export default defineConfig({
     },
   },
   test: {
-    include: ['app/**/*.test.mjs', 'src/**/*.test.{js,mjs}'],
+    include: [
+      'app/**/*.test.mjs',
+      'src/**/*.test.{js,mjs}',
+    ],
   },
 });
