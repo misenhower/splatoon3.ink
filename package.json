@@ -47,7 +47,7 @@
     "jsonpath-plus": "^10.4.0",
     "lodash": "^4.17.21",
     "masto": "^8.0.0",
-    "nxapi": "^1.6.1-next.248",
+    "nxapi": "1.6.1-next.254",
     "p-filter": "^4.1.0",
     "p-limit": "^7.3.0",
     "p-queue": "^9.1.0",
@@ -79,6 +79,7 @@
     "vue-eslint-parser": "^10.4.0"
   },
   "overrides": {
+    "sharp": "$sharp",
     "nxapi": {
       "uuid": "^11.1.1",
       "node-notifier": {
