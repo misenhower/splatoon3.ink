@@ -64,8 +64,6 @@ connects to the production bucket.
 
 ```sh
 npm run assets-browser:test
-npm run assets-browser:types
-npm run assets-browser:typecheck
 npm run assets-browser:dry-run
 ```
 

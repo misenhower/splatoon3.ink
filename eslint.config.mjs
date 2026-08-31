@@ -53,7 +53,7 @@ export default [
     },
   },
 
-  // Cloudflare types are generated from the Worker configuration.
+  // Cloudflare runtime types referenced by Worker JSDoc.
   {
     files: ['workers/**/*.js'],
     rules: {
