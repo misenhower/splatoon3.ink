@@ -1,10 +1,94 @@
 import Mustache from 'mustache';
+import { XMLParser } from 'fast-xml-parser';
 import template from './template.html';
 
 const internalPrefix = '/__directory';
 const pageSize = 1000;
+const archiveMountPrefix = 'data/archive/';
 
 Mustache.parse(template);
+
+const xmlParser = new XMLParser({
+  parseTagValue: false,
+  trimValues: true,
+});
+
+/**
+ * @param {unknown} value
+ * @returns {unknown[]} The value as an array.
+ */
+function asArray(value) {
+  if (value === undefined) {
+    return [];
+  }
+
+  return Array.isArray(value) ? value : [value];
+}
+
+/**
+ * @param {Env} env
+ * @param {string} prefix
+ * @param {string | undefined} cursor
+ * @returns {Promise<R2Objects>} The normalized archive directory listing.
+ */
+async function listArchive(env, prefix, cursor) {
+  let archivePrefix = prefix.slice(archiveMountPrefix.length);
+  let archiveOrigin = new URL(env.ARCHIVE_ORIGIN);
+  let listUrl = new URL('/', archiveOrigin);
+  listUrl.searchParams.set('list-type', '2');
+  listUrl.searchParams.set('delimiter', '/');
+  listUrl.searchParams.set('max-keys', String(pageSize));
+  listUrl.searchParams.set('prefix', archivePrefix);
+  if (cursor) {
+    listUrl.searchParams.set('continuation-token', cursor);
+  }
+
+  let response = await fetch(new Request(listUrl, {
+    headers: { Accept: 'application/xml' },
+  }));
+  if (!response.ok) {
+    throw new Error(`Archive listing returned ${response.status}`);
+  }
+
+  let document = xmlParser.parse(await response.text());
+  let result = document?.ListBucketResult;
+  if (!result || typeof result !== 'object') {
+    throw new Error('Archive listing returned invalid XML');
+  }
+
+  return {
+    cursor: result.NextContinuationToken || undefined,
+    delimitedPrefixes: asArray(result.CommonPrefixes).map(item => (
+      `${archiveMountPrefix}${item.Prefix}`
+    )),
+    objects: asArray(result.Contents).map(item => ({
+      browserKey: `${archiveMountPrefix}${item.Key}`,
+      etag: item.ETag,
+      key: item.Key,
+      size: Number(item.Size),
+      uploaded: new Date(item.LastModified),
+      url: new URL(publicPath(item.Key), archiveOrigin).href,
+    })),
+    truncated: result.IsTruncated === 'true',
+  };
+}
+
+/**
+ * @param {string} prefix
+ * @param {string | undefined} cursor
+ * @param {R2Objects} listing
+ * @returns {R2Objects} The listing with any virtual directories added.
+ */
+function withVirtualDirectories(prefix, cursor, listing) {
+  if (prefix !== 'data/' || cursor || listing.delimitedPrefixes.includes(archiveMountPrefix)) {
+    return listing;
+  }
+
+  return {
+    ...listing,
+    delimitedPrefixes: [...listing.delimitedPrefixes, archiveMountPrefix].sort(),
+  };
+}
 
 /** @param {string} key */
 function publicPath(key) {
@@ -100,15 +184,19 @@ function directoryPage(origin, prefix, listing, cursor) {
       prefix: directoryPrefix,
       url: new URL(publicPath(directoryPrefix), origin).href,
     })),
-    files: listing.objects.map(object => ({
-      etag: object.etag,
-      key: object.key,
-      name: displayName(object.key, prefix),
-      pathname: publicPath(object.key),
-      size: object.size,
-      uploaded: object.uploaded,
-      url: new URL(publicPath(object.key), origin).href,
-    })),
+    files: listing.objects.map(object => {
+      let pathname = publicPath(object.browserKey ?? object.key);
+      return {
+        etag: object.etag,
+        href: object.url ?? pathname,
+        key: object.key,
+        name: displayName(object.browserKey ?? object.key, prefix),
+        pathname,
+        size: object.size,
+        uploaded: object.uploaded,
+        url: object.url ?? new URL(publicPath(object.key), origin).href,
+      };
+    }),
     nextCursor: listing.truncated ? listing.cursor : undefined,
     pathname,
     prefix,
@@ -157,7 +245,7 @@ function renderListing(page, styleNonce) {
     ...page.files.map(file => ({
       date: formatDate(file.uploaded),
       datetime: file.uploaded.toISOString(),
-      href: file.pathname,
+      href: file.href,
       isFile: true,
       name: file.name,
       size: formatSize(file.size),
@@ -319,19 +407,24 @@ export default {
     }
 
     let cursor = url.searchParams.get('cursor') || undefined;
+    let archiveListing = prefix.startsWith(archiveMountPrefix);
     /** @type {R2Objects} */
     let listing;
     try {
-      listing = await env.ASSETS.list({
-        cursor,
-        delimiter: '/',
-        limit: pageSize,
-        prefix,
-      });
+      listing = archiveListing
+        ? await listArchive(env, prefix, cursor)
+        : await env.ASSETS.list({
+          cursor,
+          delimiter: '/',
+          limit: pageSize,
+          prefix,
+        });
     } catch (error) {
       console.error(JSON.stringify({
         error: error instanceof Error ? error.message : String(error),
-        message: 'R2 directory listing failed',
+        message: archiveListing
+          ? 'Archive directory listing failed'
+          : 'R2 directory listing failed',
         prefix,
       }));
       return listingErrorResponse(request, 500, 'listing_unavailable', 'Directory listing unavailable');
@@ -340,6 +433,7 @@ export default {
       return listingErrorResponse(request, 404, 'directory_not_found', 'Directory not found');
     }
 
+    listing = withVirtualDirectories(prefix, cursor, listing);
     let page = directoryPage(url.origin, prefix, listing, cursor);
     if (url.searchParams.get('format') === 'json') {
       return jsonListingResponse(request, page);

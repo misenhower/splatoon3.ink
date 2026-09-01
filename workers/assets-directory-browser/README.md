@@ -1,7 +1,20 @@
 # Assets directory browser
 
 This Worker renders read-only directory listings for the public R2 bucket without
-running on ordinary object requests.
+running on ordinary object requests. It also mounts the public DigitalOcean
+Spaces data archive at `/data/archive/`.
+
+## Virtual archive directory
+
+The `/data/` R2 listing includes a synthetic `archive/` directory. Listings
+under `/data/archive/` use anonymous S3 `ListObjectsV2` requests against the
+public archive origin instead of R2. The mount prefix is removed from S3
+requests and restored on browser-visible directory links.
+
+Archive file links point directly to `https://data-archive.splatoon3.ink`, so
+downloads do not pass through the Worker. Directory and pagination links remain
+under `https://assets.splatoon3.ink/data/archive/`. The public S3 listing API on
+the archive domain is unchanged.
 
 ## Request routing
 
@@ -57,8 +70,17 @@ npm run assets-browser:dev
 ```
 
 Then open `http://localhost:8787/`. Local mode accepts the natural directory
-paths and serves linked objects from Wrangler's simulated R2 bucket. It never
-connects to the production bucket.
+paths and serves linked R2 objects from Wrangler's simulated bucket. It never
+connects to the production R2 bucket.
+
+The archive mount uses the anonymously readable production Spaces listing in
+local mode, so it can be previewed at:
+
+```text
+http://localhost:8787/data/archive/
+```
+
+Archive file links in that preview still point to the public archive domain.
 
 ## Validate without deploying
 

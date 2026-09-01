@@ -6,6 +6,9 @@
   "compatibility_flags": ["nodejs_compat"],
   "workers_dev": false,
   "preview_urls": false,
+  "vars": {
+    "ARCHIVE_ORIGIN": "https://data-archive.splatoon3.ink"
+  },
   "routes": [
     {
       "pattern": "assets.splatoon3.ink/__directory/*",
