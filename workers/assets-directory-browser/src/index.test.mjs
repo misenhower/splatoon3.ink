@@ -90,6 +90,64 @@ describe('assets directory browser', () => {
     expect(html).not.toContain('__directory');
   });
 
+  it('shows the data archive as a directory in the R2 data listing', async () => {
+    let bucket = new FakeBucket({
+      cursor: undefined,
+      delimitedPrefixes: ['data/locale/'],
+      objects: [],
+      truncated: false,
+    });
+
+    let response = await worker.fetch(new Request(
+      'https://assets.splatoon3.ink/__directory/data/',
+    ), { ASSETS: bucket });
+    let html = await response.text();
+
+    expect(response.status).toBe(200);
+    expect(html).toContain('href="/data/archive/"');
+    expect(html).toContain('<span class="entry-name">archive&#x2F;</span>');
+  });
+
+  it('browses archive directories while linking files to the public archive origin', async () => {
+    let fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(`
+      <?xml version="1.0" encoding="UTF-8"?>
+      <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+        <Prefix>2026/08/</Prefix>
+        <IsTruncated>true</IsTruncated>
+        <Contents>
+          <Key>2026/08/2026-08-01.tar.zst</Key>
+          <LastModified>2026-08-31T01:02:03.000Z</LastModified>
+          <ETag>&quot;archive-etag&quot;</ETag>
+          <Size>1536</Size>
+        </Contents>
+        <CommonPrefixes><Prefix>2026/08/31/</Prefix></CommonPrefixes>
+        <NextContinuationToken>next archive page</NextContinuationToken>
+      </ListBucketResult>
+    `, { headers: { 'Content-Type': 'application/xml' } }));
+
+    let response = await worker.fetch(new Request(
+      'http://localhost:8787/data/archive/2026/08/?cursor=current%20archive%20page',
+    ), {
+      ARCHIVE_ORIGIN: 'https://data-archive.splatoon3.ink',
+      ASSETS: new FakeBucket,
+      LOCAL_DEVELOPMENT: 'true',
+    });
+    let html = await response.text();
+
+    expect(response.status).toBe(200);
+    expect(fetchSpy).toHaveBeenCalledOnce();
+    expect(fetchSpy.mock.calls[0][0].url).toBe(
+      'https://data-archive.splatoon3.ink/?list-type=2&delimiter=%2F&max-keys=1000&prefix=2026%2F08%2F&continuation-token=current+archive+page',
+    );
+    expect(html).toContain('href="/data/archive/2026/08/31/"');
+    expect(html).toContain('href="https://data-archive.splatoon3.ink/2026/08/2026-08-01.tar.zst"');
+    expect(html).toContain('href="/data/archive/2026/08/?cursor=next%20archive%20page"');
+    expect(html).toContain('1.5 KB');
+    expect(html).toContain('2026-08-31 01:02:03 UTC');
+
+    fetchSpy.mockRestore();
+  });
+
   it('returns a public JSON representation of a directory page', async () => {
     let bucket = new FakeBucket({
       cursor: 'next page',
@@ -281,6 +339,32 @@ describe('assets directory browser', () => {
       message: 'R2 directory listing failed',
       prefix: 'data/',
     }));
+    errorLog.mockRestore();
+  });
+
+  it('returns a controlled error when the archive listing fails', async () => {
+    let errorLog = vi.spyOn(console, 'error').mockImplementation(() => {});
+    let fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response('Unavailable', { status: 503 }),
+    );
+
+    let response = await worker.fetch(new Request(
+      'https://assets.splatoon3.ink/__directory/data/archive/2026/',
+    ), {
+      ARCHIVE_ORIGIN: 'https://data-archive.splatoon3.ink',
+      ASSETS: new FakeBucket,
+    });
+
+    expect(response.status).toBe(500);
+    expect(response.headers.get('cache-control')).toBe('no-store');
+    expect(await response.text()).toBe('Directory listing unavailable');
+    expect(errorLog).toHaveBeenCalledWith(JSON.stringify({
+      error: 'Archive listing returned 503',
+      message: 'Archive directory listing failed',
+      prefix: 'data/archive/2026/',
+    }));
+
+    fetchSpy.mockRestore();
     errorLog.mockRestore();
   });
 });
