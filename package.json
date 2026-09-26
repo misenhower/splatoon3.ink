@@ -50,7 +50,7 @@
     "jsonpath-plus": "^10.4.0",
     "lodash": "^4.17.21",
     "masto": "^8.0.0",
-    "nxapi": "1.6.1-next.254",
+    "nxapi": "1.6.1-next.257",
     "p-filter": "^4.1.0",
     "p-limit": "^7.3.0",
     "p-queue": "^9.1.0",
