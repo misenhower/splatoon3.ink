@@ -1,5 +1,20 @@
 import S3Syncer from './S3Syncer.mjs';
 import R2Syncer from './R2Syncer.mjs';
+import CloudflareCachePurger from './CloudflareCachePurger.mjs';
+
+function cachePurger() {
+  const zoneId = process.env.CLOUDFLARE_CACHE_PURGE_ZONE_ID;
+  const apiToken = process.env.CLOUDFLARE_CACHE_PURGE_API_TOKEN;
+
+  if (!zoneId && !apiToken) return;
+
+  return new CloudflareCachePurger({
+    zoneId,
+    apiToken,
+    hosts: (process.env.CLOUDFLARE_CACHE_PURGE_HOSTS ?? '')
+      .split(',').map(host => host.trim()).filter(Boolean),
+  });
+}
 
 export function canSyncS3() {
   return !!(
@@ -28,13 +43,18 @@ export function canUpload() {
 }
 
 export async function upload() {
+  // Validate purge settings before starting uploads to either destination.
+  const purger = canUploadR2() ? cachePurger() : undefined;
   let uploads = [];
 
   if (canSyncS3()) {
     uploads.push((new S3Syncer).upload());
   }
   if (canUploadR2()) {
-    uploads.push((new R2Syncer({ config: r2Configuration() })).upload());
+    uploads.push((new R2Syncer({
+      config: r2Configuration(),
+      cachePurger: purger,
+    })).upload());
   }
 
   if (uploads.length === 0) {
