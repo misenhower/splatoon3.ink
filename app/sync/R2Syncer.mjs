@@ -17,21 +17,29 @@ function isPublicData(key) {
 
 export default class R2Syncer
 {
-  constructor({ config = {}, localPath, s3Client, syncClient } = {}) {
+  constructor({ config = {}, localPath, s3Client, syncClient, cachePurger } = {}) {
     this.config = config;
     this._s3Client = s3Client;
     this._syncClient = syncClient;
     this._localPath = localPath;
+    this.cachePurger = cachePurger;
   }
 
   async upload() {
     this.log('Uploading files...');
 
-    return this.syncClient.sync(this.localPath, this.publicBucket, {
+    const result = await this.syncClient.sync(this.localPath, this.publicBucket, {
       filters: this.filters,
       relocations: this.relocations,
       commandInput: input => this.commandInput(input),
     });
+
+    if (this.cachePurger) {
+      await this.cachePurger.purgeData();
+      this.log('Purged public data caches.');
+    }
+
+    return result;
   }
 
   commandInput(input) {
@@ -41,6 +49,10 @@ export default class R2Syncer
         ? dataCacheControl
         : undefined,
     };
+
+    if (this.cachePurger && input.Key.startsWith('data/') && input.Key.endsWith('.json')) {
+      result.CacheControl = 'public, max-age=0, s-maxage=60, must-revalidate';
+    }
 
     return result;
   }

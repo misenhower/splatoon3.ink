@@ -3,7 +3,7 @@ import os from 'node:os';
 import fs from 'node:fs/promises';
 import { ListObjectsV2Command, PutObjectCommand } from '@aws-sdk/client-s3';
 import { S3SyncClient } from 's3-sync-client';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import R2Syncer from './R2Syncer.mjs';
 
 class FakeSyncClient
@@ -80,6 +80,48 @@ describe('R2Syncer', () => {
       force: true,
       recursive: true,
     })));
+  });
+
+  it('purges after uploads complete, including syncs with no changes', async () => {
+    const order = [];
+    const syncClient = {
+      sync: async () => {
+        order.push('uploaded');
+        return { created: [], updated: [], deleted: [] };
+      },
+    };
+    const cachePurger = { purgeData: async () => order.push('purged') };
+    const syncer = new R2Syncer({ config, syncClient, cachePurger });
+
+    await syncer.upload();
+    await syncer.upload();
+
+    expect(order).toEqual(['uploaded', 'purged', 'uploaded', 'purged']);
+    expect(syncer.commandInput({ Key: 'data/schedules.json' }).CacheControl)
+      .toBe('public, max-age=0, s-maxage=60, must-revalidate');
+    expect(syncer.commandInput({ Key: 'splatnet/image.png' }).CacheControl).toBeUndefined();
+  });
+
+  it('does not report success when purging fails', async () => {
+    const syncer = new R2Syncer({
+      config,
+      syncClient: new FakeSyncClient,
+      cachePurger: { purgeData: async () => { throw new Error('purge failed'); } },
+    });
+
+    await expect(syncer.upload()).rejects.toThrow('purge failed');
+  });
+
+  it('does not purge before a failed upload batch has completed', async () => {
+    const purgeData = vi.fn();
+    const syncer = new R2Syncer({
+      config,
+      syncClient: { sync: async () => { throw new Error('upload failed'); } },
+      cachePurger: { purgeData },
+    });
+
+    await expect(syncer.upload()).rejects.toThrow('upload failed');
+    expect(purgeData).not.toHaveBeenCalled();
   });
 
   it('uploads only public data and generated images with canonical R2 keys', async () => {

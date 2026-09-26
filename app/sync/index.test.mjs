@@ -43,6 +43,9 @@ const environmentKeys = [
   'R2_BUCKET',
   'R2_ENDPOINT',
   'SITE_URL',
+  'CLOUDFLARE_CACHE_PURGE_ZONE_ID',
+  'CLOUDFLARE_CACHE_PURGE_API_TOKEN',
+  'CLOUDFLARE_CACHE_PURGE_HOSTS',
 ];
 
 function configureLegacy() {
@@ -104,5 +107,15 @@ describe('sync orchestration', () => {
 
     expect(mocks.legacyUpload).not.toHaveBeenCalled();
     expect(mocks.r2Upload).toHaveBeenCalledOnce();
+  });
+
+  it('rejects incomplete purge credentials before publishing anything', async () => {
+    configureLegacy();
+    configureR2();
+    process.env.CLOUDFLARE_CACHE_PURGE_ZONE_ID = 'a'.repeat(32);
+
+    await expect(upload()).rejects.toThrow('Cache purging requires');
+    expect(mocks.legacyUpload).not.toHaveBeenCalled();
+    expect(mocks.r2Upload).not.toHaveBeenCalled();
   });
 });
