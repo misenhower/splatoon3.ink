@@ -3,7 +3,7 @@
     <div class="space-y-4">
       <div>
         <div v-if="brand" class="-mb-10">
-          <img :src="brand.image.url" />
+          <img :src="brand.image.url" width="1600" height="800" />
         </div>
         <div class="flex flex-col items-center -space-y-2">
           <SquidTape
@@ -18,7 +18,7 @@
           </SquidTape>
 
           <div v-if="brand" class="relative -rotate-2">
-            <img src="@/assets/img/gesotown-daily-drop-bg.png" class="w-64" />
+            <img width="840" height="146" src="@/assets/img/gesotown-daily-drop-bg.png" class="w-64" />
             <div class="absolute inset-0 flex items-center ml-4">
               <div class="font-splatoon2 text-lg">
                 {{ $t(`splatnet.brands.${brand.brand.id}.name`, brand.brand.name) }}

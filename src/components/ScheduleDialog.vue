@@ -4,7 +4,7 @@
       <div class="relative h-full overflow-hidden">
         <div class="absolute inset-x-0 bg-zinc-800/40 backdrop-blur-md z-30 pt-10 pb-4">
           <div class="flex items-center space-x-2 mx-2">
-            <img :src="type.img" />
+            <img :src="type.img" width="40" height="40" />
             <div class="font-splatoon1 lg:text-2xl xl:text-3xl text-shadow">
               {{ $t(type.name) }}
             </div>

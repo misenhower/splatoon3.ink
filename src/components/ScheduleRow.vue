@@ -69,11 +69,11 @@
       </div>
 
       <div class="flex-1">
-        <StageImage class="flex-1" img-class="rounded-l-xl" text-size="text-xs" :stage="props.schedule?.settings.vsStages[0]" />
+        <StageImage class="w-full" img-class="rounded-l-xl" text-size="text-xs" :stage="props.schedule?.settings.vsStages[0]" />
       </div>
 
       <div class="flex-1">
-        <StageImage class="flex-1" img-class="rounded-r-xl" text-size="text-xs" :stage="props.schedule?.settings.vsStages[1]" />
+        <StageImage class="w-full" img-class="rounded-r-xl" text-size="text-xs" :stage="props.schedule?.settings.vsStages[1]" />
       </div>
     </div>
   </div>

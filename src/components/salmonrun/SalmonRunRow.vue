@@ -2,8 +2,22 @@
   <div v-if="schedule" class="font-splatoon2 space-y-1">
     <div class="flex items-center">
       <div>
-        <img v-if="schedule.isBigRun" src="@/assets/img/modes/coop.bigrun.svg" :title="$t('salmonrun.bigrun')" class="w-6 mr-1" />
-        <img v-else src="@/assets/img/modes/coop.svg" :title="$t('salmonrun.title')" class="w-6 mr-1" />
+        <img
+          v-if="schedule.isBigRun"
+          width="25"
+          height="22"
+          src="@/assets/img/modes/coop.bigrun.svg"
+          :title="$t('salmonrun.bigrun')"
+          class="w-6 mr-1"
+        />
+        <img
+          v-else
+          width="40"
+          height="40"
+          src="@/assets/img/modes/coop.svg"
+          :title="$t('salmonrun.title')"
+          class="w-6 mr-1"
+        />
       </div>
 
       <div class="flex-1 text-shadow text-zinc-200">

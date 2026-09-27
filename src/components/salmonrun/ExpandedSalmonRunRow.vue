@@ -1,7 +1,14 @@
 <template>
   <div v-if="schedule" class="font-splatoon2 space-y-1">
     <div class="flex gap-2">
-      <img v-if="eggstra" src="@/assets/img/modes/coop.eggstra.svg" :title="$t('salmonrun.bigrun')" class="w-6 -mr-1" />
+      <img
+        v-if="eggstra"
+        width="40"
+        height="40"
+        src="@/assets/img/modes/coop.eggstra.svg"
+        :title="$t('salmonrun.bigrun')"
+        class="w-6 -mr-1"
+      />
 
       <div class="text-lg text-shadow text-zinc-200 ss:hidden">
         {{ $d(schedule.startTime, 'dateTimeShort') }}
@@ -25,7 +32,13 @@
         v-if="schedule.isBigRun"
         class="bg-zinc-800/80 text-sm text-white rounded-lg px-2 border-2 border-splatoon-bigRun"
       >
-        <img src="@/assets/img/modes/coop.bigrun.svg" :title="$t('salmonrun.bigrun')" class="w-4 inline-block" />
+        <img
+          width="25"
+          height="22"
+          src="@/assets/img/modes/coop.bigrun.svg"
+          :title="$t('salmonrun.bigrun')"
+          class="w-4 inline-block"
+        />
         {{ $t('salmonrun.bigrun') }}
       </div>
     </div>

@@ -17,7 +17,7 @@
         <ProductContainer v-else :bg="type.bg" class="w-full mx-auto max-w-lg pt-10 pb-4 -rotate-1">
           <div class="flex justify-center">
             <div class="inline-flex items-center font-splatoon2 text-xl text-shadow m-2">
-              <img :src="type.img" />
+              <img :src="type.img" width="66" height="65" />
               {{ $t('events.not_available') }}
             </div>
           </div>

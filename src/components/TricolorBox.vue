@@ -2,7 +2,7 @@
   <ProductContainer :bg="type.bg" class="w-full pt-10 pb-4">
     <div class="space-y-2">
       <div class="flex items-center space-x-2 mx-2">
-        <img :src="type.img" />
+        <img :src="type.img" width="40" height="40" />
         <div class="font-splatoon1 lg:text-2xl xl:text-3xl text-shadow">
           {{ $t(type.name) }}
         </div>

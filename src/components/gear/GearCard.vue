@@ -1,6 +1,6 @@
 <template>
   <div class="relative">
-    <img src="@/assets/img/gesotown-tape-blob-bg.png" />
+    <img width="952" height="972" src="@/assets/img/gesotown-tape-blob-bg.png" />
 
     <div class="absolute inset-0 flex flex-col items-center justify-evenly my-4">
       <!-- Gear Image -->
@@ -12,11 +12,11 @@
       <div>
         <div class="flex items-center space-x-px">
           <div :title="$t(`splatnet.powers.${gear.primaryGearPower.__splatoon3ink_id}.name`, gear.primaryGearPower.name)" class="bg-black rounded-full">
-            <img :src="gear.primaryGearPower.image.url" class="h-8" />
+            <img :src="gear.primaryGearPower.image.url" class="h-8 w-8" />
           </div>
 
           <div v-for="(power, i) in gear.additionalGearPowers" :key="i" :title="$t(`splatnet.powers.${power.__splatoon3ink_id}.name`, power.name)" class="bg-black rounded-full">
-            <img :src="power.image.url" class="h-6" />
+            <img :src="power.image.url" class="h-6 w-6" />
           </div>
         </div>
       </div>
@@ -24,7 +24,7 @@
       <!-- Name -->
       <div class="relative text-center">
         <div class="mx-6">
-          <img src="@/assets/img/gesotown-tape.svg" />
+          <img width="246" height="38" src="@/assets/img/gesotown-tape.svg" />
         </div>
         <div class="absolute inset-0 flex items-center justify-center">
           <div class="font-splatoon2 text-sm xl:text-base ss:text-lg text-shadow">
@@ -36,7 +36,7 @@
       <!-- Price -->
       <div class="flex items-center space-x-2">
         <div>
-          <img src="@/assets/img/gesotown-coin.svg" />
+          <img width="19" height="17" src="@/assets/img/gesotown-coin.svg" />
         </div>
         <div class="font-splatoon1">
           {{ price }}
@@ -47,7 +47,7 @@
     <!-- Brand -->
     <div class="absolute top-0 right-10">
       <div class="relative rotate-2">
-        <img src="@/assets/img/gesotown-brand-bg.png" class="w-10" />
+        <img width="82" height="71" src="@/assets/img/gesotown-brand-bg.png" class="w-10" />
         <div class="absolute inset-0 p-2">
           <img :src="gear.brand.image.url" class="w-full h-full" :title="$t(`splatnet.brands.${gear.brand.id}.name`, gear.brand.name)" />
         </div>

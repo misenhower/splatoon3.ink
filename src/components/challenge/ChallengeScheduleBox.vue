@@ -3,7 +3,7 @@
     <ProductContainer :bg="type.bg" class="w-full pt-10 pb-2">
       <div class="space-y-2">
         <div class="flex items-center space-x-2 mx-2">
-          <img :src="type.img" />
+          <img :src="type.img" width="66" height="65" />
           <div class="font-splatoon1 lg:text-2xl xl:text-3xl text-shadow">
             {{ $t(`splatnet.events.${event.settings.leagueMatchEvent.id}.name`, event.settings.leagueMatchEvent.name) }}
 

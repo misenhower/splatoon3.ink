@@ -20,7 +20,7 @@
 
     <div class="m-2 text-center text-xs text-zinc-500">
       <div>
-        <img src="@/assets/img/little-buddy.png" class="mx-auto mb-4" width="50" />
+        <img src="@/assets/img/little-buddy.png" class="mx-auto mb-4 w-[50px]" width="131" height="175" />
       </div>
       <div>
         {{ $t('footer.term') }}

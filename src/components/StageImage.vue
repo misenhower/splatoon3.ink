@@ -1,7 +1,7 @@
 <template>
   <button class="block relative" @click.prevent="open = true">
     <div class="bg-zinc-700 aspect-2/1 overflow-hidden" :class="imgClass">
-      <img v-if="lowRes" :src="lowRes" />
+      <img v-if="lowRes" :src="lowRes" width="400" height="200" />
       <div v-else class="bg-zinc-500 animate-pulse h-full" :class="imgClass">
 &nbsp;
       </div>

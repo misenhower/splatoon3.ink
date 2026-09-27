@@ -14,8 +14,8 @@
       </div>
 
       <div class="flex items-center space-x-2">
-        <div class="bg-white h-6 aspect-square rounded-sm">
-          <img :src="gear.brand.image.url" :title="$t(`splatnet.brands.${gear.brand.id}.name`, gear.brand.name)" />
+        <div class="bg-white h-6 w-6 shrink-0 rounded-sm">
+          <img class="h-full w-full" :src="gear.brand.image.url" :title="$t(`splatnet.brands.${gear.brand.id}.name`, gear.brand.name)" />
         </div>
 
         <div class="flex-1 font-splatoon2 text-shadow overflow-hidden text-ellipsis whitespace-nowrap">
@@ -26,17 +26,17 @@
       <div class="flex justify-between">
         <div class="flex items-center space-x-px">
           <div :title="$t(`splatnet.powers.${gear.primaryGearPower.__splatoon3ink_id}.name`, gear.primaryGearPower.name)" class="bg-black rounded-full">
-            <img :src="gear.primaryGearPower.image.url" class="h-8" />
+            <img :src="gear.primaryGearPower.image.url" class="h-8 w-8" />
           </div>
 
           <div v-for="(power, i) in gear.additionalGearPowers" :key="i" :title="$t(`splatnet.powers.${power.__splatoon3ink_id}.name`, power.name)" class="bg-black rounded-full">
-            <img :src="power.image.url" class="h-6" />
+            <img :src="power.image.url" class="h-6 w-6" />
           </div>
         </div>
 
         <div class="flex items-center space-x-2 bg-price w-28 pl-2 -mr-px">
           <div>
-            <img src="@/assets/img/gesotown-coin.svg" />
+            <img width="19" height="17" src="@/assets/img/gesotown-coin.svg" />
           </div>
           <div class="font-splatoon1">
             {{ price }}
@@ -82,7 +82,7 @@
 
       <div class="flex items-center space-x-2 bg-price w-28 pl-2 -mr-px">
         <div>
-          <img src="@/assets/img/gesotown-coin.svg" />
+          <img width="19" height="17" src="@/assets/img/gesotown-coin.svg" />
         </div>
         <div class="font-splatoon1">
           {{ price }}
