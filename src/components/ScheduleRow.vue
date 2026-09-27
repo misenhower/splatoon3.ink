@@ -21,9 +21,7 @@
         </div>
       </div>
     </div>
-    <div v-else class="sm:hidden h-9 bg-zinc-500 rounded-sm motion-safe:animate-pulse" aria-hidden="true">
-      &nbsp;
-    </div>
+    <SkeletonBlock v-else class="sm:hidden h-9" />
 
     <div class="flex space-x-1">
       <div class="flex-1 items-center text-center font-splatoon2 hidden sm:flex">
@@ -55,15 +53,9 @@
           </template>
 
           <template v-else>
-            <div class="h-5 lg:h-7 bg-zinc-500 rounded-sm motion-safe:animate-pulse" aria-hidden="true">
-&nbsp;
-            </div>
-            <div class="h-5 mx-8 bg-zinc-500 rounded-sm motion-safe:animate-pulse" aria-hidden="true">
-&nbsp;
-            </div>
-            <div class="h-5 mx-4 bg-zinc-500 rounded-sm motion-safe:animate-pulse" aria-hidden="true">
-&nbsp;
-            </div>
+            <SkeletonBlock class="h-5 lg:h-7" />
+            <SkeletonBlock class="h-5 mx-8" />
+            <SkeletonBlock class="h-5 mx-4" />
           </template>
         </div>
       </div>
@@ -94,6 +86,7 @@
 <script setup>
 import StageImage from './StageImage.vue';
 import RuleIcon from './RuleIcon.vue';
+import SkeletonBlock from './loading/SkeletonBlock.vue';
 import { formatDurationFromNow } from '@/common/time';
 import { useTimeStore } from '@/stores/time.mjs';
 
