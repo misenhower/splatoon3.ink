@@ -3,10 +3,19 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted } from 'vue';
-import { RouterView } from 'vue-router';
+import { onMounted, onUnmounted, watchEffect } from 'vue';
+import { RouterView, useRoute } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { useDataStore } from './stores/data';
 import { useTimeStore } from './stores/time.mjs';
+
+const route = useRoute();
+const { t } = useI18n();
+
+watchEffect(() => {
+  const title = route.meta.titleKey ? t(route.meta.titleKey) : route.meta.title;
+  document.title = title ? `${title} — Splatoon3.ink` : 'Splatoon3.ink';
+});
 
 const time = useTimeStore();
 onMounted(() => time.startUpdatingNow());
