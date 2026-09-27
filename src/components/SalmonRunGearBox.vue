@@ -2,7 +2,7 @@
   <ProductContainer v-if="gear" class="pt-10 pb-4 px-10" bg="bg-zinc-500 bg-monsters">
     <div class="flex flex-col items-center space-y-4">
       <div>
-        <img :src="gear.image.url" />
+        <img :src="gear.image.url" width="256" height="256" />
       </div>
       <div>
         <SquidTape class="font-splatoon2 text-2xl bg-splatoon-salmonRun -rotate-2" squid-size="16px">

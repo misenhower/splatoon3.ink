@@ -1,30 +1,48 @@
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { computed, ref, shallowRef } from 'vue';
+import { getEmptyPreviewData, usePagePreviewStore } from './pagePreview.mjs';
 
 // Endpoint store definition (used for each individual data endpoint)
 function defineEndpointStore(id, endpoint, transform = null) {
   return defineStore(`data/${id}`, () => {
-    const data = shallowRef(null);
+    const loadedData = shallowRef(null);
+    const preview = import.meta.env.DEV ? usePagePreviewStore() : null;
+    const data = import.meta.env.DEV
+      ? computed(() => preview.mode === 'empty' ? getEmptyPreviewData(id) : loadedData.value)
+      : loadedData;
     const isUpdating = ref(false);
+    const error = ref(null);
+    let pending;
 
-    async function update() {
+    function update() {
+      if (pending) return pending;
+
       isUpdating.value = true;
+      error.value = null;
 
+      pending = fetchData().finally(() => {
+        isUpdating.value = false;
+        pending = null;
+      });
+
+      return pending;
+    }
+
+    async function fetchData() {
       try {
         let baseUrl = import.meta.env.VITE_DATA_FROM || '';
         let response = await fetch(baseUrl + endpoint);
 
         if (!response.ok) {
-          console.error(`Failed to fetch ${endpoint}: ${response.status} ${response.statusText}`);
-
-          return;
+          throw new Error(`${response.status} ${response.statusText}`);
         }
 
         let json = await response.json();
 
         setData(json);
-      } finally {
-        isUpdating.value = false;
+      } catch (cause) {
+        error.value = cause instanceof Error ? cause.message : String(cause);
+        console.error(`Failed to fetch ${endpoint}: ${error.value}`);
       }
     }
 
@@ -33,10 +51,15 @@ function defineEndpointStore(id, endpoint, transform = null) {
         json = transform(json);
       }
 
-      data.value = json;
+      if (json === null || typeof json !== 'object') {
+        throw new Error('Missing data payload');
+      }
+
+      loadedData.value = json;
+      error.value = null;
     }
 
-    return { data, update, setData, isUpdating };
+    return { data, loadedData, update, setData, isUpdating, error };
   });
 }
 

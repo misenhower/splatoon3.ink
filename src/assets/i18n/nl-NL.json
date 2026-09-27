@@ -1,4 +1,9 @@
 {
+  "loading": {
+    "label": "Laden…",
+    "error": "De gegevens van deze pagina konden niet worden geladen. Probeer het opnieuw.",
+    "retry": "Opnieuw proberen"
+  },
   "times": {
     "now": "Nu",
     "next": "Volgende",

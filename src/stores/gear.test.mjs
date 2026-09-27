@@ -44,6 +44,15 @@ describe('useGearStore', () => {
   });
 
   describe('dailyDropGear', () => {
+    it('handles a successfully loaded shop with no daily drop', () => {
+      setGearData(gearData, { pickupBrand: null, limitedGears: [] });
+      gear = useGearStore();
+
+      expect(gear.dailyDropBrand).toBeNull();
+      expect(gear.dailyDropGear).toBeUndefined();
+      expect(gear.regularGear).toEqual([]);
+    });
+
     it('filters to only current gear items', () => {
       time.setNow(Date.parse('2024-06-15T12:00:00Z'));
       setGearData(gearData, {

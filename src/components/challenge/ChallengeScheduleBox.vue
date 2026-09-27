@@ -1,10 +1,14 @@
 <template>
-  <template v-if="event">
+  <template v-if="loading || event">
     <ProductContainer :bg="type.bg" class="w-full pt-10 pb-2">
       <div class="space-y-2">
         <div class="flex items-center space-x-2 mx-2">
-          <img :src="type.img" />
-          <div class="font-splatoon1 lg:text-2xl xl:text-3xl text-shadow">
+          <img :src="type.img" width="66" height="65" />
+          <div v-if="loading" class="grow space-y-2">
+            <SkeletonBlock class="h-6 lg:h-8 xl:h-9 w-3/4" />
+            <SkeletonBlock class="h-12 xl:h-14" />
+          </div>
+          <div v-else class="font-splatoon1 lg:text-2xl xl:text-3xl text-shadow">
             {{ $t(`splatnet.events.${event.settings.leagueMatchEvent.id}.name`, event.settings.leagueMatchEvent.name) }}
 
             <div class="font-splatoon2 lg:text-md xl:text-xl text-shadow whitespace-pre-line">
@@ -16,7 +20,7 @@
         <div class="bg-zinc-900/70 backdrop-blur-xs pt-2 pb-1 px-2 mx-2 rounded-lg space-y-2">
           <div class="flex items-center justify-between font-splatoon2">
             <div class="flex items-center space-x-2 text-sm lg:text-lg">
-              <template v-if="event">
+              <template v-if="!loading && event">
                 <div>
                   <RuleIcon :rule="event.settings.vsRule" class="h-5 lg:h-6 drop-shadow-ruleIcon" />
                 </div>
@@ -26,13 +30,13 @@
               </template>
 
               <template v-else>
-                <div class="w-32 bg-zinc-600 rounded-sm animate-pulse">
+                <div class="h-5 lg:h-7 w-32 bg-zinc-600 rounded-sm motion-safe:animate-pulse" aria-hidden="true">
                   &nbsp;
                 </div>
               </template>
             </div>
 
-            <div v-if="event.activeTimePeriod">
+            <div v-if="!loading && event.activeTimePeriod">
               <SquidTape class="font-splatoon2 text-sm drop-shadow-sm rotate-6">
                 <div class="px-2">
                   {{ $t('events.now_open') }}
@@ -45,36 +49,38 @@
             <StageImage
               class="flex-1"
               img-class="rounded-l-xl"
-              :stage="event.settings?.vsStages[0]"
+              :stage="event?.settings?.vsStages[0]"
+              :loading="loading"
             />
             <StageImage
               class="flex-1"
               img-class="rounded-r-xl"
-              :stage="event.settings?.vsStages[1]"
+              :stage="event?.settings?.vsStages[1]"
+              :loading="loading"
             />
           </div>
 
           <div class="mx-2 space-y-2 ss:hidden">
             <!-- Past time periods -->
-            <template v-if="event.pastTimePeriods?.length">
+            <template v-if="!loading && event.pastTimePeriods?.length">
               <div class="divide-y-2 divide-dashed divide-zinc-600 font-splatoon">
                 <div v-for="timePeriod in event.pastTimePeriods" :key="timePeriod.startTime" class="flex flex-row justify-center">
-                  <ChallengeScheduleRow :event="event" :time-period="timePeriod" class="my-2" />
+                  <ChallengeScheduleRow :event="event" :time-period="timePeriod" :loading="loading" class="my-2" />
                 </div>
               </div>
             </template>
 
             <!-- Current/future time periods -->
-            <template v-if="event.currentTimePeriods?.length">
+            <template v-if="loading || event.currentTimePeriods?.length">
               <SquidTape class="font-splatoon2 text-sm drop-shadow-sm -rotate-6 -mx-2 mt-4">
                 <div class="px-2">
-                  {{ event.activeTimePeriod ? $t('events.now') : $t('events.available') }}
+                  {{ !loading && event.activeTimePeriod ? $t('events.now') : $t('events.available') }}
                 </div>
               </SquidTape>
 
               <div class="divide-y-2 divide-dashed divide-zinc-400 font-splatoon">
-                <div v-for="timePeriod in event.currentTimePeriods" :key="timePeriod.startTime" class="flex flex-row justify-center">
-                  <ChallengeScheduleRow :event="event" :time-period="timePeriod" class="my-2" />
+                <div v-for="(timePeriod, i) in loading ? Array(6).fill(null) : event.currentTimePeriods" :key="timePeriod?.startTime ?? i" class="flex flex-row justify-center">
+                  <ChallengeScheduleRow :event="event" :time-period="timePeriod" :loading="loading" class="my-2" />
                 </div>
               </div>
             </template>
@@ -82,7 +88,15 @@
         </div>
 
         <div class="font-splatoon2 mx-2 p-2 text-zinc-200 bg-zinc-900/50 backdrop-blur-xs rounded-lg whitespace-pre-line">
-          {{ br2nl($t(`splatnet.events.${event.settings.leagueMatchEvent.id}.regulation`, event.settings.leagueMatchEvent.regulation)) }}
+          <div v-if="loading" class="space-y-3 py-1">
+            <SkeletonBlock class="h-6" />
+            <SkeletonBlock class="h-6 w-5/6" />
+            <SkeletonBlock class="h-6" />
+            <SkeletonBlock class="h-6 w-2/3" />
+          </div>
+          <template v-else>
+            {{ br2nl($t(`splatnet.events.${event.settings.leagueMatchEvent.id}.regulation`, event.settings.leagueMatchEvent.regulation)) }}
+          </template>
         </div>
       </div>
     </ProductContainer>
@@ -90,6 +104,7 @@
 </template>
 
 <script setup>
+import SkeletonBlock from '@/components/loading/SkeletonBlock.vue';
 import { computed } from 'vue';
 import ChallengeScheduleRow from './ChallengeScheduleRow.vue';
 import RuleIcon from '@/components/RuleIcon.vue';
@@ -104,10 +119,8 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  event: {
-    type: Object,
-    required: true,
-  },
+  event: Object,
+  loading: Boolean,
 });
 
 const { types } = useScheduleTypes();

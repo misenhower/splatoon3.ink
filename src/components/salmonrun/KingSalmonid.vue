@@ -2,24 +2,32 @@
   <div>
     <img
       v-if="boss?.name === 'Cohozuna'"
+      width="420"
+      height="421"
       src="@/assets/img/king-cohozuna.png"
       :class="size"
       :title="$t(`splatnet.bosses.${boss.id}.name`, boss.name)"
     />
     <img
       v-if="boss?.name === 'Horrorboros'"
+      width="420"
+      height="421"
       src="@/assets/img/king-horrorboros.png"
       :class="size"
       :title="$t(`splatnet.bosses.${boss.id}.name`, boss.name)"
     />
     <img
       v-if="schedule.setting.boss.name === 'Megalodontia'"
+      width="420"
+      height="421"
       src="@/assets/img/king-megalodontia.png"
       :class="size"
       :title="$t(`splatnet.bosses.${schedule.setting.boss.id}.name`, schedule.setting.boss.name)"
     />
     <img
       v-if="schedule.setting.boss.name === 'Triumvirate'"
+      width="400"
+      height="400"
       src="@/assets/img/king-triumvirate.png"
       :class="size"
       :title="$t(`splatnet.bosses.${schedule.setting.boss.id}.name`, schedule.setting.boss.name)"

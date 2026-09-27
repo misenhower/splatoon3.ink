@@ -20,7 +20,7 @@ export const useGearStore = defineStore('gear', () => {
   const gesotown = computed(() => gear.data?.gesotown);
 
   const dailyDropBrand = computed(() => whenCurrent(gesotown.value?.pickupBrand));
-  const dailyDropGear = computed(() => currentNodes(gesotown.value?.pickupBrand.brandGears));
+  const dailyDropGear = computed(() => currentNodes(gesotown.value?.pickupBrand?.brandGears));
   const regularGear = computed(() => currentNodes(gesotown.value?.limitedGears));
 
   return { dailyDropBrand, dailyDropGear, regularGear };

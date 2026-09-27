@@ -1,4 +1,9 @@
 {
+  "loading": {
+    "label": "Loading…",
+    "error": "Couldn’t load this page’s data. Please try again.",
+    "retry": "Try again"
+  },
   "times": {
     "now": "Now",
     "next": "Next",

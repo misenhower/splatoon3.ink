@@ -1,4 +1,9 @@
 {
+  "loading": {
+    "label": "Cargando…",
+    "error": "No se pudieron cargar los datos de esta página. Inténtalo de nuevo.",
+    "retry": "Reintentar"
+  },
   "times": {
     "now": "Actual",
     "next": "Siguiente",

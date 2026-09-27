@@ -1,4 +1,9 @@
 {
+  "loading": {
+    "label": "Chargement…",
+    "error": "Impossible de charger les données de cette page. Veuillez réessayer.",
+    "retry": "Réessayer"
+  },
   "times": {
     "now": "Actuel",
     "next": "Suivant",
