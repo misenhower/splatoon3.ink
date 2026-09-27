@@ -60,7 +60,7 @@ onUnmounted(() => {
 
 .portrait-card {
   position: relative;
-  width: min(680px, 100%);
+  width: min(704px, 100%);
   border-radius: 38px 65px 40px 52px;
   background: #5432bb url('@/assets/img/octoarrow-transparent.png') center / 240px;
   box-shadow: 0 20px 0 #0003, 0 26px 55px #0004;
@@ -84,7 +84,7 @@ onUnmounted(() => {
 }
 
 .portrait-orbit {
-  left: 14px;
+  left: 38px;
   top: 45px;
   width: 305px;
   height: 325px;
@@ -93,7 +93,7 @@ onUnmounted(() => {
 }
 
 .portrait-dots {
-  left: 3px;
+  left: 27px;
   top: 29px;
   width: 330px;
   height: 350px;
@@ -104,7 +104,7 @@ onUnmounted(() => {
 .portrait-art {
   position: absolute;
   z-index: 2;
-  left: 34px;
+  left: 58px;
   bottom: -12px;
   height: 473px;
   width: auto;
@@ -115,7 +115,7 @@ onUnmounted(() => {
 .portrait-copy {
   position: relative;
   z-index: 3;
-  padding: 34px 36px 40px 350px;
+  padding: 34px 36px 40px 374px;
   transform: rotate(1.3deg);
 }
 
@@ -176,7 +176,7 @@ h2 {
   position: absolute;
   z-index: 3;
   top: -42px;
-  left: 264px;
+  left: 288px;
   padding: 1px 24px 17px;
   border-radius: 50%;
   background: #eaff3d;
@@ -206,7 +206,7 @@ h2 {
 .portrait-tag {
   position: absolute;
   bottom: -12px;
-  left: 290px;
+  left: 314px;
   padding: 5px 12px;
   background: #242328;
   color: #b5a4d7;
