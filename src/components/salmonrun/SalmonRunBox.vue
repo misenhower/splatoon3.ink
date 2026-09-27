@@ -8,7 +8,7 @@
         {{ $t('salmonrun.title') }}
       </div>
 
-      <p v-if="!loading && !activeSchedule && !upcomingSchedules.length" class="py-12 text-center font-splatoon2 text-splatoon-yellow">
+      <p v-if="!loading && !activeSchedule && !upcomingSchedules.length" class="py-12 text-center font-splatoon2">
         {{ $t('times.checkback') }}
       </p>
 

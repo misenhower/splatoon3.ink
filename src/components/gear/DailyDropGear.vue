@@ -50,7 +50,7 @@
 
       <template v-else>
         <div class="h-24 flex items-center justify-center">
-          <div class="font-splatoon2 text-splatoon-yellow">
+          <div class="font-splatoon2">
             {{ $t('times.checkback') }}
           </div>
         </div>

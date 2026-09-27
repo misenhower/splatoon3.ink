@@ -1,5 +1,9 @@
 <template>
-  <ProductContainer :bg="type.bg" class="w-full pt-10 pb-4">
+  <ProductContainer
+    :bg="type.bg"
+    class="w-full pt-10"
+    :class="loading || store.activeSchedule || nextSchedule ? 'pb-4' : 'pb-1'"
+  >
     <div class="space-y-2">
       <div class="flex items-center space-x-2 mx-2">
         <img :src="type.img" width="40" height="40" />
@@ -46,7 +50,7 @@
         </div>
       </div>
 
-      <p v-else class="bg-zinc-900/70 mx-1 rounded-lg py-12 text-center font-splatoon2 text-splatoon-yellow">
+      <p v-else class="bg-zinc-900/70 mx-1 rounded-lg py-12 text-center font-splatoon2">
         {{ $t('times.checkback') }}
       </p>
 

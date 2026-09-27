@@ -2,7 +2,7 @@
   <MainLayout :title="$t('festival.title')">
     <PageDataState v-slot="{ loading }" :sources="sources">
       <div class="mx-4 md:mx-12 w-full space-y-10">
-        <p v-if="!loading && !festivalsWithResults.length" class="py-24 text-center font-splatoon2 text-splatoon-yellow">
+        <p v-if="!loading && !festivalsWithResults.length" class="py-24 text-center font-splatoon2">
           {{ $t('times.checkback') }}
         </p>
         <div v-for="(festival, i) in loading ? [null, null] : festivalsWithResults" :key="festival?.id ?? i" class="flex flex-wrap items-center justify-center gap-y-6 md:gap-x-6">
