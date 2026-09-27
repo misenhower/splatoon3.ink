@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://splatoon3.ink/sitemap.xml

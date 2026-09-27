@@ -5,6 +5,7 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import tailwindcss from '@tailwindcss/vite';
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
+import { createRoutes } from './src/router/routes.mjs';
 
 const redirectToDist = [
   '/assets/splatnet/',
@@ -23,6 +24,32 @@ export default defineConfig({
     VueI18nPlugin({
       include: resolve(import.meta.dirname, './src/assets/i18n/*.json'),
     }),
+    {
+      name: 'sitemap',
+      generateBundle() {
+        const urls = createRoutes()
+          .filter(route => !route.redirect && !route.path.includes(':') && route.meta?.sitemap !== false)
+          .map(route => {
+            const url = new URL(route.path, 'https://splatoon3.ink').href
+              .replaceAll('&', '&amp;')
+              .replaceAll('<', '&lt;')
+              .replaceAll('>', '&gt;');
+
+            return `  <url>\n    <loc>${url}</loc>\n  </url>`;
+          });
+
+        this.emitFile({
+          type: 'asset',
+          fileName: 'sitemap.xml',
+          source: [
+            '<?xml version="1.0" encoding="UTF-8"?>',
+            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+            ...urls,
+            '</urlset>\n',
+          ].join('\n'),
+        });
+      },
+    },
     {
       // Quick hack to redirect dynamic assets to the /dist/ directory
       configureServer(server) {
