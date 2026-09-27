@@ -50,20 +50,23 @@
       </div>
     </div>
 
-    <TimeOffsetSelector v-if="isDev" class="mb-4" />
+    <DevControls v-if="isDev" class="mb-4" />
   </main>
 </template>
 
 <script setup>
+import { defineAsyncComponent } from 'vue';
 import NavButtons from '@/components/NavButtons.vue';
 import LanguageButton from '@/components/LanguageButton.vue';
-import TimeOffsetSelector from '@/components/Debug/TimeOffsetSelector.vue';
 
 const props = defineProps({
   title: String,
 });
 
 const isDev = import.meta.env.DEV;
+const DevControls = import.meta.env.DEV
+  ? defineAsyncComponent(() => import('@/components/Debug/DevControls.vue'))
+  : null;
 </script>
 
 <style scoped>

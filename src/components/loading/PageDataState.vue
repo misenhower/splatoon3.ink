@@ -27,16 +27,33 @@
 <script setup>
 import { computed } from 'vue';
 import PageSkeleton from './PageSkeleton.vue';
+import { usePagePreviewStore } from '@/stores/pagePreview.mjs';
 
 const props = defineProps({
   sources: { type: Array, required: true },
   variant: { type: String, required: true },
 });
 
-const ready = computed(() => props.sources.every(source => source.data !== null));
-const failed = computed(() => props.sources.some(source => source.data === null && source.error));
+const preview = import.meta.env.DEV ? usePagePreviewStore() : null;
+
+const ready = computed(() => {
+  if (import.meta.env.DEV && ['loading', 'error'].includes(preview.mode)) return false;
+
+  return props.sources.every(source => source.data !== null);
+});
+
+const failed = computed(() => {
+  if (import.meta.env.DEV && preview.mode === 'loading') return false;
+  if (import.meta.env.DEV && preview.mode === 'error') return true;
+
+  return props.sources.some(source => source.data === null && source.error);
+});
 
 function retry() {
+  if (import.meta.env.DEV && preview.mode === 'error') {
+    preview.mode = 'live';
+  }
+
   for (const source of props.sources) {
     if (source.data === null) source.update();
   }

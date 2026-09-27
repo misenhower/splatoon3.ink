@@ -1,10 +1,15 @@
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { computed, ref, shallowRef } from 'vue';
+import { getEmptyPreviewData, usePagePreviewStore } from './pagePreview.mjs';
 
 // Endpoint store definition (used for each individual data endpoint)
 function defineEndpointStore(id, endpoint, transform = null) {
   return defineStore(`data/${id}`, () => {
-    const data = shallowRef(null);
+    const loadedData = shallowRef(null);
+    const preview = import.meta.env.DEV ? usePagePreviewStore() : null;
+    const data = import.meta.env.DEV
+      ? computed(() => preview.mode === 'empty' ? getEmptyPreviewData(id) : loadedData.value)
+      : loadedData;
     const isUpdating = ref(false);
     const error = ref(null);
     let pending;
@@ -50,11 +55,11 @@ function defineEndpointStore(id, endpoint, transform = null) {
         throw new Error('Missing data payload');
       }
 
-      data.value = json;
+      loadedData.value = json;
       error.value = null;
     }
 
-    return { data, update, setData, isUpdating, error };
+    return { data, loadedData, update, setData, isUpdating, error };
   });
 }
 
