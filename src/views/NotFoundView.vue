@@ -35,21 +35,6 @@
   </main>
 </template>
 
-<script setup>
-import { onMounted, onUnmounted } from 'vue';
-
-let previousTitle;
-
-onMounted(() => {
-  previousTitle = document.title;
-  document.title = '404 — Splatoon3.ink';
-});
-
-onUnmounted(() => {
-  document.title = previousTitle;
-});
-</script>
-
 <style scoped>
 .not-found {
   display: grid;
