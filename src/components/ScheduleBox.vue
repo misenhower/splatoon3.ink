@@ -50,7 +50,11 @@
         </div>
       </div>
 
-      <p v-else class="bg-zinc-900/70 mx-1 rounded-lg py-12 text-center font-splatoon2">
+      <p
+        v-else
+        class="bg-zinc-900/70 mx-1 rounded-t-lg py-12 text-center font-splatoon2"
+        :class="store.activeSchedule || nextSchedule ? 'rounded-b-lg' : 'rounded-b-xl'"
+      >
         {{ $t('times.checkback') }}
       </p>
 
