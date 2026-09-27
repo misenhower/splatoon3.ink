@@ -8,7 +8,11 @@
         {{ $t('salmonrun.title') }}
       </div>
 
-      <div class="flex">
+      <p v-if="!activeSchedule && !upcomingSchedules.length" class="py-12 text-center font-splatoon2 text-splatoon-yellow">
+        {{ $t('times.checkback') }}
+      </p>
+
+      <div v-else class="flex">
         <!-- Character graphic -->
         <div v-if="eggstra" class="flex-1 bg-eggstra hidden md:block" />
         <div v-else class="flex-1 bg-character hidden md:block" />

@@ -1,4 +1,9 @@
 {
+  "loading": {
+    "label": "Caricamento…",
+    "error": "Impossibile caricare i dati di questa pagina. Riprova.",
+    "retry": "Riprova"
+  },
   "times": {
     "now": "In corso!",
     "next": "Prossimo",

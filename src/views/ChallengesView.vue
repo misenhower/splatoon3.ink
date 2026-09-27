@@ -1,6 +1,6 @@
 <template>
   <MainLayout :title="$t('events.title')">
-    <div class="grow flex items-center justify-center">
+    <PageDataState :sources="sources" variant="challenges">
       <div class="mx-4 md:mx-12 max-w-(--breakpoint-2xl) w-full my-6">
         <div v-if="store.currentSchedules?.length" class="flex flex-col lg:flex-row items-center justify-center gap-10">
           <div v-for="(event, i) in store.currentSchedules" :key="i" class="max-w-xl">
@@ -23,10 +23,12 @@
           </div>
         </ProductContainer>
       </div>
-    </div>
+    </PageDataState>
   </MainLayout>
 </template>
 <script setup>
+import PageDataState from '@/components/loading/PageDataState.vue';
+import { useSchedulesDataStore } from '@/stores/data.mjs';
 import { computed } from 'vue';
 
 import ProductContainer from '@/components/ProductContainer.vue';
@@ -40,4 +42,6 @@ const store = useEventSchedulesStore();
 const { types } = useScheduleTypes();
 
 const type = computed(() => types['challenge']);
+
+const sources = [useSchedulesDataStore()];
 </script>

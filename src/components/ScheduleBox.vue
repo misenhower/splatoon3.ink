@@ -11,23 +11,15 @@
         </div>
       </div>
 
-      <div class="bg-zinc-900/70 backdrop-blur-xs pt-2 pb-6 px-2 mx-1 rounded-lg space-y-2">
+      <div v-if="store.activeSchedule?.settings" class="bg-zinc-900/70 backdrop-blur-xs pt-2 pb-6 px-2 mx-1 rounded-lg space-y-2">
         <div class="flex items-center justify-between font-splatoon2">
           <div class="flex items-center space-x-2 text-sm lg:text-lg">
-            <template v-if="store.activeSchedule && store.activeSchedule.settings">
-              <div>
-                <RuleIcon :rule="store.activeSchedule.settings.vsRule" class="h-5 lg:h-6 drop-shadow-ruleIcon" />
-              </div>
-              <div class="text-shadow">
-                {{ $t(`splatnet.rules.${store.activeSchedule.settings.vsRule.id}.name`, store.activeSchedule.settings.vsRule.name) }}
-              </div>
-            </template>
-
-            <template v-else>
-              <div class="w-32 bg-zinc-600 rounded-sm animate-pulse">
-&nbsp;
-              </div>
-            </template>
+            <div>
+              <RuleIcon :rule="store.activeSchedule.settings.vsRule" class="h-5 lg:h-6 drop-shadow-ruleIcon" />
+            </div>
+            <div class="text-shadow">
+              {{ $t(`splatnet.rules.${store.activeSchedule.settings.vsRule.id}.name`, store.activeSchedule.settings.vsRule.name) }}
+            </div>
           </div>
 
           <div v-if="store.activeSchedule" class="justify-end text-xs lg:text-sm bg-zinc-100/80 rounded-sm text-black px-2">
@@ -51,6 +43,10 @@
         </div>
       </div>
 
+      <p v-else class="bg-zinc-900/70 mx-1 rounded-lg py-12 text-center font-splatoon2 text-splatoon-yellow">
+        {{ $t('times.checkback') }}
+      </p>
+
       <div v-if="nextSchedule && nextSchedule.settings" class="mx-2 space-y-2">
         <SquidTape class="font-splatoon2 text-sm drop-shadow-sm -rotate-6 -mx-2">
           <div class="px-2">
@@ -61,7 +57,7 @@
         <ScheduleRow :schedule="nextSchedule" />
       </div>
 
-      <div class="text-center pt-2">
+      <div v-if="store.activeSchedule || nextSchedule" class="text-center pt-2">
         <button class="bg-zinc-300/50 hover:bg-zinc-300/70 px-2 py-1 rounded-full font-splatoon2 text-shadow" @click="open = true">
           <span class="inline-block rotate-25 text-red">&#57445;</span>
           {{ $t('schedule.all-upcoming') }}

@@ -1,4 +1,9 @@
 {
+  "loading": {
+    "label": "Wird geladen…",
+    "error": "Die Daten dieser Seite konnten nicht geladen werden. Bitte versuche es erneut.",
+    "retry": "Erneut versuchen"
+  },
   "times": {
     "now": "Aktuell",
     "next": "Demnächst",
