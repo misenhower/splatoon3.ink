@@ -1,6 +1,6 @@
 <template>
   <button :disabled="loading || !stage" class="block relative" @click.prevent="open = true">
-    <div class="aspect-2/1 overflow-hidden" :class="[imgClass, { 'bg-zinc-700': !loading && lowRes }]">
+    <div class="aspect-2/1 overflow-hidden" :class="[imgClass, { 'bg-white/20': !loading && lowRes }]">
       <img v-if="!loading && lowRes" :src="lowRes" width="400" height="200" />
       <SkeletonBlock v-else class="h-full rounded-none" />
     </div>
