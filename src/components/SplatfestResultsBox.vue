@@ -1,5 +1,10 @@
 <template>
-  <ProductContainer v-if="winner" class="pt-10 pb-4" bg="bg-camo-purple" :bg-style="`background-color: ${toRgba(winner.color)};`">
+  <ProductContainer
+    v-if="loading || winner"
+    class="pt-10 pb-4"
+    :bg="loading ? 'bg-camo-purple bg-splatoon-purple' : 'bg-camo-purple'"
+    :bg-style="loading ? undefined : `background-color: ${toRgba(winner.color)};`"
+  >
     <div class="space-y-2">
       <div class="font-splatoon1 text-2xl lg:text-3xl text-shadow mx-2">
         {{ $t('festival.results.title') }}
@@ -8,9 +13,10 @@
       <div class="mx-2 px-1 bg-zinc-700/50 backdrop-blur-xs rounded-lg">
         <div class="flex justify-center md:justify-center py-2">
           <div class="w-36 sm:mx-4 lg:-mx-1" />
-          <template v-for="team in festival.teams" :key="team.id">
-            <div class="w-12 mx-2 sm:w-20 flex justify-center py-1 rounded-sm" :style="`background-color: ${toRgba(team.color)};`">
-              <img :src="team.image.url" class="w-6 h-6" loading="lazy" />
+          <template v-for="(team, i) in loading ? [null, null, null] : festival.teams" :key="team?.id ?? i">
+            <div class="w-12 mx-2 sm:w-20 flex justify-center py-1 rounded-sm" :style="loading ? undefined : `background-color: ${toRgba(team.color)};`">
+              <SkeletonBlock v-if="loading" class="w-6 h-6" />
+              <img v-else :src="team.image.url" class="w-6 h-6" loading="lazy" />
             </div>
           </template>
         </div>
@@ -23,7 +29,8 @@
 
             <div class="flex bg-zinc-700/70 rounded-full py-1">
               <div v-for="(result, i) in row.results" :key="i" class="w-16 lg:w-20 sm:mx-2">
-                <div :class="result.isTop ? 'text-splatoon-yellow' : 'text-zinc-300'">
+                <SkeletonBlock v-if="loading" class="h-5 lg:h-6 mx-auto w-12" />
+                <div v-else :class="result.isTop ? 'text-splatoon-yellow' : 'text-zinc-300'">
                   {{ (result.ratio * 100).toFixed(2) }}%
                 </div>
               </div>
@@ -33,18 +40,23 @@
       </div>
 
       <div class="font-splatoon2 text-splatoon-yellow text-center text-shadow text-sm lg:text-base mx-2 ss:hidden">
-        {{ $t('festival.results.won', { team: $t(`splatnet.festivals.${ festival.__splatoon3ink_id }.teams.${winnerIndex}.teamName`, winner.teamName) }) }}
+        <SkeletonBlock v-if="loading" class="h-5 lg:h-6 w-48 mx-auto" />
+        <template v-else>
+          {{ $t('festival.results.won', { team: $t(`splatnet.festivals.${ festival.__splatoon3ink_id }.teams.${winnerIndex}.teamName`, winner.teamName) }) }}
+        </template>
       </div>
     </div>
   </ProductContainer>
 </template>
 
 <script setup>
+import SkeletonBlock from './loading/SkeletonBlock.vue';
 import { computed } from 'vue';
 import ProductContainer from './ProductContainer.vue';
 
 const props = defineProps({
   festival: Object,
+  loading: Boolean,
 });
 
 function toRgba(color) {
@@ -52,6 +64,8 @@ function toRgba(color) {
 }
 
 function results(ratioKey, topKey) {
+  if (props.loading) return [null, null, null];
+
   return props.festival.teams.map(team => ({
     ratio: team.result[ratioKey],
     isTop: team.result[topKey],
@@ -78,7 +92,7 @@ const resultRows = computed(() => {
     },
   ];
 
-  if (props.festival.teams.find(t => t.result.tricolorContributionRatio !== null)) {
+  if (props.loading || props.festival.teams.find(t => t.result.tricolorContributionRatio !== null)) {
     rows.push({
       title: 'festival.results.tricolor',
       results: results('tricolorContributionRatio', 'isTricolorContributionRatioTop'),
@@ -88,7 +102,7 @@ const resultRows = computed(() => {
   return rows;
 });
 
-const winnerIndex = computed(() => props.festival.teams.findIndex(t => t.result.isWinner));
+const winnerIndex = computed(() => props.festival?.teams.findIndex(t => t.result.isWinner) ?? -1);
 const winner = computed(() => winnerIndex.value >= 0 ? props.festival.teams[winnerIndex.value] : null);
 </script>
 

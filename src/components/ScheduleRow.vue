@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-2">
-    <div v-if="props.schedule" class="font-splatoon2 sm:hidden">
+    <div v-if="!loading && props.schedule" class="font-splatoon2 sm:hidden">
       <div class="flex items-center space-x-2">
         <div>
           <RuleIcon :rule="props.schedule.settings.vsRule" class="h-5 drop-shadow-ruleIcon" />
@@ -21,14 +21,14 @@
         </div>
       </div>
     </div>
-    <div v-else class="sm:hidden bg-zinc-500 rounded-sm animate-pulse w-32">
+    <div v-else class="sm:hidden h-9 bg-zinc-500 rounded-sm motion-safe:animate-pulse" aria-hidden="true">
       &nbsp;
     </div>
 
     <div class="flex space-x-1">
       <div class="flex-1 items-center text-center font-splatoon2 hidden sm:flex">
         <div class="w-full space-y-1">
-          <template v-if="props.schedule">
+          <template v-if="!loading && props.schedule">
             <div class="flex items-center justify-center space-x-2">
               <div>
                 <RuleIcon :rule="props.schedule.settings.vsRule" class="h-5 lg:h-6 drop-shadow-ruleIcon" />
@@ -55,13 +55,13 @@
           </template>
 
           <template v-else>
-            <div class="text-xs lg:text-lg bg-zinc-500 rounded-sm animate-pulse">
+            <div class="h-5 lg:h-7 bg-zinc-500 rounded-sm motion-safe:animate-pulse" aria-hidden="true">
 &nbsp;
             </div>
-            <div class="text-sm mx-8 bg-zinc-500 rounded-sm animate-pulse">
+            <div class="h-5 mx-8 bg-zinc-500 rounded-sm motion-safe:animate-pulse" aria-hidden="true">
 &nbsp;
             </div>
-            <div class="text-sm mx-4 bg-zinc-500 rounded-sm animate-pulse">
+            <div class="h-5 mx-4 bg-zinc-500 rounded-sm motion-safe:animate-pulse" aria-hidden="true">
 &nbsp;
             </div>
           </template>
@@ -69,11 +69,23 @@
       </div>
 
       <div class="flex-1">
-        <StageImage class="w-full" img-class="rounded-l-xl" text-size="text-xs" :stage="props.schedule?.settings.vsStages[0]" />
+        <StageImage
+          class="w-full"
+          :loading="loading"
+          img-class="rounded-l-xl"
+          text-size="text-xs"
+          :stage="props.schedule?.settings.vsStages[0]"
+        />
       </div>
 
       <div class="flex-1">
-        <StageImage class="w-full" img-class="rounded-r-xl" text-size="text-xs" :stage="props.schedule?.settings.vsStages[1]" />
+        <StageImage
+          class="w-full"
+          :loading="loading"
+          img-class="rounded-r-xl"
+          text-size="text-xs"
+          :stage="props.schedule?.settings.vsStages[1]"
+        />
       </div>
     </div>
   </div>
@@ -86,10 +98,8 @@ import { formatDurationFromNow } from '@/common/time';
 import { useTimeStore } from '@/stores/time.mjs';
 
 const props = defineProps({
-  schedule: {
-    type: Object,
-    required: true,
-  },
+  schedule: Object,
+  loading: Boolean,
 });
 
 const time = useTimeStore();

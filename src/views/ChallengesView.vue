@@ -1,11 +1,12 @@
 <template>
   <MainLayout :title="$t('events.title')">
-    <PageDataState :sources="sources">
+    <PageDataState v-slot="{ loading }" :sources="sources">
       <div class="mx-4 md:mx-12 max-w-(--breakpoint-2xl) w-full my-6">
-        <div v-if="store.currentSchedules?.length" class="flex flex-col lg:flex-row items-center justify-center gap-10">
-          <div v-for="(event, i) in store.currentSchedules" :key="i" class="max-w-xl">
+        <div v-if="loading || store.currentSchedules?.length" class="flex flex-col lg:flex-row items-center justify-center gap-10">
+          <div v-for="(event, i) in loading ? [null, null] : store.currentSchedules" :key="i" class="w-full max-w-xl">
             <ChallengeScheduleBox
               :event="event"
+              :loading="loading"
               type="challenge"
               class="w-full"
               :class="(i % 2) ? 'md:rotate-1' : 'md:-rotate-1'"
@@ -23,15 +24,10 @@
           </div>
         </ProductContainer>
       </div>
-
-      <template #loading>
-        <ChallengesSkeleton />
-      </template>
     </PageDataState>
   </MainLayout>
 </template>
 <script setup>
-import ChallengesSkeleton from './ChallengesSkeleton.vue';
 import PageDataState from '@/components/loading/PageDataState.vue';
 import { useSchedulesDataStore } from '@/stores/data.mjs';
 import { computed } from 'vue';

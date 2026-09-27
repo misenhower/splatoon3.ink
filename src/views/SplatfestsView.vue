@@ -1,33 +1,30 @@
 <template>
   <MainLayout :title="$t('festival.title')">
-    <PageDataState :sources="sources">
+    <PageDataState v-slot="{ loading }" :sources="sources">
       <div class="mx-4 md:mx-12 w-full space-y-10">
-        <p v-if="!festivalsWithResults.length" class="py-24 text-center font-splatoon2 text-splatoon-yellow">
+        <p v-if="!loading && !festivalsWithResults.length" class="py-24 text-center font-splatoon2 text-splatoon-yellow">
           {{ $t('times.checkback') }}
         </p>
-        <div v-for="festival in festivalsWithResults" :key="festival.id" class="flex flex-wrap items-center justify-center gap-y-6 md:gap-x-6">
+        <div v-for="(festival, i) in loading ? [null, null] : festivalsWithResults" :key="festival?.id ?? i" class="flex flex-wrap items-center justify-center gap-y-6 md:gap-x-6">
           <SplatfestBox
             :festival="festival"
-            class="max-w-md md:-rotate-1"
+            :loading="loading"
+            class="w-full max-w-md md:-rotate-1"
             history-mode
           />
 
           <SplatfestResultsBox
             :festival="festival"
+            :loading="loading"
             class="w-full sm:max-w-md md:rotate-1"
           />
         </div>
       </div>
-
-      <template #loading>
-        <SplatfestsSkeleton />
-      </template>
     </PageDataState>
   </MainLayout>
 </template>
 
 <script setup>
-import SplatfestsSkeleton from './SplatfestsSkeleton.vue';
 import PageDataState from '@/components/loading/PageDataState.vue';
 import { useFestivalsDataStore } from '@/stores/data.mjs';
 import { computed } from 'vue';

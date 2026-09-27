@@ -1,9 +1,14 @@
 <template>
   <div class="grow flex items-start justify-center" :aria-busy="!ready && !failed">
-    <slot v-if="ready" />
+    <template v-if="!failed">
+      <p v-if="!ready" role="status" class="sr-only">
+        {{ $t('loading.label') }}
+      </p>
+      <slot :loading="!ready" />
+    </template>
 
     <div v-else class="mx-4 md:mx-12 w-full">
-      <div v-if="failed" class="min-h-[32rem] flex items-center justify-center">
+      <div class="min-h-[32rem] flex items-center justify-center">
         <div role="alert" class="rounded-2xl bg-zinc-800/90 p-8 text-center space-y-4 max-w-md">
           <p class="font-splatoon2 text-lg">
             {{ $t('loading.error') }}
@@ -13,15 +18,6 @@
           </button>
         </div>
       </div>
-
-      <template v-else>
-        <p role="status" class="sr-only">
-          {{ $t('loading.label') }}
-        </p>
-        <div aria-hidden="true">
-          <slot name="loading" />
-        </div>
-      </template>
     </div>
   </div>
 </template>

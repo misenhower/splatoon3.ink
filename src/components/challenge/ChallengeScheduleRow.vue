@@ -1,42 +1,41 @@
 <template>
-  <template v-if="event && timePeriod">
-    <div class="flex items-center w-full font-splatoon2" :class="isCurrent ? 'text-zinc-100' : 'text-zinc-300 opacity-60'">
-      <RuleIcon :rule="event.settings.vsRule" class="h-5 lg:h-6 drop-shadow-ruleIcon" />
-      <div class="px-2 text-shadow whitespace-pre">
-        {{ $d(timePeriod.startTime, 'dateTimeShortWeekday') }}
-        &ndash;
-        {{ $d(timePeriod.endTime, 'dateTimeShort') }}
-      </div>
-
-      <div v-if="isCurrent" class="flex justify-end w-full">
-        <div class="hidden sm:block text-xs bg-zinc-100/80 rounded-sm text-black px-2">
-          <template v-if="isActive">
-            {{ $t('time.remaining', { time: formatDurationFromNow(event.activeTimePeriod.endTime) }) }}
-          </template>
-          <template v-else>
-            {{ $t('time.in', { time: formatDurationFromNow(timePeriod.startTime, true) }) }}
-          </template>
+  <template v-if="loading || (event && timePeriod)">
+    <div class="flex items-center w-full font-splatoon2" :class="loading || isCurrent ? 'text-zinc-100' : 'text-zinc-300 opacity-60'">
+      <SkeletonBlock v-if="loading" class="h-6 w-full" />
+      <template v-else>
+        <RuleIcon :rule="event.settings.vsRule" class="h-5 lg:h-6 drop-shadow-ruleIcon" />
+        <div class="px-2 text-shadow whitespace-pre">
+          {{ $d(timePeriod.startTime, 'dateTimeShortWeekday') }}
+          &ndash;
+          {{ $d(timePeriod.endTime, 'dateTimeShort') }}
         </div>
-      </div>
+
+        <div v-if="isCurrent" class="flex justify-end w-full">
+          <div class="hidden sm:block text-xs bg-zinc-100/80 rounded-sm text-black px-2">
+            <template v-if="isActive">
+              {{ $t('time.remaining', { time: formatDurationFromNow(event.activeTimePeriod.endTime) }) }}
+            </template>
+            <template v-else>
+              {{ $t('time.in', { time: formatDurationFromNow(timePeriod.startTime, true) }) }}
+            </template>
+          </div>
+        </div>
+      </template>
     </div>
   </template>
 </template>
 
 <script setup>
+import SkeletonBlock from '@/components/loading/SkeletonBlock.vue';
 import { computed } from 'vue';
 import RuleIcon from '@/components/RuleIcon.vue';
 import { useTimeStore } from '@/stores/time.mjs';
 import { formatDurationFromNow } from '@/common/time';
 
 const props = defineProps({
-  event: {
-    type: Object,
-    required: true,
-  },
-  timePeriod: {
-    type: Object,
-    required: true,
-  },
+  event: Object,
+  timePeriod: Object,
+  loading: Boolean,
 });
 
 const time = useTimeStore();

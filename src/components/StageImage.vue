@@ -1,14 +1,14 @@
 <template>
-  <button class="block relative" @click.prevent="open = true">
+  <button :disabled="loading || !stage" class="block relative" @click.prevent="open = true">
     <div class="bg-zinc-700 aspect-2/1 overflow-hidden" :class="imgClass">
-      <img v-if="lowRes" :src="lowRes" width="400" height="200" />
-      <div v-else class="bg-zinc-500 animate-pulse h-full" :class="imgClass">
+      <img v-if="!loading && lowRes" :src="lowRes" width="400" height="200" />
+      <div v-else class="bg-zinc-500 motion-safe:animate-pulse h-full" :class="imgClass" aria-hidden="true">
 &nbsp;
       </div>
     </div>
 
     <div
-      v-if="!hideLabel && stage"
+      v-if="!loading && !hideLabel && stage"
       class="
       absolute
       bg-zinc-900
@@ -29,7 +29,7 @@
       {{ $t(`splatnet.stages.${stage.id}.name`, stage.name) }}
     </div>
 
-    <StageDialog :stage="stage" :show="open" @close="open = false" />
+    <StageDialog :stage="stage" :show="open && !loading" @close="open = false" />
   </button>
 </template>
 
@@ -38,6 +38,7 @@ import { computed, ref } from 'vue';
 import StageDialog from './StageDialog.vue';
 
 const props = defineProps({
+  loading: Boolean,
   stage: Object,
   imgClass: String,
   textSize: {

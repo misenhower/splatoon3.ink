@@ -8,7 +8,7 @@
         {{ $t('salmonrun.title') }}
       </div>
 
-      <p v-if="!activeSchedule && !upcomingSchedules.length" class="py-12 text-center font-splatoon2 text-splatoon-yellow">
+      <p v-if="!loading && !activeSchedule && !upcomingSchedules.length" class="py-12 text-center font-splatoon2 text-splatoon-yellow">
         {{ $t('times.checkback') }}
       </p>
 
@@ -18,18 +18,18 @@
         <div v-else class="flex-1 bg-character hidden md:block" />
 
         <!-- Main content -->
-        <div class="md:w-2/3 mx-2 pb-2">
-          <div v-if="activeSchedule" class="mb-6 space-y-2">
+        <div class="w-full md:w-2/3 mx-2 pb-2">
+          <div v-if="loading || activeSchedule" class="mb-6 space-y-2">
             <SquidTape class="font-splatoon2 text-sm drop-shadow-sm -rotate-6 -mx-2">
               <div class="px-2">
                 {{ $t('times.now') }}
               </div>
             </SquidTape>
 
-            <ExpandedSalmonRunRow :schedule="activeSchedule" :eggstra="eggstra" />
+            <ExpandedSalmonRunRow :schedule="activeSchedule" :loading="loading" :eggstra="eggstra" />
           </div>
 
-          <div v-if="upcomingSchedules.length" class="py-1 bg-zinc-900/70 rounded-lg backdrop-blur-xs">
+          <div v-if="loading || upcomingSchedules.length" class="py-1 bg-zinc-900/70 rounded-lg backdrop-blur-xs">
             <SquidTape class="font-splatoon2 text-sm drop-shadow-sm -rotate-6 -mx-2">
               <div class="px-2">
                 {{ $t('times.future') }}
@@ -37,9 +37,15 @@
             </SquidTape>
 
             <div class="mx-2 divide-y-2 divide-dashed divide-zinc-400">
-              <div v-for="schedule in upcomingSchedules" :key="schedule.startTime">
-                <ExpandedSalmonRunRow v-if="isScreenshot || eggstra" class="my-3" :schedule="schedule" :eggstra="eggstra" />
-                <SalmonRunRow v-else class="my-2" :schedule="schedule" />
+              <div v-for="(schedule, i) in loading ? Array(4).fill(null) : upcomingSchedules" :key="schedule?.startTime ?? i">
+                <ExpandedSalmonRunRow
+                  v-if="isScreenshot || eggstra"
+                  class="my-3"
+                  :schedule="schedule"
+                  :loading="loading"
+                  :eggstra="eggstra"
+                />
+                <SalmonRunRow v-else class="my-2" :schedule="schedule" :loading="loading" />
               </div>
             </div>
           </div>
@@ -58,6 +64,7 @@ import SquidTape from '@/components/SquidTape.vue';
 import { useSalmonRunSchedulesStore, useEggstraWorkSchedulesStore } from '@/stores/schedules.mjs';
 
 const props = defineProps({
+  loading: Boolean,
   isScreenshot: Boolean,
   startTime: String,
   eggstra: Boolean,

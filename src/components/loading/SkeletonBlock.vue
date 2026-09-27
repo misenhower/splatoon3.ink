@@ -1,5 +1,5 @@
 <template>
-  <div class="skeleton-block" />
+  <div class="skeleton-block" aria-hidden="true" />
 </template>
 
 <style scoped>

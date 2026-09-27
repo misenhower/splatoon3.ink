@@ -27,17 +27,17 @@
         </SquidTape>
       </div>
 
-      <template v-if="gears && gears.length">
+      <template v-if="loading || gears?.length">
         <div class="md:hidden px-2">
-          <div v-for="gear in gears" :key="gear.id" class="bg-horiz-card">
-            <GearCardHorizontal :gear="gear" />
+          <div v-for="(gear, i) in displayedGears" :key="gear?.id ?? i" class="bg-horiz-card">
+            <GearCardHorizontal :gear="gear" :loading="loading" />
           </div>
         </div>
 
         <div class="hidden md:block px-2">
           <div class="flex flex-wrap justify-center max-w-3xl">
-            <div v-for="gear in gears" :key="gear.id" class="my-6 w-1/3 flex justify-center">
-              <GearCard :gear="gear" />
+            <div v-for="(gear, i) in displayedGears" :key="gear?.id ?? i" class="my-6 w-1/3 flex justify-center">
+              <GearCard :gear="gear" :loading="loading" />
             </div>
           </div>
         </div>
@@ -61,8 +61,11 @@ import GearCardHorizontal from './GearCardHorizontal.vue';
 import SquidTape from '@/components/SquidTape.vue';
 import { useGearStore } from '@/stores/gear.mjs';
 
+const props = defineProps({ loading: Boolean });
+
 const gearStore = useGearStore();
 const gears = computed(() => gearStore.regularGear);
+const displayedGears = computed(() => props.loading ? Array(6).fill(null) : gears.value);
 </script>
 
 <style scoped>
