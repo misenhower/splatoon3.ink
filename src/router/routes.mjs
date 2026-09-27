@@ -40,5 +40,10 @@ export function createRoutes(views = {}) {
       path: '/faq',
       redirect: { name: 'about' },
     },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: views.NotFoundView,
+    },
   ];
 }

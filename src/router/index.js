@@ -7,6 +7,7 @@ import AboutView from '@/views/AboutView.vue';
 import SplatfestsView from '@/views/SplatfestsView.vue';
 import ChallengesView from '@/views/ChallengesView.vue';
 import SocialsView from '@/views/SocialsView.vue';
+import NotFoundView from '@/views/NotFoundView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,6 +19,7 @@ const router = createRouter({
     ChallengesView,
     SocialsView,
     AboutView,
+    NotFoundView,
   }),
 });
 
