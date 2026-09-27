@@ -1,6 +1,6 @@
 <template>
   <MainLayout :title="$t('salmonrun.title')">
-    <PageDataState :sources="sources" variant="salmonrun">
+    <PageDataState :sources="sources">
       <div class="mx-4 md:mx-12 w-full">
         <div class="flex items-center justify-center flex-col lg:flex-row lg:items-start space-y-10 lg:space-y-0 lg:space-x-16">
           <div class="w-full max-w-2xl">
@@ -11,11 +11,16 @@
           </div>
         </div>
       </div>
+
+      <template #loading>
+        <SalmonRunSkeleton />
+      </template>
     </PageDataState>
   </MainLayout>
 </template>
 
 <script setup>
+import SalmonRunSkeleton from './SalmonRunSkeleton.vue';
 import PageDataState from '@/components/loading/PageDataState.vue';
 import { useSchedulesDataStore } from '@/stores/data.mjs';
 import SalmonRunBox from '@/components/salmonrun/SalmonRunBox.vue';

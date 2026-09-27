@@ -1,6 +1,6 @@
 <template>
   <MainLayout :title="$t('festival.title')">
-    <PageDataState :sources="sources" variant="splatfests">
+    <PageDataState :sources="sources">
       <div class="mx-4 md:mx-12 w-full space-y-10">
         <p v-if="!festivalsWithResults.length" class="py-24 text-center font-splatoon2 text-splatoon-yellow">
           {{ $t('times.checkback') }}
@@ -18,11 +18,16 @@
           />
         </div>
       </div>
+
+      <template #loading>
+        <SplatfestsSkeleton />
+      </template>
     </PageDataState>
   </MainLayout>
 </template>
 
 <script setup>
+import SplatfestsSkeleton from './SplatfestsSkeleton.vue';
 import PageDataState from '@/components/loading/PageDataState.vue';
 import { useFestivalsDataStore } from '@/stores/data.mjs';
 import { computed } from 'vue';

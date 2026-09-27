@@ -18,7 +18,9 @@
         <p role="status" class="sr-only">
           {{ $t('loading.label') }}
         </p>
-        <PageSkeleton :variant="variant" aria-hidden="true" />
+        <div aria-hidden="true">
+          <slot name="loading" />
+        </div>
       </template>
     </div>
   </div>
@@ -26,12 +28,10 @@
 
 <script setup>
 import { computed } from 'vue';
-import PageSkeleton from './PageSkeleton.vue';
 import { usePagePreviewStore } from '@/stores/pagePreview.mjs';
 
 const props = defineProps({
   sources: { type: Array, required: true },
-  variant: { type: String, required: true },
 });
 
 const preview = import.meta.env.DEV ? usePagePreviewStore() : null;

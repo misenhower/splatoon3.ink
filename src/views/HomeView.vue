@@ -1,6 +1,6 @@
 <template>
   <MainLayout :title="$t('schedule.title')">
-    <PageDataState :sources="sources" variant="schedules">
+    <PageDataState :sources="sources">
       <div class="mx-4 md:mx-12 w-full space-y-10">
         <template v-if="activeFestivals.length > 0">
           <template v-if="activeFestivals.length > 1">
@@ -50,11 +50,16 @@
           />
         </div>
       </div>
+
+      <template #loading>
+        <HomeSkeleton />
+      </template>
     </PageDataState>
   </MainLayout>
 </template>
 
 <script setup>
+import HomeSkeleton from './HomeSkeleton.vue';
 import PageDataState from '@/components/loading/PageDataState.vue';
 import { useSchedulesDataStore, useFestivalsDataStore } from '@/stores/data.mjs';
 import { computed } from 'vue';
