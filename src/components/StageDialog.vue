@@ -1,5 +1,5 @@
 <template>
-  <ModalDialog inner-class="-rotate-1 relative">
+  <ModalDialog inner-class="-rotate-1 relative" @close="$emit('close')">
     <div class="bg-zinc-100 p-2">
       <button class="text-zinc-300 bg-zinc-600/50 rounded-full p-1 absolute top-3 right-3" @click="$emit('close')">
         <span class="sr-only">Close</span>

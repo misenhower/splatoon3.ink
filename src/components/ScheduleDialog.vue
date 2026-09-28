@@ -1,5 +1,5 @@
 <template>
-  <ModalDialog inner-class="md:-rotate-1" no-scroll>
+  <ModalDialog inner-class="md:-rotate-1" no-scroll @close="$emit('close')">
     <div class="h-full w-full max-w-2xl isolate rounded-2xl overflow-hidden" :class="type.bg">
       <div class="relative h-full overflow-hidden">
         <div class="absolute inset-x-0 bg-zinc-800/40 backdrop-blur-md z-30 pt-10 pb-4">
@@ -19,7 +19,7 @@
           <XMarkIcon class="h-6 w-6" aria-hidden="true" />
         </button>
 
-        <div class="h-full overflow-y-auto pt-24 pb-8">
+        <div class="schedule-scroll themed-scrollbar h-full overflow-y-auto pt-24 pb-8">
           <template v-for="{ title, schedules } in sections" :key="title">
             <div class="mt-6 mx-2 space-y-2 text-left">
               <SquidTape class="font-splatoon2 text-sm drop-shadow-sm -rotate-6 -mx-2">
@@ -76,6 +76,11 @@ const sections = computed(() => [
 </script>
 
 <style scoped>
+.schedule-scroll::-webkit-scrollbar-track {
+  margin-top: 6rem;
+  margin-bottom: 1rem;
+}
+
 .product-mask {
   mask-image: url('@/assets/img/tag-card-header.svg');
   mask-position: top;
