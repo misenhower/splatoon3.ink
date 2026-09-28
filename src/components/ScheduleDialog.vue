@@ -19,7 +19,7 @@
           <XMarkIcon class="h-6 w-6" aria-hidden="true" />
         </button>
 
-        <div class="h-full overflow-y-auto pt-24 pb-8">
+        <div class="schedule-scroll themed-scrollbar h-full overflow-y-auto pt-24 pb-8">
           <template v-for="{ title, schedules } in sections" :key="title">
             <div class="mt-6 mx-2 space-y-2 text-left">
               <SquidTape class="font-splatoon2 text-sm drop-shadow-sm -rotate-6 -mx-2">
@@ -76,6 +76,11 @@ const sections = computed(() => [
 </script>
 
 <style scoped>
+.schedule-scroll::-webkit-scrollbar-track {
+  margin-top: 6rem;
+  margin-bottom: 1rem;
+}
+
 .product-mask {
   mask-image: url('@/assets/img/tag-card-header.svg');
   mask-position: top;
