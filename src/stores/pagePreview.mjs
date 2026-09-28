@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 
-export const usePagePreviewStore = import.meta.env.DEV
+export const usePagePreviewStore = import.meta.env?.DEV
   ? defineStore('debug/pagePreview', {
     state: () => ({ mode: 'live' }),
   })

@@ -6,8 +6,8 @@ import { getEmptyPreviewData, usePagePreviewStore } from './pagePreview.mjs';
 function defineEndpointStore(id, endpoint, transform = null) {
   return defineStore(`data/${id}`, () => {
     const loadedData = shallowRef(null);
-    const preview = import.meta.env.DEV ? usePagePreviewStore() : null;
-    const data = import.meta.env.DEV
+    const preview = import.meta.env?.DEV ? usePagePreviewStore() : null;
+    const data = import.meta.env?.DEV
       ? computed(() => preview.mode === 'empty' ? getEmptyPreviewData(id) : loadedData.value)
       : loadedData;
     const isUpdating = ref(false);
