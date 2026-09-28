@@ -14,7 +14,7 @@
     "in": "in {time}",
     "remaining": "{time} übrig",
     "until": "Bis {time}",
-    "left": "{time} verbleibend",
+    "left": "Noch {time}",
     "d": "{n}Tg | {n}Tg",
     "h": "{n}Std | {n}Std",
     "m": "{n}Min | {n}Min",

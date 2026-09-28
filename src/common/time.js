@@ -1,6 +1,17 @@
 import { useI18n } from 'vue-i18n';
 import { useTimeStore } from '@/stores/time';
 
+export function formatHistoricalDateRange(startTime, endTime, locale) {
+  const formatter = new Intl.DateTimeFormat(locale, {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+
+  return formatter.formatRange(new Date(startTime), new Date(endTime));
+}
+
 export function getDurationParts(value) {
   let negative = (value < 0) ? '-' : '';
   value = Math.abs(value);

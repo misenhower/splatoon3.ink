@@ -50,6 +50,7 @@ export const regionalLocales = {
 export const defaultLocale = locales.find(l => l.code === 'en-US');
 
 const datetimeFormats = {
+  weekday: { weekday: 'short' },
   dateTimeShort: { month: 'numeric', day: 'numeric', hour: 'numeric', minute: '2-digit' },
   dateTimeShortWeekday: { month: 'numeric', weekday: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' },
   time: { hour: 'numeric', minute: '2-digit' },

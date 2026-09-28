@@ -65,12 +65,10 @@
 
     <!-- Time left -->
     <div class="absolute top-1 left-6">
-      <div class="inline-block text-xs bg-zinc-200/30 rounded-sm px-1 py-px font-semibold">
-        <SkeletonBlock v-if="loading" class="h-4 w-16" />
-        <template v-else>
-          {{ $t('time.left', { time: formatDurationHoursFromNow(props.gear.saleEndTime) }) }}
-        </template>
+      <div v-if="loading" class="inline-block text-xs bg-zinc-200/30 rounded-sm px-1 py-px font-semibold">
+        <SkeletonBlock class="h-4 w-16" />
       </div>
+      <GearExpiry v-else :end-time="props.gear.saleEndTime" />
     </div>
   </div>
 </template>
@@ -78,7 +76,7 @@
 <script setup>
 import SkeletonBlock from '@/components/loading/SkeletonBlock.vue';
 import { computed } from 'vue';
-import { formatDurationHoursFromNow } from '@/common/time';
+import GearExpiry from './GearExpiry.vue';
 
 const props = defineProps({
   gear: Object,

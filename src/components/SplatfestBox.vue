@@ -45,6 +45,9 @@
 
       <div class="font-splatoon2 text-splatoon-yellow text-center text-sm lg:text-base text-shadow mx-2 ss:hidden">
         <SkeletonBlock v-if="loading" class="h-5 lg:h-6 w-4/5 mx-auto" />
+        <template v-else-if="historyMode">
+          {{ formatHistoricalDateRange(festival.startTime, festival.endTime, $i18n.locale) }}
+        </template>
         <template v-else>
           {{ $d(festival.startTime, 'dateTimeShortWeekday') }}
           &ndash;
@@ -60,6 +63,7 @@ import SkeletonBlock from './loading/SkeletonBlock.vue';
 import { computed } from 'vue';
 import ProductContainer from './ProductContainer.vue';
 import SquidTape from './SquidTape.vue';
+import { formatHistoricalDateRange } from '@/common/time';
 import { STATUS_PAST, STATUS_ACTIVE, STATUS_UPCOMING } from '@/stores/splatfests';
 
 const props = defineProps({

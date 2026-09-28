@@ -14,6 +14,9 @@
           </div>
 
           <div class="text-xs text-zinc-300">
+            <template v-if="startsAfterToday">
+              {{ $d(props.schedule.startTime, 'weekday') }}
+            </template>
             {{ $d(props.schedule.startTime, 'time') }}
             &ndash;
             {{ $d(props.schedule.endTime, 'time') }}
@@ -46,6 +49,9 @@
             </div>
 
             <div class="text-sm text-zinc-300 text-shadow">
+              <template v-if="startsAfterToday">
+                {{ $d(props.schedule.startTime, 'weekday') }}
+              </template>
               {{ $d(props.schedule.startTime, 'time') }}
               &ndash;
               {{ $d(props.schedule.endTime, 'time') }}
@@ -84,6 +90,7 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import StageImage from './StageImage.vue';
 import RuleIcon from './RuleIcon.vue';
 import SkeletonBlock from './loading/SkeletonBlock.vue';
@@ -96,4 +103,11 @@ const props = defineProps({
 });
 
 const time = useTimeStore();
+
+const startsAfterToday = computed(() => {
+  const tomorrow = new Date(time.now);
+  tomorrow.setHours(24, 0, 0, 0);
+
+  return props.schedule && Date.parse(props.schedule.startTime) >= tomorrow.getTime();
+});
 </script>
