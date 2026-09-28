@@ -1,5 +1,5 @@
 <template>
-  <div class="grow flex items-start justify-center" :aria-busy="!ready && !failed">
+  <div class="grow flex items-center justify-center" :aria-busy="!ready && !failed">
     <template v-if="!failed">
       <p v-if="!ready" role="status" class="sr-only">
         {{ $t('loading.label') }}
