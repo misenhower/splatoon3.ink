@@ -1,5 +1,5 @@
 <template>
-  <ModalDialog inner-class="md:-rotate-1" no-scroll>
+  <ModalDialog inner-class="md:-rotate-1" no-scroll @close="$emit('close')">
     <div class="h-full w-full max-w-2xl isolate rounded-2xl overflow-hidden" :class="type.bg">
       <div class="relative h-full overflow-hidden">
         <div class="absolute inset-x-0 bg-zinc-800/40 backdrop-blur-md z-30 pt-10 pb-4">

@@ -1,6 +1,6 @@
 <template>
   <TransitionRoot as="template" :show="show">
-    <Dialog as="div" class="relative z-20">
+    <Dialog as="div" class="relative z-20" @close="$emit('close')">
       <TransitionChild
         as="template"
         enter="ease-out duration-300"
@@ -45,4 +45,6 @@ defineProps({
   noScroll: Boolean,
   innerClass: String,
 });
+
+defineEmits(['close']);
 </script>
