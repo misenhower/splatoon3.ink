@@ -9,6 +9,9 @@ export const SPLATNET3_WEB_SERVICE_ID = '4834290508791808';
 // Concurrent request limit
 const limit = pLimit(5);
 
+// Serialize token acquisition across client instances using the same account cache.
+const bulletTokenLimits = new Map();
+
 export default class SplatNet3Client
 {
   baseUrl = 'https://api.lp1.av5ja.srv.nintendo.net';
@@ -59,18 +62,28 @@ export default class SplatNet3Client
   }
 
   async getBulletToken(useCache = true) {
-    let bulletTokenCache = new ValueCache(`${this.nsoClient.cachePrefix}.bulletToken`);
+    const key = this.nsoClient.cachePrefix;
+    let tokenLimit = bulletTokenLimits.get(key);
 
-    let bulletToken = useCache
-      ? await bulletTokenCache.getData()
-      : null;
-
-    if (!bulletToken) {
-      let webServiceToken = await this.nsoClient.getWebServiceToken(SPLATNET3_WEB_SERVICE_ID);
-      bulletToken = await this._createBulletToken(webServiceToken, bulletTokenCache);
+    if (!tokenLimit) {
+      tokenLimit = pLimit(1);
+      bulletTokenLimits.set(key, tokenLimit);
     }
 
-    return bulletToken;
+    return tokenLimit(async () => {
+      let bulletTokenCache = new ValueCache(`${key}.bulletToken`);
+
+      let bulletToken = useCache
+        ? await bulletTokenCache.getData()
+        : null;
+
+      if (!bulletToken) {
+        let webServiceToken = await this.nsoClient.getWebServiceToken(SPLATNET3_WEB_SERVICE_ID);
+        bulletToken = await this._createBulletToken(webServiceToken, bulletTokenCache);
+      }
+
+      return bulletToken;
+    });
   }
 
   async _createBulletToken(webServiceToken, bulletTokenCache) {
