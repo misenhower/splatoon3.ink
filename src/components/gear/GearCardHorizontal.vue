@@ -15,9 +15,7 @@
       </template>
       <template v-else>
         <div class="flex">
-          <div class="inline-block text-xs bg-zinc-200/30 rounded-sm px-1 py-px font-semibold">
-            {{ $t('time.left', { time: formatDurationHoursFromNow(props.gear.saleEndTime) }) }}
-          </div>
+          <GearExpiry :end-time="props.gear.saleEndTime" />
         </div>
 
         <div class="flex items-center space-x-2">
@@ -104,7 +102,7 @@
 import SkeletonBlock from '@/components/loading/SkeletonBlock.vue';
 import { computed } from 'vue';
 import SquidTape from '@/components/SquidTape.vue';
-import { formatDurationHoursFromNow } from '@/common/time';
+import GearExpiry from './GearExpiry.vue';
 import { getGesotownGearUrl } from '@/common/links';
 
 const props = defineProps({
