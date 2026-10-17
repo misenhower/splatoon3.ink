@@ -1,6 +1,7 @@
 export const screenshotReadyAttribute = 'data-screenshot-ready';
 export const screenshotReadySelector = `[${screenshotReadyAttribute}="true"]`;
 export const screenshotReadyTimeout = 30_000;
+export const screenshotAbsoluteTimesKey = Symbol('screenshotAbsoluteTimes');
 
 function nextFrame(requestAnimationFrame) {
   return new Promise(resolve => requestAnimationFrame(resolve));

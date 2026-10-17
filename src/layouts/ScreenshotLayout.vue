@@ -22,7 +22,7 @@
                 height="15"
                 class="inline"
               />
-              {{ japanese ? 'Splatoon3.ink 日本語' : '@splatoon3.ink' }}
+              {{ japanese ? 'Splatoon3.ink' : '@splatoon3.ink' }}
             </div>
           </div>
         </div>
@@ -46,11 +46,11 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onUnmounted, watch, watchEffect } from 'vue';
+import { computed, nextTick, onUnmounted, provide, watch, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { screenshotTranslationErrors } from '@/common/i18n.mjs';
-import { markScreenshotReady, screenshotReadyAttribute } from '@/common/screenshot.mjs';
+import { markScreenshotReady, screenshotAbsoluteTimesKey, screenshotReadyAttribute } from '@/common/screenshot.mjs';
 import { useDataStore } from '@/stores/data';
 import { useTimeStore } from '@/stores/time';
 import TimeOffsetSelector from '@/components/Debug/TimeOffsetSelector.vue';
@@ -64,6 +64,9 @@ const props = defineProps({
 const route = useRoute();
 const { locale } = useI18n();
 const japanese = computed(() => locale.value === 'ja-JP');
+
+provide(screenshotAbsoluteTimesKey, japanese);
+
 const data = useDataStore();
 const time = useTimeStore();
 let readinessVersion = 0;
