@@ -46,7 +46,7 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onUnmounted, provide, watch, watchEffect } from 'vue';
+import { computed, nextTick, onUnmounted, provide, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { screenshotTranslationErrors } from '@/common/i18n.mjs';
@@ -95,13 +95,6 @@ watch(
 onUnmounted(() => {
   readinessVersion++;
   document.documentElement.removeAttribute(screenshotReadyAttribute);
-});
-
-watchEffect(() => {
-  if (route.query.time) {
-    time.stopUpdatingNow();
-    time.setNow(Number(route.query.time));
-  }
 });
 
 const timestampFormats = [
