@@ -1,3 +1,4 @@
+import { useTimeStore } from '../../../src/stores/time.mjs';
 import Media from '../Media.mjs';
 import { useEggstraWorkSchedulesStore } from '../../../src/stores/schedules.mjs';
 import ScreenshotHelper from '../../screenshots/ScreenshotHelper.mjs';
@@ -39,9 +40,16 @@ export default class EggstraWorkStatus extends StatusGenerator
 
   /** @param {ScreenshotHelper} screenshotHelper */
   async _getMedia(screenshotHelper) {
+    let schedule = await this.getActiveSchedule();
+
     let media = new Media;
     media.file = await screenshotHelper.capture('salmonrun', {
       params: { eggstra: 'true' },
+    });
+
+    media.altText = this.images.shift(schedule, useTimeStore(this.pinia).now, {
+      eggstra: true,
+      upcoming: false,
     });
 
     return media;

@@ -84,6 +84,11 @@ export default class SplatfestResultsStatus extends StatusGenerator
     let media = new Media;
     media.file = await screenshotHelper.capture(`splatfest/${this.region}`);
 
+    const festival = await this.getFestival();
+    media.altText = this.images.festival(festival, {
+      includeTheme: true,
+    });
+
     return media;
   }
 }

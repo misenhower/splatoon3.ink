@@ -61,6 +61,11 @@ export default class EggstraWorkUpcomingStatus extends StatusGenerator
       params: { startTime: schedule?.startTime, eggstra: 'true' },
     });
 
+    media.altText = this.images.shift(schedule, useTimeStore(this.pinia).now, {
+      eggstra: true,
+      upcoming: true,
+    });
+
     return media;
   }
 }

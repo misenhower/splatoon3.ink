@@ -1,10 +1,10 @@
 {
   "schedule": {
-    "rotation": "ステージ情報\n#スプラトゥーン3",
+    "rotation": "ステージ情報\n#maprotation",
     "series": "– バンカラ（チャレンジ）：{rule}",
     "open": "– バンカラ（オープン）：{rule}",
     "x": "– Xマッチ：{rule}",
-    "festival": "フェスマッチ開催中！\n#スプラトゥーン3",
+    "festival": "フェスマッチ開催中！\n#splatfest #maprotation",
     "festivalOpen": "オープン：{stage1}・{stage2}",
     "festivalPro": "チャレンジ：{stage1}・{stage2}",
     "tricolorOne": "トリカラ：{stage}",
@@ -20,9 +20,9 @@
     }
   },
   "gear": {
-    "daily": "ゲソタウン 本日のピックアップ：{brand}\n#スプラトゥーン3",
+    "daily": "ゲソタウン 本日のピックアップ：{brand}\n#dailydrop",
     "item": "{icon} {name}（{power}）",
-    "regular": "ゲソタウンで販売中！\n{icon} {name}（{power}）\n#スプラトゥーン3"
+    "regular": "ゲソタウンで販売中！\n{icon} {name}（{power}）\n#splatnet3"
   },
   "challenge": {
     "open": "イベントマッチ開催中！\n{name}",
@@ -33,21 +33,21 @@
       "regular": "サーモンラン",
       "bigRun": "ビッグラン"
     },
-    "open": "{stage}で{mode}開催中！\n#スプラトゥーン3",
-    "openMystery": "{stage}で{mode}開催中！ランダムブキのシフト！\n#スプラトゥーン3",
-    "openGrizzco": "{stage}で{mode}開催中！クマサン印のブキのシフト！\n#スプラトゥーン3",
+    "open": "{stage}で{mode}開催中！\n#salmonrun #スプラトゥーン3",
+    "openMystery": "{stage}で{mode}開催中！ランダムブキのシフト！\n#salmonrun #スプラトゥーン3",
+    "openGrizzco": "{stage}で{mode}開催中！クマサン印のブキのシフト！\n#salmonrun #スプラトゥーン3",
     "king": "オカシラシャケ：{king}",
     "weapons": "支給ブキ：",
     "weapon": "– {weapon}",
-    "upcomingBigRun": "ビッグランの予定が追加されました！\nステージ：{stage}\n#スプラトゥーン3",
-    "upcomingGrizzco": "クマサン印のブキのシフトが追加されました！\nステージ：{stage}\n#スプラトゥーン3",
-    "upcomingMystery": "ランダムブキのシフトが追加されました！\nステージ：{stage}\n#スプラトゥーン3",
+    "upcomingBigRun": "ビッグランの予定が追加されました！\nステージ：{stage}\n#salmonrun #スプラトゥーン3",
+    "upcomingGrizzco": "クマサン印のブキのシフトが追加されました！\nステージ：{stage}\n#salmonrun #スプラトゥーン3",
+    "upcomingMystery": "ランダムブキのシフトが追加されました！\nステージ：{stage}\n#salmonrun #スプラトゥーン3",
     "starts": "開始まであと{time}！\n支給ブキ：",
     "unknownStage": "？？？"
   },
   "eggstra": {
-    "open": "バイトチームコンテスト開催中！\n{stage}\n#スプラトゥーン3",
-    "upcoming": "バイトチームコンテストの予定が追加されました！\nステージ：{stage}\n#スプラトゥーン3"
+    "open": "バイトチームコンテスト開催中！\n{stage}\n#salmonrun #スプラトゥーン3",
+    "upcoming": "バイトチームコンテストの予定が追加されました！\nステージ：{stage}\n#salmonrun #スプラトゥーン3"
   },
   "time": {
     "day": "1日",
@@ -58,12 +58,51 @@
   "festival": {
     "global": "全世界共通",
     "globalResults": "全世界共通",
-    "upcoming": "次回のフェスの投票受付中！\n{title}\n#スプラトゥーン3",
-    "upcoming:3d": "フェス開催まであと3日！\n{title}\n#スプラトゥーン3",
-    "upcoming:1d": "フェス開催まであと24時間！\n{title}\n#スプラトゥーン3",
-    "active": "フェス開催中！\n{title}\n#スプラトゥーン3",
-    "ended": "フェスは終了しました！結果発表は通常、終了から2時間以内です。\n#スプラトゥーン3",
-    "results": "フェスの結果発表！「{team}」チームの勝利！\n#スプラトゥーン3",
+    "upcoming": "次回のフェスの投票受付中！\n{title}\n#splatfest #スプラトゥーン3",
+    "upcoming:3d": "フェス開催まであと3日！\n{title}\n#splatfest #スプラトゥーン3",
+    "upcoming:1d": "フェス開催まであと24時間！\n{title}\n#splatfest #スプラトゥーン3",
+    "active": "フェス開催中！\n{title}\n#splatfest #スプラトゥーン3",
+    "ended": "フェスは終了しました！結果発表は通常、終了から2時間以内です。\n#splatfest #スプラトゥーン3",
+    "results": "フェスの結果発表！「{team}」チームの勝利！\n#splatfest #スプラトゥーン3",
     "resultsWrapper": "{title} フェスの結果"
+  },
+  "alt": {
+    "gear": {
+      "daily": "本日のピックアップ：{brand}。",
+      "regular": "販売中のギア。先頭のギアを大きく掲載。",
+      "item": "{name}：{price}ゲソ、残り{time}。",
+      "ability": "基本ギアパワー：{power}。",
+      "brand": "ブランド：{brand}。",
+      "slots": "追加ギアパワーの枠数：{count}。"
+    },
+    "shift": {
+      "stage": "{mode}：{stage}。",
+      "remaining": "残り{time}。",
+      "opens": "開始まであと{time}。",
+      "eggstra": "バイトチームコンテスト"
+    },
+    "festival": {
+      "theme": "フェス：{title}",
+      "teams": "左から順に、{teams}。",
+      "winner": "優勝：{team}。",
+      "row": "{category}：{values}。",
+      "value": "{team} {percent}%",
+      "conchs": "ホラガイ獲得率",
+      "votes": "得票率",
+      "open": "オープン",
+      "pro": "チャレンジ",
+      "tricolor": "トリカラアタック"
+    },
+    "separator": "、",
+    "duration": {
+      "day": "{count}日",
+      "days": "{count}日",
+      "hour": "{count}時間",
+      "hours": "{count}時間",
+      "minute": "{count}分",
+      "minutes": "{count}分",
+      "second": "{count}秒",
+      "seconds": "{count}秒"
+    }
   }
 }

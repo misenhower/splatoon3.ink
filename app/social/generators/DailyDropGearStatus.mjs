@@ -1,3 +1,4 @@
+import { useTimeStore } from '../../../src/stores/time.mjs';
 import Media from '../Media.mjs';
 import { useGearStore } from '../../../src/stores/gear.mjs';
 import { getGearIcon } from '../../common/util.mjs';
@@ -48,6 +49,9 @@ export default class DailyDropGearStatus extends StatusGenerator
   async _getMedia(screenshotHelper) {
     let media = new Media;
     media.file = await screenshotHelper.capture('gear/dailydrop');
+
+    const { brand, gears } = await this.getData();
+    media.altText = this.images.gear(gears, useTimeStore(this.pinia).now, { brand: brand.brand });
 
     return media;
   }

@@ -31,6 +31,7 @@ function battle(rule) {
 function shift(hours = 0, flags = {}) {
   return {
     startTime: new Date(now + hours * hour).toISOString(),
+    endTime: new Date(now + (hours + 40) * hour).toISOString(),
     ...flags,
     settings: {
       coopStage: { name: 'Sockeye Station' },
@@ -42,10 +43,14 @@ function shift(hours = 0, flags = {}) {
 
 function gear(type, name, power) {
   return {
+    price: 1000,
+    saleEndTime: new Date(now + 4 * hour).toISOString(),
     gear: {
       __typename: type,
       name,
       primaryGearPower: { name: power },
+      brand: { name: 'Zink' },
+      additionalGearPowers: [{ name: 'Unknown' }],
     },
   };
 }
@@ -143,7 +148,7 @@ describe('English social output', () => {
 
   it('renders a regular gear sale', async () => {
     const generator = new RegularGearStatus;
-    vi.spyOn(generator, 'getLatestGear').mockResolvedValue(gear('HeadGear', 'Squid Hairclip', 'Ink Saver (Main)'));
+    vi.spyOn(generator, 'getGears').mockResolvedValue([gear('HeadGear', 'Squid Hairclip', 'Ink Saver (Main)')]);
 
     expect(await output(generator)).toMatchSnapshot();
   });
@@ -222,7 +227,7 @@ describe('English social output', () => {
   ])('$label Splatfest', ({ regions }) => {
     it.each(['upcoming', 'upcoming:3d', 'upcoming:1d', 'active', 'ended'])('renders %s', async state => {
       const generator = new SplatfestStatus('JP');
-      vi.spyOn(generator, 'getFestival').mockResolvedValue(festival(regions));
+      vi.spyOn(generator, 'getFestival').mockResolvedValue({ ...festival(regions), hasResults: false });
       vi.spyOn(generator, 'getState').mockResolvedValue(state);
 
       expect(await output(generator)).toMatchSnapshot();

@@ -72,6 +72,11 @@ export default class SalmonRunUpcomingStatus extends StatusGenerator
       params: { startTime: schedule?.startTime },
     });
 
+    media.altText = this.images.shift(schedule, useTimeStore(this.pinia).now, {
+      eggstra: false,
+      upcoming: true,
+    });
+
     return media;
   }
 }

@@ -9,6 +9,7 @@ import { getTopOfCurrentHour } from '../../common/util.mjs';
 import { useTimeStore } from '../../../src/stores/time.mjs';
 import ValueCache from '../../common/ValueCache.mjs';
 import SocialMessages from '../i18n/SocialMessages.mjs';
+import ImageDescriptions from '../ImageDescriptions.mjs';
 
 export default class StatusGenerator
 {
@@ -17,6 +18,7 @@ export default class StatusGenerator
 
   constructor({ locale = 'en-US', translations = null, now = null } = {}) {
     this.messages = new SocialMessages(locale, translations);
+    this.images = new ImageDescriptions(this.messages);
     this.now = now;
   }
 
@@ -99,12 +101,6 @@ export default class StatusGenerator
       media = [media];
     }
     status.media = media;
-
-    if (this.locale === 'ja-JP') {
-      for (const item of status.media ?? []) {
-        item.altText ||= status.status;
-      }
-    }
 
     return status;
   }

@@ -106,6 +106,24 @@ export default class SchedulesStatus extends StatusGenerator
         this.t('schedule.alt.festivalOpen', detail(stages.splatfestOpen)),
         this.t('schedule.alt.festivalPro', detail(stages.splatfestPro)),
       ]);
+
+      const festival = useUSSplatfestsStore(this.pinia).activeFestival;
+      if (festival) lines.push(this.images.festival(festival, { includeTheme: true }));
+
+      if (stages.tricolor?.isTricolorActive) {
+        const tricolorStages = stages.tricolor.tricolorStages
+          ?? (stages.tricolor.tricolorStage ? [stages.tricolor.tricolorStage] : []);
+
+        if (tricolorStages.length === 1) {
+          lines.push(this.t('schedule.tricolorOne', { stage: this.game('stages', tricolorStages[0]) }));
+        } else if (tricolorStages.length > 1) {
+          lines.push(this.t('schedule.tricolorTwo', {
+            stage1: this.game('stages', tricolorStages[0]),
+            stage2: this.game('stages', tricolorStages[1]),
+          }));
+        }
+      }
+
     } else {
       lines.push(...[
         this.t('schedule.alt.regular', detail(stages.regular)),

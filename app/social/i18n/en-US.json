@@ -65,5 +65,44 @@
     "ended": "The {region} Splatfest is now closed. Results are usually posted within 2 hours! #splatfest #splatoon3",
     "results": "{region} Splatfest results: Team {team} wins! #splatfest #splatoon3",
     "resultsWrapper": "{title} Splatfest Results"
+  },
+  "alt": {
+    "gear": {
+      "daily": "The Daily Drop — {brand}.",
+      "regular": "Gear on sale. The first item is featured.",
+      "item": "{name}: {price} coins; {time} left.",
+      "ability": "Main ability: {power}.",
+      "brand": "Brand: {brand}.",
+      "slots": "Additional ability slots: {count}."
+    },
+    "shift": {
+      "stage": "{mode} — {stage}.",
+      "remaining": "{time} remaining.",
+      "opens": "Opens in {time}.",
+      "eggstra": "Eggstra Work"
+    },
+    "festival": {
+      "theme": "Splatfest: {title}",
+      "teams": "Teams, left to right: {teams}.",
+      "winner": "Winner: {team}.",
+      "row": "{category}: {values}.",
+      "value": "{team} {percent}%",
+      "conchs": "Conch shells",
+      "votes": "Votes",
+      "open": "Open",
+      "pro": "Pro",
+      "tricolor": "Tricolor Battle"
+    },
+    "separator": ", ",
+    "duration": {
+      "day": "{count} day",
+      "days": "{count} days",
+      "hour": "{count} hour",
+      "hours": "{count} hours",
+      "minute": "{count} minute",
+      "minutes": "{count} minutes",
+      "second": "{count} second",
+      "seconds": "{count} seconds"
+    }
   }
 }

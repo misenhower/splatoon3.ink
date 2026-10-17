@@ -3,7 +3,7 @@
 exports[`English social output > 'global' Splatfest > renders active 1`] = `
 {
   "alt": [
-    null,
+    "Teams, left to right: Team One, Team Two.",
   ],
   "captures": [
     [
@@ -18,7 +18,8 @@ exports[`English social output > 'global' Splatfest > renders active 1`] = `
 exports[`English social output > 'global' Splatfest > renders ended 1`] = `
 {
   "alt": [
-    null,
+    "Splatfest: Which would you choose?
+Teams, left to right: Team One, Team Two.",
   ],
   "captures": [
     [
@@ -33,7 +34,9 @@ exports[`English social output > 'global' Splatfest > renders ended 1`] = `
 exports[`English social output > 'global' Splatfest > renders results and their content wrapper 1`] = `
 {
   "alt": [
-    null,
+    "Splatfest: Which would you choose?
+Teams, left to right: Team One, Team Two.
+Winner: Team Two.",
   ],
   "captures": [
     [
@@ -48,7 +51,7 @@ exports[`English social output > 'global' Splatfest > renders results and their 
 exports[`English social output > 'global' Splatfest > renders upcoming 1`] = `
 {
   "alt": [
-    null,
+    "Teams, left to right: Team One, Team Two.",
   ],
   "captures": [
     [
@@ -63,7 +66,7 @@ exports[`English social output > 'global' Splatfest > renders upcoming 1`] = `
 exports[`English social output > 'global' Splatfest > renders upcoming:1d 1`] = `
 {
   "alt": [
-    null,
+    "Teams, left to right: Team One, Team Two.",
   ],
   "captures": [
     [
@@ -78,7 +81,7 @@ exports[`English social output > 'global' Splatfest > renders upcoming:1d 1`] = 
 exports[`English social output > 'global' Splatfest > renders upcoming:3d 1`] = `
 {
   "alt": [
-    null,
+    "Teams, left to right: Team One, Team Two.",
   ],
   "captures": [
     [
@@ -93,7 +96,7 @@ exports[`English social output > 'global' Splatfest > renders upcoming:3d 1`] = 
 exports[`English social output > 'regional' Splatfest > renders active 1`] = `
 {
   "alt": [
-    null,
+    "Teams, left to right: Team One, Team Two.",
   ],
   "captures": [
     [
@@ -108,7 +111,8 @@ exports[`English social output > 'regional' Splatfest > renders active 1`] = `
 exports[`English social output > 'regional' Splatfest > renders ended 1`] = `
 {
   "alt": [
-    null,
+    "Splatfest: Which would you choose?
+Teams, left to right: Team One, Team Two.",
   ],
   "captures": [
     [
@@ -123,7 +127,9 @@ exports[`English social output > 'regional' Splatfest > renders ended 1`] = `
 exports[`English social output > 'regional' Splatfest > renders results and their content wrapper 1`] = `
 {
   "alt": [
-    null,
+    "Splatfest: Which would you choose?
+Teams, left to right: Team One, Team Two.
+Winner: Team Two.",
   ],
   "captures": [
     [
@@ -138,7 +144,7 @@ exports[`English social output > 'regional' Splatfest > renders results and thei
 exports[`English social output > 'regional' Splatfest > renders upcoming 1`] = `
 {
   "alt": [
-    null,
+    "Teams, left to right: Team One, Team Two.",
   ],
   "captures": [
     [
@@ -153,7 +159,7 @@ exports[`English social output > 'regional' Splatfest > renders upcoming 1`] = `
 exports[`English social output > 'regional' Splatfest > renders upcoming:1d 1`] = `
 {
   "alt": [
-    null,
+    "Teams, left to right: Team One, Team Two.",
   ],
   "captures": [
     [
@@ -168,7 +174,7 @@ exports[`English social output > 'regional' Splatfest > renders upcoming:1d 1`] 
 exports[`English social output > 'regional' Splatfest > renders upcoming:3d 1`] = `
 {
   "alt": [
-    null,
+    "Teams, left to right: Team One, Team Two.",
   ],
   "captures": [
     [
@@ -183,7 +189,9 @@ exports[`English social output > 'regional' Splatfest > renders upcoming:3d 1`] 
 exports[`English social output > formats a shift 1 hours away 1`] = `
 {
   "alt": [
-    null,
+    "Salmon Run — Sockeye Station.
+Opens in 1 hour.
+King Salmonid: Cohozuna",
   ],
   "captures": [
     [
@@ -209,7 +217,9 @@ This shift will start in 1 hour with these weapons:
 exports[`English social output > formats a shift 5 hours away 1`] = `
 {
   "alt": [
-    null,
+    "Salmon Run — Sockeye Station.
+Opens in 5 hours.
+King Salmonid: Cohozuna",
   ],
   "captures": [
     [
@@ -235,7 +245,9 @@ This shift will start in 5 hours with these weapons:
 exports[`English social output > formats a shift 24 hours away 1`] = `
 {
   "alt": [
-    null,
+    "Salmon Run — Sockeye Station.
+Opens in 1 day.
+King Salmonid: Cohozuna",
   ],
   "captures": [
     [
@@ -261,7 +273,9 @@ This shift will start in 1 day with these weapons:
 exports[`English social output > formats a shift 36 hours away 1`] = `
 {
   "alt": [
-    null,
+    "Salmon Run — Sockeye Station.
+Opens in 1 day 12 hours.
+King Salmonid: Cohozuna",
   ],
   "captures": [
     [
@@ -287,7 +301,8 @@ This shift will start in 2 days with these weapons:
 exports[`English social output > omits the king when it is unknown 1`] = `
 {
   "alt": [
-    null,
+    "Salmon Run — Sockeye Station.
+40 hours remaining.",
   ],
   "captures": [
     [
@@ -308,7 +323,8 @@ Current weapons:
 exports[`English social output > renders Eggstra Work 1 hours away 1`] = `
 {
   "alt": [
-    null,
+    "Eggstra Work — Sockeye Station.
+Opens in 1 hour.",
   ],
   "captures": [
     [
@@ -335,7 +351,8 @@ This shift will start in 1 hour with these weapons:
 exports[`English social output > renders Eggstra Work 5 hours away 1`] = `
 {
   "alt": [
-    null,
+    "Eggstra Work — Sockeye Station.
+Opens in 5 hours.",
   ],
   "captures": [
     [
@@ -362,7 +379,8 @@ This shift will start in 5 hours with these weapons:
 exports[`English social output > renders Eggstra Work 24 hours away 1`] = `
 {
   "alt": [
-    null,
+    "Eggstra Work — Sockeye Station.
+Opens in 1 day.",
   ],
   "captures": [
     [
@@ -389,7 +407,8 @@ This shift will start in 1 day with these weapons:
 exports[`English social output > renders Eggstra Work 48 hours away 1`] = `
 {
   "alt": [
-    null,
+    "Eggstra Work — Sockeye Station.
+Opens in 2 days.",
   ],
   "captures": [
     [
@@ -419,7 +438,8 @@ exports[`English social output > renders a Splatfest rotation with 'legacy trico
     "Splatoon 3 map rotation:
 
 Splatfest Battle (Open): Turf War on Scorch Gorge and Eeltail Alley
-Splatfest Battle (Pro): Turf War on Scorch Gorge and Eeltail Alley",
+Splatfest Battle (Pro): Turf War on Scorch Gorge and Eeltail Alley
+– Tricolor: Hammerhead Bridge",
   ],
   "captures": [
     [
@@ -468,7 +488,8 @@ exports[`English social output > renders a Splatfest rotation with 'one tricolor
     "Splatoon 3 map rotation:
 
 Splatfest Battle (Open): Turf War on Scorch Gorge and Eeltail Alley
-Splatfest Battle (Pro): Turf War on Scorch Gorge and Eeltail Alley",
+Splatfest Battle (Pro): Turf War on Scorch Gorge and Eeltail Alley
+– Tricolor: Hammerhead Bridge",
   ],
   "captures": [
     [
@@ -493,7 +514,8 @@ exports[`English social output > renders a Splatfest rotation with 'two tricolor
     "Splatoon 3 map rotation:
 
 Splatfest Battle (Open): Turf War on Scorch Gorge and Eeltail Alley
-Splatfest Battle (Pro): Turf War on Scorch Gorge and Eeltail Alley",
+Splatfest Battle (Pro): Turf War on Scorch Gorge and Eeltail Alley
+– Tricolor: Hammerhead Bridge and MakoMart",
   ],
   "captures": [
     [
@@ -533,7 +555,8 @@ Play Rainmaker on Scorch Gorge and Eeltail Alley! #splatoon3",
 exports[`English social output > renders a regular gear sale 1`] = `
 {
   "alt": [
-    null,
+    "Gear on sale. The first item is featured.
+Squid Hairclip: 1000 coins; 4 hours left. Brand: Zink. Additional ability slots: 1.",
   ],
   "captures": [
     [
@@ -548,7 +571,8 @@ exports[`English social output > renders a regular gear sale 1`] = `
 exports[`English social output > renders active Eggstra Work 1`] = `
 {
   "alt": [
-    null,
+    "Eggstra Work — Sockeye Station.
+40 hours remaining.",
   ],
   "captures": [
     [
@@ -574,7 +598,8 @@ Current weapons:
 exports[`English social output > renders an active 'Big Run Grizzco mystery' shift 1`] = `
 {
   "alt": [
-    null,
+    "BIG RUN — Sockeye Station.
+40 hours remaining.",
   ],
   "captures": [
     [
@@ -597,7 +622,8 @@ Current weapons:
 exports[`English social output > renders an active 'Big Run mystery' shift 1`] = `
 {
   "alt": [
-    null,
+    "BIG RUN — Sockeye Station.
+40 hours remaining.",
   ],
   "captures": [
     [
@@ -620,7 +646,8 @@ Current weapons:
 exports[`English social output > renders an active 'Big Run' shift 1`] = `
 {
   "alt": [
-    null,
+    "BIG RUN — Sockeye Station.
+40 hours remaining.",
   ],
   "captures": [
     [
@@ -643,7 +670,8 @@ Current weapons:
 exports[`English social output > renders an active 'Grizzco mystery' shift 1`] = `
 {
   "alt": [
-    null,
+    "Salmon Run — Sockeye Station.
+40 hours remaining.",
   ],
   "captures": [
     [
@@ -666,7 +694,8 @@ Current weapons:
 exports[`English social output > renders an active 'mystery' shift 1`] = `
 {
   "alt": [
-    null,
+    "Salmon Run — Sockeye Station.
+40 hours remaining.",
   ],
   "captures": [
     [
@@ -689,7 +718,8 @@ Current weapons:
 exports[`English social output > renders an active 'regular' shift 1`] = `
 {
   "alt": [
-    null,
+    "Salmon Run — Sockeye Station.
+40 hours remaining.",
   ],
   "captures": [
     [
@@ -712,7 +742,9 @@ Current weapons:
 exports[`English social output > renders an upcoming 'Big Run' shift 1`] = `
 {
   "alt": [
-    null,
+    "BIG RUN — Sockeye Station.
+Opens in 2 days.
+King Salmonid: Cohozuna",
   ],
   "captures": [
     [
@@ -738,7 +770,9 @@ This shift will start in 2 days with these weapons:
 exports[`English social output > renders an upcoming 'Grizzco mystery' shift 1`] = `
 {
   "alt": [
-    null,
+    "Salmon Run — Sockeye Station.
+Opens in 2 days.
+King Salmonid: Cohozuna",
   ],
   "captures": [
     [
@@ -764,7 +798,9 @@ This shift will start in 2 days with these weapons:
 exports[`English social output > renders an upcoming 'mystery' shift 1`] = `
 {
   "alt": [
-    null,
+    "Salmon Run — Sockeye Station.
+Opens in 2 days.
+King Salmonid: Cohozuna",
   ],
   "captures": [
     [
@@ -790,7 +826,10 @@ This shift will start in 2 days with these weapons:
 exports[`English social output > renders the daily brand and all gear types 1`] = `
 {
   "alt": [
-    null,
+    "The Daily Drop — Zink.
+Squid Hairclip: 1000 coins; 4 hours left. Additional ability slots: 1.
+Basic Tee: 1000 coins; 4 hours left. Additional ability slots: 1.
+Blue Lo-Tops: 1000 coins; 4 hours left. Additional ability slots: 1.",
   ],
   "captures": [
     [

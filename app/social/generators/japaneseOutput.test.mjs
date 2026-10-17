@@ -45,11 +45,15 @@ const schedule = {
   },
 };
 const gear = {
+  price: 1000,
+  saleEndTime: schedule.endTime,
   gear: {
     ...node('gear'),
     __splatoon3ink_id: 'gear',
     __typename: 'HeadGear',
     primaryGearPower: { ...node('power'), __splatoon3ink_id: 'power' },
+    brand: node('brand'),
+    additionalGearPowers: [node('power')],
   },
 };
 const festival = {
@@ -87,7 +91,7 @@ describe('Japanese social output', () => {
 
     const status = await generate(generator);
 
-    expect(status.status).toContain('ステージ情報\n#スプラトゥーン3');
+    expect(status.status).toContain('ステージ情報\n#maprotation');
     expect(status.status).not.toContain('10/17');
     expect(status.status).toContain('バンカラ（チャレンジ）：ガチエリア');
     expect(status.media[0].altText).toContain('ユノハナ大渓谷');
@@ -113,7 +117,9 @@ describe('Japanese social output', () => {
     expect(status.status).toContain('スプラシューター');
     expect(status.status).toContain('開催中！');
     expect(status.status).not.toContain('10/17');
-    expect(status.media[0].altText).toBe(status.status);
+    expect(status.media[0].altText).toContain('10/17 23:00 – 10/18 1:00 JST');
+    expect(status.media[0].altText).not.toContain('スプラシューター');
+    expect(status.media[0].altText).not.toContain('#');
     expect(data).toEqual(before);
   });
 
@@ -139,7 +145,7 @@ describe('Japanese social output', () => {
     const daily = new DailyDropGearStatus(options);
     vi.spyOn(daily, 'getData').mockResolvedValue({ brand: { brand: node('brand') }, gears: [gear] });
     const regular = new RegularGearStatus(options);
-    vi.spyOn(regular, 'getLatestGear').mockResolvedValue(gear);
+    vi.spyOn(regular, 'getGears').mockResolvedValue([gear]);
 
     expect((await generate(daily)).status).toContain('アイロニック');
     expect((await generate(regular)).status).toContain('イカヘアピン（インク効率アップ（メイン））');
