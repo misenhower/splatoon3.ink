@@ -31,9 +31,13 @@ export default class ChallengeStatus extends StatusGenerator
     let desc = br2nl(schedule.settings.leagueMatchEvent.desc, ' ');
 
     return [
-      `A challenge event is now open! ${name} – ${desc}`,
+      this.t('challenge.open', { name, description: desc }),
       '',
-      `Play ${schedule.settings.vsRule.name} on ${schedule.settings.vsStages[0].name} and ${schedule.settings.vsStages[1].name}! #splatoon3`,
+      this.t('challenge.stages', {
+        rule: schedule.settings.vsRule.name,
+        stage1: schedule.settings.vsStages[0].name,
+        stage2: schedule.settings.vsStages[1].name,
+      }),
     ].join('\n');
   }
 

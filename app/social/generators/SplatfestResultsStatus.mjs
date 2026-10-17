@@ -8,8 +8,8 @@ export default class SplatfestResultsStatus extends StatusGenerator
   key = 'splatfestResults';
   name = 'Splatfest Results';
 
-  constructor(region) {
-    super();
+  constructor(region, options = {}) {
+    super(options);
     this.region = region;
     this.key += `.${region}`;
     this.name += ` (${region})`;
@@ -49,9 +49,9 @@ export default class SplatfestResultsStatus extends StatusGenerator
     let winningTeam = festival.teams.find(t => t.result.isWinner);
 
     const global = festival.regions.length == 4;
-    const regionText = global ? 'Global' : festival.regions.join('/');
+    const regionText = global ? this.t('festival.globalResults') : festival.regions.join('/');
 
-    return `${regionText} Splatfest results: Team ${winningTeam.teamName} wins! #splatfest #splatoon3`;
+    return this.t('festival.results', { region: regionText, team: winningTeam.teamName });
   }
 
   async shouldPost(client) {
@@ -71,7 +71,7 @@ export default class SplatfestResultsStatus extends StatusGenerator
       return false;
     }
 
-    return `${festival.title} Splatfest Results`;
+    return this.t('festival.resultsWrapper', { title: festival.title });
   }
 
   /** @param {ScreenshotHelper} screenshotHelper */

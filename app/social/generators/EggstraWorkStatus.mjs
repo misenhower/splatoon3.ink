@@ -25,14 +25,12 @@ export default class EggstraWorkStatus extends StatusGenerator
 
     let lines = [];
 
-    let mode = 'EGGSTRA WORK';
-
-    lines.push(`${mode} is now open on ${schedule.settings.coopStage.name}! #salmonrun #splatoon3`);
+    lines.push(this.t('eggstra.open', { stage: schedule.settings.coopStage.name }));
 
     lines.push('');
 
-    lines.push('Current weapons:');
-    lines.push(...schedule.settings.weapons.map(w => `– ${w.name}`));
+    lines.push(this.t('salmon.weapons'));
+    lines.push(...schedule.settings.weapons.map(w => this.t('salmon.weapon', { weapon: w.name })));
 
     return lines.join('\n');
   }

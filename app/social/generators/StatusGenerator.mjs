@@ -8,11 +8,24 @@ import ScreenshotHelper from '../../screenshots/ScreenshotHelper.mjs';
 import { getTopOfCurrentHour } from '../../common/util.mjs';
 import { useTimeStore } from '../../../src/stores/time.mjs';
 import ValueCache from '../../common/ValueCache.mjs';
+import SocialMessages from '../i18n/SocialMessages.mjs';
 
 export default class StatusGenerator
 {
   key = null;
   name = null;
+
+  constructor({ locale = 'en-US' } = {}) {
+    this.messages = new SocialMessages(locale);
+  }
+
+  get locale() {
+    return this.messages.locale;
+  }
+
+  t(key, params) {
+    return this.messages.text(key, params);
+  }
 
   /** @type {Console} */
   get console() {

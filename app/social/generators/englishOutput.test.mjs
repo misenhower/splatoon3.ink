@@ -95,8 +95,20 @@ describe('English social output', () => {
 
   it.each([
     { label: 'no tricolor', tricolor: null },
-    { label: 'legacy tricolor', tricolor: { isTricolorActive: true, tricolorStage: { name: 'Hammerhead Bridge' } } },
-    { label: 'one tricolor stage', tricolor: { isTricolorActive: true, tricolorStages: [{ name: 'Hammerhead Bridge' }] } },
+    {
+      label: 'legacy tricolor',
+      tricolor: {
+        isTricolorActive: true,
+        tricolorStage: { name: 'Hammerhead Bridge' },
+      },
+    },
+    {
+      label: 'one tricolor stage',
+      tricolor: {
+        isTricolorActive: true,
+        tricolorStages: [{ name: 'Hammerhead Bridge' }],
+      },
+    },
     {
       label: 'two tricolor stages',
       tricolor: {

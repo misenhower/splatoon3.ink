@@ -9,8 +9,8 @@ export default class SplatfestStatus extends StatusGenerator
   key = 'splatfest';
   name = 'Splatfest';
 
-  constructor(region) {
-    super();
+  constructor(region, options = {}) {
+    super(options);
     this.region = region;
     this.key += `.${region}`;
     this.name += ` (${region})`;
@@ -87,19 +87,19 @@ export default class SplatfestStatus extends StatusGenerator
     }
 
     const global = festival.regions.length == 4;
-    const regionText = global ? 'global' : festival.regions.join('/');
+    const regionText = global ? this.t('festival.global') : festival.regions.join('/');
 
     switch (state) {
       case 'upcoming':
-        return `You can now vote in the next ${regionText} Splatfest: ${festival.title} #splatfest #splatoon3`;
+        return this.t('festival.upcoming', { region: regionText, title: festival.title });
       case 'upcoming:3d':
-        return `Reminder: The next ${regionText} Splatfest starts in 3 DAYS! ${festival.title} #splatfest #splatoon3`;
+        return this.t('festival.upcoming:3d', { region: regionText, title: festival.title });
       case 'upcoming:1d':
-        return `Reminder: The next ${regionText} Splatfest starts in 24 HOURS! ${festival.title} #splatfest #splatoon3`;
+        return this.t('festival.upcoming:1d', { region: regionText, title: festival.title });
       case 'active':
-        return `The ${regionText} Splatfest is NOW OPEN! ${festival.title} #splatfest #splatoon3`;
+        return this.t('festival.active', { region: regionText, title: festival.title });
       case 'ended':
-        return `The ${regionText} Splatfest is now closed. Results are usually posted within 2 hours! #splatfest #splatoon3`;
+        return this.t('festival.ended', { region: regionText });
     }
   }
 

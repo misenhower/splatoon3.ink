@@ -32,11 +32,11 @@ export default class DailyDropGearStatus extends StatusGenerator
       let name = gear.gear.name;
       let power = gear.gear.primaryGearPower.name;
 
-      return `${icon} ${name} with ${power}`;
+      return this.t('gear.item', { icon, name, power });
     }).join('\n');
 
     return [
-      `The Daily Drop: Today's featured brand is ${brand.brand.name}! #dailydrop`,
+      this.t('gear.daily', { brand: brand.brand.name }),
       '',
       formattedGears,
       // '',

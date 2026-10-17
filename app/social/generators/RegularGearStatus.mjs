@@ -30,7 +30,7 @@ export default class RegularGearStatus extends StatusGenerator
     // let url = `https://splatoon3.ink/nso/g/${gear.id}`;
 
     return [
-      `Up now on SplatNet: ${icon} ${name} with ${power} #splatnet3`,
+      this.t('gear.regular', { icon, name, power }),
       // '',
       // `🛒 Order: ${url}`,
     ].join('\n');
