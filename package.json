@@ -16,6 +16,7 @@
     "start": "npm run sync:download && npm run splatnet:quick && npm run social && npm run cron",
     "social": "node app/index.mjs social",
     "social:preview": "node app/social/preview.mjs",
+    "social:compare": "npm run build && node app/social/comparison/generate.mjs",
     "social:test": "node app/index.mjs socialTest",
     "social:test:image": "node app/index.mjs socialTestImage",
     "social:test:mastodon": "node app/index.mjs socialTestMastodon",
