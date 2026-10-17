@@ -3,7 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import prefixedConsole from '../common/prefixedConsole.mjs';
 import ValueCache from '../common/ValueCache.mjs';
-import { defaultClients } from './index.mjs';
+import { defaultClients, japanesePublishingEnabled } from './index.mjs';
 import { getCurrentVariant } from './avatarVariants.mjs';
 import TwitterClient from './clients/TwitterClient.mjs';
 
@@ -21,7 +21,13 @@ export async function updateAvatars() {
   let avatarBuffer = null;
 
   // X profile updates use the direct API; posts are sent through Buffer.
-  for (let client of [...defaultClients(), new TwitterClient]) {
+  const clients = [...defaultClients(), new TwitterClient];
+
+  if (japanesePublishingEnabled()) {
+    clients.push(...defaultClients('ja-JP'), new TwitterClient({ locale: 'ja-JP' }));
+  }
+
+  for (let client of clients) {
     if (!client.updateProfile || !(await client.canSend())) {
       continue;
     }
@@ -47,7 +53,9 @@ export async function updateAvatars() {
     }
 
     try {
-      await client.updateProfile(avatarBuffer, variant.displayName);
+      const displayName = client.locale === 'ja-JP' ? `${variant.displayName} 日本語` : variant.displayName;
+
+      await client.updateProfile(avatarBuffer, displayName);
       await cache.setData(variant.key);
       console.log(`[${client.name}] Profile updated successfully`);
     } catch (error) {

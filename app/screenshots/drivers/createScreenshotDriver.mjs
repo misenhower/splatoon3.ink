@@ -1,7 +1,12 @@
 import BrowserlessScreenshotDriver from './BrowserlessScreenshotDriver.mjs';
 import CloudflareScreenshotDriver from './CloudflareScreenshotDriver.mjs';
+import LocalScreenshotDriver from './LocalScreenshotDriver.mjs';
 
 export default function createScreenshotDriver(name, dependencies = {}) {
+  if (name === 'local') {
+    return new LocalScreenshotDriver(dependencies);
+  }
+
   if (name === 'browserless') {
     return new BrowserlessScreenshotDriver(dependencies);
   }
@@ -10,5 +15,5 @@ export default function createScreenshotDriver(name, dependencies = {}) {
     return new CloudflareScreenshotDriver(dependencies);
   }
 
-  throw new Error('SCREENSHOT_PROVIDER must be "cloudflare" or "browserless"');
+  throw new Error('SCREENSHOT_PROVIDER must be "cloudflare", "browserless", or "local"');
 }

@@ -34,6 +34,8 @@ describe('Twitter avatar updates', () => {
     vi.stubEnv('BLUESKY_PASSWORD', '');
     vi.stubEnv('BUFFER_API_KEY', '');
     vi.stubEnv('BUFFER_TWITTER_CHANNEL_ID', '');
+    vi.stubEnv('SOCIAL_JP_ENABLED', 'false');
+    vi.stubEnv('BLUESKY_JP_PASSWORD', '');
 
     cache = new Map;
 
@@ -102,5 +104,35 @@ describe('Twitter avatar updates', () => {
     expect(updateImage).toHaveBeenCalledTimes(2);
     expect(updateProfile).toHaveBeenCalledTimes(2);
     expect(cache.get('social.twitter.avatar')).toBe('halloween');
+  });
+
+  it('updates Japanese profiles with their own credentials and cache when enabled', async () => {
+    vi.stubEnv('SOCIAL_JP_ENABLED', 'true');
+
+    for (const key of twitterCredentials) {
+      vi.stubEnv(key.replace('TWITTER_', 'TWITTER_JP_'), 'jp-credential');
+    }
+
+    await updateAvatars();
+    await updateAvatars();
+
+    expect(updateProfile).toHaveBeenCalledTimes(2);
+    expect(updateProfile).toHaveBeenCalledWith({ name: 'Splatoon3.eek 🎃' });
+    expect(updateProfile).toHaveBeenCalledWith({ name: 'Splatoon3.eek 🎃 日本語' });
+    expect(cache.get('social.twitter.avatar')).toBe('halloween');
+    expect(cache.get('social.twitter.jp.avatar')).toBe('halloween');
+  });
+
+  it('does not use English Twitter credentials for the Japanese profile', async () => {
+    vi.stubEnv('SOCIAL_JP_ENABLED', 'true');
+
+    for (const key of twitterCredentials) {
+      vi.stubEnv(key.replace('TWITTER_', 'TWITTER_JP_'), '');
+    }
+
+    await updateAvatars();
+
+    expect(updateProfile).toHaveBeenCalledExactlyOnceWith({ name: 'Splatoon3.eek 🎃' });
+    expect(cache.has('social.twitter.jp.avatar')).toBe(false);
   });
 });

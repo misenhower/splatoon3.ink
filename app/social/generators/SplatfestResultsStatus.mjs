@@ -51,7 +51,12 @@ export default class SplatfestResultsStatus extends StatusGenerator
     const global = festival.regions.length == 4;
     const regionText = global ? this.t('festival.globalResults') : festival.regions.join('/');
 
-    return this.t('festival.results', { region: regionText, team: this.game('festivals', festival, `teams.${festival.teams.indexOf(winningTeam)}.teamName`) });
+    const winningIndex = festival.teams.indexOf(winningTeam);
+
+    return this.t('festival.results', {
+      region: regionText,
+      team: this.game('festivals', festival, `teams.${winningIndex}.teamName`),
+    });
   }
 
   async shouldPost(client) {

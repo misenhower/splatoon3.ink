@@ -15,6 +15,7 @@
     "cron": "node app/index.mjs cron",
     "start": "npm run sync:download && npm run splatnet:quick && npm run social && npm run cron",
     "social": "node app/index.mjs social",
+    "social:preview": "node app/social/preview.mjs",
     "social:test": "node app/index.mjs socialTest",
     "social:test:image": "node app/index.mjs socialTestImage",
     "social:test:mastodon": "node app/index.mjs socialTestMastodon",
@@ -62,6 +63,7 @@
     "sirv": "^3.0.2",
     "tar-stream": "^3.2.0",
     "twitter-api-v2": "^1.29.0",
+    "twitter-text": "^3.1.0",
     "vue": "^3.5.42",
     "vue-i18n": "^11.4.10",
     "vue-router": "^5.0.2"

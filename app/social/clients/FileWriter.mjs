@@ -8,6 +8,11 @@ export default class FileWriter extends Client {
 
   dir = 'temp';
 
+  constructor({ dir = 'temp' } = {}) {
+    super();
+    this.dir = dir;
+  }
+
   async send(status, generator) {
     await mkdirp(this.dir);
 

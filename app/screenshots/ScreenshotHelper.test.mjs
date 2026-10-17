@@ -150,7 +150,7 @@ describe('ScreenshotHelper', () => {
     let helper = new ScreenshotHelper;
 
     await expect(helper.open()).rejects.toThrow(
-      'SCREENSHOT_PROVIDER must be "cloudflare" or "browserless"',
+      'SCREENSHOT_PROVIDER must be "cloudflare", "browserless", or "local"',
     );
   });
 });

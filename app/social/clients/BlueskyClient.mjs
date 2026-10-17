@@ -1,6 +1,7 @@
 import { BskyAgent, RichText } from '@atproto/api';
 import sharp from 'sharp';
 import Client from './Client.mjs';
+import { validateSocialPost } from '../validateSocialPost.mjs';
 
 export default class BlueskyClient extends Client
 {
@@ -9,22 +10,31 @@ export default class BlueskyClient extends Client
 
   _agent;
 
+  constructor({ locale = 'en-US', service, identifier, password } = {}) {
+    super();
+    this.locale = locale;
+    this.key = locale === 'ja-JP' ? 'bluesky.jp' : 'bluesky';
+    this.name = locale === 'ja-JP' ? 'Bluesky (JP)' : 'Bluesky';
+    const prefix = locale === 'ja-JP' ? 'BLUESKY_JP' : 'BLUESKY';
+    this.service = service ?? process.env[`${prefix}_SERVICE`];
+    this.identifier = identifier ?? process.env[`${prefix}_IDENTIFIER`];
+    this.password = password ?? process.env[`${prefix}_PASSWORD`];
+  }
+
   async canSend() {
-    return process.env.BLUESKY_SERVICE
-      && process.env.BLUESKY_IDENTIFIER
-      && process.env.BLUESKY_PASSWORD;
+    return this.service && this.identifier && this.password;
   }
 
   async login() {
     if (!this._agent) {
-      this._agent = new BskyAgent({
-        service: process.env.BLUESKY_SERVICE,
+      const agent = new BskyAgent({ service: this.service });
+
+      await agent.login({
+        identifier: this.identifier,
+        password: this.password,
       });
 
-      await this._agent.login({
-        identifier: process.env.BLUESKY_IDENTIFIER,
-        password: process.env.BLUESKY_PASSWORD,
-      });
+      this._agent = agent;
     }
   }
 
@@ -44,6 +54,8 @@ export default class BlueskyClient extends Client
   }
 
   async send(status, generator) {
+    validateSocialPost(status, 'bluesky', this.locale);
+
     if (!status.media?.length) {
       console.error(`[${this.name}] No media provided for ${generator.key}`);
       return;
@@ -79,6 +91,7 @@ export default class BlueskyClient extends Client
 
       await this._agent.post({
         text: rt.text,
+        langs: [this.locale === 'ja-JP' ? 'ja' : 'en'],
         facets: rt.facets,
         embed: {
           images,
