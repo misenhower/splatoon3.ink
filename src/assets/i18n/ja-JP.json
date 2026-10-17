@@ -99,6 +99,7 @@
     "data": "データアクセス"
   },
   "social": {
+    "alternateAccount": "（英語：{account}）",
     "description": "Splatoon3.inkの最新ニュースやアップデートをソーシャルメディアでお届けします！以下のリストをチェックして、お気に入りのプラットフォームを見つけてください。"
   },
   "screenshots": {
