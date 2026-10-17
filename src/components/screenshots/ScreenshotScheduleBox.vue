@@ -14,7 +14,7 @@
               <RuleIcon :rule="store.activeSchedule.settings.vsRule" class="h-8 drop-shadow-ruleIcon" />
             </div>
             <div class="text-shadow">
-              {{ store.activeSchedule.settings.vsRule.name }}
+              {{ $t(`splatnet.rules.${store.activeSchedule.settings.vsRule.id}.name`, store.activeSchedule.settings.vsRule.name) }}
             </div>
           </div>
 

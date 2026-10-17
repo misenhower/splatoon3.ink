@@ -11,7 +11,7 @@
             squid-size="20px"
           >
             <div class="px-3 py-1">
-              The Daily Drop
+              {{ $t('gear.dailydrop') }}
             </div>
           </SquidTape>
 
@@ -19,7 +19,7 @@
             <img src="@/assets/img/gesotown-daily-drop-bg.png" class="w-80" />
             <div class="absolute inset-0 flex items-center ml-4">
               <div class="font-splatoon2 text-2xl">
-                {{ brand?.brand.name }}
+                {{ brand ? $t(`splatnet.brands.${brand.brand.id}.name`, brand.brand.name) : '' }}
               </div>
             </div>
           </div>

@@ -100,5 +100,16 @@
   },
   "social": {
     "description": "Stay up to date with the latest news and updates from Splatoon3.ink on social media! Check the list below to find your favorite platform."
+  },
+  "screenshots": {
+    "headers": {
+      "schedules": "Map Schedules",
+      "salmonrun": "Salmon Run",
+      "challenges": "Challenges",
+      "splatfest": "Splatfest",
+      "daily": "The Daily Drop",
+      "gear": "SplatNet Gear"
+    },
+    "tricolor": "Tricolor Turf War"
   }
 }

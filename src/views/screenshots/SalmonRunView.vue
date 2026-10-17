@@ -1,5 +1,5 @@
 <template>
-  <ScreenshotLayout header="Salmon Run">
+  <ScreenshotLayout :header="$t('screenshots.headers.salmonrun')">
     <div class="grow flex items-center justify-center">
       <div class="max-w-2xl scale-[1.6]">
         <SalmonRunBox class="-rotate-1" is-screenshot :start-time="route.query.startTime" :eggstra="route.query.eggstra=='true'" />

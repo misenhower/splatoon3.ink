@@ -11,6 +11,7 @@ import { useTimeStore } from './stores/time.mjs';
 
 const route = useRoute();
 const { t } = useI18n();
+const props = defineProps({ fixedTime: Number });
 
 watchEffect(() => {
   const title = route.meta.titleKey ? t(route.meta.titleKey) : route.meta.title;
@@ -18,7 +19,12 @@ watchEffect(() => {
 });
 
 const time = useTimeStore();
-onMounted(() => time.startUpdatingNow());
+
+if (props.fixedTime !== undefined) time.setNow(props.fixedTime);
+
+onMounted(() => {
+  if (props.fixedTime === undefined) time.startUpdatingNow();
+});
 onUnmounted(() => time.stopUpdatingNow());
 
 const data = useDataStore();

@@ -1,5 +1,5 @@
 <template>
-  <ScreenshotLayout header="Map Schedules">
+  <ScreenshotLayout :header="$t('screenshots.headers.schedules')">
     <div class="grow flex items-center justify-center">
       <div v-if="activeFestivals.length > 0" class="flex space-x-6 items-center mx-6">
         <div :class="marginsClass">
