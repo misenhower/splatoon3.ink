@@ -35,7 +35,6 @@ describe('Seasonal profile updates', () => {
     vi.stubEnv('BLUESKY_PASSWORD', '');
     vi.stubEnv('BUFFER_API_KEY', '');
     vi.stubEnv('BUFFER_TWITTER_CHANNEL_ID', '');
-    vi.stubEnv('SOCIAL_JP_ENABLED', 'false');
     vi.stubEnv('BLUESKY_JP_PASSWORD', '');
 
     cache = new Map;
@@ -107,8 +106,7 @@ describe('Seasonal profile updates', () => {
     expect(cache.get('social.twitter.avatar')).toBe('halloween');
   });
 
-  it('leaves Japanese profiles unchanged even when Japanese publishing is enabled', async () => {
-    vi.stubEnv('SOCIAL_JP_ENABLED', 'true');
+  it('leaves Japanese profiles unchanged when Japanese credentials are configured', async () => {
     vi.stubEnv('BLUESKY_JP_SERVICE', 'https://bsky.social');
     vi.stubEnv('BLUESKY_JP_IDENTIFIER', 'jp.splatoon3.ink');
     vi.stubEnv('BLUESKY_JP_PASSWORD', 'jp-credential');

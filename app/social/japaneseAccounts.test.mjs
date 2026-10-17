@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import sharp from 'sharp';
 import { RichText } from '@atproto/api';
-import { defaultClients, defaultStatusGenerators, japanesePublishingEnabled } from './index.mjs';
+import { defaultClients, defaultStatusGenerators, sendStatuses } from './index.mjs';
 import StatusGeneratorManager from './StatusGeneratorManager.mjs';
 import BlueskyClient from './clients/BlueskyClient.mjs';
 import BufferTwitterClient from './clients/BufferTwitterClient.mjs';
@@ -13,6 +13,7 @@ vi.mock('../common/prefixedConsole.mjs', () => ({
   default: () => ({ log: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() }),
 }));
 vi.mock('@sentry/node', () => ({ captureException: vi.fn() }));
+vi.mock('../sync/index.mjs', () => ({ canUpload: () => false }));
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -20,11 +21,29 @@ afterEach(() => {
 });
 
 describe('Japanese account routing', () => {
-  it('requires an explicit enable flag', () => {
-    vi.stubEnv('SOCIAL_JP_ENABLED', '');
-    expect(japanesePublishingEnabled()).toBe(false);
-    vi.stubEnv('SOCIAL_JP_ENABLED', 'true');
-    expect(japanesePublishingEnabled()).toBe(true);
+  it('includes both languages in the normal publishing run', async () => {
+    const locales = [];
+
+    vi.spyOn(StatusGeneratorManager.prototype, 'sendStatuses').mockImplementation(async function () {
+      locales.push(this.generators[0].locale);
+    });
+
+    await sendStatuses();
+
+    expect(locales).toEqual(['en-US', 'ja-JP']);
+  });
+
+  it.each(['twitter.jp', 'bluesky.jp'])('enables %s independently when its credentials are configured', async key => {
+    vi.stubEnv('BUFFER_API_KEY', 'buffer-key');
+    vi.stubEnv('BUFFER_TWITTER_JP_CHANNEL_ID', key === 'twitter.jp' ? 'jp-channel' : '');
+    vi.stubEnv('BLUESKY_JP_SERVICE', 'https://bsky.social');
+    vi.stubEnv('BLUESKY_JP_IDENTIFIER', 'jp.splatoon3.ink');
+    vi.stubEnv('BLUESKY_JP_PASSWORD', key === 'bluesky.jp' ? 'jp-password' : '');
+
+    const manager = new StatusGeneratorManager([], defaultClients('ja-JP'));
+    const clients = await manager._getAvailableClients();
+
+    expect(clients.map(client => client.key)).toEqual([key]);
   });
 
   it('uses only JP Twitter and Bluesky, preserving English keys', () => {

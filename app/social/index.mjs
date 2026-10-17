@@ -41,10 +41,6 @@ export function defaultStatusGenerators(options = {}) {
   ];
 }
 
-export function japanesePublishingEnabled() {
-  return process.env.SOCIAL_JP_ENABLED === 'true';
-}
-
 export function defaultClients(locale = 'en-US') {
   if (locale === 'ja-JP') {
     return [
@@ -78,11 +74,10 @@ export function testStatusGeneratorManager(additionalClients) {
 }
 
 export async function sendStatuses() {
-  const managers = [defaultStatusGeneratorManager()];
-
-  if (japanesePublishingEnabled()) {
-    managers.push(defaultStatusGeneratorManager('ja-JP'));
-  }
+  const managers = [
+    defaultStatusGeneratorManager(),
+    defaultStatusGeneratorManager('ja-JP'),
+  ];
 
   await Promise.all(managers.map(manager => manager.sendStatuses()));
 
