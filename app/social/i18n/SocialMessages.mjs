@@ -1,4 +1,5 @@
-import english from './en-US.mjs';
+import get from 'lodash/get.js';
+import english from './en-US.json' with { type: 'json' };
 
 const catalogs = new Map([
   ['en-US', english],
@@ -15,7 +16,7 @@ export default class SocialMessages {
   }
 
   text(key, params = {}) {
-    const template = this.catalog[key];
+    const template = get(this.catalog, key);
 
     if (typeof template !== 'string') {
       throw new Error(`Missing social message: ${this.locale}.${key}`);
