@@ -2,7 +2,6 @@ import { fileURLToPath } from 'node:url';
 import { defaultStatusGenerators } from './index.mjs';
 import FileWriter from './clients/FileWriter.mjs';
 import ScreenshotHelper from '../screenshots/ScreenshotHelper.mjs';
-import { validateSocialPost } from './validateSocialPost.mjs';
 
 export async function previewStatuses(locale = 'en-US', date, onlyGenerator) {
   if (!['en-US', 'ja-JP'].includes(locale)) throw new Error('Preview locale must be en-US or ja-JP');
@@ -27,7 +26,6 @@ export async function previewStatuses(locale = 'en-US', date, onlyGenerator) {
       if (!await generator.shouldPost({ key: 'preview' })) continue;
 
       const status = await generator.getStatus(screenshots);
-      validateSocialPost(status, locale);
       await writer.send(status, generator);
       console.log(`Preview: ${writer.dir}/${generator.key}`);
       count++;

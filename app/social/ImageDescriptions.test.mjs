@@ -44,6 +44,18 @@ function gear(id, name, hours) {
 }
 
 describe('image descriptions', () => {
+  it.each([
+    { locale: 'en-US', announcement: '2 days', description: '1 day 14 hours' },
+    { locale: 'ja-JP', announcement: '2日', description: '1日 14時間' },
+  ])('preserves approximate announcement and detailed image durations in $locale', ({ locale, announcement, description }) => {
+    const messages = new SocialMessages(locale);
+    const images = new ImageDescriptions(messages);
+    const duration = 38 * 60 * 60 * 1000;
+
+    expect(messages.timeUntil(now + duration, now)).toBe(announcement);
+    expect(images.duration(duration, { days: true })).toBe(description);
+  });
+
   it('adds shift timing and the upcoming boss without repeating the body’s weapon list', () => {
     expect(descriptions().shift(shift, now, { upcoming: true })).toBe(
       'Salmon Run — Sockeye Station.\nOpens in 2 days.\nKing Salmonid: Cohozuna',

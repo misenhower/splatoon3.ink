@@ -12,7 +12,6 @@ import ChallengeStatus from './ChallengeStatus.mjs';
 import SplatfestStatus from './SplatfestStatus.mjs';
 import SplatfestResultsStatus from './SplatfestResultsStatus.mjs';
 import SocialMessages, { MissingTranslationError } from '../i18n/SocialMessages.mjs';
-import { validateSocialPost } from '../validateSocialPost.mjs';
 
 vi.mock('../../common/prefixedConsole.mjs', () => ({
   default: () => ({ log: vi.fn() }),
@@ -74,7 +73,8 @@ async function generate(generator) {
 
   const status = await generator.getStatus({ capture: vi.fn().mockResolvedValue(Buffer.from('image')) });
 
-  validateSocialPost(status, 'ja-JP');
+  expect(status.locale).toBe('ja-JP');
+  expect(status.status.trim()).not.toBe('');
 
   return status;
 }

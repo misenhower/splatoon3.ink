@@ -50,10 +50,15 @@
     "upcoming": "An EGGSTRA WORK shift on {stage} has been added to the schedule! #salmonrun #splatoon3"
   },
   "time": {
-    "day": "1 day",
+    "day": "{count} day",
     "days": "{count} days",
-    "hour": "1 hour",
-    "hours": "{count} hours"
+    "hour": "{count} hour",
+    "hours": "{count} hours",
+    "minute": "{count} minute",
+    "minutes": "{count} minutes",
+    "second": "{count} second",
+    "seconds": "{count} seconds",
+    "period": ""
   },
   "festival": {
     "global": "global",
@@ -79,7 +84,8 @@
       "stage": "{mode} — {stage}.",
       "remaining": "{time} remaining.",
       "opens": "Opens in {time}.",
-      "eggstra": "Eggstra Work"
+      "eggstra": "Eggstra Work",
+      "period": "{start} – {end}"
     },
     "festival": {
       "theme": "Splatfest: {title}",
@@ -93,16 +99,6 @@
       "pro": "Pro",
       "tricolor": "Tricolor Battle"
     },
-    "separator": ", ",
-    "duration": {
-      "day": "{count} day",
-      "days": "{count} days",
-      "hour": "{count} hour",
-      "hours": "{count} hours",
-      "minute": "{count} minute",
-      "minutes": "{count} minutes",
-      "second": "{count} second",
-      "seconds": "{count} seconds"
-    }
+    "separator": ", "
   }
 }

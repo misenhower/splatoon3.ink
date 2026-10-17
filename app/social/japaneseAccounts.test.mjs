@@ -1,10 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import sharp from 'sharp';
-import { RichText } from '@atproto/api';
+import { BskyAgent, RichText } from '@atproto/api';
 import { defaultClients, defaultStatusGenerators, sendStatuses } from './index.mjs';
 import StatusGeneratorManager from './StatusGeneratorManager.mjs';
-import BlueskyClient from './clients/BlueskyClient.mjs';
-import BufferTwitterClient from './clients/BufferTwitterClient.mjs';
 import ValueCache from '../common/ValueCache.mjs';
 import { MissingTranslationError } from './i18n/SocialMessages.mjs';
 import ScreenshotHelper from '../screenshots/ScreenshotHelper.mjs';
@@ -69,17 +67,34 @@ describe('Japanese account routing', () => {
     }
   });
 
+  it('authenticates the Japanese Bluesky account with its own credentials', async () => {
+    vi.stubEnv('BLUESKY_IDENTIFIER', 'english.example');
+    vi.stubEnv('BLUESKY_PASSWORD', 'english-password');
+    vi.stubEnv('BLUESKY_JP_SERVICE', 'https://bsky.social');
+    vi.stubEnv('BLUESKY_JP_IDENTIFIER', 'jp.splatoon3.ink');
+    vi.stubEnv('BLUESKY_JP_PASSWORD', 'jp-password');
+    const login = vi.spyOn(BskyAgent.prototype, 'login').mockResolvedValue();
+    const client = defaultClients('ja-JP').find(client => client.key === 'bluesky.jp');
+
+    await client.login();
+
+    expect(login).toHaveBeenCalledExactlyOnceWith({
+      identifier: 'jp.splatoon3.ink',
+      password: 'jp-password',
+    });
+  });
+
   it('delivers Japanese text and alt text to the configured Buffer channel', async () => {
     const api = {
       getChannel: vi.fn().mockResolvedValue({ id: 'jp-channel', service: 'twitter' }),
       createPost: vi.fn().mockResolvedValue({ id: 'posted', status: 'sent' }),
     };
-    const client = new BufferTwitterClient({
-      locale: 'ja-JP',
-      channelId: 'jp-channel',
-      api,
-      media: { upload: vi.fn().mockResolvedValue({ url: 'https://example.com/image.png' }) },
-    });
+
+    vi.stubEnv('BUFFER_TWITTER_JP_CHANNEL_ID', 'jp-channel');
+    const client = defaultClients('ja-JP').find(client => client.key === 'twitter.jp');
+    client.api = api;
+    client.media = { upload: vi.fn().mockResolvedValue({ url: 'https://example.com/image.png' }) };
+
     const status = {
       locale: 'ja-JP',
       status: 'ステージ情報 #スプラトゥーン3',
@@ -97,7 +112,7 @@ describe('Japanese account routing', () => {
   });
 
   it('marks Bluesky posts as Japanese and preserves Japanese alt text', async () => {
-    const client = new BlueskyClient({ locale: 'ja-JP' });
+    const client = defaultClients('ja-JP').find(client => client.key === 'bluesky.jp');
     client._agent = {
       uploadBlob: vi.fn().mockResolvedValue({ data: { blob: 'blob' } }),
       post: vi.fn().mockResolvedValue({}),
@@ -136,13 +151,21 @@ describe('Japanese account routing', () => {
 
     const generator = defaultStatusGenerators({ locale: 'ja-JP' })[0];
     vi.spyOn(generator, 'getDataTime').mockResolvedValue(1000);
-    const good = { key: 'bluesky.jp', send: vi.fn().mockResolvedValue() };
-    const bad = { key: 'twitter.jp', send: vi.fn().mockRejectedValue(new Error('Unavailable')) };
+    const good = {
+      key: 'bluesky.jp',
+      locale: 'ja-JP',
+      send: vi.fn().mockResolvedValue(),
+    };
+    const bad = {
+      key: 'twitter.jp',
+      locale: 'ja-JP',
+      send: vi.fn().mockRejectedValue(new Error('Unavailable')),
+    };
     const english = { key: 'bluesky' };
     const manager = new StatusGeneratorManager;
 
-    await manager._sendToClient(generator, {}, good);
-    await manager._sendToClient(generator, {}, bad);
+    await manager._sendToClient(generator, { locale: 'ja-JP' }, good);
+    await manager._sendToClient(generator, { locale: 'ja-JP' }, bad);
 
     expect(await generator.shouldPost(good)).toBe(false);
     expect(await generator.shouldPost(bad)).toBe(true);
@@ -164,12 +187,5 @@ describe('Japanese account routing', () => {
 
     expect(client.send).not.toHaveBeenCalled();
     expect(marker).not.toHaveBeenCalled();
-  });
-
-  it('rejects wrong-language routing before delivery', async () => {
-    const client = new BufferTwitterClient({ locale: 'ja-JP', api: { getChannel: vi.fn() } });
-
-    await expect(client.send({ locale: 'en-US', status: 'English' }, {})).rejects.toThrow('en-US content');
-    expect(client.api.getChannel).not.toHaveBeenCalled();
   });
 });

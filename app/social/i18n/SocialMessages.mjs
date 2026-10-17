@@ -58,7 +58,7 @@ export default class SocialMessages {
   period(start, end) {
     if (this.locale === 'en-US') return '';
 
-    return `${this.date(start)}〜${this.date(end)}（日本時間）`;
+    return this.text('time.period', { start: this.date(start), end: this.date(end) });
   }
 
   text(key, params = {}) {

@@ -2,19 +2,22 @@ import Client from './Client.mjs';
 import BufferApi from '../buffer/BufferApi.mjs';
 import BufferMedia from '../buffer/BufferMedia.mjs';
 import prefixedConsole from '../../common/prefixedConsole.mjs';
-import { validateSocialPost } from '../validateSocialPost.mjs';
 
 export default class BufferTwitterClient extends Client {
-  // Preserve the network's posting markers when switching API providers.
-  key = 'twitter';
-  name = 'Twitter (Buffer)';
-
-  constructor({ api, media, channelId, locale = 'en-US' } = {}) {
+  constructor({
+    key = 'twitter',
+    name = 'Twitter (Buffer)',
+    locale = 'en-US',
+    envPrefix = 'BUFFER_TWITTER',
+    api,
+    media,
+    channelId,
+  } = {}) {
     super();
+    this.key = key;
+    this.name = name;
     this.locale = locale;
-    this.key = locale === 'ja-JP' ? 'twitter.jp' : 'twitter';
-    this.name = locale === 'ja-JP' ? 'Twitter (Buffer, JP)' : 'Twitter (Buffer)';
-    this.channelId = channelId ?? process.env[locale === 'ja-JP' ? 'BUFFER_TWITTER_JP_CHANNEL_ID' : 'BUFFER_TWITTER_CHANNEL_ID'];
+    this.channelId = channelId ?? process.env[`${envPrefix}_CHANNEL_ID`];
     this.api = api ?? new BufferApi;
     this.media = media ?? new BufferMedia;
     this.console = prefixedConsole('Social', this.name);
@@ -25,8 +28,6 @@ export default class BufferTwitterClient extends Client {
   }
 
   async send(status, generator) {
-    validateSocialPost(status, this.locale);
-
     if (!status.status || !status.media?.length || status.media.length > 4) {
       throw new Error('Buffer Twitter posts require text and one to four images');
     }

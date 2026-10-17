@@ -1,24 +1,27 @@
 import { BskyAgent, RichText } from '@atproto/api';
 import sharp from 'sharp';
 import Client from './Client.mjs';
-import { validateSocialPost } from '../validateSocialPost.mjs';
 
 export default class BlueskyClient extends Client
 {
-  key = 'bluesky';
-  name = 'Bluesky';
-
   _agent;
 
-  constructor({ locale = 'en-US', service, identifier, password } = {}) {
+  constructor({
+    key = 'bluesky',
+    name = 'Bluesky',
+    locale = 'en-US',
+    envPrefix = 'BLUESKY',
+    service,
+    identifier,
+    password,
+  } = {}) {
     super();
+    this.key = key;
+    this.name = name;
     this.locale = locale;
-    this.key = locale === 'ja-JP' ? 'bluesky.jp' : 'bluesky';
-    this.name = locale === 'ja-JP' ? 'Bluesky (JP)' : 'Bluesky';
-    const prefix = locale === 'ja-JP' ? 'BLUESKY_JP' : 'BLUESKY';
-    this.service = service ?? process.env[`${prefix}_SERVICE`];
-    this.identifier = identifier ?? process.env[`${prefix}_IDENTIFIER`];
-    this.password = password ?? process.env[`${prefix}_PASSWORD`];
+    this.service = service ?? process.env[`${envPrefix}_SERVICE`];
+    this.identifier = identifier ?? process.env[`${envPrefix}_IDENTIFIER`];
+    this.password = password ?? process.env[`${envPrefix}_PASSWORD`];
   }
 
   async canSend() {
@@ -54,8 +57,6 @@ export default class BlueskyClient extends Client
   }
 
   async send(status, generator) {
-    validateSocialPost(status, this.locale);
-
     if (!status.media?.length) {
       console.error(`[${this.name}] No media provided for ${generator.key}`);
       return;
@@ -91,7 +92,7 @@ export default class BlueskyClient extends Client
 
       await this._agent.post({
         text: rt.text,
-        langs: [this.locale === 'ja-JP' ? 'ja' : 'en'],
+        langs: [this.locale.split('-')[0]],
         facets: rt.facets,
         embed: {
           images,

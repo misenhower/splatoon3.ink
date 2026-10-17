@@ -44,8 +44,18 @@ export function defaultStatusGenerators(options = {}) {
 export function defaultClients(locale = 'en-US') {
   if (locale === 'ja-JP') {
     return [
-      new BufferTwitterClient({ locale }),
-      new BlueskyClient({ locale }),
+      new BufferTwitterClient({
+        key: 'twitter.jp',
+        name: 'Twitter (Buffer, JP)',
+        locale,
+        envPrefix: 'BUFFER_TWITTER_JP',
+      }),
+      new BlueskyClient({
+        key: 'bluesky.jp',
+        name: 'Bluesky (JP)',
+        locale,
+        envPrefix: 'BLUESKY_JP',
+      }),
     ];
   }
 

@@ -11,7 +11,7 @@ export default class ImageDescriptions {
     const totalSeconds = Math.max(0, Math.floor(milliseconds / 1000));
     const dayCount = Math.floor(totalSeconds / 86400);
     const hourCount = Math.floor(totalSeconds / 3600);
-    const format = (unit, count) => this.text(`duration.${unit}${count === 1 ? '' : 's'}`, { count });
+    const format = (unit, count) => this.messages.text(`time.${unit}${count === 1 ? '' : 's'}`, { count });
 
     if (days && dayCount) {
       const hours = hourCount % 24;
@@ -60,7 +60,10 @@ export default class ImageDescriptions {
     })];
 
     if (this.messages.locale === 'ja-JP') {
-      lines.push(`${this.messages.date(schedule.startTime)} – ${this.messages.date(schedule.endTime)} JST`);
+      lines.push(this.text('shift.period', {
+        start: this.messages.date(schedule.startTime),
+        end: this.messages.date(schedule.endTime),
+      }));
     } else if (Date.parse(schedule.startTime) > now) {
       lines.push(this.text('shift.opens', {
         time: this.duration(Date.parse(schedule.startTime) - now, { days: true }),

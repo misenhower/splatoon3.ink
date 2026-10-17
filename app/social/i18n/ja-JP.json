@@ -50,10 +50,15 @@
     "upcoming": "バイトチームコンテストの予定が追加されました！\nステージ：{stage}\n#サーモンラン #スプラトゥーン3 #splatoon3"
   },
   "time": {
-    "day": "1日",
+    "day": "{count}日",
     "days": "{count}日",
-    "hour": "1時間",
-    "hours": "{count}時間"
+    "hour": "{count}時間",
+    "hours": "{count}時間",
+    "minute": "{count}分",
+    "minutes": "{count}分",
+    "second": "{count}秒",
+    "seconds": "{count}秒",
+    "period": "{start}〜{end}（日本時間）"
   },
   "festival": {
     "global": "全世界共通",
@@ -79,7 +84,8 @@
       "stage": "{mode}：{stage}。",
       "remaining": "残り{time}。",
       "opens": "開始まであと{time}。",
-      "eggstra": "バイトチームコンテスト"
+      "eggstra": "バイトチームコンテスト",
+      "period": "{start} – {end} JST"
     },
     "festival": {
       "theme": "フェス：{title}",
@@ -93,16 +99,6 @@
       "pro": "チャレンジ",
       "tricolor": "トリカラアタック"
     },
-    "separator": "、",
-    "duration": {
-      "day": "{count}日",
-      "days": "{count}日",
-      "hour": "{count}時間",
-      "hours": "{count}時間",
-      "minute": "{count}分",
-      "minutes": "{count}分",
-      "second": "{count}秒",
-      "seconds": "{count}秒"
-    }
+    "separator": "、"
   }
 }

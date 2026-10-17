@@ -106,6 +106,13 @@ export default class StatusGeneratorManager
   async _sendToClient(generator, status, client) {
     this.console(generator, client).info('Posting...');
     try {
+      const postLocale = status.locale ?? 'en-US';
+      const accountLocale = client.locale ?? 'en-US';
+
+      if (postLocale !== accountLocale) {
+        throw new Error(`Cannot send ${postLocale} content to a ${accountLocale} account`);
+      }
+
       await client.send(status, generator);
       await generator.updatelastPostCache(client);
     } catch (e) {
