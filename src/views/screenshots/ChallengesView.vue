@@ -1,5 +1,5 @@
 <template>
-  <ScreenshotLayout header="Challenges">
+  <ScreenshotLayout :header="$t('screenshots.headers.challenges')">
     <div class="grow flex items-center justify-center scale-[1.1]">
       <ChallengeScheduleBox
         v-if="store.activeSchedule"

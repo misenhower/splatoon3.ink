@@ -15,8 +15,14 @@
               {{ props.header }}
             </div>
             <div>
-              <img src="@/assets/img/bluesky-white.svg" width="15" height="15" class="inline" />
-              @splatoon3.ink
+              <img
+                v-if="!japanese"
+                src="@/assets/img/bluesky-white.svg"
+                width="15"
+                height="15"
+                class="inline"
+              />
+              {{ japanese ? 'Splatoon3.ink' : '@splatoon3.ink' }}
             </div>
           </div>
         </div>
@@ -24,7 +30,7 @@
           <div class="text-zinc-100">
             {{ timestamps[0] }}
           </div>
-          <div class="grid grid-flow-col grid-rows-2 gap-x-4 text-xs leading-5 text-right">
+          <div v-if="!japanese" class="grid grid-flow-col grid-rows-2 gap-x-4 text-xs leading-5 text-right">
             <div v-for="timestamp in timestamps.slice(1)" :key="timestamp">
               {{ timestamp }}
             </div>
@@ -40,9 +46,11 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onUnmounted, watch, watchEffect } from 'vue';
+import { computed, nextTick, onUnmounted, provide, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import { markScreenshotReady, screenshotReadyAttribute } from '@/common/screenshot.mjs';
+import { useI18n } from 'vue-i18n';
+import { screenshotTranslationErrors } from '@/common/i18n.mjs';
+import { markScreenshotReady, screenshotAbsoluteTimesKey, screenshotReadyAttribute } from '@/common/screenshot.mjs';
 import { useDataStore } from '@/stores/data';
 import { useTimeStore } from '@/stores/time';
 import TimeOffsetSelector from '@/components/Debug/TimeOffsetSelector.vue';
@@ -54,6 +62,11 @@ const props = defineProps({
 });
 
 const route = useRoute();
+const { locale } = useI18n();
+const japanese = computed(() => locale.value === 'ja-JP');
+
+provide(screenshotAbsoluteTimesKey, japanese);
+
 const data = useDataStore();
 const time = useTimeStore();
 let readinessVersion = 0;
@@ -67,6 +80,13 @@ watch(
     if (!isLoaded || isUpdating) return;
 
     await nextTick();
+    const missing = screenshotTranslationErrors();
+
+    if (missing.length) {
+      document.documentElement.dataset.screenshotError = `Missing translations: ${missing.join(', ')}`;
+      return;
+    }
+
     await markScreenshotReady({ isCurrent: () => version === readinessVersion });
   },
   { immediate: true, flush: 'post' },
@@ -75,13 +95,6 @@ watch(
 onUnmounted(() => {
   readinessVersion++;
   document.documentElement.removeAttribute(screenshotReadyAttribute);
-});
-
-watchEffect(() => {
-  if (route.query.time) {
-    time.stopUpdatingNow();
-    time.setNow(Number(route.query.time));
-  }
 });
 
 const timestampFormats = [
@@ -103,7 +116,9 @@ const timestampFormats = [
 const timestamps = computed(() => {
   const date = new Date(time.now);
 
-  return timestampFormats.map(format => format.format(date).replace(/\s+at\s+/u, ' '));
+  const formats = japanese.value ? timestampFormats.slice(-1) : timestampFormats;
+
+  return formats.map(format => format.format(date).replace(/\s+at\s+/u, ' '));
 });
 
 const isDev = import.meta.env.DEV;

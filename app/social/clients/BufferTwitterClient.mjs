@@ -4,13 +4,20 @@ import BufferMedia from '../buffer/BufferMedia.mjs';
 import prefixedConsole from '../../common/prefixedConsole.mjs';
 
 export default class BufferTwitterClient extends Client {
-  // Preserve the network's posting markers when switching API providers.
-  key = 'twitter';
-  name = 'Twitter (Buffer)';
-
-  constructor({ api, media, channelId = process.env.BUFFER_TWITTER_CHANNEL_ID } = {}) {
+  constructor({
+    key = 'twitter',
+    name = 'Twitter (Buffer)',
+    locale = 'en-US',
+    envPrefix = 'BUFFER_TWITTER',
+    api,
+    media,
+    channelId,
+  } = {}) {
     super();
-    this.channelId = channelId;
+    this.key = key;
+    this.name = name;
+    this.locale = locale;
+    this.channelId = channelId ?? process.env[`${envPrefix}_CHANNEL_ID`];
     this.api = api ?? new BufferApi;
     this.media = media ?? new BufferMedia;
     this.console = prefixedConsole('Social', this.name);

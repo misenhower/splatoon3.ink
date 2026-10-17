@@ -4,27 +4,40 @@ import Client from './Client.mjs';
 
 export default class BlueskyClient extends Client
 {
-  key = 'bluesky';
-  name = 'Bluesky';
-
   _agent;
 
+  constructor({
+    key = 'bluesky',
+    name = 'Bluesky',
+    locale = 'en-US',
+    envPrefix = 'BLUESKY',
+    service,
+    identifier,
+    password,
+  } = {}) {
+    super();
+    this.key = key;
+    this.name = name;
+    this.locale = locale;
+    this.service = service ?? process.env[`${envPrefix}_SERVICE`];
+    this.identifier = identifier ?? process.env[`${envPrefix}_IDENTIFIER`];
+    this.password = password ?? process.env[`${envPrefix}_PASSWORD`];
+  }
+
   async canSend() {
-    return process.env.BLUESKY_SERVICE
-      && process.env.BLUESKY_IDENTIFIER
-      && process.env.BLUESKY_PASSWORD;
+    return this.service && this.identifier && this.password;
   }
 
   async login() {
     if (!this._agent) {
-      this._agent = new BskyAgent({
-        service: process.env.BLUESKY_SERVICE,
+      const agent = new BskyAgent({ service: this.service });
+
+      await agent.login({
+        identifier: this.identifier,
+        password: this.password,
       });
 
-      await this._agent.login({
-        identifier: process.env.BLUESKY_IDENTIFIER,
-        password: process.env.BLUESKY_PASSWORD,
-      });
+      this._agent = agent;
     }
   }
 
@@ -79,6 +92,7 @@ export default class BlueskyClient extends Client
 
       await this._agent.post({
         text: rt.text,
+        langs: [this.locale.split('-')[0]],
         facets: rt.facets,
         embed: {
           images,

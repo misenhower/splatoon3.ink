@@ -20,7 +20,12 @@
       <div v-if="!loading" class="hidden ss:block text-shadow text-white text-xl">
         <KingSalmonid v-if="!eggstra" :schedule="schedule" class="inline-block -mb-1 mr-2 drop-shadow-ruleIcon" />
 
-        <div v-if="time.isUpcoming(schedule.startTime)" class="inline-block">
+        <div v-if="absoluteTimes" class="inline-block text-lg">
+          {{ $d(schedule.startTime, 'dateTimeShort') }}
+          &ndash;
+          {{ $d(schedule.endTime, 'dateTimeShort') }} JST
+        </div>
+        <div v-else-if="time.isUpcoming(schedule.startTime)" class="inline-block">
           {{ $t('salmonrun.opens') }}
           {{ $t('time.in', { time: formatShortDurationFromNow(schedule.startTime, true, true) }) }}
         </div>
@@ -70,6 +75,8 @@
 </template>
 
 <script setup>
+import { inject } from 'vue';
+import { screenshotAbsoluteTimesKey } from '@/common/screenshot.mjs';
 import SkeletonBlock from '@/components/loading/SkeletonBlock.vue';
 import KingSalmonid from './KingSalmonid.vue';
 import SalmonRunWeapons from './SalmonRunWeapons.vue';
@@ -84,4 +91,5 @@ defineProps({
 });
 
 const time = useTimeStore();
+const absoluteTimes = inject(screenshotAbsoluteTimesKey, false);
 </script>

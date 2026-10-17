@@ -1,5 +1,5 @@
 <template>
-  <ScreenshotLayout header="The Daily Drop">
+  <ScreenshotLayout :header="$t('screenshots.headers.daily')">
     <div class="grow relative">
       <div class="absolute flex items-center inset-0">
         <div class="ml-40 mt-20">

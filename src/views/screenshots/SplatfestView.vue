@@ -1,5 +1,5 @@
 <template>
-  <ScreenshotLayout header="Splatfest">
+  <ScreenshotLayout :header="$t('screenshots.headers.splatfest')">
     <div v-if="festival" class="grow flex items-center justify-center">
       <div class="flex space-x-32 items-center mx-6">
         <SplatfestBox

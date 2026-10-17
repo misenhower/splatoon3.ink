@@ -13,7 +13,7 @@ export default class SalmonRunUpcomingStatus extends StatusGenerator
     await this.preparePinia();
 
     // Look for any interesting upcoming schedules
-    return useSalmonRunSchedulesStore().upcomingSchedules.find(
+    return useSalmonRunSchedulesStore(this.pinia).upcomingSchedules.find(
       s => s.isBigRun
         || s.isMystery
         || s.isGrizzcoMystery,
@@ -29,15 +29,15 @@ export default class SalmonRunUpcomingStatus extends StatusGenerator
   }
 
   _getDescription(schedule) {
-    let stageName = schedule.settings.coopStage.name || '???';
+    let stageName = this.game('stages', schedule.settings.coopStage) || this.t('salmon.unknownStage');
 
     switch (true) {
       case schedule.isBigRun:
-        return `A BIG RUN shift on ${stageName} has been added to the schedule! #salmonrun #splatoon3`;
+        return this.t('salmon.upcomingBigRun', { stage: stageName });
       case schedule.isGrizzcoMystery:
-        return `A Salmon Run shift with GRIZZCO MYSTERY WEAPONS on ${stageName} has been added to the schedule! #salmonrun #splatoon3`;
+        return this.t('salmon.upcomingGrizzco', { stage: stageName });
       case schedule.isMystery:
-        return `A Salmon Run shift with MYSTERY WEAPONS on ${stageName} has been added to the schedule! #salmonrun #splatoon3`;
+        return this.t('salmon.upcomingMystery', { stage: stageName });
     }
   }
 
@@ -54,19 +54,11 @@ export default class SalmonRunUpcomingStatus extends StatusGenerator
     lines.push('');
 
     let startTime = Date.parse(schedule.startTime);
-    let now = useTimeStore().now;
-    let hours = Math.floor((startTime - now) / (1000 * 60 * 60));
+    let now = useTimeStore(this.pinia).now;
+    let time = this.messages.timeUntil(startTime, now);
 
-    let formattedTime;
-    if (hours >= 24) {
-      let days = Math.round(hours / 24);
-      formattedTime = days === 1 ? '1 day' : `${days} days`;
-    } else {
-      formattedTime =  hours === 1 ? '1 hour' : `${hours} hours`;
-    }
-
-    lines.push(`This shift will start in ${formattedTime} with these weapons:`);
-    lines.push(...schedule.settings.weapons.map(w => `– ${w.name}`));
+    lines.push(this.t('salmon.starts', { time }));
+    lines.push(...schedule.settings.weapons.map(w => this.t('salmon.weapon', { weapon: this.game('weapons', w) })));
 
     return lines.join('\n');
   }
@@ -78,6 +70,11 @@ export default class SalmonRunUpcomingStatus extends StatusGenerator
     let media = new Media;
     media.file = await screenshotHelper.capture('salmonrun', {
       params: { startTime: schedule?.startTime },
+    });
+
+    media.altText = this.images.shift(schedule, useTimeStore(this.pinia).now, {
+      eggstra: false,
+      upcoming: true,
     });
 
     return media;

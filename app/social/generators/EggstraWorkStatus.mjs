@@ -1,3 +1,4 @@
+import { useTimeStore } from '../../../src/stores/time.mjs';
 import Media from '../Media.mjs';
 import { useEggstraWorkSchedulesStore } from '../../../src/stores/schedules.mjs';
 import ScreenshotHelper from '../../screenshots/ScreenshotHelper.mjs';
@@ -11,7 +12,7 @@ export default class EggstraWorkStatus extends StatusGenerator
   async getActiveSchedule() {
     await this.preparePinia();
 
-    return useEggstraWorkSchedulesStore().activeSchedule;
+    return useEggstraWorkSchedulesStore(this.pinia).activeSchedule;
   }
 
   async getDataTime() {
@@ -25,23 +26,30 @@ export default class EggstraWorkStatus extends StatusGenerator
 
     let lines = [];
 
-    let mode = 'EGGSTRA WORK';
-
-    lines.push(`${mode} is now open on ${schedule.settings.coopStage.name}! #salmonrun #splatoon3`);
+    lines.push(this.t('eggstra.open', {
+      stage: this.game('stages', schedule.settings.coopStage),
+    }));
 
     lines.push('');
 
-    lines.push('Current weapons:');
-    lines.push(...schedule.settings.weapons.map(w => `– ${w.name}`));
+    lines.push(this.t('salmon.weapons'));
+    lines.push(...schedule.settings.weapons.map(w => this.t('salmon.weapon', { weapon: this.game('weapons', w) })));
 
     return lines.join('\n');
   }
 
   /** @param {ScreenshotHelper} screenshotHelper */
   async _getMedia(screenshotHelper) {
+    let schedule = await this.getActiveSchedule();
+
     let media = new Media;
     media.file = await screenshotHelper.capture('salmonrun', {
       params: { eggstra: 'true' },
+    });
+
+    media.altText = this.images.shift(schedule, useTimeStore(this.pinia).now, {
+      eggstra: true,
+      upcoming: false,
     });
 
     return media;

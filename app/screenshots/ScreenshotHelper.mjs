@@ -27,7 +27,7 @@ export default class ScreenshotHelper
     await this.close();
 
     this._driver = createScreenshotDriver(
-      process.env.SCREENSHOT_PROVIDER,
+      this._driverDependencies.provider ?? process.env.SCREENSHOT_PROVIDER,
       this._driverDependencies,
     );
     await this._driver.open();
@@ -47,9 +47,7 @@ export default class ScreenshotHelper
 
     if (Object.keys(params).length) {
       route += '?';
-      route += Object.keys(params)
-        .map(key => `${key}=${params[key]}`)
-        .join('&');
+      route += new URLSearchParams(params).toString();
     }
 
     let viewport = {

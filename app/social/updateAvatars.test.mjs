@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import fs from 'fs/promises';
 import ValueCache from '../common/ValueCache.mjs';
+import BlueskyClient from './clients/BlueskyClient.mjs';
 import BufferTwitterClient from './clients/BufferTwitterClient.mjs';
 import TwitterClient from './clients/TwitterClient.mjs';
 import { defaultClients } from './index.mjs';
@@ -17,7 +18,7 @@ const twitterCredentials = [
   'TWITTER_ACCESS_TOKEN_SECRET',
 ];
 
-describe('Twitter avatar updates', () => {
+describe('Seasonal profile updates', () => {
   let cache;
   let updateImage;
   let updateProfile;
@@ -34,6 +35,7 @@ describe('Twitter avatar updates', () => {
     vi.stubEnv('BLUESKY_PASSWORD', '');
     vi.stubEnv('BUFFER_API_KEY', '');
     vi.stubEnv('BUFFER_TWITTER_CHANNEL_ID', '');
+    vi.stubEnv('BLUESKY_JP_PASSWORD', '');
 
     cache = new Map;
 
@@ -102,5 +104,19 @@ describe('Twitter avatar updates', () => {
     expect(updateImage).toHaveBeenCalledTimes(2);
     expect(updateProfile).toHaveBeenCalledTimes(2);
     expect(cache.get('social.twitter.avatar')).toBe('halloween');
+  });
+
+  it('leaves Japanese profiles unchanged when Japanese credentials are configured', async () => {
+    vi.stubEnv('BLUESKY_JP_SERVICE', 'https://bsky.social');
+    vi.stubEnv('BLUESKY_JP_IDENTIFIER', 'jp.splatoon3.ink');
+    vi.stubEnv('BLUESKY_JP_PASSWORD', 'jp-credential');
+
+    const updateBlueskyProfile = vi.spyOn(BlueskyClient.prototype, 'updateProfile').mockResolvedValue();
+
+    await updateAvatars();
+
+    expect(updateProfile).toHaveBeenCalledExactlyOnceWith({ name: 'Splatoon3.eek 🎃' });
+    expect(updateBlueskyProfile).not.toHaveBeenCalled();
+    expect([...cache.keys()]).toEqual(['social.twitter.avatar']);
   });
 });

@@ -12,7 +12,7 @@ export default [
   // Global settings
   {
     languageOptions: {
-      ecmaVersion: 2022,
+      ecmaVersion: 2025,
       globals: {
         ...globals.browser,
         ...globals.node,

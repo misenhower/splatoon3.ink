@@ -19,7 +19,7 @@
               />
             </div>
             <div class="text-shadow">
-              Tricolor Turf War
+              {{ $t('screenshots.tricolor') }}
             </div>
           </div>
 

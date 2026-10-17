@@ -9,8 +9,8 @@ export default class SplatfestStatus extends StatusGenerator
   key = 'splatfest';
   name = 'Splatfest';
 
-  constructor(region) {
-    super();
+  constructor(region, options = {}) {
+    super(options);
     this.region = region;
     this.key += `.${region}`;
     this.name += ` (${region})`;
@@ -20,10 +20,10 @@ export default class SplatfestStatus extends StatusGenerator
     await this.preparePinia();
     let store;
     switch(this.region) {
-      case 'NA': store = useUSSplatfestsStore(); break;
-      case 'EU': store = useEUSplatfestsStore(); break;
-      case 'JP': store = useJPSplatfestsStore(); break;
-      case 'AP': store = useAPSplatfestsStore(); break;
+      case 'NA': store = useUSSplatfestsStore(this.pinia); break;
+      case 'EU': store = useEUSplatfestsStore(this.pinia); break;
+      case 'JP': store = useJPSplatfestsStore(this.pinia); break;
+      case 'AP': store = useAPSplatfestsStore(this.pinia); break;
     }
     return store.upcomingFestival
       || store.activeFestival
@@ -34,7 +34,7 @@ export default class SplatfestStatus extends StatusGenerator
     let festival = await this.getFestival();
 
     let startTime = Date.parse(festival?.startTime);
-    let now = useTimeStore().now;
+    let now = useTimeStore(this.pinia).now;
     let hoursAway = (startTime - now) / (1000 * 60 * 60);
 
     switch (true) {
@@ -87,26 +87,27 @@ export default class SplatfestStatus extends StatusGenerator
     }
 
     const global = festival.regions.length == 4;
-    const regionText = global ? 'global' : festival.regions.join('/');
+    const regionText = global ? this.t('festival.global') : festival.regions.join('/');
 
-    switch (state) {
-      case 'upcoming':
-        return `You can now vote in the next ${regionText} Splatfest: ${festival.title} #splatfest #splatoon3`;
-      case 'upcoming:3d':
-        return `Reminder: The next ${regionText} Splatfest starts in 3 DAYS! ${festival.title} #splatfest #splatoon3`;
-      case 'upcoming:1d':
-        return `Reminder: The next ${regionText} Splatfest starts in 24 HOURS! ${festival.title} #splatfest #splatoon3`;
-      case 'active':
-        return `The ${regionText} Splatfest is NOW OPEN! ${festival.title} #splatfest #splatoon3`;
-      case 'ended':
-        return `The ${regionText} Splatfest is now closed. Results are usually posted within 2 hours! #splatfest #splatoon3`;
+    if (state === 'ended') {
+      return this.t('festival.ended', { region: regionText });
     }
+
+    return this.t(`festival.${state}`, {
+      region: regionText,
+      title: this.game('festivals', festival, 'title'),
+    });
   }
 
   /** @param {ScreenshotHelper} screenshotHelper */
   async _getMedia(screenshotHelper) {
     let media = new Media;
     media.file = await screenshotHelper.capture(`splatfest/${this.region}`);
+
+    const festival = await this.getFestival();
+    media.altText = this.images.festival(festival, {
+      includeTheme: await this.getState() === 'ended',
+    });
 
     return media;
   }

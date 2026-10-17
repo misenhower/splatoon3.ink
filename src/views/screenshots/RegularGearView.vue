@@ -1,5 +1,5 @@
 <template>
-  <ScreenshotLayout header="SplatNet Gear">
+  <ScreenshotLayout :header="$t('screenshots.headers.gear')">
     <div class="flex justify-center mt-4">
       <RegularGear class="-rotate-1" />
     </div>

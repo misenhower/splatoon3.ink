@@ -10,10 +10,8 @@ export default class TwitterClient extends Client
   _api;
 
   async canSend() {
-    return process.env.TWITTER_CONSUMER_KEY
-      && process.env.TWITTER_CONSUMER_SECRET
-      && process.env.TWITTER_ACCESS_TOKEN_KEY
-      && process.env.TWITTER_ACCESS_TOKEN_SECRET;
+    return ['CONSUMER_KEY', 'CONSUMER_SECRET', 'ACCESS_TOKEN_KEY', 'ACCESS_TOKEN_SECRET']
+      .every(key => !!process.env[`TWITTER_${key}`]);
   }
 
   api() {

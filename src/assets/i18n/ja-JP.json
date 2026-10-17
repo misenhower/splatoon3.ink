@@ -100,5 +100,16 @@
   },
   "social": {
     "description": "Splatoon3.inkの最新ニュースやアップデートをソーシャルメディアでお届けします！以下のリストをチェックして、お気に入りのプラットフォームを見つけてください。"
+  },
+  "screenshots": {
+    "headers": {
+      "schedules": "ステージ情報",
+      "salmonrun": "サーモンラン",
+      "challenges": "イベントマッチ",
+      "splatfest": "フェス",
+      "daily": "本日のピックアップ",
+      "gear": "ゲソタウン"
+    },
+    "tricolor": "トリカラバトル"
   }
 }

@@ -3,6 +3,7 @@ import prefixedConsole from '../common/prefixedConsole.mjs';
 import ScreenshotHelper from '../screenshots/ScreenshotHelper.mjs';
 import Client from './clients/Client.mjs';
 import StatusGenerator from './generators/StatusGenerator.mjs';
+import { MissingTranslationError } from './i18n/SocialMessages.mjs';
 
 export default class StatusGeneratorManager
 {
@@ -73,8 +74,12 @@ export default class StatusGeneratorManager
 
       return { generator, status, clients };
     } catch (e) {
-      this.console(generator).error('Error generating status:', e);
-      Sentry.captureException(e);
+      if (e instanceof MissingTranslationError) {
+        this.console(generator).warn('Waiting for game translations:', e.message);
+      } else {
+        this.console(generator).error('Error generating status:', e);
+        Sentry.captureException(e);
+      }
     } finally {
       await screenshotHelper.close();
     }
@@ -101,6 +106,13 @@ export default class StatusGeneratorManager
   async _sendToClient(generator, status, client) {
     this.console(generator, client).info('Posting...');
     try {
+      const postLocale = status.locale ?? 'en-US';
+      const accountLocale = client.locale ?? 'en-US';
+
+      if (postLocale !== accountLocale) {
+        throw new Error(`Cannot send ${postLocale} content to a ${accountLocale} account`);
+      }
+
       await client.send(status, generator);
       await generator.updatelastPostCache(client);
     } catch (e) {

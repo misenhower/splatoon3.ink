@@ -58,14 +58,27 @@ const datetimeFormats = {
 
 let i18n = null;
 let storageListenerAdded = false;
+let fixedLocale = null;
+let localeLoading = Promise.resolve();
+const missingScreenshotTranslations = new Set();
 
-export function initializeI18n() {
+export function initializeI18n({ locale = null, timeZone = null, strict = false } = {}) {
   if (!i18n) {
+    fixedLocale = locale ? locales.find(l => l.code === locale) : null;
+
+    if (locale && !fixedLocale) throw new Error(`Unsupported locale: ${locale}`);
+
+    const formats = Object.fromEntries(Object.entries(datetimeFormats).map(([key, value]) => [
+      key,
+      timeZone ? { ...value, timeZone, hourCycle: 'h23' } : value,
+    ]));
+
     i18n = createI18n({
       locale: currentLocale().code,
-      fallbackLocale: 'en-US',
+      fallbackLocale: strict ? false : 'en-US',
+      missing: strict ? (locale, key) => { missingScreenshotTranslations.add(key); } : undefined,
       messages: { ...languages },
-      datetimeFormats: locales.reduce((result, locale) => ({ ...result, [locale.code]: datetimeFormats }), {}),
+      datetimeFormats: locales.reduce((result, locale) => ({ ...result, [locale.code]: formats }), {}),
       pluralRules: {
         'ru-RU': ruPluralization,
       },
@@ -80,6 +93,14 @@ export function initializeI18n() {
   }
 
   return i18n;
+}
+
+export function waitForLocale() {
+  return localeLoading;
+}
+
+export function screenshotTranslationErrors() {
+  return [...missingScreenshotTranslations];
 }
 
 // Adapted from: https://vue-i18n.intlify.dev/guide/essentials/pluralization.html#custom-pluralization
@@ -102,7 +123,8 @@ function ruPluralization(choice, choicesLength, orgRule) {
 
 function reload() {
   i18n.global.locale.value = currentLocale().code;
-  loadLocale();
+  localeLoading = loadLocale();
+  localeLoading.catch(error => console.error(error));
 
   switch (currentLocale().code) {
     case 'zh-CN':
@@ -128,9 +150,7 @@ async function loadLocale() {
   let response = await fetch(`${baseUrl}/data/locale/${locale}.json`);
 
   if (!response.ok) {
-    console.error(`Failed to load locale ${locale}: ${response.status} ${response.statusText}`);
-
-    return;
+    throw new Error(`Failed to load locale ${locale}: ${response.status} ${response.statusText}`);
   }
 
   let json = await response.json();
@@ -142,7 +162,7 @@ async function loadLocale() {
 }
 
 function currentLocale() {
-  return preferredLocale() || detectLocale();
+  return fixedLocale || preferredLocale() || detectLocale();
 }
 
 function preferredLocale() {

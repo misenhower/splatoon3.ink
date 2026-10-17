@@ -21,7 +21,9 @@ export async function updateAvatars() {
   let avatarBuffer = null;
 
   // X profile updates use the direct API; posts are sent through Buffer.
-  for (let client of [...defaultClients(), new TwitterClient]) {
+  const clients = [...defaultClients(), new TwitterClient];
+
+  for (let client of clients) {
     if (!client.updateProfile || !(await client.canSend())) {
       continue;
     }

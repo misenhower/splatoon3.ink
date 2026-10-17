@@ -12,13 +12,13 @@ export default class SchedulesStatus extends StatusGenerator
     await this.preparePinia();
 
     return {
-      regular: useRegularSchedulesStore().activeSchedule,
-      anarchySeries: useAnarchySeriesSchedulesStore().activeSchedule,
-      anarchyOpen: useAnarchyOpenSchedulesStore().activeSchedule,
-      xMatch: useXSchedulesStore().activeSchedule,
-      splatfestOpen: useSplatfestOpenSchedulesStore().activeSchedule,
-      splatfestPro: useSplatfestProSchedulesStore().activeSchedule,
-      tricolor: useUSSplatfestsStore().tricolor,
+      regular: useRegularSchedulesStore(this.pinia).activeSchedule,
+      anarchySeries: useAnarchySeriesSchedulesStore(this.pinia).activeSchedule,
+      anarchyOpen: useAnarchyOpenSchedulesStore(this.pinia).activeSchedule,
+      xMatch: useXSchedulesStore(this.pinia).activeSchedule,
+      splatfestOpen: useSplatfestOpenSchedulesStore(this.pinia).activeSchedule,
+      splatfestPro: useSplatfestProSchedulesStore(this.pinia).activeSchedule,
+      tricolor: useUSSplatfestsStore(this.pinia).tricolor,
     };
   }
 
@@ -39,21 +39,30 @@ export default class SchedulesStatus extends StatusGenerator
       let festProStages = stages.splatfestPro.settings.vsStages;
 
       let lines = [
-        'Join the Splatfest Battle! #splatfest #maprotation',
+        this.t('schedule.festival'),
         '',
-        `– Open: ${festOpenStages[0].name} and ${festOpenStages[1].name}`,
-        `– Pro: ${festProStages[0].name} and ${festProStages[1].name}`,
+        this.t('schedule.festivalOpen', {
+          stage1: this.game('stages', festOpenStages[0]),
+          stage2: this.game('stages', festOpenStages[1]),
+        }),
+        this.t('schedule.festivalPro', {
+          stage1: this.game('stages', festProStages[0]),
+          stage2: this.game('stages', festProStages[1]),
+        }),
       ];
 
       if(stages.tricolor?.isTricolorActive && stages.tricolor.tricolorStage) {
-        lines.push(`– Tricolor: ${stages.tricolor.tricolorStage.name}`);
+        lines.push(this.t('schedule.tricolorOne', { stage: this.game('stages', stages.tricolor.tricolorStage) }));
       }
 
       if(stages.tricolor?.isTricolorActive && stages.tricolor.tricolorStages) {
         if(stages.tricolor.tricolorStages.length == 1) {
-          lines.push(`– Tricolor: ${stages.tricolor.tricolorStages[0].name}`);
+          lines.push(this.t('schedule.tricolorOne', { stage: this.game('stages', stages.tricolor.tricolorStages[0]) }));
         } else {
-          lines.push(`– Tricolor: ${stages.tricolor.tricolorStages[0].name} and ${stages.tricolor.tricolorStages[1].name}`);
+          lines.push(this.t('schedule.tricolorTwo', {
+            stage1: this.game('stages', stages.tricolor.tricolorStages[0]),
+            stage2: this.game('stages', stages.tricolor.tricolorStages[1]),
+          }));
         }
       }
       return lines.join('\n');
@@ -61,11 +70,11 @@ export default class SchedulesStatus extends StatusGenerator
     }
 
     let lines = [
-      'Splatoon 3 map rotation: #maprotation',
+      this.t('schedule.rotation'),
       '',
-      `– Anarchy (Series): ${stages.anarchySeries.settings.vsRule.name}`,
-      `– Anarchy (Open): ${stages.anarchyOpen.settings.vsRule.name}`,
-      `– X Battle: ${stages.xMatch.settings.vsRule.name}`,
+      this.t('schedule.series', { rule: this.game('rules', stages.anarchySeries.settings.vsRule) }),
+      this.t('schedule.open', { rule: this.game('rules', stages.anarchyOpen.settings.vsRule) }),
+      this.t('schedule.x', { rule: this.game('rules', stages.xMatch.settings.vsRule) }),
     ];
 
     return lines.join('\n');
@@ -84,21 +93,43 @@ export default class SchedulesStatus extends StatusGenerator
     let media = new Media;
     media.file = await screenshotHelper.capture('schedules', { viewport });
 
-    let detail = s => `${s.settings.vsRule.name} on ${s.settings.vsStages[0].name} and ${s.settings.vsStages[1].name}`;
+    let detail = s => ({
+      rule: this.game('rules', s.settings.vsRule),
+      stage1: this.game('stages', s.settings.vsStages[0]),
+      stage2: this.game('stages', s.settings.vsStages[1]),
+    });
 
-    let lines = ['Splatoon 3 map rotation:\n'];
+    let lines = [this.t('schedule.alt.heading')];
 
     if (stages.splatfestOpen?.settings) {
       lines.push(...[
-        `Splatfest Battle (Open): ${detail(stages.splatfestOpen)}`,
-        `Splatfest Battle (Pro): ${detail(stages.splatfestPro)}`,
+        this.t('schedule.alt.festivalOpen', detail(stages.splatfestOpen)),
+        this.t('schedule.alt.festivalPro', detail(stages.splatfestPro)),
       ]);
+
+      const festival = useUSSplatfestsStore(this.pinia).activeFestival;
+      if (festival) lines.push(this.images.festival(festival, { includeTheme: true }));
+
+      if (stages.tricolor?.isTricolorActive) {
+        const tricolorStages = stages.tricolor.tricolorStages
+          ?? (stages.tricolor.tricolorStage ? [stages.tricolor.tricolorStage] : []);
+
+        if (tricolorStages.length === 1) {
+          lines.push(this.t('schedule.tricolorOne', { stage: this.game('stages', tricolorStages[0]) }));
+        } else if (tricolorStages.length > 1) {
+          lines.push(this.t('schedule.tricolorTwo', {
+            stage1: this.game('stages', tricolorStages[0]),
+            stage2: this.game('stages', tricolorStages[1]),
+          }));
+        }
+      }
+
     } else {
       lines.push(...[
-        `Regular Battle: ${detail(stages.regular)}`,
-        `Anarchy Battle (Series): ${detail(stages.anarchySeries)}`,
-        `Anarchy Battle (Open): ${detail(stages.anarchyOpen)}`,
-        `X Battle: ${detail(stages.xMatch)}`,
+        this.t('schedule.alt.regular', detail(stages.regular)),
+        this.t('schedule.alt.series', detail(stages.anarchySeries)),
+        this.t('schedule.alt.open', detail(stages.anarchyOpen)),
+        this.t('schedule.alt.x', detail(stages.xMatch)),
       ]);
     }
 

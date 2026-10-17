@@ -8,8 +8,8 @@ export default class SplatfestResultsStatus extends StatusGenerator
   key = 'splatfestResults';
   name = 'Splatfest Results';
 
-  constructor(region) {
-    super();
+  constructor(region, options = {}) {
+    super(options);
     this.region = region;
     this.key += `.${region}`;
     this.name += ` (${region})`;
@@ -20,10 +20,10 @@ export default class SplatfestResultsStatus extends StatusGenerator
 
     let store;
     switch(this.region) {
-      case 'NA': store = useUSSplatfestsStore(); break;
-      case 'EU': store = useEUSplatfestsStore(); break;
-      case 'JP': store = useJPSplatfestsStore(); break;
-      case 'AP': store = useAPSplatfestsStore(); break;
+      case 'NA': store = useUSSplatfestsStore(this.pinia); break;
+      case 'EU': store = useEUSplatfestsStore(this.pinia); break;
+      case 'JP': store = useJPSplatfestsStore(this.pinia); break;
+      case 'AP': store = useAPSplatfestsStore(this.pinia); break;
     }
 
     return store.recentFestival;
@@ -49,9 +49,14 @@ export default class SplatfestResultsStatus extends StatusGenerator
     let winningTeam = festival.teams.find(t => t.result.isWinner);
 
     const global = festival.regions.length == 4;
-    const regionText = global ? 'Global' : festival.regions.join('/');
+    const regionText = global ? this.t('festival.globalResults') : festival.regions.join('/');
 
-    return `${regionText} Splatfest results: Team ${winningTeam.teamName} wins! #splatfest #splatoon3`;
+    const winningIndex = festival.teams.indexOf(winningTeam);
+
+    return this.t('festival.results', {
+      region: regionText,
+      team: this.game('festivals', festival, `teams.${winningIndex}.teamName`),
+    });
   }
 
   async shouldPost(client) {
@@ -71,13 +76,18 @@ export default class SplatfestResultsStatus extends StatusGenerator
       return false;
     }
 
-    return `${festival.title} Splatfest Results`;
+    return this.t('festival.resultsWrapper', { title: this.game('festivals', festival, 'title') });
   }
 
   /** @param {ScreenshotHelper} screenshotHelper */
   async _getMedia(screenshotHelper) {
     let media = new Media;
     media.file = await screenshotHelper.capture(`splatfest/${this.region}`);
+
+    const festival = await this.getFestival();
+    media.altText = this.images.festival(festival, {
+      includeTheme: true,
+    });
 
     return media;
   }

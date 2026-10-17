@@ -1,0 +1,104 @@
+{
+  "schedule": {
+    "rotation": "Splatoon 3 map rotation: #maprotation",
+    "series": "– Anarchy (Series): {rule}",
+    "open": "– Anarchy (Open): {rule}",
+    "x": "– X Battle: {rule}",
+    "festival": "Join the Splatfest Battle! #splatfest #maprotation",
+    "festivalOpen": "– Open: {stage1} and {stage2}",
+    "festivalPro": "– Pro: {stage1} and {stage2}",
+    "tricolorOne": "– Tricolor: {stage}",
+    "tricolorTwo": "– Tricolor: {stage1} and {stage2}",
+    "alt": {
+      "heading": "Splatoon 3 map rotation:\n",
+      "regular": "Regular Battle: {rule} on {stage1} and {stage2}",
+      "series": "Anarchy Battle (Series): {rule} on {stage1} and {stage2}",
+      "open": "Anarchy Battle (Open): {rule} on {stage1} and {stage2}",
+      "x": "X Battle: {rule} on {stage1} and {stage2}",
+      "festivalOpen": "Splatfest Battle (Open): {rule} on {stage1} and {stage2}",
+      "festivalPro": "Splatfest Battle (Pro): {rule} on {stage1} and {stage2}"
+    }
+  },
+  "gear": {
+    "daily": "The Daily Drop: Today's featured brand is {brand}! #dailydrop",
+    "item": "{icon} {name} with {power}",
+    "regular": "Up now on SplatNet: {icon} {name} with {power} #splatnet3"
+  },
+  "challenge": {
+    "open": "A challenge event is now open! {name} – {description}",
+    "stages": "Play {rule} on {stage1} and {stage2}! #splatoon3"
+  },
+  "salmon": {
+    "mode": {
+      "regular": "Salmon Run",
+      "bigRun": "BIG RUN"
+    },
+    "open": "{mode} is now open on {stage}! #salmonrun #splatoon3",
+    "openMystery": "{mode} is now open on {stage} with MYSTERY WEAPONS! #salmonrun #splatoon3",
+    "openGrizzco": "{mode} is now open on {stage} with GRIZZCO MYSTERY WEAPONS! #salmonrun #splatoon3",
+    "king": "King Salmonid: {king}",
+    "weapons": "Current weapons:",
+    "weapon": "– {weapon}",
+    "upcomingBigRun": "A BIG RUN shift on {stage} has been added to the schedule! #salmonrun #splatoon3",
+    "upcomingGrizzco": "A Salmon Run shift with GRIZZCO MYSTERY WEAPONS on {stage} has been added to the schedule! #salmonrun #splatoon3",
+    "upcomingMystery": "A Salmon Run shift with MYSTERY WEAPONS on {stage} has been added to the schedule! #salmonrun #splatoon3",
+    "starts": "This shift will start in {time} with these weapons:",
+    "unknownStage": "???"
+  },
+  "eggstra": {
+    "open": "EGGSTRA WORK is now open on {stage}! #salmonrun #splatoon3",
+    "upcoming": "An EGGSTRA WORK shift on {stage} has been added to the schedule! #salmonrun #splatoon3"
+  },
+  "time": {
+    "day": "{count} day",
+    "days": "{count} days",
+    "hour": "{count} hour",
+    "hours": "{count} hours",
+    "minute": "{count} minute",
+    "minutes": "{count} minutes",
+    "second": "{count} second",
+    "seconds": "{count} seconds",
+    "period": ""
+  },
+  "festival": {
+    "global": "global",
+    "globalResults": "Global",
+    "upcoming": "You can now vote in the next {region} Splatfest: {title} #splatfest #splatoon3",
+    "upcoming:3d": "Reminder: The next {region} Splatfest starts in 3 DAYS! {title} #splatfest #splatoon3",
+    "upcoming:1d": "Reminder: The next {region} Splatfest starts in 24 HOURS! {title} #splatfest #splatoon3",
+    "active": "The {region} Splatfest is NOW OPEN! {title} #splatfest #splatoon3",
+    "ended": "The {region} Splatfest is now closed. Results are usually posted within 2 hours! #splatfest #splatoon3",
+    "results": "{region} Splatfest results: Team {team} wins! #splatfest #splatoon3",
+    "resultsWrapper": "{title} Splatfest Results"
+  },
+  "alt": {
+    "gear": {
+      "daily": "The Daily Drop — {brand}.",
+      "regular": "Gear on sale. The first item is featured.",
+      "item": "{name}: {price} coins; {time} left.",
+      "ability": "Main ability: {power}.",
+      "brand": "Brand: {brand}.",
+      "slots": "Additional ability slots: {count}."
+    },
+    "shift": {
+      "stage": "{mode} — {stage}.",
+      "remaining": "{time} remaining.",
+      "opens": "Opens in {time}.",
+      "eggstra": "Eggstra Work",
+      "period": "{start} – {end}"
+    },
+    "festival": {
+      "theme": "Splatfest: {title}",
+      "teams": "Teams, left to right: {teams}.",
+      "winner": "Winner: {team}.",
+      "row": "{category}: {values}.",
+      "value": "{team} {percent}%",
+      "conchs": "Conch shells",
+      "votes": "Votes",
+      "open": "Open",
+      "pro": "Pro",
+      "tricolor": "Tricolor Battle"
+    },
+    "separator": ", "
+  }
+}

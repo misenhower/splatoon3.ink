@@ -1,0 +1,104 @@
+{
+  "schedule": {
+    "rotation": "ステージ情報\n#ステージ情報",
+    "series": "– バンカラ（チャレンジ）：{rule}",
+    "open": "– バンカラ（オープン）：{rule}",
+    "x": "– Xマッチ：{rule}",
+    "festival": "フェスマッチ開催中！\n#フェス情報 #ステージ情報",
+    "festivalOpen": "オープン：{stage1}・{stage2}",
+    "festivalPro": "チャレンジ：{stage1}・{stage2}",
+    "tricolorOne": "トリカラ：{stage}",
+    "tricolorTwo": "トリカラ：{stage1}・{stage2}",
+    "alt": {
+      "heading": "スプラトゥーン3 ステージ情報：\n",
+      "regular": "レギュラーマッチ：{rule}／{stage1}・{stage2}",
+      "series": "バンカラマッチ（チャレンジ）：{rule}／{stage1}・{stage2}",
+      "open": "バンカラマッチ（オープン）：{rule}／{stage1}・{stage2}",
+      "x": "Xマッチ：{rule}／{stage1}・{stage2}",
+      "festivalOpen": "フェスマッチ（オープン）：{rule}／{stage1}・{stage2}",
+      "festivalPro": "フェスマッチ（チャレンジ）：{rule}／{stage1}・{stage2}"
+    }
+  },
+  "gear": {
+    "daily": "ゲソタウン 本日のピックアップ：{brand}\n#ゲソタウンピックアップ",
+    "item": "{icon} {name}（{power}）",
+    "regular": "ゲソタウンで販売中！\n{icon} {name}（{power}）\n#ゲソタウン"
+  },
+  "challenge": {
+    "open": "イベントマッチ開催中！\n{name}",
+    "stages": "{period}\n{rule}／{stage1}・{stage2}\n#イベントマッチ #スプラトゥーン3 #splatoon3"
+  },
+  "salmon": {
+    "mode": {
+      "regular": "サーモンラン",
+      "bigRun": "ビッグラン"
+    },
+    "open": "{stage}で{mode}開催中！\n#サーモンラン #スプラトゥーン3 #splatoon3",
+    "openMystery": "{stage}で{mode}開催中！ランダムブキのシフト！\n#サーモンラン #スプラトゥーン3 #splatoon3",
+    "openGrizzco": "{stage}で{mode}開催中！クマサン印のブキのシフト！\n#サーモンラン #スプラトゥーン3 #splatoon3",
+    "king": "オカシラシャケ：{king}",
+    "weapons": "支給ブキ：",
+    "weapon": "– {weapon}",
+    "upcomingBigRun": "ビッグランの予定が追加されました！\nステージ：{stage}\n#サーモンラン #スプラトゥーン3 #splatoon3",
+    "upcomingGrizzco": "クマサン印のブキのシフトが追加されました！\nステージ：{stage}\n#サーモンラン #スプラトゥーン3 #splatoon3",
+    "upcomingMystery": "ランダムブキのシフトが追加されました！\nステージ：{stage}\n#サーモンラン #スプラトゥーン3 #splatoon3",
+    "starts": "開始まであと{time}！\n支給ブキ：",
+    "unknownStage": "？？？"
+  },
+  "eggstra": {
+    "open": "バイトチームコンテスト開催中！\n{stage}\n#サーモンラン #スプラトゥーン3 #splatoon3",
+    "upcoming": "バイトチームコンテストの予定が追加されました！\nステージ：{stage}\n#サーモンラン #スプラトゥーン3 #splatoon3"
+  },
+  "time": {
+    "day": "{count}日",
+    "days": "{count}日",
+    "hour": "{count}時間",
+    "hours": "{count}時間",
+    "minute": "{count}分",
+    "minutes": "{count}分",
+    "second": "{count}秒",
+    "seconds": "{count}秒",
+    "period": "{start}〜{end}（日本時間）"
+  },
+  "festival": {
+    "global": "全世界共通",
+    "globalResults": "全世界共通",
+    "upcoming": "次回のフェスの投票受付中！\n{title}\n#フェス情報 #スプラトゥーン3 #splatoon3",
+    "upcoming:3d": "フェス開催まであと3日！\n{title}\n#フェス情報 #スプラトゥーン3 #splatoon3",
+    "upcoming:1d": "フェス開催まであと24時間！\n{title}\n#フェス情報 #スプラトゥーン3 #splatoon3",
+    "active": "フェス開催中！\n{title}\n#フェス情報 #スプラトゥーン3 #splatoon3",
+    "ended": "フェスは終了しました！結果発表は通常、終了から2時間以内です。\n#フェス情報 #スプラトゥーン3 #splatoon3",
+    "results": "フェスの結果発表！「{team}」チームの勝利！\n#フェス情報 #スプラトゥーン3 #splatoon3",
+    "resultsWrapper": "{title} フェスの結果"
+  },
+  "alt": {
+    "gear": {
+      "daily": "本日のピックアップ：{brand}。",
+      "regular": "販売中のギア。先頭のギアを大きく掲載。",
+      "item": "{name}：{price}ゲソ、残り{time}。",
+      "ability": "基本ギアパワー：{power}。",
+      "brand": "ブランド：{brand}。",
+      "slots": "追加ギアパワーの枠数：{count}。"
+    },
+    "shift": {
+      "stage": "{mode}：{stage}。",
+      "remaining": "残り{time}。",
+      "opens": "開始まであと{time}。",
+      "eggstra": "バイトチームコンテスト",
+      "period": "{start} – {end} JST"
+    },
+    "festival": {
+      "theme": "フェス：{title}",
+      "teams": "左から順に、{teams}。",
+      "winner": "優勝：{team}。",
+      "row": "{category}：{values}。",
+      "value": "{team} {percent}%",
+      "conchs": "ホラガイ獲得率",
+      "votes": "得票率",
+      "open": "オープン",
+      "pro": "チャレンジ",
+      "tricolor": "トリカラアタック"
+    },
+    "separator": "、"
+  }
+}

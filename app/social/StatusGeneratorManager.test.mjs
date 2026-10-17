@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { captureException } from '@sentry/node';
 import StatusGeneratorManager from './StatusGeneratorManager.mjs';
 import BufferTwitterClient from './clients/BufferTwitterClient.mjs';
 import { defaultClients } from './index.mjs';
@@ -11,6 +12,7 @@ vi.mock('../common/prefixedConsole.mjs', () => ({
 describe('social posting', () => {
   afterEach(() => {
     vi.restoreAllMocks();
+    vi.clearAllMocks();
     vi.unstubAllEnvs();
   });
 
@@ -84,5 +86,23 @@ describe('social posting', () => {
     await new StatusGeneratorManager()._sendToClient(generator, {}, client);
 
     expect(generator.updatelastPostCache).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    { postLocale: 'en-US', accountLocale: 'ja-JP' },
+    { postLocale: 'ja-JP', accountLocale: 'en-US' },
+    { postLocale: 'ja-JP', accountLocale: undefined },
+  ])('rejects $postLocale posts routed to a $accountLocale client before delivery', async ({ postLocale, accountLocale }) => {
+    const generator = { updatelastPostCache: vi.fn() };
+    const client = { locale: accountLocale, send: vi.fn() };
+    const status = { locale: postLocale, status: 'Post text' };
+
+    await new StatusGeneratorManager()._sendToClient(generator, status, client);
+
+    expect(client.send).not.toHaveBeenCalled();
+    expect(generator.updatelastPostCache).not.toHaveBeenCalled();
+    expect(captureException).toHaveBeenCalledExactlyOnceWith(
+      new Error(`Cannot send ${postLocale} content to a ${accountLocale ?? 'en-US'} account`),
+    );
   });
 });

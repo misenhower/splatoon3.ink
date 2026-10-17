@@ -1,0 +1,1565 @@
+{
+  "schedules": {
+    "data": {
+      "regularSchedules": {
+        "nodes": [
+          {
+            "startTime": "2026-10-17T16:00:00Z",
+            "endTime": "2026-10-17T18:00:00Z",
+            "regularMatchSetting": {
+              "__isVsSetting": "RegularMatchSetting",
+              "__typename": "RegularMatchSetting",
+              "vsStages": [
+                {
+                  "vsStageId": 8,
+                  "name": "Barnacle & Dime",
+                  "image": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/stage_img/icon/low_resolution/f70e9f5af477a39ccfab631bfb81c9e2cedb4cd0947fe260847c214a6d23695f_1.png"
+                  },
+                  "id": "VnNTdGFnZS04"
+                },
+                {
+                  "vsStageId": 21,
+                  "name": "Robo ROM-en",
+                  "image": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/stage_img/icon/low_resolution/692365fa7e56cf19cfa403a8546e69cf60fd9ca2171bde66cdaa53dc0e736ac9_1.png"
+                  },
+                  "id": "VnNTdGFnZS0yMQ=="
+                }
+              ],
+              "vsRule": {
+                "name": "Turf War",
+                "rule": "TURF_WAR",
+                "id": "VnNSdWxlLTA="
+              }
+            },
+            "festMatchSettings": null
+          }
+        ]
+      },
+      "bankaraSchedules": {
+        "nodes": [
+          {
+            "startTime": "2026-10-17T16:00:00Z",
+            "endTime": "2026-10-17T18:00:00Z",
+            "bankaraMatchSettings": [
+              {
+                "__isVsSetting": "BankaraMatchSetting",
+                "__typename": "BankaraMatchSetting",
+                "vsStages": [
+                  {
+                    "vsStageId": 17,
+                    "name": "Humpback Pump Track",
+                    "image": {
+                      "url": "https://splatoon3.ink/assets/splatnet/v3/stage_img/icon/low_resolution/7b3cf118bd9f45d141cd6db0ee75b06e697fa83945c7fe1e6f8483de6a591f5f_1.png"
+                    },
+                    "id": "VnNTdGFnZS0xNw=="
+                  },
+                  {
+                    "vsStageId": 26,
+                    "name": "Urchin Underpass",
+                    "image": {
+                      "url": "https://splatoon3.ink/assets/splatnet/v3/stage_img/icon/low_resolution/249c981fdd888e79ada712ddf899bddbead508d71043af3ff96c90a7b5959c73_1.png"
+                    },
+                    "id": "VnNTdGFnZS0yNg=="
+                  }
+                ],
+                "vsRule": {
+                  "name": "Rainmaker",
+                  "rule": "GOAL",
+                  "id": "VnNSdWxlLTM="
+                },
+                "bankaraMode": "CHALLENGE"
+              },
+              {
+                "__isVsSetting": "BankaraMatchSetting",
+                "__typename": "BankaraMatchSetting",
+                "vsStages": [
+                  {
+                    "vsStageId": 1,
+                    "name": "Scorch Gorge",
+                    "image": {
+                      "url": "https://splatoon3.ink/assets/splatnet/v3/stage_img/icon/low_resolution/35f9ca08ccc2bf759774ab2cb886567c117b9287875ca92fb590c1294ddcdc1e_1.png"
+                    },
+                    "id": "VnNTdGFnZS0x"
+                  },
+                  {
+                    "vsStageId": 5,
+                    "name": "Um'ami Ruins",
+                    "image": {
+                      "url": "https://splatoon3.ink/assets/splatnet/v3/stage_img/icon/low_resolution/f14c2a64e49d243679fc0884af91e1a07dc65600f9b90aefe92d7790dcffb191_1.png"
+                    },
+                    "id": "VnNTdGFnZS01"
+                  }
+                ],
+                "vsRule": {
+                  "name": "Tower Control",
+                  "rule": "LOFT",
+                  "id": "VnNSdWxlLTI="
+                },
+                "bankaraMode": "OPEN"
+              }
+            ],
+            "festMatchSettings": null
+          }
+        ]
+      },
+      "xSchedules": {
+        "nodes": [
+          {
+            "startTime": "2026-10-17T16:00:00Z",
+            "endTime": "2026-10-17T18:00:00Z",
+            "xMatchSetting": {
+              "__isVsSetting": "XMatchSetting",
+              "__typename": "XMatchSetting",
+              "vsStages": [
+                {
+                  "vsStageId": 13,
+                  "name": "Inkblot Art Academy",
+                  "image": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/stage_img/icon/low_resolution/40aba8b36a9439e2d670fde5b3478819ea8a94f9e503b9d783248a5716786f35_1.png"
+                  },
+                  "id": "VnNTdGFnZS0xMw=="
+                },
+                {
+                  "vsStageId": 16,
+                  "name": "Wahoo World",
+                  "image": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/stage_img/icon/low_resolution/61ea801fa4ed32360dcaf83986222ded46a72dbf56194acc6d0cf4659a92ba85_1.png"
+                  },
+                  "id": "VnNTdGFnZS0xNg=="
+                }
+              ],
+              "vsRule": {
+                "name": "Splat Zones",
+                "rule": "AREA",
+                "id": "VnNSdWxlLTE="
+              }
+            },
+            "festMatchSettings": null
+          }
+        ]
+      },
+      "eventSchedules": {
+        "nodes": [
+          {
+            "leagueMatchSetting": {
+              "leagueMatchEvent": {
+                "leagueMatchEventId": "WeaponLimited_Maneuver",
+                "name": "Dualies at Ten Paces",
+                "desc": "Enter a battlefield filled with slippery<br />customers in this all-dualies war!",
+                "regulationUrl": null,
+                "regulation": "Stick and move with the best of 'em in this dualies dustup!<br /><br />・ Players can only choose different varieties of dualies.<br />・ Both primary and secondary abilities will be enabled.",
+                "id": "TGVhZ3VlTWF0Y2hFdmVudC1XZWFwb25MaW1pdGVkX01hbmV1dmVy"
+              },
+              "vsStages": [
+                {
+                  "vsStageId": 5,
+                  "name": "Um'ami Ruins",
+                  "image": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/stage_img/icon/low_resolution/f14c2a64e49d243679fc0884af91e1a07dc65600f9b90aefe92d7790dcffb191_1.png"
+                  },
+                  "id": "VnNTdGFnZS01"
+                },
+                {
+                  "vsStageId": 14,
+                  "name": "Sturgeon Shipyard",
+                  "image": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/stage_img/icon/low_resolution/48684c69d5c5a4ffaf16b712a4895545a8d01196115d514fc878ce99863bb3e9_1.png"
+                  },
+                  "id": "VnNTdGFnZS0xNA=="
+                }
+              ],
+              "__isVsSetting": "LeagueMatchSetting",
+              "__typename": "LeagueMatchSetting",
+              "vsRule": {
+                "name": "Splat Zones",
+                "rule": "AREA",
+                "id": "VnNSdWxlLTE="
+              }
+            },
+            "timePeriods": [
+              {
+                "startTime": "2026-10-23T02:00:00Z",
+                "endTime": "2026-10-23T04:00:00Z"
+              },
+              {
+                "startTime": "2026-10-23T06:00:00Z",
+                "endTime": "2026-10-23T08:00:00Z"
+              },
+              {
+                "startTime": "2026-10-23T10:00:00Z",
+                "endTime": "2026-10-23T12:00:00Z"
+              },
+              {
+                "startTime": "2026-10-23T14:00:00Z",
+                "endTime": "2026-10-23T16:00:00Z"
+              },
+              {
+                "startTime": "2026-10-23T18:00:00Z",
+                "endTime": "2026-10-23T20:00:00Z"
+              },
+              {
+                "startTime": "2026-10-23T22:00:00Z",
+                "endTime": "2026-10-24T00:00:00Z"
+              }
+            ]
+          }
+        ]
+      },
+      "festSchedules": {
+        "nodes": [
+          {
+            "startTime": "2026-10-17T16:00:00Z",
+            "festMatchSettings": null,
+            "endTime": "2026-10-17T18:00:00Z"
+          },
+          {
+            "startTime": "2026-10-17T18:00:00Z",
+            "festMatchSettings": null,
+            "endTime": "2026-10-17T20:00:00Z"
+          },
+          {
+            "startTime": "2026-10-17T20:00:00Z",
+            "festMatchSettings": null,
+            "endTime": "2026-10-17T22:00:00Z"
+          },
+          {
+            "startTime": "2026-10-17T22:00:00Z",
+            "festMatchSettings": null,
+            "endTime": "2026-10-18T00:00:00Z"
+          },
+          {
+            "startTime": "2026-10-18T00:00:00Z",
+            "festMatchSettings": null,
+            "endTime": "2026-10-18T02:00:00Z"
+          },
+          {
+            "startTime": "2026-10-18T02:00:00Z",
+            "festMatchSettings": null,
+            "endTime": "2026-10-18T04:00:00Z"
+          },
+          {
+            "startTime": "2026-10-18T04:00:00Z",
+            "festMatchSettings": null,
+            "endTime": "2026-10-18T06:00:00Z"
+          },
+          {
+            "startTime": "2026-10-18T06:00:00Z",
+            "festMatchSettings": null,
+            "endTime": "2026-10-18T08:00:00Z"
+          },
+          {
+            "startTime": "2026-10-18T08:00:00Z",
+            "festMatchSettings": null,
+            "endTime": "2026-10-18T10:00:00Z"
+          },
+          {
+            "startTime": "2026-10-18T10:00:00Z",
+            "festMatchSettings": null,
+            "endTime": "2026-10-18T12:00:00Z"
+          },
+          {
+            "startTime": "2026-10-18T12:00:00Z",
+            "festMatchSettings": null,
+            "endTime": "2026-10-18T14:00:00Z"
+          },
+          {
+            "startTime": "2026-10-18T14:00:00Z",
+            "festMatchSettings": null,
+            "endTime": "2026-10-18T16:00:00Z"
+          }
+        ]
+      },
+      "coopGroupingSchedule": {
+        "bannerImage": null,
+        "regularSchedules": {
+          "nodes": [
+            {
+              "startTime": "2026-10-17T08:00:00Z",
+              "endTime": "2026-10-19T00:00:00Z",
+              "setting": {
+                "__typename": "CoopNormalSetting",
+                "boss": {
+                  "name": "Megalodontia",
+                  "id": "Q29vcEVuZW15LTI1"
+                },
+                "coopStage": {
+                  "name": "Bonerattle Arena",
+                  "thumbnailImage": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/stage_img/icon/low_resolution/5f09625c9031652ca1edcf8028265b03ecc28475ab3d56910960a68430d7948a_1.png"
+                  },
+                  "image": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/stage_img/icon/high_resolution/5f09625c9031652ca1edcf8028265b03ecc28475ab3d56910960a68430d7948a_0.png"
+                  },
+                  "id": "Q29vcFN0YWdlLTk="
+                },
+                "__isCoopSetting": "CoopNormalSetting",
+                "weapons": [
+                  {
+                    "__splatoon3ink_id": "0578f3b3d9af08ed",
+                    "name": "L-3 Nozzlenose",
+                    "image": {
+                      "url": "https://splatoon3.ink/assets/splatnet/v3/weapon_illust/96833fc0f74242cd2bc73b241aab8a00d499ce9f6557722ef6503e12af8979f4_0.png"
+                    }
+                  },
+                  {
+                    "__splatoon3ink_id": "eb5098db38e209e1",
+                    "name": "Bloblobber",
+                    "image": {
+                      "url": "https://splatoon3.ink/assets/splatnet/v3/weapon_illust/0199e455872acba1ab8ef0040eca7f41afca48c1f9ad2c5d274323d6dbc49133_0.png"
+                    }
+                  },
+                  {
+                    "__splatoon3ink_id": "183dfb6256c39892",
+                    "name": "Rapid Blaster Pro",
+                    "image": {
+                      "url": "https://splatoon3.ink/assets/splatnet/v3/weapon_illust/954a5ea059f841fa5f1cd2596bb32f23b3d3b03fc3fa7972077bdbafe6051215_0.png"
+                    }
+                  },
+                  {
+                    "__splatoon3ink_id": "01b960996da8ed63",
+                    "name": "Random",
+                    "image": {
+                      "url": "https://splatoon3.ink/assets/splatnet/v3/ui_img/473fffb2442075078d8bb7125744905abdeae651b6a5b7453ae295582e45f7d1_0.png"
+                    }
+                  }
+                ]
+              },
+              "__splatoon3ink_king_salmonid_guess": "Megalodontia"
+            },
+            {
+              "startTime": "2026-10-19T00:00:00Z",
+              "endTime": "2026-10-20T16:00:00Z",
+              "setting": {
+                "__typename": "CoopNormalSetting",
+                "boss": {
+                  "name": "Cohozuna",
+                  "id": "Q29vcEVuZW15LTIz"
+                },
+                "coopStage": {
+                  "name": "Jammin' Salmon Junction",
+                  "thumbnailImage": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/stage_img/icon/low_resolution/0e05d4caa34089a447535708370286f4ee6068661359b4d7cf6c319863424f84_1.png"
+                  },
+                  "image": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/stage_img/icon/high_resolution/0e05d4caa34089a447535708370286f4ee6068661359b4d7cf6c319863424f84_0.png"
+                  },
+                  "id": "Q29vcFN0YWdlLTg="
+                },
+                "__isCoopSetting": "CoopNormalSetting",
+                "weapons": [
+                  {
+                    "__splatoon3ink_id": "de8a2a542dbe6b99",
+                    "name": "S-BLAST '92",
+                    "image": {
+                      "url": "https://splatoon3.ink/assets/splatnet/v3/weapon_illust/3f8b7fb5cfa592fd251fe4f5707465e539ed79b8d4ae17df75198fbabec2e88f_0.png"
+                    }
+                  },
+                  {
+                    "__splatoon3ink_id": "83c543ed4ae19005",
+                    "name": "Splat Dualies",
+                    "image": {
+                      "url": "https://splatoon3.ink/assets/splatnet/v3/weapon_illust/b43978029ea582de3aca34549cafd810df20082b94104634093392e11e30d9bd_0.png"
+                    }
+                  },
+                  {
+                    "__splatoon3ink_id": "ed647072fa99c73e",
+                    "name": "Splash-o-matic",
+                    "image": {
+                      "url": "https://splatoon3.ink/assets/splatnet/v3/weapon_illust/25e98eaba1e17308db191b740d9b89e6a977bfcd37c8dc1d65883731c0c72609_0.png"
+                    }
+                  },
+                  {
+                    "__splatoon3ink_id": "17b8d348d6380ae9",
+                    "name": "Goo Tuber",
+                    "image": {
+                      "url": "https://splatoon3.ink/assets/splatnet/v3/weapon_illust/2b349390a464710982d7e1496130898e7b5a66c301aa44fc9e19332d42e360ad_0.png"
+                    }
+                  }
+                ]
+              },
+              "__splatoon3ink_king_salmonid_guess": "Cohozuna"
+            }
+          ]
+        },
+        "bigRunSchedules": {
+          "nodes": []
+        },
+        "teamContestSchedules": {
+          "nodes": []
+        }
+      },
+      "currentFest": null,
+      "vsStages": {
+        "nodes": [
+          {
+            "vsStageId": 1,
+            "originalImage": {
+              "url": "https://splatoon3.ink/assets/splatnet/v3/stage_img/icon/high_resolution/35f9ca08ccc2bf759774ab2cb886567c117b9287875ca92fb590c1294ddcdc1e_0.png"
+            },
+            "name": "Scorch Gorge",
+            "stats": null,
+            "id": "VnNTdGFnZS0x"
+          },
+          {
+            "vsStageId": 5,
+            "originalImage": {
+              "url": "https://splatoon3.ink/assets/splatnet/v3/stage_img/icon/high_resolution/f14c2a64e49d243679fc0884af91e1a07dc65600f9b90aefe92d7790dcffb191_0.png"
+            },
+            "name": "Um'ami Ruins",
+            "stats": null,
+            "id": "VnNTdGFnZS01"
+          },
+          {
+            "vsStageId": 8,
+            "originalImage": {
+              "url": "https://splatoon3.ink/assets/splatnet/v3/stage_img/icon/high_resolution/f70e9f5af477a39ccfab631bfb81c9e2cedb4cd0947fe260847c214a6d23695f_0.png"
+            },
+            "name": "Barnacle & Dime",
+            "stats": null,
+            "id": "VnNTdGFnZS04"
+          },
+          {
+            "vsStageId": 13,
+            "originalImage": {
+              "url": "https://splatoon3.ink/assets/splatnet/v3/stage_img/icon/high_resolution/40aba8b36a9439e2d670fde5b3478819ea8a94f9e503b9d783248a5716786f35_0.png"
+            },
+            "name": "Inkblot Art Academy",
+            "stats": null,
+            "id": "VnNTdGFnZS0xMw=="
+          },
+          {
+            "vsStageId": 14,
+            "originalImage": {
+              "url": "https://splatoon3.ink/assets/splatnet/v3/stage_img/icon/high_resolution/48684c69d5c5a4ffaf16b712a4895545a8d01196115d514fc878ce99863bb3e9_0.png"
+            },
+            "name": "Sturgeon Shipyard",
+            "stats": null,
+            "id": "VnNTdGFnZS0xNA=="
+          },
+          {
+            "vsStageId": 16,
+            "originalImage": {
+              "url": "https://splatoon3.ink/assets/splatnet/v3/stage_img/icon/high_resolution/61ea801fa4ed32360dcaf83986222ded46a72dbf56194acc6d0cf4659a92ba85_0.png"
+            },
+            "name": "Wahoo World",
+            "stats": null,
+            "id": "VnNTdGFnZS0xNg=="
+          },
+          {
+            "vsStageId": 17,
+            "originalImage": {
+              "url": "https://splatoon3.ink/assets/splatnet/v3/stage_img/icon/high_resolution/7b3cf118bd9f45d141cd6db0ee75b06e697fa83945c7fe1e6f8483de6a591f5f_0.png"
+            },
+            "name": "Humpback Pump Track",
+            "stats": null,
+            "id": "VnNTdGFnZS0xNw=="
+          },
+          {
+            "vsStageId": 21,
+            "originalImage": {
+              "url": "https://splatoon3.ink/assets/splatnet/v3/stage_img/icon/high_resolution/692365fa7e56cf19cfa403a8546e69cf60fd9ca2171bde66cdaa53dc0e736ac9_0.png"
+            },
+            "name": "Robo ROM-en",
+            "stats": null,
+            "id": "VnNTdGFnZS0yMQ=="
+          },
+          {
+            "vsStageId": 26,
+            "originalImage": {
+              "url": "https://splatoon3.ink/assets/splatnet/v3/stage_img/icon/high_resolution/249c981fdd888e79ada712ddf899bddbead508d71043af3ff96c90a7b5959c73_0.png"
+            },
+            "name": "Urchin Underpass",
+            "stats": null,
+            "id": "VnNTdGFnZS0yNg=="
+          }
+        ]
+      }
+    }
+  },
+  "festival": {
+    "__splatoon3ink_id": "JUEA-00107",
+    "id": "RmVzdC1VUzpKVUVBLTAwMTA3",
+    "state": "CLOSED",
+    "startTime": "2026-08-22T00:00:00Z",
+    "endTime": "2026-08-24T00:00:00Z",
+    "title": "Which would you reserve for a day?",
+    "lang": "USen",
+    "image": {
+      "url": "https://splatoon3.ink/assets/splatnet/resources/fest/v1/juea-sweat/46bccd11c2905095a8cd5cb9e7457ed54856282a9d5123e74f3ca071cf17bd4e_0.png"
+    },
+    "teams": [
+      {
+        "id": "RmVzdFRlYW0tVVM6SlVFQS0wMDEwNzpBbHBoYQ==",
+        "result": {
+          "__typename": "FestTeamResult",
+          "isWinner": false,
+          "isSecondWinner": false,
+          "horagaiRatio": 0.34011,
+          "isHoragaiRatioTop": true,
+          "isHoragaiRatioSecond": false,
+          "horagaiPoint": 90,
+          "voteRatio": 0.19761,
+          "isVoteRatioTop": false,
+          "isVoteRatioSecond": false,
+          "votePoint": null,
+          "regularContributionRatio": 0.33111,
+          "isRegularContributionRatioTop": false,
+          "isRegularContributionRatioSecond": false,
+          "regularContributionPoint": null,
+          "challengeContributionRatio": 0.33781,
+          "isChallengeContributionRatioTop": false,
+          "isChallengeContributionRatioSecond": true,
+          "challengeContributionPoint": 60,
+          "tricolorContributionRatio": 0.32831,
+          "isTricolorContributionRatioTop": false,
+          "isTricolorContributionRatioSecond": false,
+          "tricolorContributionPoint": null,
+          "totalPoint": 150
+        },
+        "teamName": "Palace",
+        "color": {
+          "a": 1,
+          "b": 0.224000007,
+          "g": 0.934000015,
+          "r": 0.913999975
+        },
+        "image": {
+          "url": "https://splatoon3.ink/assets/splatnet/resources/fest/v1/juea-sweat/a8e4c17157cd31507a9b7f4b6267d5caa0bdee317044d55a96c5496bb42228b6_0.png"
+        },
+        "myVoteState": null,
+        "preVotes": null,
+        "votes": null,
+        "role": null
+      },
+      {
+        "id": "RmVzdFRlYW0tVVM6SlVFQS0wMDEwNzpCcmF2bw==",
+        "result": {
+          "__typename": "FestTeamResult",
+          "isWinner": false,
+          "isSecondWinner": true,
+          "horagaiRatio": 0.33011,
+          "isHoragaiRatioTop": false,
+          "isHoragaiRatioSecond": true,
+          "horagaiPoint": 45,
+          "voteRatio": 0.56851,
+          "isVoteRatioTop": true,
+          "isVoteRatioSecond": false,
+          "votePoint": 70,
+          "regularContributionRatio": 0.33201,
+          "isRegularContributionRatioTop": false,
+          "isRegularContributionRatioSecond": true,
+          "regularContributionPoint": 60,
+          "challengeContributionRatio": 0.32051,
+          "isChallengeContributionRatioTop": false,
+          "isChallengeContributionRatioSecond": false,
+          "challengeContributionPoint": null,
+          "tricolorContributionRatio": 0.33451000000000003,
+          "isTricolorContributionRatioTop": false,
+          "isTricolorContributionRatioSecond": true,
+          "tricolorContributionPoint": 90,
+          "totalPoint": 265
+        },
+        "teamName": "Theme Park",
+        "color": {
+          "a": 1,
+          "b": 0.913999975,
+          "g": 0.698000014,
+          "r": 0.192000002
+        },
+        "image": {
+          "url": "https://splatoon3.ink/assets/splatnet/resources/fest/v1/juea-sweat/b3bb3b4aba5b1bd4a63c897dfe4d4b3676707aa6dac39222d761bfae9fb864b1_0.png"
+        },
+        "myVoteState": null,
+        "preVotes": null,
+        "votes": null,
+        "role": null
+      },
+      {
+        "id": "RmVzdFRlYW0tVVM6SlVFQS0wMDEwNzpDaGFybGll",
+        "result": {
+          "__typename": "FestTeamResult",
+          "isWinner": true,
+          "isSecondWinner": false,
+          "horagaiRatio": 0.32981,
+          "isHoragaiRatioTop": false,
+          "isHoragaiRatioSecond": false,
+          "horagaiPoint": null,
+          "voteRatio": 0.23391,
+          "isVoteRatioTop": false,
+          "isVoteRatioSecond": true,
+          "votePoint": 35,
+          "regularContributionRatio": 0.33691,
+          "isRegularContributionRatioTop": true,
+          "isRegularContributionRatioSecond": false,
+          "regularContributionPoint": 120,
+          "challengeContributionRatio": 0.34171,
+          "isChallengeContributionRatioTop": true,
+          "isChallengeContributionRatioSecond": false,
+          "challengeContributionPoint": 120,
+          "tricolorContributionRatio": 0.33721,
+          "isTricolorContributionRatioTop": true,
+          "isTricolorContributionRatioSecond": false,
+          "tricolorContributionPoint": 180,
+          "totalPoint": 455
+        },
+        "teamName": "Beach",
+        "color": {
+          "a": 1,
+          "b": 0.906000018,
+          "g": 0.195999995,
+          "r": 0.859000027
+        },
+        "image": {
+          "url": "https://splatoon3.ink/assets/splatnet/resources/fest/v1/juea-sweat/c0276e2a150b4a61bcc46fca84c2aaef3bd09aa8e2e78baa4158e894c1685563_0.png"
+        },
+        "myVoteState": null,
+        "preVotes": null,
+        "votes": null,
+        "role": null
+      }
+    ],
+    "myTeam": null,
+    "__typename": "Fest",
+    "isVotable": false,
+    "undecidedVotes": null
+  },
+  "gear": {
+    "data": {
+      "gesotown": {
+        "pickupBrand": {
+          "image": {
+            "url": "https://splatoon3.ink/assets/splatnet/v3/carousel_img/9ec8a5b980418ad42b25a23ff7ed0417fa2dbd96d52976d55e33b2738a63aef5_0.png"
+          },
+          "brand": {
+            "name": "SquidForce",
+            "usualGearPower": {
+              "__splatoon3ink_id": "7a177ddb3aeaed0b",
+              "name": "Ink Resistance Up",
+              "desc": "Reduces damage taken and improves mobility when walking through enemy ink.",
+              "image": {
+                "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/db36f7e89194ed642f53465abfa449669031a66d7538135c703d3f7d41f99c0d_0.png"
+              },
+              "isEmptySlot": false
+            },
+            "id": "QnJhbmQtMA=="
+          },
+          "saleEndTime": "2026-10-18T00:00:00Z",
+          "brandGears": [
+            {
+              "id": "U2FsZUdlYXItMF8xNzkyMTk1MjAwXzA=",
+              "saleEndTime": "2026-10-18T00:00:00Z",
+              "price": 1000,
+              "gear": {
+                "__splatoon3ink_id": "9089992996ad5abf",
+                "__typename": "HeadGear",
+                "name": "Bucket Hat",
+                "primaryGearPower": {
+                  "__splatoon3ink_id": "79a401dc1b5a80b1",
+                  "name": "Last-Ditch Effort",
+                  "image": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/d514787f65831c5121f68b8d96338412a0d261e39e522638488b24895e97eb88_0.png"
+                  }
+                },
+                "additionalGearPowers": [
+                  {
+                    "__splatoon3ink_id": "668f5cf3759aa059",
+                    "name": "Unknown",
+                    "image": {
+                      "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91_0.png"
+                    }
+                  }
+                ],
+                "image": {
+                  "url": "https://splatoon3.ink/assets/splatnet/v3/gear_img/ab1b62fa9bf59570163ce3a36f59880025cc6256bdbf4f8da08631fd197d3e0a_0.png"
+                },
+                "brand": {
+                  "name": "SquidForce",
+                  "image": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/brand_img/9ec8a5b980418ad42b25a23ff7ed0417fa2dbd96d52976d55e33b2738a63aef5_0.png"
+                  },
+                  "id": "QnJhbmQtMA==",
+                  "usualGearPower": {
+                    "__splatoon3ink_id": "7a177ddb3aeaed0b",
+                    "name": "Ink Resistance Up",
+                    "desc": "Reduces damage taken and improves mobility when walking through enemy ink.",
+                    "image": {
+                      "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/db36f7e89194ed642f53465abfa449669031a66d7538135c703d3f7d41f99c0d_0.png"
+                    },
+                    "isEmptySlot": false
+                  }
+                }
+              },
+              "isAlreadyOrdered": false,
+              "nextGear": {
+                "id": "U2FsZUdlYXItMF8xNzkyMTk1MjAwXzE="
+              },
+              "previousGear": null,
+              "ownedGear": null
+            },
+            {
+              "id": "U2FsZUdlYXItMF8xNzkyMTk1MjAwXzE=",
+              "saleEndTime": "2026-10-18T00:00:00Z",
+              "price": 750,
+              "gear": {
+                "__splatoon3ink_id": "bf788cd30ce7483f",
+                "__typename": "ClothingGear",
+                "name": "Basic Tee",
+                "primaryGearPower": {
+                  "__splatoon3ink_id": "4352d3f254655a4f",
+                  "name": "Ink Recovery Up",
+                  "image": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/29b845ea895b931bfaf895e0161aeb47166cbf05f94f04601769c885d019073b_0.png"
+                  }
+                },
+                "additionalGearPowers": [
+                  {
+                    "__splatoon3ink_id": "668f5cf3759aa059",
+                    "name": "Unknown",
+                    "image": {
+                      "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91_0.png"
+                    }
+                  }
+                ],
+                "image": {
+                  "url": "https://splatoon3.ink/assets/splatnet/v3/gear_img/91a4565d1f7750fe92a2bcfa3113a66ba29c60666a1d54bfca0a29e6285cea09_0.png"
+                },
+                "brand": {
+                  "name": "SquidForce",
+                  "image": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/brand_img/9ec8a5b980418ad42b25a23ff7ed0417fa2dbd96d52976d55e33b2738a63aef5_0.png"
+                  },
+                  "id": "QnJhbmQtMA==",
+                  "usualGearPower": {
+                    "__splatoon3ink_id": "7a177ddb3aeaed0b",
+                    "name": "Ink Resistance Up",
+                    "desc": "Reduces damage taken and improves mobility when walking through enemy ink.",
+                    "image": {
+                      "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/db36f7e89194ed642f53465abfa449669031a66d7538135c703d3f7d41f99c0d_0.png"
+                    },
+                    "isEmptySlot": false
+                  }
+                }
+              },
+              "isAlreadyOrdered": false,
+              "nextGear": {
+                "id": "U2FsZUdlYXItMF8xNzkyMTk1MjAwXzI="
+              },
+              "previousGear": {
+                "id": "U2FsZUdlYXItMF8xNzkyMTk1MjAwXzA="
+              },
+              "ownedGear": null
+            },
+            {
+              "id": "U2FsZUdlYXItMF8xNzkyMTk1MjAwXzI=",
+              "saleEndTime": "2026-10-18T00:00:00Z",
+              "price": 750,
+              "gear": {
+                "__splatoon3ink_id": "1ceee981c71928c8",
+                "__typename": "HeadGear",
+                "name": "White Headband",
+                "primaryGearPower": {
+                  "__splatoon3ink_id": "7f6d89f40eabc41d",
+                  "name": "Quick Respawn",
+                  "image": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/aaa9b7e95a61bfd869aaa9beb836c74f9b8d4e5d4186768a27d6e443c64f33ce_0.png"
+                  }
+                },
+                "additionalGearPowers": [
+                  {
+                    "__splatoon3ink_id": "668f5cf3759aa059",
+                    "name": "Unknown",
+                    "image": {
+                      "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91_0.png"
+                    }
+                  }
+                ],
+                "image": {
+                  "url": "https://splatoon3.ink/assets/splatnet/v3/gear_img/9970e78730016ca786353edf5de46e3f9c72f01ec1ac65bde2331f5b78eeb8c1_0.png"
+                },
+                "brand": {
+                  "name": "SquidForce",
+                  "image": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/brand_img/9ec8a5b980418ad42b25a23ff7ed0417fa2dbd96d52976d55e33b2738a63aef5_0.png"
+                  },
+                  "id": "QnJhbmQtMA==",
+                  "usualGearPower": {
+                    "__splatoon3ink_id": "7a177ddb3aeaed0b",
+                    "name": "Ink Resistance Up",
+                    "desc": "Reduces damage taken and improves mobility when walking through enemy ink.",
+                    "image": {
+                      "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/db36f7e89194ed642f53465abfa449669031a66d7538135c703d3f7d41f99c0d_0.png"
+                    },
+                    "isEmptySlot": false
+                  }
+                }
+              },
+              "isAlreadyOrdered": false,
+              "nextGear": null,
+              "previousGear": {
+                "id": "U2FsZUdlYXItMF8xNzkyMTk1MjAwXzE="
+              },
+              "ownedGear": null
+            }
+          ],
+          "nextBrand": {
+            "name": "Zink",
+            "image": {
+              "url": "https://splatoon3.ink/assets/splatnet/v3/brand_img/83aa02054b48cae0a7a624c2800c41da465f3514b70a09550457ecd74267ff0b_0.png"
+            },
+            "id": "QnJhbmQtMQ=="
+          }
+        },
+        "limitedGears": [
+          {
+            "id": "U2FsZUdlYXItMV8xNzkyMTgwODAwXzA=",
+            "saleEndTime": "2026-10-17T20:00:00Z",
+            "price": 7360,
+            "gear": {
+              "__splatoon3ink_id": "3cd9aae585dfe373",
+              "__typename": "HeadGear",
+              "name": "Hothouse Hat",
+              "primaryGearPower": {
+                "__splatoon3ink_id": "bf7742050e8638f9",
+                "name": "Special Charge Up",
+                "image": {
+                  "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/e8668a2af7259be74814a9e453528a3e9773435a34177617a45bbf79ad0feb17_0.png"
+                }
+              },
+              "additionalGearPowers": [
+                {
+                  "__splatoon3ink_id": "668f5cf3759aa059",
+                  "name": "Unknown",
+                  "image": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91_0.png"
+                  }
+                },
+                {
+                  "__splatoon3ink_id": "668f5cf3759aa059",
+                  "name": "Unknown",
+                  "image": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91_0.png"
+                  }
+                }
+              ],
+              "image": {
+                "url": "https://splatoon3.ink/assets/splatnet/v3/gear_img/e8ed4c4f2c477cc3de86f099b3f869b4a7f06a4e01338710952186f274d60716_0.png"
+              },
+              "brand": {
+                "name": "Skalop",
+                "image": {
+                  "url": "https://splatoon3.ink/assets/splatnet/v3/brand_img/db625c3f1a4eeb9be7906be633c604bdb092454f399f6c8e8ecf4ed4d566ccf4_0.png"
+                },
+                "id": "QnJhbmQtNw==",
+                "usualGearPower": {
+                  "__splatoon3ink_id": "7f6d89f40eabc41d",
+                  "name": "Quick Respawn",
+                  "desc": "Reduces respawn time after getting splatted repeatedly without splatting any opponents.",
+                  "image": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/aaa9b7e95a61bfd869aaa9beb836c74f9b8d4e5d4186768a27d6e443c64f33ce_0.png"
+                  },
+                  "isEmptySlot": false
+                }
+              }
+            },
+            "isAlreadyOrdered": false,
+            "nextGear": {
+              "id": "U2FsZUdlYXItMV8xNzkyMTk1MjAwXzA="
+            },
+            "previousGear": null,
+            "ownedGear": null
+          },
+          {
+            "id": "U2FsZUdlYXItMV8xNzkyMTk1MjAwXzA=",
+            "saleEndTime": "2026-10-18T00:00:00Z",
+            "price": 1800,
+            "gear": {
+              "__splatoon3ink_id": "c52c8de93993209d",
+              "__typename": "ClothingGear",
+              "name": "Barazushi Black Tee",
+              "primaryGearPower": {
+                "__splatoon3ink_id": "4352d3f254655a4f",
+                "name": "Ink Recovery Up",
+                "image": {
+                  "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/29b845ea895b931bfaf895e0161aeb47166cbf05f94f04601769c885d019073b_0.png"
+                }
+              },
+              "additionalGearPowers": [
+                {
+                  "__splatoon3ink_id": "668f5cf3759aa059",
+                  "name": "Unknown",
+                  "image": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91_0.png"
+                  }
+                }
+              ],
+              "image": {
+                "url": "https://splatoon3.ink/assets/splatnet/v3/gear_img/76c0d1fa3f9b95befd8baa75d983d2f7b920ba673ada15325e345dc337335914_0.png"
+              },
+              "brand": {
+                "name": "Barazushi",
+                "image": {
+                  "url": "https://splatoon3.ink/assets/splatnet/v3/brand_img/d614cbb672fe000ee39c1919e5b034f2e55b702cafaff1a7cc5f37dcf7ad1024_0.png"
+                },
+                "id": "QnJhbmQtMTk=",
+                "usualGearPower": {
+                  "__splatoon3ink_id": "1f746cec210906af",
+                  "name": "Intensify Action",
+                  "desc": "Makes Squid Rolls and Squid Surges easier to do and steadies your aim when firing after jumping.",
+                  "image": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/1a0c78a1714c5abababd7ffcba258c723fefade1f92684aa5f0ff7784cc467d0_0.png"
+                  },
+                  "isEmptySlot": false
+                }
+              }
+            },
+            "isAlreadyOrdered": false,
+            "nextGear": {
+              "id": "U2FsZUdlYXItMV8xNzkyMjA5NjAwXzA="
+            },
+            "previousGear": {
+              "id": "U2FsZUdlYXItMV8xNzkyMTgwODAwXzA="
+            },
+            "ownedGear": null
+          },
+          {
+            "id": "U2FsZUdlYXItMV8xNzkyMjA5NjAwXzA=",
+            "saleEndTime": "2026-10-18T04:00:00Z",
+            "price": 1000,
+            "gear": {
+              "__splatoon3ink_id": "da4b679ea7dc0d42",
+              "__typename": "HeadGear",
+              "name": "Jogging Headband",
+              "primaryGearPower": {
+                "__splatoon3ink_id": "9da8a55c915271b6",
+                "name": "Run Speed Up",
+                "image": {
+                  "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/3b6c56c57a6d8024f9c7d6e259ffa2e2be4bdf958653b834e524ffcbf1e6808e_0.png"
+                }
+              },
+              "additionalGearPowers": [
+                {
+                  "__splatoon3ink_id": "668f5cf3759aa059",
+                  "name": "Unknown",
+                  "image": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91_0.png"
+                  }
+                }
+              ],
+              "image": {
+                "url": "https://splatoon3.ink/assets/splatnet/v3/gear_img/67325c6e691c554c3820c231e7c7fb7b0c5cde0e793399d4898a93d9ccae0a38_0.png"
+              },
+              "brand": {
+                "name": "Zekko",
+                "image": {
+                  "url": "https://splatoon3.ink/assets/splatnet/v3/brand_img/2d12e99ea10566aeb91543d4b95f4b91709551dd3eab66c2216e26b382f89229_0.png"
+                },
+                "id": "QnJhbmQtNA==",
+                "usualGearPower": {
+                  "__splatoon3ink_id": "f09d91b4cb53fbe1",
+                  "name": "Special Saver",
+                  "desc": "Reduces special-gauge decrease after getting splatted.",
+                  "image": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/e3154ab67494df2793b72eabf912104c21fbca71e540230597222e766756b3e4_0.png"
+                  },
+                  "isEmptySlot": false
+                }
+              }
+            },
+            "isAlreadyOrdered": false,
+            "nextGear": {
+              "id": "U2FsZUdlYXItMV8xNzkyMjI0MDAwXzA="
+            },
+            "previousGear": {
+              "id": "U2FsZUdlYXItMV8xNzkyMTk1MjAwXzA="
+            },
+            "ownedGear": null
+          },
+          {
+            "id": "U2FsZUdlYXItMV8xNzkyMjI0MDAwXzA=",
+            "saleEndTime": "2026-10-18T08:00:00Z",
+            "price": 1000,
+            "gear": {
+              "__splatoon3ink_id": "6cc693bf2514fb9e",
+              "__typename": "HeadGear",
+              "name": "Takoroka Mesh",
+              "primaryGearPower": {
+                "__splatoon3ink_id": "7f6d89f40eabc41d",
+                "name": "Quick Respawn",
+                "image": {
+                  "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/aaa9b7e95a61bfd869aaa9beb836c74f9b8d4e5d4186768a27d6e443c64f33ce_0.png"
+                }
+              },
+              "additionalGearPowers": [
+                {
+                  "__splatoon3ink_id": "668f5cf3759aa059",
+                  "name": "Unknown",
+                  "image": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91_0.png"
+                  }
+                }
+              ],
+              "image": {
+                "url": "https://splatoon3.ink/assets/splatnet/v3/gear_img/437be7eb016cfeceaacf16059a1e6767eef01c6cf34f05685950c3c2a75cd320_0.png"
+              },
+              "brand": {
+                "name": "Takoroka",
+                "image": {
+                  "url": "https://splatoon3.ink/assets/splatnet/v3/brand_img/c879dc6e7e8200d38565e3d604591f6a727273b5b566ee119ea7a22e7d1f888a_0.png"
+                },
+                "id": "QnJhbmQtMTE=",
+                "usualGearPower": {
+                  "__splatoon3ink_id": "bf7742050e8638f9",
+                  "name": "Special Charge Up",
+                  "desc": "Increases special-gauge fill rate.",
+                  "image": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/e8668a2af7259be74814a9e453528a3e9773435a34177617a45bbf79ad0feb17_0.png"
+                  },
+                  "isEmptySlot": false
+                }
+              }
+            },
+            "isAlreadyOrdered": false,
+            "nextGear": {
+              "id": "U2FsZUdlYXItMV8xNzkyMjM4NDAwXzA="
+            },
+            "previousGear": {
+              "id": "U2FsZUdlYXItMV8xNzkyMjA5NjAwXzA="
+            },
+            "ownedGear": null
+          },
+          {
+            "id": "U2FsZUdlYXItMV8xNzkyMjM4NDAwXzA=",
+            "saleEndTime": "2026-10-18T12:00:00Z",
+            "price": 3200,
+            "gear": {
+              "__splatoon3ink_id": "82f1f448a4f0fe54",
+              "__typename": "HeadGear",
+              "name": "Yamagiri Beanie",
+              "primaryGearPower": {
+                "__splatoon3ink_id": "f09d91b4cb53fbe1",
+                "name": "Special Saver",
+                "image": {
+                  "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/e3154ab67494df2793b72eabf912104c21fbca71e540230597222e766756b3e4_0.png"
+                }
+              },
+              "additionalGearPowers": [
+                {
+                  "__splatoon3ink_id": "668f5cf3759aa059",
+                  "name": "Unknown",
+                  "image": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91_0.png"
+                  }
+                }
+              ],
+              "image": {
+                "url": "https://splatoon3.ink/assets/splatnet/v3/gear_img/30d92cff43288a8c3be60b821e9dc36a8c8217ec64e307b81c6b9a992f45ec02_0.png"
+              },
+              "brand": {
+                "name": "Inkline",
+                "image": {
+                  "url": "https://splatoon3.ink/assets/splatnet/v3/brand_img/b7721cb9eafab52885c463b2bacf32ec0844834e9ac3f62230606de83497a1da_0.png"
+                },
+                "id": "QnJhbmQtOQ==",
+                "usualGearPower": {
+                  "__splatoon3ink_id": "e6cf18b7c3d7777a",
+                  "name": "Sub Resistance Up",
+                  "desc": "Reduces effects and damage from sub weapons.",
+                  "image": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/664489b24e668ef1937bfc9a80a8cf9cf4927b1e16481fa48e7faee42122996d_0.png"
+                  },
+                  "isEmptySlot": false
+                }
+              }
+            },
+            "isAlreadyOrdered": false,
+            "nextGear": {
+              "id": "U2FsZUdlYXItMV8xNzkyMjUyODAwXzA="
+            },
+            "previousGear": {
+              "id": "U2FsZUdlYXItMV8xNzkyMjI0MDAwXzA="
+            },
+            "ownedGear": null
+          },
+          {
+            "id": "U2FsZUdlYXItMV8xNzkyMjUyODAwXzA=",
+            "saleEndTime": "2026-10-18T16:00:00Z",
+            "price": 17700,
+            "gear": {
+              "__splatoon3ink_id": "b7c3f1f0fd72870a",
+              "__typename": "ClothingGear",
+              "name": "Negative Longcuff Sweater",
+              "primaryGearPower": {
+                "__splatoon3ink_id": "ad9a06bbb1123add",
+                "name": "Thermal Ink",
+                "image": {
+                  "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/56816a7181e663b5fedce6315eb0ad538e0aadc257b46a630fcfcc4a16155941_0.png"
+                }
+              },
+              "additionalGearPowers": [
+                {
+                  "__splatoon3ink_id": "668f5cf3759aa059",
+                  "name": "Unknown",
+                  "image": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91_0.png"
+                  }
+                },
+                {
+                  "__splatoon3ink_id": "668f5cf3759aa059",
+                  "name": "Unknown",
+                  "image": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91_0.png"
+                  }
+                },
+                {
+                  "__splatoon3ink_id": "668f5cf3759aa059",
+                  "name": "Unknown",
+                  "image": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91_0.png"
+                  }
+                }
+              ],
+              "image": {
+                "url": "https://splatoon3.ink/assets/splatnet/v3/gear_img/550d4a0a52a23d2ba411466f19860b9ad1904fcab347a2df2d8dbc73ffed01ea_0.png"
+              },
+              "brand": {
+                "name": "Toni Kensa",
+                "image": {
+                  "url": "https://splatoon3.ink/assets/splatnet/v3/brand_img/ee29b54b234f20ebb7c2934e453cd5c732cc1b5fd0fc3928147f9dd9f5a4fdb1_0.png"
+                },
+                "id": "QnJhbmQtMTc=",
+                "usualGearPower": {
+                  "__splatoon3ink_id": "351dbd2ad833da59",
+                  "name": "Ink Saver (Main)",
+                  "desc": "Decreases amount of ink consumed by your main weapon.",
+                  "image": {
+                    "url": "https://splatoon3.ink/assets/splatnet/v3/skill_img/5c98cc37d2ce56291a7e430459dc9c44d53ca98b8426c5192f4a53e6dd6e4293_0.png"
+                  },
+                  "isEmptySlot": false
+                }
+              }
+            },
+            "isAlreadyOrdered": false,
+            "nextGear": null,
+            "previousGear": {
+              "id": "U2FsZUdlYXItMV8xNzkyMjM4NDAwXzA="
+            },
+            "ownedGear": null
+          }
+        ]
+      }
+    }
+  },
+  "en-US": {
+    "gear": {
+      "6cc693bf2514fb9e": {
+        "name": "Takoroka Mesh"
+      },
+      "9089992996ad5abf": {
+        "name": "Bucket Hat"
+      },
+      "1ceee981c71928c8": {
+        "name": "White Headband"
+      },
+      "82f1f448a4f0fe54": {
+        "name": "Yamagiri Beanie"
+      },
+      "da4b679ea7dc0d42": {
+        "name": "Jogging Headband"
+      },
+      "b7c3f1f0fd72870a": {
+        "name": "Negative Longcuff Sweater"
+      },
+      "bf788cd30ce7483f": {
+        "name": "Basic Tee"
+      },
+      "3cd9aae585dfe373": {
+        "name": "Hothouse Hat"
+      },
+      "c52c8de93993209d": {
+        "name": "Barazushi Black Tee"
+      }
+    },
+    "festivals": {
+      "JUEA-00107": {
+        "title": "Which would you reserve for a day?",
+        "teams": [
+          {
+            "teamName": "Palace"
+          },
+          {
+            "teamName": "Theme Park"
+          },
+          {
+            "teamName": "Beach"
+          }
+        ]
+      }
+    },
+    "stages": {
+      "VnNTdGFnZS0x": {
+        "name": "Scorch Gorge"
+      },
+      "VnNTdGFnZS01": {
+        "name": "Um'ami Ruins"
+      },
+      "VnNTdGFnZS04": {
+        "name": "Barnacle & Dime"
+      },
+      "VnNTdGFnZS0xMw==": {
+        "name": "Inkblot Art Academy"
+      },
+      "VnNTdGFnZS0xNA==": {
+        "name": "Sturgeon Shipyard"
+      },
+      "VnNTdGFnZS0xNg==": {
+        "name": "Wahoo World"
+      },
+      "VnNTdGFnZS0xNw==": {
+        "name": "Humpback Pump Track"
+      },
+      "VnNTdGFnZS0yMQ==": {
+        "name": "Robo ROM-en"
+      },
+      "Q29vcFN0YWdlLTg=": {
+        "name": "Jammin' Salmon Junction"
+      },
+      "Q29vcFN0YWdlLTk=": {
+        "name": "Bonerattle Arena"
+      },
+      "VnNTdGFnZS0yNg==": {
+        "name": "Urchin Underpass"
+      }
+    },
+    "rules": {
+      "VnNSdWxlLTA=": {
+        "name": "Turf War"
+      },
+      "VnNSdWxlLTE=": {
+        "name": "Splat Zones"
+      },
+      "VnNSdWxlLTI=": {
+        "name": "Tower Control"
+      },
+      "VnNSdWxlLTM=": {
+        "name": "Rainmaker"
+      }
+    },
+    "weapons": {
+      "747937841598fff7": {
+        "name": "Random"
+      },
+      "83c543ed4ae19005": {
+        "name": "Splat Dualies"
+      },
+      "183dfb6256c39892": {
+        "name": "Rapid Blaster Pro"
+      },
+      "eb5098db38e209e1": {
+        "name": "Bloblobber"
+      },
+      "de8a2a542dbe6b99": {
+        "name": "S-BLAST '92"
+      },
+      "17b8d348d6380ae9": {
+        "name": "Goo Tuber"
+      },
+      "0578f3b3d9af08ed": {
+        "name": "L-3 Nozzlenose"
+      },
+      "ed647072fa99c73e": {
+        "name": "Splash-o-matic"
+      },
+      "01b960996da8ed63": {
+        "name": "Random"
+      }
+    },
+    "bosses": {
+      "Q29vcEVuZW15LTIz": {
+        "name": "Cohozuna"
+      },
+      "Q29vcEVuZW15LTI1": {
+        "name": "Megalodontia"
+      }
+    },
+    "events": {
+      "TGVhZ3VlTWF0Y2hFdmVudC1XZWFwb25MaW1pdGVkX01hbmV1dmVy": {
+        "name": "Dualies at Ten Paces",
+        "desc": "Enter a battlefield filled with slippery<br />customers in this all-dualies war!",
+        "regulation": "Stick and move with the best of 'em in this dualies dustup!<br /><br />・ Players can only choose different varieties of dualies.<br />・ Both primary and secondary abilities will be enabled."
+      }
+    },
+    "brands": {
+      "QnJhbmQtMTk=": {
+        "name": "Barazushi"
+      },
+      "QnJhbmQtOQ==": {
+        "name": "Inkline"
+      },
+      "QnJhbmQtMQ==": {
+        "name": "Zink"
+      },
+      "QnJhbmQtNw==": {
+        "name": "Skalop"
+      },
+      "QnJhbmQtMTc=": {
+        "name": "Toni Kensa"
+      },
+      "QnJhbmQtMTE=": {
+        "name": "Takoroka"
+      },
+      "QnJhbmQtNA==": {
+        "name": "Zekko"
+      },
+      "QnJhbmQtMA==": {
+        "name": "SquidForce"
+      }
+    },
+    "powers": {
+      "1f746cec210906af": {
+        "name": "Intensify Action"
+      },
+      "9da8a55c915271b6": {
+        "name": "Run Speed Up"
+      },
+      "668f5cf3759aa059": {
+        "name": "Unknown"
+      },
+      "e6cf18b7c3d7777a": {
+        "name": "Sub Resistance Up"
+      },
+      "351dbd2ad833da59": {
+        "name": "Ink Saver (Main)"
+      },
+      "4352d3f254655a4f": {
+        "name": "Ink Recovery Up"
+      },
+      "ad9a06bbb1123add": {
+        "name": "Thermal Ink"
+      },
+      "7f6d89f40eabc41d": {
+        "name": "Quick Respawn"
+      },
+      "79a401dc1b5a80b1": {
+        "name": "Last-Ditch Effort"
+      },
+      "7a177ddb3aeaed0b": {
+        "name": "Ink Resistance Up"
+      },
+      "f09d91b4cb53fbe1": {
+        "name": "Special Saver"
+      },
+      "bf7742050e8638f9": {
+        "name": "Special Charge Up"
+      }
+    }
+  },
+  "ja-JP": {
+    "gear": {
+      "6cc693bf2514fb9e": {
+        "name": "ヤコメッシュ"
+      },
+      "9089992996ad5abf": {
+        "name": "イカバケット"
+      },
+      "1ceee981c71928c8": {
+        "name": "ヘッドバンド ホワイト"
+      },
+      "82f1f448a4f0fe54": {
+        "name": "ヤマギリビーニー"
+      },
+      "b7c3f1f0fd72870a": {
+        "name": "ドロップスウェット ネガ"
+      },
+      "da4b679ea7dc0d42": {
+        "name": "ランニングバンド"
+      },
+      "c52c8de93993209d": {
+        "name": "バラズシT ゲンマイ"
+      },
+      "bf788cd30ce7483f": {
+        "name": "わかばイカＴ"
+      },
+      "3cd9aae585dfe373": {
+        "name": "ホタプラントハット"
+      }
+    },
+    "festivals": {
+      "JUEA-00107": {
+        "title": "１日貸し切るなら？",
+        "teams": [
+          {
+            "teamName": "宮殿"
+          },
+          {
+            "teamName": "遊園地"
+          },
+          {
+            "teamName": "ビーチ"
+          }
+        ]
+      }
+    },
+    "stages": {
+      "VnNTdGFnZS0x": {
+        "name": "ユノハナ大渓谷"
+      },
+      "VnNTdGFnZS01": {
+        "name": "ナンプラー遺跡"
+      },
+      "VnNTdGFnZS04": {
+        "name": "タラポートショッピングパーク"
+      },
+      "VnNTdGFnZS0xMw==": {
+        "name": "海女美術大学"
+      },
+      "VnNTdGFnZS0xNA==": {
+        "name": "チョウザメ造船"
+      },
+      "VnNTdGFnZS0xNg==": {
+        "name": "スメーシーワールド"
+      },
+      "VnNTdGFnZS0xNw==": {
+        "name": "コンブトラック"
+      },
+      "VnNTdGFnZS0yMQ==": {
+        "name": "バイガイ亭"
+      },
+      "Q29vcFN0YWdlLTg=": {
+        "name": "すじこジャンクション跡"
+      },
+      "Q29vcFN0YWdlLTk=": {
+        "name": "どんぴこ闘技場"
+      },
+      "VnNTdGFnZS0yNg==": {
+        "name": "デカライン高架下"
+      },
+      "Q29vcFN0YWdlLTEwNQ==": {
+        "name": "タラポートショッピングパーク"
+      }
+    },
+    "rules": {
+      "VnNSdWxlLTA=": {
+        "name": "ナワバリバトル"
+      },
+      "VnNSdWxlLTE=": {
+        "name": "ガチエリア"
+      },
+      "VnNSdWxlLTI=": {
+        "name": "ガチヤグラ"
+      },
+      "VnNSdWxlLTM=": {
+        "name": "ガチホコバトル"
+      }
+    },
+    "weapons": {
+      "747937841598fff7": {
+        "name": "ランダム"
+      },
+      "83c543ed4ae19005": {
+        "name": "スプラマニューバー"
+      },
+      "183dfb6256c39892": {
+        "name": "Rブラスターエリート"
+      },
+      "eb5098db38e209e1": {
+        "name": "オーバーフロッシャー"
+      },
+      "de8a2a542dbe6b99": {
+        "name": "S-BLAST92"
+      },
+      "17b8d348d6380ae9": {
+        "name": "ソイチューバー"
+      },
+      "0578f3b3d9af08ed": {
+        "name": "L3リールガン"
+      },
+      "ed647072fa99c73e": {
+        "name": "シャープマーカー"
+      },
+      "01b960996da8ed63": {
+        "name": "ランダム"
+      }
+    },
+    "bosses": {
+      "Q29vcEVuZW15LTIz": {
+        "name": "ヨコヅナ"
+      },
+      "Q29vcEVuZW15LTI1": {
+        "name": "ジョー"
+      }
+    },
+    "events": {
+      "TGVhZ3VlTWF0Y2hFdmVudC1XZWFwb25MaW1pdGVkX01hbmV1dmVy": {
+        "name": "最強マニューバー決定戦",
+        "desc": "ブキ限定バトル！ 最強のマニューバー使いを目指せ！",
+        "regulation": "ブキ限定バトル！ 最強のマニューバー使いを目指せ！<br /><br />・ 使えるブキはマニューバーだけ！<br />・ 基本ギアパワーと追加ギアパワーは有効だ！"
+      }
+    },
+    "brands": {
+      "QnJhbmQtMTk=": {
+        "name": "バラズシ"
+      },
+      "QnJhbmQtOQ==": {
+        "name": "シグレニ"
+      },
+      "QnJhbmQtMQ==": {
+        "name": "アイロニック"
+      },
+      "QnJhbmQtNw==": {
+        "name": "ホタックス"
+      },
+      "QnJhbmQtMTc=": {
+        "name": "タタキケンサキ"
+      },
+      "QnJhbmQtMTE=": {
+        "name": "ヤコ"
+      },
+      "QnJhbmQtNA==": {
+        "name": "エゾッコ"
+      },
+      "QnJhbmQtMA==": {
+        "name": "バトロイカ"
+      }
+    },
+    "powers": {
+      "1f746cec210906af": {
+        "name": "アクション強化"
+      },
+      "9da8a55c915271b6": {
+        "name": "ヒト移動速度アップ"
+      },
+      "668f5cf3759aa059": {
+        "name": "はてな"
+      },
+      "e6cf18b7c3d7777a": {
+        "name": "サブ影響軽減"
+      },
+      "351dbd2ad833da59": {
+        "name": "インク効率アップ(メイン)"
+      },
+      "4352d3f254655a4f": {
+        "name": "インク回復力アップ"
+      },
+      "ad9a06bbb1123add": {
+        "name": "サーマルインク"
+      },
+      "7f6d89f40eabc41d": {
+        "name": "復活時間短縮"
+      },
+      "79a401dc1b5a80b1": {
+        "name": "ラストスパート"
+      },
+      "7a177ddb3aeaed0b": {
+        "name": "相手インク影響軽減"
+      },
+      "f09d91b4cb53fbe1": {
+        "name": "スペシャル減少量ダウン"
+      },
+      "bf7742050e8638f9": {
+        "name": "スペシャル増加量アップ"
+      }
+    }
+  }
+}
