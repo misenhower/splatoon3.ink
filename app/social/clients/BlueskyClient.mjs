@@ -54,7 +54,7 @@ export default class BlueskyClient extends Client
   }
 
   async send(status, generator) {
-    validateSocialPost(status, 'bluesky', this.locale);
+    validateSocialPost(status, this.locale);
 
     if (!status.media?.length) {
       console.error(`[${this.name}] No media provided for ${generator.key}`);

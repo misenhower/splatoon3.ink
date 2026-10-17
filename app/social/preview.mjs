@@ -27,8 +27,7 @@ export async function previewStatuses(locale = 'en-US', date, onlyGenerator) {
       if (!await generator.shouldPost({ key: 'preview' })) continue;
 
       const status = await generator.getStatus(screenshots);
-      validateSocialPost(status, 'twitter', locale);
-      validateSocialPost(status, 'bluesky', locale);
+      validateSocialPost(status, locale);
       await writer.send(status, generator);
       console.log(`Preview: ${writer.dir}/${generator.key}`);
       count++;

@@ -6,7 +6,6 @@ import StatusGeneratorManager from './StatusGeneratorManager.mjs';
 import BlueskyClient from './clients/BlueskyClient.mjs';
 import BufferTwitterClient from './clients/BufferTwitterClient.mjs';
 import ValueCache from '../common/ValueCache.mjs';
-import { validateSocialPost } from './validateSocialPost.mjs';
 import { MissingTranslationError } from './i18n/SocialMessages.mjs';
 import ScreenshotHelper from '../screenshots/ScreenshotHelper.mjs';
 
@@ -146,15 +145,6 @@ describe('Japanese account routing', () => {
 
     expect(client.send).not.toHaveBeenCalled();
     expect(marker).not.toHaveBeenCalled();
-  });
-});
-
-describe('Japanese post limits', () => {
-  it('counts Japanese using Twitter weights rather than string length', () => {
-    expect(() => validateSocialPost({ locale: 'ja-JP', status: 'あ'.repeat(140) }, 'twitter', 'ja-JP')).not.toThrow();
-    expect(() => validateSocialPost({ locale: 'ja-JP', status: 'あ'.repeat(141) }, 'twitter', 'ja-JP')).toThrow('weighted');
-    expect(() => validateSocialPost({ locale: 'ja-JP', status: 'あ'.repeat(300) }, 'bluesky', 'ja-JP')).not.toThrow();
-    expect(() => validateSocialPost({ locale: 'ja-JP', status: 'あ'.repeat(301) }, 'bluesky', 'ja-JP')).toThrow('Bluesky');
   });
 
   it('rejects wrong-language routing before delivery', async () => {

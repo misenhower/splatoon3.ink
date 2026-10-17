@@ -25,7 +25,7 @@ export default class BufferTwitterClient extends Client {
   }
 
   async send(status, generator) {
-    validateSocialPost(status, 'twitter', this.locale);
+    validateSocialPost(status, this.locale);
 
     if (!status.status || !status.media?.length || status.media.length > 4) {
       throw new Error('Buffer Twitter posts require text and one to four images');

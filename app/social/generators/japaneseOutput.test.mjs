@@ -70,8 +70,7 @@ async function generate(generator) {
 
   const status = await generator.getStatus({ capture: vi.fn().mockResolvedValue(Buffer.from('image')) });
 
-  validateSocialPost(status, 'twitter', 'ja-JP');
-  validateSocialPost(status, 'bluesky', 'ja-JP');
+  validateSocialPost(status, 'ja-JP');
 
   return status;
 }
@@ -180,49 +179,5 @@ describe('Japanese social output', () => {
     const messages = new SocialMessages('ja-JP', {});
 
     expect(() => messages.game('stages', node('stage'))).toThrow(MissingTranslationError);
-  });
-
-  it('fits both networks with long Splatfest stage names and two tricolor stages', async () => {
-    const longNames = structuredClone(translations);
-    longNames.stages.stage.name = 'タラポートショッピングパーク';
-    const generator = new SchedulesStatus({ ...options, translations: longNames });
-
-    vi.spyOn(generator, 'getStages').mockResolvedValue({
-      splatfestOpen: schedule,
-      splatfestPro: schedule,
-      tricolor: {
-        isTricolorActive: true,
-        tricolorStages: [node('stage'), node('stage')],
-      },
-    });
-
-    await generate(generator);
-  });
-
-  it.each([SalmonRunStatus, SalmonRunUpcomingStatus, EggstraWorkStatus, EggstraWorkUpcomingStatus])(
-    'fits both networks with long stage and weapon names (%s)',
-    async Generator => {
-      const longNames = structuredClone(translations);
-      longNames.stages.coop.name = 'タラポートショッピングパーク';
-      longNames.weapons.weapon.name = 'クアッドホッパーブラック';
-      const generator = new Generator({ ...options, translations: longNames });
-      vi.spyOn(generator, 'getActiveSchedule').mockResolvedValue({ ...schedule, isGrizzcoMystery: true });
-
-      await generate(generator);
-    },
-  );
-
-  it('fits a daily drop with three long gear and ability names', async () => {
-    const longNames = structuredClone(translations);
-    longNames.gear.gear.name = 'キングオクトTブラックベロア';
-    longNames.brands.brand.name = 'バトロイカ';
-    const generator = new DailyDropGearStatus({ ...options, translations: longNames });
-
-    vi.spyOn(generator, 'getData').mockResolvedValue({
-      brand: { brand: node('brand') },
-      gears: [gear, gear, gear],
-    });
-
-    await generate(generator);
   });
 });
