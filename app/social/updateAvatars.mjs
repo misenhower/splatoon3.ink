@@ -5,6 +5,7 @@ import prefixedConsole from '../common/prefixedConsole.mjs';
 import ValueCache from '../common/ValueCache.mjs';
 import { defaultClients } from './index.mjs';
 import { getCurrentVariant } from './avatarVariants.mjs';
+import TwitterClient from './clients/TwitterClient.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const avatarsDir = path.join(__dirname, 'avatars');
@@ -19,7 +20,8 @@ export async function updateAvatars() {
   let variant = getCurrentVariant();
   let avatarBuffer = null;
 
-  for (let client of defaultClients()) {
+  // X profile updates use the direct API; posts are sent through Buffer.
+  for (let client of [...defaultClients(), new TwitterClient]) {
     if (!client.updateProfile || !(await client.canSend())) {
       continue;
     }

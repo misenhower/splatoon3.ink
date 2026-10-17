@@ -29,6 +29,11 @@ export default class TwitterClient extends Client
     return this._api;
   }
 
+  async updateProfile(avatarBuffer, displayName) {
+    await this.api().v1.updateAccountProfileImage(avatarBuffer);
+    await this.api().v1.updateAccountProfile({ name: displayName });
+  }
+
   async send(status, generator) {
     if (!status.media?.length) {
       console.error(`[${this.name}] No media provided for ${generator.key}`);
