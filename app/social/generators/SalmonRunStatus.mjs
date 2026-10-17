@@ -29,7 +29,6 @@ export default class SalmonRunStatus extends StatusGenerator
     let params = {
       mode,
       stage: this.game('stages', schedule.settings.coopStage),
-      period: this.messages.period(schedule.startTime, schedule.endTime),
     };
 
     if (schedule.isGrizzcoMystery) {

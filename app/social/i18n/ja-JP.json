@@ -1,10 +1,10 @@
 {
   "schedule": {
-    "rotation": "ステージ情報 {period}\n#スプラトゥーン3",
+    "rotation": "ステージ情報\n#スプラトゥーン3",
     "series": "– バンカラ（チャレンジ）：{rule}",
     "open": "– バンカラ（オープン）：{rule}",
     "x": "– Xマッチ：{rule}",
-    "festival": "フェスマッチ {period}\n#スプラトゥーン3",
+    "festival": "フェスマッチ開催中！\n#スプラトゥーン3",
     "festivalOpen": "オープン：{stage1}・{stage2}",
     "festivalPro": "チャレンジ：{stage1}・{stage2}",
     "tricolorOne": "トリカラ：{stage}",
@@ -33,20 +33,20 @@
       "regular": "サーモンラン",
       "bigRun": "ビッグラン"
     },
-    "open": "{mode}：{stage}\n{period}\n#スプラトゥーン3",
-    "openMystery": "{mode}：{stage}（ランダムブキ）\n{period}\n#スプラトゥーン3",
-    "openGrizzco": "{mode}：{stage}（クマサン印のブキ）\n{period}\n#スプラトゥーン3",
+    "open": "{stage}で{mode}開催中！\n#スプラトゥーン3",
+    "openMystery": "{stage}で{mode}開催中！ランダムブキのシフト！\n#スプラトゥーン3",
+    "openGrizzco": "{stage}で{mode}開催中！クマサン印のブキのシフト！\n#スプラトゥーン3",
     "king": "オカシラシャケ：{king}",
     "weapons": "支給ブキ：",
     "weapon": "– {weapon}",
     "upcomingBigRun": "ビッグランの予定が追加されました！\nステージ：{stage}\n#スプラトゥーン3",
     "upcomingGrizzco": "クマサン印のブキのシフトが追加されました！\nステージ：{stage}\n#スプラトゥーン3",
     "upcomingMystery": "ランダムブキのシフトが追加されました！\nステージ：{stage}\n#スプラトゥーン3",
-    "starts": "{time} 開始\n支給ブキ：",
+    "starts": "開始まであと{time}！\n支給ブキ：",
     "unknownStage": "？？？"
   },
   "eggstra": {
-    "open": "バイトチームコンテスト開催中！\n{stage}\n{period}\n#スプラトゥーン3",
+    "open": "バイトチームコンテスト開催中！\n{stage}\n#スプラトゥーン3",
     "upcoming": "バイトチームコンテストの予定が追加されました！\nステージ：{stage}\n#スプラトゥーン3"
   },
   "time": {
@@ -58,10 +58,10 @@
   "festival": {
     "global": "全世界共通",
     "globalResults": "全世界共通",
-    "upcoming": "次回のフェスの投票受付中！\n{title}\n{period}\n#スプラトゥーン3",
-    "upcoming:3d": "次回のフェスをお忘れなく！\n{title}\n{period}\n#スプラトゥーン3",
-    "upcoming:1d": "まもなくフェス開催！\n{title}\n{period}\n#スプラトゥーン3",
-    "active": "フェス開催中！\n{title}\n{period}\n#スプラトゥーン3",
+    "upcoming": "次回のフェスの投票受付中！\n{title}\n#スプラトゥーン3",
+    "upcoming:3d": "フェス開催まであと3日！\n{title}\n#スプラトゥーン3",
+    "upcoming:1d": "フェス開催まであと24時間！\n{title}\n#スプラトゥーン3",
+    "active": "フェス開催中！\n{title}\n#スプラトゥーン3",
     "ended": "フェスは終了しました！結果発表は通常、終了から2時間以内です。\n#スプラトゥーン3",
     "results": "フェスの結果発表！「{team}」チームの勝利！\n#スプラトゥーン3",
     "resultsWrapper": "{title} フェスの結果"

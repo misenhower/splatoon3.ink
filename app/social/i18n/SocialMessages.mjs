@@ -78,8 +78,6 @@ export default class SocialMessages {
   }
 
   timeUntil(startTime, now) {
-    if (this.locale === 'ja-JP') return `${this.date(startTime)}（日本時間）`;
-
     const hours = Math.floor((startTime - now) / (1000 * 60 * 60));
 
     if (hours >= 24) {

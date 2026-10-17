@@ -39,7 +39,7 @@ export default class SchedulesStatus extends StatusGenerator
       let festProStages = stages.splatfestPro.settings.vsStages;
 
       let lines = [
-        this.t('schedule.festival', { period: this.messages.period(stages.splatfestOpen.startTime, stages.splatfestOpen.endTime) }),
+        this.t('schedule.festival'),
         '',
         this.t('schedule.festivalOpen', {
           stage1: this.game('stages', festOpenStages[0]),
@@ -70,7 +70,7 @@ export default class SchedulesStatus extends StatusGenerator
     }
 
     let lines = [
-      this.t('schedule.rotation', { period: this.messages.period(stages.regular.startTime, stages.regular.endTime) }),
+      this.t('schedule.rotation'),
       '',
       this.t('schedule.series', { rule: this.game('rules', stages.anarchySeries.settings.vsRule) }),
       this.t('schedule.open', { rule: this.game('rules', stages.anarchyOpen.settings.vsRule) }),

@@ -96,7 +96,6 @@ export default class SplatfestStatus extends StatusGenerator
     return this.t(`festival.${state}`, {
       region: regionText,
       title: this.game('festivals', festival, 'title'),
-      period: this.messages.period(festival.startTime, festival.endTime),
     });
   }
 

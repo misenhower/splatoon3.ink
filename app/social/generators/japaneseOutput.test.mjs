@@ -76,7 +76,7 @@ async function generate(generator) {
 }
 
 describe('Japanese social output', () => {
-  it('uses Japanese game names and a JST rotation crossing midnight', async () => {
+  it('uses Japanese game names without adding dates to rotation announcements', async () => {
     const generator = new SchedulesStatus(options);
     vi.spyOn(generator, 'getStages').mockResolvedValue({
       regular: schedule,
@@ -87,7 +87,8 @@ describe('Japanese social output', () => {
 
     const status = await generate(generator);
 
-    expect(status.status).toContain('10/17 23:00〜10/18 1:00（日本時間）');
+    expect(status.status).toContain('ステージ情報\n#スプラトゥーン3');
+    expect(status.status).not.toContain('10/17');
     expect(status.status).toContain('バンカラ（チャレンジ）：ガチエリア');
     expect(status.media[0].altText).toContain('ユノハナ大渓谷');
     expect(status.status).not.toContain('English');
@@ -110,17 +111,20 @@ describe('Japanese social output', () => {
     expect(status.status).toContain('アラマキ砦');
     expect(status.status).toContain('ヨコヅナ');
     expect(status.status).toContain('スプラシューター');
+    expect(status.status).toContain('開催中！');
+    expect(status.status).not.toContain('10/17');
     expect(status.media[0].altText).toBe(status.status);
     expect(data).toEqual(before);
   });
 
-  it.each([SalmonRunUpcomingStatus, EggstraWorkUpcomingStatus])('uses an absolute start for upcoming shifts', async Generator => {
+  it.each([SalmonRunUpcomingStatus, EggstraWorkUpcomingStatus])('counts down to upcoming shifts', async Generator => {
     const generator = new Generator(options);
     vi.spyOn(generator, 'getActiveSchedule').mockResolvedValue({ ...schedule, isMystery: true });
 
     const status = await generate(generator);
 
-    expect(status.status).toContain('10/17 23:00（日本時間） 開始');
+    expect(status.status).toContain('開始まであと2日！');
+    expect(status.status).not.toContain('10/17');
     expect(status.status).not.toContain('English');
   });
 
@@ -141,13 +145,14 @@ describe('Japanese social output', () => {
     expect((await generate(regular)).status).toContain('イカヘアピン（インク効率アップ（メイン））');
   });
 
-  it('localizes challenge names and accessibility text', async () => {
+  it('keeps exact JST challenge times, including periods crossing midnight', async () => {
     const generator = new ChallengeStatus(options);
     vi.spyOn(generator, 'getActiveSchedule').mockResolvedValue(schedule);
 
     const status = await generate(generator);
 
     expect(status.status).toContain('イベント名');
+    expect(status.status).toContain('10/17 23:00〜10/18 1:00（日本時間）');
     expect(status.media[0].altText).toBe('ルール1\nルール2');
   });
 
@@ -159,10 +164,14 @@ describe('Japanese social output', () => {
     const status = await generate(generator);
 
     expect(status.status).not.toContain('English');
+    expect(status.status).not.toContain('10/17');
     if (state !== 'ended') {
       expect(status.status).toContain('どちらを選ぶ？');
-      expect(status.status).toContain('10/17 23:00〜10/18 1:00（日本時間）');
     }
+
+    if (state === 'upcoming:3d') expect(status.status).toContain('フェス開催まであと3日！');
+    if (state === 'upcoming:1d') expect(status.status).toContain('フェス開催まであと24時間！');
+    if (state === 'active') expect(status.status).toContain('フェス開催中！');
   });
 
   it('localizes winning team names and the results wrapper', async () => {

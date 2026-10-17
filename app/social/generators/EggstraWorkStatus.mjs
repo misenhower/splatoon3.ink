@@ -27,7 +27,6 @@ export default class EggstraWorkStatus extends StatusGenerator
 
     lines.push(this.t('eggstra.open', {
       stage: this.game('stages', schedule.settings.coopStage),
-      period: this.messages.period(schedule.startTime, schedule.endTime),
     }));
 
     lines.push('');
