@@ -1,10 +1,10 @@
 {
   "schedule": {
-    "rotation": "ステージ情報\n#maprotation",
+    "rotation": "ステージ情報\n#ステージ情報",
     "series": "– バンカラ（チャレンジ）：{rule}",
     "open": "– バンカラ（オープン）：{rule}",
     "x": "– Xマッチ：{rule}",
-    "festival": "フェスマッチ開催中！\n#splatfest #maprotation",
+    "festival": "フェスマッチ開催中！\n#フェス情報 #ステージ情報",
     "festivalOpen": "オープン：{stage1}・{stage2}",
     "festivalPro": "チャレンジ：{stage1}・{stage2}",
     "tricolorOne": "トリカラ：{stage}",
@@ -20,34 +20,34 @@
     }
   },
   "gear": {
-    "daily": "ゲソタウン 本日のピックアップ：{brand}\n#dailydrop",
+    "daily": "ゲソタウン 本日のピックアップ：{brand}\n#ゲソタウンピックアップ",
     "item": "{icon} {name}（{power}）",
-    "regular": "ゲソタウンで販売中！\n{icon} {name}（{power}）\n#splatnet3"
+    "regular": "ゲソタウンで販売中！\n{icon} {name}（{power}）\n#ゲソタウン"
   },
   "challenge": {
     "open": "イベントマッチ開催中！\n{name}",
-    "stages": "{period}\n{rule}／{stage1}・{stage2}\n#スプラトゥーン3"
+    "stages": "{period}\n{rule}／{stage1}・{stage2}\n#イベントマッチ #スプラトゥーン3"
   },
   "salmon": {
     "mode": {
       "regular": "サーモンラン",
       "bigRun": "ビッグラン"
     },
-    "open": "{stage}で{mode}開催中！\n#salmonrun #スプラトゥーン3",
-    "openMystery": "{stage}で{mode}開催中！ランダムブキのシフト！\n#salmonrun #スプラトゥーン3",
-    "openGrizzco": "{stage}で{mode}開催中！クマサン印のブキのシフト！\n#salmonrun #スプラトゥーン3",
+    "open": "{stage}で{mode}開催中！\n#サーモンラン #スプラトゥーン3",
+    "openMystery": "{stage}で{mode}開催中！ランダムブキのシフト！\n#サーモンラン #スプラトゥーン3",
+    "openGrizzco": "{stage}で{mode}開催中！クマサン印のブキのシフト！\n#サーモンラン #スプラトゥーン3",
     "king": "オカシラシャケ：{king}",
     "weapons": "支給ブキ：",
     "weapon": "– {weapon}",
-    "upcomingBigRun": "ビッグランの予定が追加されました！\nステージ：{stage}\n#salmonrun #スプラトゥーン3",
-    "upcomingGrizzco": "クマサン印のブキのシフトが追加されました！\nステージ：{stage}\n#salmonrun #スプラトゥーン3",
-    "upcomingMystery": "ランダムブキのシフトが追加されました！\nステージ：{stage}\n#salmonrun #スプラトゥーン3",
+    "upcomingBigRun": "ビッグランの予定が追加されました！\nステージ：{stage}\n#サーモンラン #スプラトゥーン3",
+    "upcomingGrizzco": "クマサン印のブキのシフトが追加されました！\nステージ：{stage}\n#サーモンラン #スプラトゥーン3",
+    "upcomingMystery": "ランダムブキのシフトが追加されました！\nステージ：{stage}\n#サーモンラン #スプラトゥーン3",
     "starts": "開始まであと{time}！\n支給ブキ：",
     "unknownStage": "？？？"
   },
   "eggstra": {
-    "open": "バイトチームコンテスト開催中！\n{stage}\n#salmonrun #スプラトゥーン3",
-    "upcoming": "バイトチームコンテストの予定が追加されました！\nステージ：{stage}\n#salmonrun #スプラトゥーン3"
+    "open": "バイトチームコンテスト開催中！\n{stage}\n#サーモンラン #スプラトゥーン3",
+    "upcoming": "バイトチームコンテストの予定が追加されました！\nステージ：{stage}\n#サーモンラン #スプラトゥーン3"
   },
   "time": {
     "day": "1日",
@@ -58,12 +58,12 @@
   "festival": {
     "global": "全世界共通",
     "globalResults": "全世界共通",
-    "upcoming": "次回のフェスの投票受付中！\n{title}\n#splatfest #スプラトゥーン3",
-    "upcoming:3d": "フェス開催まであと3日！\n{title}\n#splatfest #スプラトゥーン3",
-    "upcoming:1d": "フェス開催まであと24時間！\n{title}\n#splatfest #スプラトゥーン3",
-    "active": "フェス開催中！\n{title}\n#splatfest #スプラトゥーン3",
-    "ended": "フェスは終了しました！結果発表は通常、終了から2時間以内です。\n#splatfest #スプラトゥーン3",
-    "results": "フェスの結果発表！「{team}」チームの勝利！\n#splatfest #スプラトゥーン3",
+    "upcoming": "次回のフェスの投票受付中！\n{title}\n#フェス情報 #スプラトゥーン3",
+    "upcoming:3d": "フェス開催まであと3日！\n{title}\n#フェス情報 #スプラトゥーン3",
+    "upcoming:1d": "フェス開催まであと24時間！\n{title}\n#フェス情報 #スプラトゥーン3",
+    "active": "フェス開催中！\n{title}\n#フェス情報 #スプラトゥーン3",
+    "ended": "フェスは終了しました！結果発表は通常、終了から2時間以内です。\n#フェス情報 #スプラトゥーン3",
+    "results": "フェスの結果発表！「{team}」チームの勝利！\n#フェス情報 #スプラトゥーン3",
     "resultsWrapper": "{title} フェスの結果"
   },
   "alt": {

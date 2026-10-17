@@ -91,7 +91,7 @@ describe('Japanese social output', () => {
 
     const status = await generate(generator);
 
-    expect(status.status).toContain('ステージ情報\n#maprotation');
+    expect(status.status).toContain('ステージ情報\n#ステージ情報');
     expect(status.status).not.toContain('10/17');
     expect(status.status).toContain('バンカラ（チャレンジ）：ガチエリア');
     expect(status.media[0].altText).toContain('ユノハナ大渓谷');
