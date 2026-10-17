@@ -11,7 +11,7 @@ export default class SalmonRunStatus extends StatusGenerator
   async getActiveSchedule() {
     await this.preparePinia();
 
-    return useSalmonRunSchedulesStore().activeSchedule;
+    return useSalmonRunSchedulesStore(this.pinia).activeSchedule;
   }
 
   async getDataTime() {
@@ -26,7 +26,11 @@ export default class SalmonRunStatus extends StatusGenerator
     let lines = [];
 
     let mode = this.t(schedule.isBigRun ? 'salmon.mode.bigRun' : 'salmon.mode.regular');
-    let params = { mode, stage: schedule.settings.coopStage.name };
+    let params = {
+      mode,
+      stage: this.game('stages', schedule.settings.coopStage),
+      period: this.messages.period(schedule.startTime, schedule.endTime),
+    };
 
     if (schedule.isGrizzcoMystery) {
       lines.push(this.t('salmon.openGrizzco', params));
@@ -38,14 +42,14 @@ export default class SalmonRunStatus extends StatusGenerator
 
     lines.push('');
 
-    let king = schedule.settings.boss?.name;
+    let king = schedule.settings.boss && this.game('bosses', schedule.settings.boss);
     if (king) {
       lines.push(this.t('salmon.king', { king }));
       lines.push('');
     }
 
     lines.push(this.t('salmon.weapons'));
-    lines.push(...schedule.settings.weapons.map(w => this.t('salmon.weapon', { weapon: w.name })));
+    lines.push(...schedule.settings.weapons.map(w => this.t('salmon.weapon', { weapon: this.game('weapons', w) })));
 
     return lines.join('\n');
   }

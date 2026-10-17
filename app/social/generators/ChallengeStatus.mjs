@@ -11,7 +11,7 @@ export default class ChallengeStatus extends StatusGenerator
   async getActiveSchedule() {
     await this.preparePinia();
 
-    let schedule = useEventSchedulesStore().activeSchedule;
+    let schedule = useEventSchedulesStore(this.pinia).activeSchedule;
 
     if (schedule?.activeTimePeriod) {
       return schedule;
@@ -27,16 +27,17 @@ export default class ChallengeStatus extends StatusGenerator
   async _getStatus() {
     let schedule = await this.getActiveSchedule();
 
-    let name = br2nl(schedule.settings.leagueMatchEvent.name, ' ');
-    let desc = br2nl(schedule.settings.leagueMatchEvent.desc, ' ');
+    let name = br2nl(this.game('events', schedule.settings.leagueMatchEvent), ' ');
+    let desc = br2nl(this.game('events', schedule.settings.leagueMatchEvent, 'desc'), ' ');
 
     return [
       this.t('challenge.open', { name, description: desc }),
       '',
       this.t('challenge.stages', {
-        rule: schedule.settings.vsRule.name,
-        stage1: schedule.settings.vsStages[0].name,
-        stage2: schedule.settings.vsStages[1].name,
+        period: this.messages.period(schedule.activeTimePeriod?.startTime, schedule.activeTimePeriod?.endTime),
+        rule: this.game('rules', schedule.settings.vsRule),
+        stage1: this.game('stages', schedule.settings.vsStages[0]),
+        stage2: this.game('stages', schedule.settings.vsStages[1]),
       }),
     ].join('\n');
   }
@@ -48,7 +49,7 @@ export default class ChallengeStatus extends StatusGenerator
     let media = new Media;
     media.file = await screenshotHelper.capture('challenges');
 
-    media.altText = schedule.settings.leagueMatchEvent.regulation?.replace(/<br \/>/g, '\n');
+    media.altText = this.game('events', schedule.settings.leagueMatchEvent, 'regulation')?.replace(/<br \/>/g, '\n');
 
     return media;
   }

@@ -11,7 +11,7 @@ export default class RegularGearStatus extends StatusGenerator
   async getLatestGear() {
     await this.preparePinia();
 
-    return useGearStore().regularGear?.slice().reverse()[0];
+    return useGearStore(this.pinia).regularGear?.slice().reverse()[0];
   }
 
   async getDataTime() {
@@ -25,8 +25,8 @@ export default class RegularGearStatus extends StatusGenerator
     let gear = await this.getLatestGear();
 
     let icon = getGearIcon(gear);
-    let name = gear.gear.name;
-    let power = gear.gear.primaryGearPower.name;
+    let name = this.game('gear', gear.gear);
+    let power = this.game('powers', gear.gear.primaryGearPower);
     // let url = `https://splatoon3.ink/nso/g/${gear.id}`;
 
     return [

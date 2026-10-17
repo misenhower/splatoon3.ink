@@ -12,13 +12,13 @@ export default class SchedulesStatus extends StatusGenerator
     await this.preparePinia();
 
     return {
-      regular: useRegularSchedulesStore().activeSchedule,
-      anarchySeries: useAnarchySeriesSchedulesStore().activeSchedule,
-      anarchyOpen: useAnarchyOpenSchedulesStore().activeSchedule,
-      xMatch: useXSchedulesStore().activeSchedule,
-      splatfestOpen: useSplatfestOpenSchedulesStore().activeSchedule,
-      splatfestPro: useSplatfestProSchedulesStore().activeSchedule,
-      tricolor: useUSSplatfestsStore().tricolor,
+      regular: useRegularSchedulesStore(this.pinia).activeSchedule,
+      anarchySeries: useAnarchySeriesSchedulesStore(this.pinia).activeSchedule,
+      anarchyOpen: useAnarchyOpenSchedulesStore(this.pinia).activeSchedule,
+      xMatch: useXSchedulesStore(this.pinia).activeSchedule,
+      splatfestOpen: useSplatfestOpenSchedulesStore(this.pinia).activeSchedule,
+      splatfestPro: useSplatfestProSchedulesStore(this.pinia).activeSchedule,
+      tricolor: useUSSplatfestsStore(this.pinia).tricolor,
     };
   }
 
@@ -39,29 +39,29 @@ export default class SchedulesStatus extends StatusGenerator
       let festProStages = stages.splatfestPro.settings.vsStages;
 
       let lines = [
-        this.t('schedule.festival'),
+        this.t('schedule.festival', { period: this.messages.period(stages.splatfestOpen.startTime, stages.splatfestOpen.endTime) }),
         '',
         this.t('schedule.festivalOpen', {
-          stage1: festOpenStages[0].name,
-          stage2: festOpenStages[1].name,
+          stage1: this.game('stages', festOpenStages[0]),
+          stage2: this.game('stages', festOpenStages[1]),
         }),
         this.t('schedule.festivalPro', {
-          stage1: festProStages[0].name,
-          stage2: festProStages[1].name,
+          stage1: this.game('stages', festProStages[0]),
+          stage2: this.game('stages', festProStages[1]),
         }),
       ];
 
       if(stages.tricolor?.isTricolorActive && stages.tricolor.tricolorStage) {
-        lines.push(this.t('schedule.tricolorOne', { stage: stages.tricolor.tricolorStage.name }));
+        lines.push(this.t('schedule.tricolorOne', { stage: this.game('stages', stages.tricolor.tricolorStage) }));
       }
 
       if(stages.tricolor?.isTricolorActive && stages.tricolor.tricolorStages) {
         if(stages.tricolor.tricolorStages.length == 1) {
-          lines.push(this.t('schedule.tricolorOne', { stage: stages.tricolor.tricolorStages[0].name }));
+          lines.push(this.t('schedule.tricolorOne', { stage: this.game('stages', stages.tricolor.tricolorStages[0]) }));
         } else {
           lines.push(this.t('schedule.tricolorTwo', {
-            stage1: stages.tricolor.tricolorStages[0].name,
-            stage2: stages.tricolor.tricolorStages[1].name,
+            stage1: this.game('stages', stages.tricolor.tricolorStages[0]),
+            stage2: this.game('stages', stages.tricolor.tricolorStages[1]),
           }));
         }
       }
@@ -70,11 +70,11 @@ export default class SchedulesStatus extends StatusGenerator
     }
 
     let lines = [
-      this.t('schedule.rotation'),
+      this.t('schedule.rotation', { period: this.messages.period(stages.regular.startTime, stages.regular.endTime) }),
       '',
-      this.t('schedule.series', { rule: stages.anarchySeries.settings.vsRule.name }),
-      this.t('schedule.open', { rule: stages.anarchyOpen.settings.vsRule.name }),
-      this.t('schedule.x', { rule: stages.xMatch.settings.vsRule.name }),
+      this.t('schedule.series', { rule: this.game('rules', stages.anarchySeries.settings.vsRule) }),
+      this.t('schedule.open', { rule: this.game('rules', stages.anarchyOpen.settings.vsRule) }),
+      this.t('schedule.x', { rule: this.game('rules', stages.xMatch.settings.vsRule) }),
     ];
 
     return lines.join('\n');
@@ -94,9 +94,9 @@ export default class SchedulesStatus extends StatusGenerator
     media.file = await screenshotHelper.capture('schedules', { viewport });
 
     let detail = s => ({
-      rule: s.settings.vsRule.name,
-      stage1: s.settings.vsStages[0].name,
-      stage2: s.settings.vsStages[1].name,
+      rule: this.game('rules', s.settings.vsRule),
+      stage1: this.game('stages', s.settings.vsStages[0]),
+      stage2: this.game('stages', s.settings.vsStages[1]),
     });
 
     let lines = [this.t('schedule.alt.heading')];

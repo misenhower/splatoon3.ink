@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import { Console } from 'node:console';
-import { createPinia, setActivePinia } from 'pinia';
+import { createPinia } from 'pinia';
 import { useCoopDataStore, useFestivalsDataStore, useGearDataStore, useSchedulesDataStore } from '../../../src/stores/data.mjs';
 import prefixedConsole from '../../common/prefixedConsole.mjs';
 import Status from '../Status.mjs';
@@ -15,8 +15,9 @@ export default class StatusGenerator
   key = null;
   name = null;
 
-  constructor({ locale = 'en-US' } = {}) {
-    this.messages = new SocialMessages(locale);
+  constructor({ locale = 'en-US', translations = null, now = null } = {}) {
+    this.messages = new SocialMessages(locale, translations);
+    this.now = now;
   }
 
   get locale() {
@@ -25,6 +26,10 @@ export default class StatusGenerator
 
   t(key, params) {
     return this.messages.text(key, params);
+  }
+
+  game(category, node, field) {
+    return this.messages.game(category, node, field);
   }
 
   /** @type {Console} */
@@ -39,26 +44,31 @@ export default class StatusGenerator
   }
 
   async preparePinia() {
-    if (this._piniaInitialized) {
-      return;
-    }
+    this._piniaPromise ??= this._loadData();
 
-    setActivePinia(createPinia());
+    await this._piniaPromise;
+  }
 
-    useTimeStore().setNow(getTopOfCurrentHour().getTime());
+  async _loadData() {
+    this.pinia = createPinia();
+    useTimeStore(this.pinia).setNow(this.now ?? getTopOfCurrentHour().getTime());
 
-    useSchedulesDataStore().setData(JSON.parse(await fs.readFile('dist/data/schedules.json')));
-    useGearDataStore().setData(JSON.parse(await fs.readFile('dist/data/gear.json')));
-    useCoopDataStore().setData(JSON.parse(await fs.readFile('dist/data/coop.json')));
-    useFestivalsDataStore().setData(JSON.parse(await fs.readFile('dist/data/festivals.json')));
+    const files = [
+      ['schedules', useSchedulesDataStore],
+      ['gear', useGearDataStore],
+      ['coop', useCoopDataStore],
+      ['festivals', useFestivalsDataStore],
+    ];
 
-    this._piniaInitialized = true;
+    await Promise.all(files.map(async ([name, store]) => {
+      store(this.pinia).setData(JSON.parse(await fs.readFile(`dist/data/${name}.json`)));
+    }));
   }
 
   async getDataTime() {
     await this.preparePinia();
 
-    return useTimeStore().now;
+    return useTimeStore(this.pinia).now;
   }
 
   async shouldPost(client) {
@@ -77,8 +87,10 @@ export default class StatusGenerator
   /** @param {ScreenshotHelper} screenshotHelper */
   async getStatus(screenshotHelper) {
     this.console.log('Generating status...');
+    await this.messages.load();
 
     const status = new Status;
+    status.locale = this.locale;
     status.status = await this._getStatus();
     status.contentWrapper = await this._getContentWrapper();
 
@@ -88,13 +100,19 @@ export default class StatusGenerator
     }
     status.media = media;
 
+    if (this.locale === 'ja-JP') {
+      for (const item of status.media ?? []) {
+        item.altText ||= status.status;
+      }
+    }
+
     return status;
   }
 
   async _prepareScreenshotHelper(screenshotHelper) {
     await this.preparePinia();
-    let time = useTimeStore().now;
-    screenshotHelper.defaultParams = { time };
+    let time = useTimeStore(this.pinia).now;
+    screenshotHelper.defaultParams = { time, locale: this.locale };
   }
 
   async _getStatus () {

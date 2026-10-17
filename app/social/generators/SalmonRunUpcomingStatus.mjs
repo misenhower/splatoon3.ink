@@ -13,7 +13,7 @@ export default class SalmonRunUpcomingStatus extends StatusGenerator
     await this.preparePinia();
 
     // Look for any interesting upcoming schedules
-    return useSalmonRunSchedulesStore().upcomingSchedules.find(
+    return useSalmonRunSchedulesStore(this.pinia).upcomingSchedules.find(
       s => s.isBigRun
         || s.isMystery
         || s.isGrizzcoMystery,
@@ -29,7 +29,7 @@ export default class SalmonRunUpcomingStatus extends StatusGenerator
   }
 
   _getDescription(schedule) {
-    let stageName = schedule.settings.coopStage.name || this.t('salmon.unknownStage');
+    let stageName = this.game('stages', schedule.settings.coopStage) || this.t('salmon.unknownStage');
 
     switch (true) {
       case schedule.isBigRun:
@@ -54,11 +54,11 @@ export default class SalmonRunUpcomingStatus extends StatusGenerator
     lines.push('');
 
     let startTime = Date.parse(schedule.startTime);
-    let now = useTimeStore().now;
+    let now = useTimeStore(this.pinia).now;
     let time = this.messages.timeUntil(startTime, now);
 
     lines.push(this.t('salmon.starts', { time }));
-    lines.push(...schedule.settings.weapons.map(w => this.t('salmon.weapon', { weapon: w.name })));
+    lines.push(...schedule.settings.weapons.map(w => this.t('salmon.weapon', { weapon: this.game('weapons', w) })));
 
     return lines.join('\n');
   }

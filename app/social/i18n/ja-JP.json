@@ -1,0 +1,69 @@
+{
+  "schedule": {
+    "rotation": "ステージ情報 {period}\n#スプラトゥーン3",
+    "series": "– バンカラ（チャレンジ）：{rule}",
+    "open": "– バンカラ（オープン）：{rule}",
+    "x": "– Xマッチ：{rule}",
+    "festival": "フェスマッチ開催中！ {period}\n#スプラトゥーン3",
+    "festivalOpen": "– オープン：{stage1}・{stage2}",
+    "festivalPro": "– チャレンジ：{stage1}・{stage2}",
+    "tricolorOne": "– トリカラ：{stage}",
+    "tricolorTwo": "– トリカラ：{stage1}・{stage2}",
+    "alt": {
+      "heading": "スプラトゥーン3 ステージ情報：\n",
+      "regular": "レギュラーマッチ：{rule}／{stage1}・{stage2}",
+      "series": "バンカラマッチ（チャレンジ）：{rule}／{stage1}・{stage2}",
+      "open": "バンカラマッチ（オープン）：{rule}／{stage1}・{stage2}",
+      "x": "Xマッチ：{rule}／{stage1}・{stage2}",
+      "festivalOpen": "フェスマッチ（オープン）：{rule}／{stage1}・{stage2}",
+      "festivalPro": "フェスマッチ（チャレンジ）：{rule}／{stage1}・{stage2}"
+    }
+  },
+  "gear": {
+    "daily": "ゲソタウン 本日のピックアップ：{brand}\n#スプラトゥーン3",
+    "item": "{icon} {name}（{power}）",
+    "regular": "ゲソタウンで販売中！\n{icon} {name}（{power}）\n#スプラトゥーン3"
+  },
+  "challenge": {
+    "open": "イベントマッチ開催中！\n{name}",
+    "stages": "{period}\n{rule}／{stage1}・{stage2}\n#スプラトゥーン3"
+  },
+  "salmon": {
+    "mode": {
+      "regular": "サーモンラン",
+      "bigRun": "ビッグラン"
+    },
+    "open": "{mode}：{stage}\n{period}\n#スプラトゥーン3",
+    "openMystery": "{mode}：{stage}（ランダムブキ）\n{period}\n#スプラトゥーン3",
+    "openGrizzco": "{mode}：{stage}（クマサン印のブキ）\n{period}\n#スプラトゥーン3",
+    "king": "オカシラシャケ：{king}",
+    "weapons": "支給ブキ：",
+    "weapon": "– {weapon}",
+    "upcomingBigRun": "ビッグランの予定が追加されました！\nステージ：{stage}\n#スプラトゥーン3",
+    "upcomingGrizzco": "クマサン印のブキのシフトが追加されました！\nステージ：{stage}\n#スプラトゥーン3",
+    "upcomingMystery": "ランダムブキのシフトが追加されました！\nステージ：{stage}\n#スプラトゥーン3",
+    "starts": "{time} 開始\n支給ブキ：",
+    "unknownStage": "？？？"
+  },
+  "eggstra": {
+    "open": "バイトチームコンテスト開催中！\n{stage}\n{period}\n#スプラトゥーン3",
+    "upcoming": "バイトチームコンテストの予定が追加されました！\nステージ：{stage}\n#スプラトゥーン3"
+  },
+  "time": {
+    "day": "1日",
+    "days": "{count}日",
+    "hour": "1時間",
+    "hours": "{count}時間"
+  },
+  "festival": {
+    "global": "全世界共通",
+    "globalResults": "全世界共通",
+    "upcoming": "次回のフェスの投票受付中！\n{title}\n{period}\n#スプラトゥーン3",
+    "upcoming:3d": "次回のフェスをお忘れなく！\n{title}\n{period}\n#スプラトゥーン3",
+    "upcoming:1d": "まもなくフェス開催！\n{title}\n{period}\n#スプラトゥーン3",
+    "active": "フェス開催中！\n{title}\n{period}\n#スプラトゥーン3",
+    "ended": "フェスは終了しました！結果発表は通常、終了から2時間以内です。\n#スプラトゥーン3",
+    "results": "フェスの結果発表！「{team}」チームの勝利！\n#スプラトゥーン3",
+    "resultsWrapper": "{title} フェスの結果"
+  }
+}

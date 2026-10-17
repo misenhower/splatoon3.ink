@@ -16,7 +16,7 @@ describe('SocialMessages', () => {
   });
 
   it('rejects unsupported locales instead of silently posting in English', () => {
-    expect(() => new SocialMessages('ja-JP')).toThrow('Unsupported social locale: ja-JP');
+    expect(() => new SocialMessages('fr-FR')).toThrow('Unsupported social locale: fr-FR');
   });
 
   it('rejects missing templates and interpolation parameters', () => {

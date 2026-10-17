@@ -11,8 +11,8 @@ export default class DailyDropGearStatus extends StatusGenerator
 
   async getData() {
     await this.preparePinia();
-    let brand = useGearStore().dailyDropBrand;
-    let gears = useGearStore().dailyDropGear;
+    let brand = useGearStore(this.pinia).dailyDropBrand;
+    let gears = useGearStore(this.pinia).dailyDropGear;
 
     return { brand, gears };
   }
@@ -29,14 +29,14 @@ export default class DailyDropGearStatus extends StatusGenerator
 
     let formattedGears = gears.map(gear => {
       let icon = getGearIcon(gear);
-      let name = gear.gear.name;
-      let power = gear.gear.primaryGearPower.name;
+      let name = this.game('gear', gear.gear);
+      let power = this.game('powers', gear.gear.primaryGearPower);
 
       return this.t('gear.item', { icon, name, power });
     }).join('\n');
 
     return [
-      this.t('gear.daily', { brand: brand.brand.name }),
+      this.t('gear.daily', { brand: this.game('brands', brand.brand) }),
       '',
       formattedGears,
       // '',

@@ -11,7 +11,7 @@ export default class EggstraWorkStatus extends StatusGenerator
   async getActiveSchedule() {
     await this.preparePinia();
 
-    return useEggstraWorkSchedulesStore().activeSchedule;
+    return useEggstraWorkSchedulesStore(this.pinia).activeSchedule;
   }
 
   async getDataTime() {
@@ -25,12 +25,15 @@ export default class EggstraWorkStatus extends StatusGenerator
 
     let lines = [];
 
-    lines.push(this.t('eggstra.open', { stage: schedule.settings.coopStage.name }));
+    lines.push(this.t('eggstra.open', {
+      stage: this.game('stages', schedule.settings.coopStage),
+      period: this.messages.period(schedule.startTime, schedule.endTime),
+    }));
 
     lines.push('');
 
     lines.push(this.t('salmon.weapons'));
-    lines.push(...schedule.settings.weapons.map(w => this.t('salmon.weapon', { weapon: w.name })));
+    lines.push(...schedule.settings.weapons.map(w => this.t('salmon.weapon', { weapon: this.game('weapons', w) })));
 
     return lines.join('\n');
   }

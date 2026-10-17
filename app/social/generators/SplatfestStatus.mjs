@@ -20,10 +20,10 @@ export default class SplatfestStatus extends StatusGenerator
     await this.preparePinia();
     let store;
     switch(this.region) {
-      case 'NA': store = useUSSplatfestsStore(); break;
-      case 'EU': store = useEUSplatfestsStore(); break;
-      case 'JP': store = useJPSplatfestsStore(); break;
-      case 'AP': store = useAPSplatfestsStore(); break;
+      case 'NA': store = useUSSplatfestsStore(this.pinia); break;
+      case 'EU': store = useEUSplatfestsStore(this.pinia); break;
+      case 'JP': store = useJPSplatfestsStore(this.pinia); break;
+      case 'AP': store = useAPSplatfestsStore(this.pinia); break;
     }
     return store.upcomingFestival
       || store.activeFestival
@@ -34,7 +34,7 @@ export default class SplatfestStatus extends StatusGenerator
     let festival = await this.getFestival();
 
     let startTime = Date.parse(festival?.startTime);
-    let now = useTimeStore().now;
+    let now = useTimeStore(this.pinia).now;
     let hoursAway = (startTime - now) / (1000 * 60 * 60);
 
     switch (true) {
@@ -89,18 +89,15 @@ export default class SplatfestStatus extends StatusGenerator
     const global = festival.regions.length == 4;
     const regionText = global ? this.t('festival.global') : festival.regions.join('/');
 
-    switch (state) {
-      case 'upcoming':
-        return this.t('festival.upcoming', { region: regionText, title: festival.title });
-      case 'upcoming:3d':
-        return this.t('festival.upcoming:3d', { region: regionText, title: festival.title });
-      case 'upcoming:1d':
-        return this.t('festival.upcoming:1d', { region: regionText, title: festival.title });
-      case 'active':
-        return this.t('festival.active', { region: regionText, title: festival.title });
-      case 'ended':
-        return this.t('festival.ended', { region: regionText });
+    if (state === 'ended') {
+      return this.t('festival.ended', { region: regionText });
     }
+
+    return this.t(`festival.${state}`, {
+      region: regionText,
+      title: this.game('festivals', festival, 'title'),
+      period: this.messages.period(festival.startTime, festival.endTime),
+    });
   }
 
   /** @param {ScreenshotHelper} screenshotHelper */
