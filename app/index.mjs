@@ -16,6 +16,7 @@ import { verifyArchivesFromCli } from './data/ArchiveVerifyCommand.mjs';
 import { sentryInit } from './common/sentry.mjs';
 import { sync, syncUpload, syncDownload } from './sync/index.mjs';
 import { updateAvatars } from './social/updateAvatars.mjs';
+import listBufferChannels from './social/buffer/listChannels.mjs';
 
 consoleStamp(console);
 dotenv.config({ quiet: true });
@@ -29,6 +30,7 @@ const actions = {
   socialTestBluesky: () => testStatuses([new BlueskyClient]),
   socialTestImage: () => testStatuses([new ImageWriter]),
   socialTestThreads: () => testStatuses([new ThreadsClient]),
+  bufferChannels: listBufferChannels,
   splatnet: update,
   warmCaches,
   dataArchive: archiveData,

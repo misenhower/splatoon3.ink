@@ -21,6 +21,7 @@
     "social:test:bluesky": "node app/index.mjs socialTestBluesky",
     "social:test:threads": "node app/index.mjs socialTestThreads",
     "social:avatars": "node app/index.mjs updateAvatars",
+    "social:buffer:channels": "node app/index.mjs bufferChannels",
     "splatnet:quick": "node app/index.mjs splatnet quick",
     "splatnet": "node app/index.mjs splatnet default",
     "splatnet:all": "node app/index.mjs splatnet all",
