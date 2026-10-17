@@ -130,7 +130,7 @@ function templates(catalog) {
 }
 
 describe('Japanese filtering hashtags', () => {
-  it('preserves broad-tag placement and uses Japanese filtering tags', () => {
+  it('uses both broad tags on relevant Japanese posts and Japanese filtering tags', () => {
     const en = templates(english);
     const jp = templates(japanese);
 
@@ -139,7 +139,8 @@ describe('Japanese filtering hashtags', () => {
       const tags = jp[index].match(/#[^\s]+/g) ?? [];
 
       expect(tags.includes('#スプラトゥーン3')).toBe(template.includes('#splatoon3'));
-      expect(tags.every(tag => /[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]/u.test(tag))).toBe(true);
+      expect(tags.includes('#splatoon3')).toBe(template.includes('#splatoon3'));
+      expect(tags.filter(tag => tag !== '#splatoon3').every(tag => /[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]/u.test(tag))).toBe(true);
     });
   });
 });
