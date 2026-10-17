@@ -1,0 +1,834 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`English social output > 'global' Splatfest > renders active 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "splatfest/JP",
+    ],
+  ],
+  "text": "The global Splatfest is NOW OPEN! Which would you choose? #splatfest #splatoon3",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > 'global' Splatfest > renders ended 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "splatfest/JP",
+    ],
+  ],
+  "text": "The global Splatfest is now closed. Results are usually posted within 2 hours! #splatfest #splatoon3",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > 'global' Splatfest > renders results and their content wrapper 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "splatfest/JP",
+    ],
+  ],
+  "text": "Global Splatfest results: Team Team Two wins! #splatfest #splatoon3",
+  "wrapper": "Which would you choose? Splatfest Results",
+}
+`;
+
+exports[`English social output > 'global' Splatfest > renders upcoming 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "splatfest/JP",
+    ],
+  ],
+  "text": "You can now vote in the next global Splatfest: Which would you choose? #splatfest #splatoon3",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > 'global' Splatfest > renders upcoming:1d 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "splatfest/JP",
+    ],
+  ],
+  "text": "Reminder: The next global Splatfest starts in 24 HOURS! Which would you choose? #splatfest #splatoon3",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > 'global' Splatfest > renders upcoming:3d 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "splatfest/JP",
+    ],
+  ],
+  "text": "Reminder: The next global Splatfest starts in 3 DAYS! Which would you choose? #splatfest #splatoon3",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > 'regional' Splatfest > renders active 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "splatfest/JP",
+    ],
+  ],
+  "text": "The JP Splatfest is NOW OPEN! Which would you choose? #splatfest #splatoon3",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > 'regional' Splatfest > renders ended 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "splatfest/JP",
+    ],
+  ],
+  "text": "The JP Splatfest is now closed. Results are usually posted within 2 hours! #splatfest #splatoon3",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > 'regional' Splatfest > renders results and their content wrapper 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "splatfest/JP",
+    ],
+  ],
+  "text": "JP Splatfest results: Team Team Two wins! #splatfest #splatoon3",
+  "wrapper": "Which would you choose? Splatfest Results",
+}
+`;
+
+exports[`English social output > 'regional' Splatfest > renders upcoming 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "splatfest/JP",
+    ],
+  ],
+  "text": "You can now vote in the next JP Splatfest: Which would you choose? #splatfest #splatoon3",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > 'regional' Splatfest > renders upcoming:1d 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "splatfest/JP",
+    ],
+  ],
+  "text": "Reminder: The next JP Splatfest starts in 24 HOURS! Which would you choose? #splatfest #splatoon3",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > 'regional' Splatfest > renders upcoming:3d 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "splatfest/JP",
+    ],
+  ],
+  "text": "Reminder: The next JP Splatfest starts in 3 DAYS! Which would you choose? #splatfest #splatoon3",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > formats a shift 1 hours away 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "salmonrun",
+      {
+        "params": {
+          "startTime": "2026-10-17T01:00:00.000Z",
+        },
+      },
+    ],
+  ],
+  "text": "A Salmon Run shift with MYSTERY WEAPONS on Sockeye Station has been added to the schedule! #salmonrun #splatoon3
+
+This shift will start in 1 hour with these weapons:
+– Splattershot
+– Splat Roller
+– Splat Charger
+– Slosher",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > formats a shift 5 hours away 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "salmonrun",
+      {
+        "params": {
+          "startTime": "2026-10-17T05:00:00.000Z",
+        },
+      },
+    ],
+  ],
+  "text": "A Salmon Run shift with MYSTERY WEAPONS on Sockeye Station has been added to the schedule! #salmonrun #splatoon3
+
+This shift will start in 5 hours with these weapons:
+– Splattershot
+– Splat Roller
+– Splat Charger
+– Slosher",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > formats a shift 24 hours away 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "salmonrun",
+      {
+        "params": {
+          "startTime": "2026-10-18T00:00:00.000Z",
+        },
+      },
+    ],
+  ],
+  "text": "A Salmon Run shift with MYSTERY WEAPONS on Sockeye Station has been added to the schedule! #salmonrun #splatoon3
+
+This shift will start in 1 day with these weapons:
+– Splattershot
+– Splat Roller
+– Splat Charger
+– Slosher",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > formats a shift 36 hours away 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "salmonrun",
+      {
+        "params": {
+          "startTime": "2026-10-18T12:00:00.000Z",
+        },
+      },
+    ],
+  ],
+  "text": "A Salmon Run shift with MYSTERY WEAPONS on Sockeye Station has been added to the schedule! #salmonrun #splatoon3
+
+This shift will start in 2 days with these weapons:
+– Splattershot
+– Splat Roller
+– Splat Charger
+– Slosher",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > omits the king when it is unknown 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "salmonrun",
+    ],
+  ],
+  "text": "Salmon Run is now open on Sockeye Station! #salmonrun #splatoon3
+
+Current weapons:
+– Splattershot
+– Splat Roller
+– Splat Charger
+– Slosher",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > renders Eggstra Work 1 hours away 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "salmonRun",
+      {
+        "params": {
+          "eggstra": "true",
+          "startTime": "2026-10-17T01:00:00.000Z",
+        },
+      },
+    ],
+  ],
+  "text": "An EGGSTRA WORK shift on Sockeye Station has been added to the schedule! #salmonrun #splatoon3
+
+This shift will start in 1 hour with these weapons:
+– Splattershot
+– Splat Roller
+– Splat Charger
+– Slosher",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > renders Eggstra Work 5 hours away 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "salmonRun",
+      {
+        "params": {
+          "eggstra": "true",
+          "startTime": "2026-10-17T05:00:00.000Z",
+        },
+      },
+    ],
+  ],
+  "text": "An EGGSTRA WORK shift on Sockeye Station has been added to the schedule! #salmonrun #splatoon3
+
+This shift will start in 5 hours with these weapons:
+– Splattershot
+– Splat Roller
+– Splat Charger
+– Slosher",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > renders Eggstra Work 24 hours away 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "salmonRun",
+      {
+        "params": {
+          "eggstra": "true",
+          "startTime": "2026-10-18T00:00:00.000Z",
+        },
+      },
+    ],
+  ],
+  "text": "An EGGSTRA WORK shift on Sockeye Station has been added to the schedule! #salmonrun #splatoon3
+
+This shift will start in 1 day with these weapons:
+– Splattershot
+– Splat Roller
+– Splat Charger
+– Slosher",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > renders Eggstra Work 48 hours away 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "salmonRun",
+      {
+        "params": {
+          "eggstra": "true",
+          "startTime": "2026-10-19T00:00:00.000Z",
+        },
+      },
+    ],
+  ],
+  "text": "An EGGSTRA WORK shift on Sockeye Station has been added to the schedule! #salmonrun #splatoon3
+
+This shift will start in 2 days with these weapons:
+– Splattershot
+– Splat Roller
+– Splat Charger
+– Slosher",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > renders a Splatfest rotation with 'legacy tricolor' 1`] = `
+{
+  "alt": [
+    "Splatoon 3 map rotation:
+
+Splatfest Battle (Open): Turf War on Scorch Gorge and Eeltail Alley
+Splatfest Battle (Pro): Turf War on Scorch Gorge and Eeltail Alley",
+  ],
+  "captures": [
+    [
+      "schedules",
+      {
+        "viewport": {},
+      },
+    ],
+  ],
+  "text": "Join the Splatfest Battle! #splatfest #maprotation
+
+– Open: Scorch Gorge and Eeltail Alley
+– Pro: Scorch Gorge and Eeltail Alley
+– Tricolor: Hammerhead Bridge",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > renders a Splatfest rotation with 'no tricolor' 1`] = `
+{
+  "alt": [
+    "Splatoon 3 map rotation:
+
+Splatfest Battle (Open): Turf War on Scorch Gorge and Eeltail Alley
+Splatfest Battle (Pro): Turf War on Scorch Gorge and Eeltail Alley",
+  ],
+  "captures": [
+    [
+      "schedules",
+      {
+        "viewport": {},
+      },
+    ],
+  ],
+  "text": "Join the Splatfest Battle! #splatfest #maprotation
+
+– Open: Scorch Gorge and Eeltail Alley
+– Pro: Scorch Gorge and Eeltail Alley",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > renders a Splatfest rotation with 'one tricolor stage' 1`] = `
+{
+  "alt": [
+    "Splatoon 3 map rotation:
+
+Splatfest Battle (Open): Turf War on Scorch Gorge and Eeltail Alley
+Splatfest Battle (Pro): Turf War on Scorch Gorge and Eeltail Alley",
+  ],
+  "captures": [
+    [
+      "schedules",
+      {
+        "viewport": {},
+      },
+    ],
+  ],
+  "text": "Join the Splatfest Battle! #splatfest #maprotation
+
+– Open: Scorch Gorge and Eeltail Alley
+– Pro: Scorch Gorge and Eeltail Alley
+– Tricolor: Hammerhead Bridge",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > renders a Splatfest rotation with 'two tricolor stages' 1`] = `
+{
+  "alt": [
+    "Splatoon 3 map rotation:
+
+Splatfest Battle (Open): Turf War on Scorch Gorge and Eeltail Alley
+Splatfest Battle (Pro): Turf War on Scorch Gorge and Eeltail Alley",
+  ],
+  "captures": [
+    [
+      "schedules",
+      {
+        "viewport": {},
+      },
+    ],
+  ],
+  "text": "Join the Splatfest Battle! #splatfest #maprotation
+
+– Open: Scorch Gorge and Eeltail Alley
+– Pro: Scorch Gorge and Eeltail Alley
+– Tricolor: Hammerhead Bridge and MakoMart",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > renders a challenge with line breaks in the description and regulations 1`] = `
+{
+  "alt": [
+    "Rule one
+Rule two",
+  ],
+  "captures": [
+    [
+      "challenges",
+    ],
+  ],
+  "text": "A challenge event is now open! Challenge Name – First line Second line
+
+Play Rainmaker on Scorch Gorge and Eeltail Alley! #splatoon3",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > renders a regular gear sale 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "gear/regular",
+    ],
+  ],
+  "text": "Up now on SplatNet: 🧢 Squid Hairclip with Ink Saver (Main) #splatnet3",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > renders active Eggstra Work 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "salmonrun",
+      {
+        "params": {
+          "eggstra": "true",
+        },
+      },
+    ],
+  ],
+  "text": "EGGSTRA WORK is now open on Sockeye Station! #salmonrun #splatoon3
+
+Current weapons:
+– Splattershot
+– Splat Roller
+– Splat Charger
+– Slosher",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > renders an active 'Big Run Grizzco mystery' shift 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "salmonrun",
+    ],
+  ],
+  "text": "BIG RUN is now open on Sockeye Station with GRIZZCO MYSTERY WEAPONS! #salmonrun #splatoon3
+
+King Salmonid: Cohozuna
+
+Current weapons:
+– Splattershot
+– Splat Roller
+– Splat Charger
+– Slosher",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > renders an active 'Big Run mystery' shift 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "salmonrun",
+    ],
+  ],
+  "text": "BIG RUN is now open on Sockeye Station with MYSTERY WEAPONS! #salmonrun #splatoon3
+
+King Salmonid: Cohozuna
+
+Current weapons:
+– Splattershot
+– Splat Roller
+– Splat Charger
+– Slosher",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > renders an active 'Big Run' shift 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "salmonrun",
+    ],
+  ],
+  "text": "BIG RUN is now open on Sockeye Station! #salmonrun #splatoon3
+
+King Salmonid: Cohozuna
+
+Current weapons:
+– Splattershot
+– Splat Roller
+– Splat Charger
+– Slosher",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > renders an active 'Grizzco mystery' shift 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "salmonrun",
+    ],
+  ],
+  "text": "Salmon Run is now open on Sockeye Station with GRIZZCO MYSTERY WEAPONS! #salmonrun #splatoon3
+
+King Salmonid: Cohozuna
+
+Current weapons:
+– Splattershot
+– Splat Roller
+– Splat Charger
+– Slosher",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > renders an active 'mystery' shift 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "salmonrun",
+    ],
+  ],
+  "text": "Salmon Run is now open on Sockeye Station with MYSTERY WEAPONS! #salmonrun #splatoon3
+
+King Salmonid: Cohozuna
+
+Current weapons:
+– Splattershot
+– Splat Roller
+– Splat Charger
+– Slosher",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > renders an active 'regular' shift 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "salmonrun",
+    ],
+  ],
+  "text": "Salmon Run is now open on Sockeye Station! #salmonrun #splatoon3
+
+King Salmonid: Cohozuna
+
+Current weapons:
+– Splattershot
+– Splat Roller
+– Splat Charger
+– Slosher",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > renders an upcoming 'Big Run' shift 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "salmonrun",
+      {
+        "params": {
+          "startTime": "2026-10-19T00:00:00.000Z",
+        },
+      },
+    ],
+  ],
+  "text": "A BIG RUN shift on Sockeye Station has been added to the schedule! #salmonrun #splatoon3
+
+This shift will start in 2 days with these weapons:
+– Splattershot
+– Splat Roller
+– Splat Charger
+– Slosher",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > renders an upcoming 'Grizzco mystery' shift 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "salmonrun",
+      {
+        "params": {
+          "startTime": "2026-10-19T00:00:00.000Z",
+        },
+      },
+    ],
+  ],
+  "text": "A Salmon Run shift with GRIZZCO MYSTERY WEAPONS on Sockeye Station has been added to the schedule! #salmonrun #splatoon3
+
+This shift will start in 2 days with these weapons:
+– Splattershot
+– Splat Roller
+– Splat Charger
+– Slosher",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > renders an upcoming 'mystery' shift 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "salmonrun",
+      {
+        "params": {
+          "startTime": "2026-10-19T00:00:00.000Z",
+        },
+      },
+    ],
+  ],
+  "text": "A Salmon Run shift with MYSTERY WEAPONS on Sockeye Station has been added to the schedule! #salmonrun #splatoon3
+
+This shift will start in 2 days with these weapons:
+– Splattershot
+– Splat Roller
+– Splat Charger
+– Slosher",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > renders the daily brand and all gear types 1`] = `
+{
+  "alt": [
+    null,
+  ],
+  "captures": [
+    [
+      "gear/dailydrop",
+    ],
+  ],
+  "text": "The Daily Drop: Today's featured brand is Zink! #dailydrop
+
+🧢 Squid Hairclip with Ink Saver (Main)
+👕 Basic Tee with Quick Respawn
+👟 Blue Lo-Tops with Ink Resistance Up",
+  "wrapper": undefined,
+}
+`;
+
+exports[`English social output > renders the regular battle rotation and its alt text 1`] = `
+{
+  "alt": [
+    "Splatoon 3 map rotation:
+
+Regular Battle: Turf War on Scorch Gorge and Eeltail Alley
+Anarchy Battle (Series): Splat Zones on Scorch Gorge and Eeltail Alley
+Anarchy Battle (Open): Tower Control on Scorch Gorge and Eeltail Alley
+X Battle: Rainmaker on Scorch Gorge and Eeltail Alley",
+  ],
+  "captures": [
+    [
+      "schedules",
+      {
+        "viewport": {},
+      },
+    ],
+  ],
+  "text": "Splatoon 3 map rotation: #maprotation
+
+– Anarchy (Series): Splat Zones
+– Anarchy (Open): Tower Control
+– X Battle: Rainmaker",
+  "wrapper": undefined,
+}
+`;
