@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import fs from 'fs/promises';
 import ValueCache from '../common/ValueCache.mjs';
+import BlueskyClient from './clients/BlueskyClient.mjs';
 import BufferTwitterClient from './clients/BufferTwitterClient.mjs';
 import TwitterClient from './clients/TwitterClient.mjs';
 import { defaultClients } from './index.mjs';
@@ -17,7 +18,7 @@ const twitterCredentials = [
   'TWITTER_ACCESS_TOKEN_SECRET',
 ];
 
-describe('Twitter avatar updates', () => {
+describe('Seasonal profile updates', () => {
   let cache;
   let updateImage;
   let updateProfile;
@@ -106,33 +107,18 @@ describe('Twitter avatar updates', () => {
     expect(cache.get('social.twitter.avatar')).toBe('halloween');
   });
 
-  it('updates Japanese profiles with their own credentials and cache when enabled', async () => {
+  it('leaves Japanese profiles unchanged even when Japanese publishing is enabled', async () => {
     vi.stubEnv('SOCIAL_JP_ENABLED', 'true');
+    vi.stubEnv('BLUESKY_JP_SERVICE', 'https://bsky.social');
+    vi.stubEnv('BLUESKY_JP_IDENTIFIER', 'jp.splatoon3.ink');
+    vi.stubEnv('BLUESKY_JP_PASSWORD', 'jp-credential');
 
-    for (const key of twitterCredentials) {
-      vi.stubEnv(key.replace('TWITTER_', 'TWITTER_JP_'), 'jp-credential');
-    }
-
-    await updateAvatars();
-    await updateAvatars();
-
-    expect(updateProfile).toHaveBeenCalledTimes(2);
-    expect(updateProfile).toHaveBeenCalledWith({ name: 'Splatoon3.eek 🎃' });
-    expect(updateProfile).toHaveBeenCalledWith({ name: 'Splatoon3.eek 🎃 日本語' });
-    expect(cache.get('social.twitter.avatar')).toBe('halloween');
-    expect(cache.get('social.twitter.jp.avatar')).toBe('halloween');
-  });
-
-  it('does not use English Twitter credentials for the Japanese profile', async () => {
-    vi.stubEnv('SOCIAL_JP_ENABLED', 'true');
-
-    for (const key of twitterCredentials) {
-      vi.stubEnv(key.replace('TWITTER_', 'TWITTER_JP_'), '');
-    }
+    const updateBlueskyProfile = vi.spyOn(BlueskyClient.prototype, 'updateProfile').mockResolvedValue();
 
     await updateAvatars();
 
     expect(updateProfile).toHaveBeenCalledExactlyOnceWith({ name: 'Splatoon3.eek 🎃' });
-    expect(cache.has('social.twitter.jp.avatar')).toBe(false);
+    expect(updateBlueskyProfile).not.toHaveBeenCalled();
+    expect([...cache.keys()]).toEqual(['social.twitter.avatar']);
   });
 });
