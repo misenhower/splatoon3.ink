@@ -7,7 +7,7 @@
       href="https://twitter.com/Splatoon3inkJP"
       target="_blank"
       rel="noopener noreferrer"
-      class="follow-button bg-zinc-950 ring-1 ring-white/25 hover:bg-zinc-800"
+      class="follow-button"
     >
       {{ $t('social.followX') }}
     </a>
@@ -15,7 +15,7 @@
       href="https://bsky.app/profile/jp.splatoon3.ink"
       target="_blank"
       rel="noopener noreferrer"
-      class="follow-button bg-[#0866ff] hover:bg-[#297aff]"
+      class="follow-button"
     >
       <img src="@/assets/img/bluesky-white.svg" alt="" class="h-4 w-4" />
       {{ $t('social.followBluesky') }}
@@ -33,7 +33,11 @@ const { locale } = useI18n();
 @reference "@/assets/css/base.css";
 
 .follow-button {
-  @apply inline-flex items-center justify-center gap-1.5 rounded-full px-3 py-2 text-xs font-bold text-white whitespace-nowrap transition-colors;
+  @apply inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-1 font-splatoon2 text-zinc-300 bg-zinc-300/20 whitespace-nowrap;
   @apply focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-splatoon-yellow;
+}
+
+.follow-button:hover {
+  @apply text-zinc-50 bg-zinc-300/30;
 }
 </style>
