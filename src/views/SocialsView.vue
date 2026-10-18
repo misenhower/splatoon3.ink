@@ -22,15 +22,13 @@
                     <ul class="list-disc ml-4">
                       <li v-for="social in displaySocials" :key="social.title">
                         <strong>{{ social.title }}:</strong> <a :href="social.url" target="_blank">{{ social.handle }}</a>
+                        <i18n-t v-if="social.alternate" keypath="social.alternateAccount" tag="span" class="ml-1">
+                          <template #account>
+                            <a :href="social.alternate.url" target="_blank">{{ social.alternate.handle }}</a>
+                          </template>
+                        </i18n-t>
                       </li>
                     </ul>
-                  </div>
-
-                  <div>
-                    You can also follow us on Twitter (now known as &ldquo;X&rdquo;) at
-                    <a href="https://twitter.com/splatoon3ink" target="_blank">@splatoon3ink</a>,
-                    but due to new restrictions on that platform the bot is no longer able to reliably post there.
-                    Use any of the other platforms above to continue getting updates!
                   </div>
 
                   <div>
@@ -61,21 +59,32 @@
 
 <script setup>
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import Splat3 from '@/components/splats/Splat3.vue';
 import Splat6 from '@/components/splats/Splat6.vue';
 import MainLayout from '@/layouts/MainLayout.vue';
 import ProductContainer from '@/components/ProductContainer.vue';
 
+const { locale } = useI18n();
+
 const socials = [
-  // {
-  //   title: 'Twitter',
-  //   handle: '@splatoon3ink',
-  //   url: 'https://twitter.com/splatoon3ink',
-  // },
   {
-    title: 'Threads',
-    handle: '@splatoon3ink',
-    url: 'https://threads.net/@splatoon3ink',
+    title: 'Twitter',
+    handle: '@Splatoon3ink',
+    url: 'https://twitter.com/splatoon3ink',
+    japanese: {
+      handle: '@Splatoon3inkJP',
+      url: 'https://twitter.com/Splatoon3inkJP',
+    },
+  },
+  {
+    title: 'Bluesky',
+    handle: '@splatoon3.ink',
+    url: 'https://bsky.app/profile/splatoon3.ink',
+    japanese: {
+      handle: '@jp.splatoon3.ink',
+      url: 'https://bsky.app/profile/jp.splatoon3.ink',
+    },
   },
   {
     title: 'Fediverse (Mastodon)',
@@ -83,15 +92,24 @@ const socials = [
     url: 'https://splatoon3.ink/@splatoon3ink',
   },
   {
-    title: 'Bluesky',
-    handle: '@splatoon3.ink',
-    url: 'https://bsky.app/profile/splatoon3.ink',
+    title: 'Threads',
+    handle: '@splatoon3ink',
+    url: 'https://threads.net/@splatoon3ink',
   },
 ];
 
 const displaySocials = computed(() => {
-  // Return the socials in a random order
-  return socials.slice().sort(() => Math.random() - 0.5);
+  const japanese = locale.value === 'ja-JP';
+
+  return socials.map(social => {
+    if (!social.japanese) return social;
+
+    return {
+      title: social.title,
+      ...(japanese ? social.japanese : social),
+      alternate: japanese ? social : social.japanese,
+    };
+  });
 });
 </script>
 

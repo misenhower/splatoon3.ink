@@ -12,7 +12,8 @@
       </div>
     </div>
 
-    <div class="flex mx-4 md:mx-12 justify-center md:justify-end mb-4">
+    <div class="flex flex-col items-center gap-4 mx-4 md:mx-12 mb-4 md:flex-row md:flex-wrap md:justify-end">
+      <JapaneseSocialLinks />
       <NavButtons />
     </div>
 
@@ -57,6 +58,7 @@
 <script setup>
 import { defineAsyncComponent } from 'vue';
 import NavButtons from '@/components/NavButtons.vue';
+import JapaneseSocialLinks from '@/components/JapaneseSocialLinks.vue';
 import LanguageButton from '@/components/LanguageButton.vue';
 
 const props = defineProps({
