@@ -99,6 +99,8 @@
     "data": "Data"
   },
   "social": {
+    "followX": "Follow on X",
+    "followBluesky": "Follow on Bluesky",
     "alternateAccount": "(Japanese: {account})",
     "description": "Stay up to date with the latest news and updates from Splatoon3.ink on social media! Check the list below to find your favorite platform."
   },
