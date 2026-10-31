@@ -6,6 +6,7 @@ const iso = value => new Date(value).toISOString().replace('.000Z', 'Z');
 
 export const examples = [
   { id: 'rotation', title: 'Stage rotation', key: 'schedules' },
+  { id: 'fest-rotation-none', title: 'Splatfest rotation (no tricolor)', key: 'schedules', festRotation: 0 },
   { id: 'fest-rotation', title: 'Splatfest rotation (one tricolor stage)', key: 'schedules', festRotation: 1 },
   {
     id: 'fest-rotation-two',
@@ -53,6 +54,7 @@ export const examples = [
 
 export function createExample(entry) {
   const time = entry.time ?? now;
+  const isFestRotation = entry.festRotation != null;
   const schedules = structuredClone(fixtures.schedules);
   const festivals = Object.fromEntries(['US', 'EU', 'JP', 'AP'].map(region => [
     region, { data: { festRecords: { nodes: [structuredClone(fixtures.festival)] } } },
@@ -92,7 +94,7 @@ export function createExample(entry) {
     grouping[type].nodes = [shift];
   }
 
-  if (entry.festival || entry.festRotation) {
+  if (entry.festival || isFestRotation) {
     const offsets = {
       upcoming: 7 * day,
       'upcoming:3d': 3 * day,
@@ -101,7 +103,10 @@ export function createExample(entry) {
       ended: -2 * day,
       results: -2 * day - 7200000,
     };
-    const start = time + (entry.festRotation ? -day : offsets[entry.festival]);
+    const startOffset = isFestRotation
+      ? (entry.festRotation === 0 ? 0 : -day)
+      : offsets[entry.festival];
+    const start = time + startOffset;
 
     for (const region of Object.values(festivals)) {
       const fest = region.data.festRecords.nodes[0];
@@ -114,7 +119,7 @@ export function createExample(entry) {
       region.data.festRecords.nodes = [fest];
     }
 
-    if (entry.festRotation) {
+    if (isFestRotation) {
       const setting = data.regularSchedules.nodes[0].regularMatchSetting;
       const proStages = data.bankaraSchedules.nodes[0].bankaraMatchSettings[0].vsStages;
       data.festSchedules.nodes = [{
@@ -128,7 +133,7 @@ export function createExample(entry) {
       const tricolorStages = structuredClone(proStages.slice(0, entry.festRotation));
       data.currentFest = {
         ...structuredClone(festivals.US.data.festRecords.nodes[0]),
-        midtermTime: iso(time),
+        midtermTime: iso(start + day),
         tricolorStages,
       };
     }

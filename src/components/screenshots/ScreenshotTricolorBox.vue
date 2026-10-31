@@ -8,7 +8,7 @@
       </div>
 
       <div class="pt-2 pb-6 px-2 space-y-2">
-        <div class="flex items-center justify-between font-splatoon2">
+        <div class="flex items-center font-splatoon2">
           <div class="flex items-center space-x-2 text-xl">
             <div>
               <TricolorIcon
@@ -20,15 +20,6 @@
             </div>
             <div class="text-shadow">
               {{ $t('screenshots.tricolor') }}
-            </div>
-          </div>
-
-          <div>
-            <div v-if="type.badge" class="flex items-center">
-              <img :src="type.img" class="h-8" />
-              <div v-if="type.badge" class="font-splatoon2 text-xl bg-splatoon-blue px-2 drop-shadow-sm rounded-sm">
-                {{ $t(type.badge) }}
-              </div>
             </div>
           </div>
         </div>
