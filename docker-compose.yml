@@ -1,3 +1,0 @@
-# See docker-compose.override.yml.* example files for dev/prod environments
-
-services: {}

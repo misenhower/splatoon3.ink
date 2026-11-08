@@ -1,6 +1,6 @@
 import { CronJob } from 'cron';
 import { setTimeout as sleep } from 'node:timers/promises';
-import { update } from './data/index.mjs';
+import { updateFast, updateSlow } from './data/index.mjs';
 import { warmCaches } from './splatnet/index.mjs';
 import { sendStatuses } from './social/index.mjs';
 import { archiveData } from './data/DataArchiver.mjs';
@@ -20,8 +20,10 @@ async function updateIfNotUpdating(mode) {
   updating = true;
 
   try {
-    await update(mode);
+    // Post as soon as the time-sensitive data is ready; X-Rank and rankings follow.
+    await updateFast(mode);
     await sendStatuses();
+    await updateSlow(mode);
     await archiveData();
   } finally {
     updating = false;

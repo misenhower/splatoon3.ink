@@ -106,6 +106,11 @@ describe('deriveId', () => {
     expect(result1.__splatoon3ink_id).toBe(result2.__splatoon3ink_id);
   });
 
+  it('keeps the IDs previously produced by node:crypto shake256', () => {
+    const node = { image: { url: 'https://example.com/resources/prod/v2/test.png' } };
+    expect(deriveId(node).__splatoon3ink_id).toBe('2fbe7f63aa6a2c99');
+  });
+
   it('produces different hashes for different URLs', () => {
     const node1 = { image: { url: 'https://example.com/resources/prod/v2/a.png' } };
     const node2 = { image: { url: 'https://example.com/resources/prod/v2/b.png' } };

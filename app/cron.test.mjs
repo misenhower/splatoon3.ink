@@ -4,7 +4,8 @@ const mocks = vi.hoisted(() => ({
   archiveData: vi.fn(),
   jobs: new Map(),
   sendStatuses: vi.fn(),
-  update: vi.fn(),
+  updateFast: vi.fn(),
+  updateSlow: vi.fn(),
 }));
 
 vi.mock('cron', () => ({
@@ -17,7 +18,7 @@ vi.mock('cron', () => ({
 vi.mock('node:timers/promises', () => ({
   setTimeout: ms => new Promise(resolve => setTimeout(resolve, ms)),
 }));
-vi.mock('./data/index.mjs', () => ({ update: mocks.update }));
+vi.mock('./data/index.mjs', () => ({ updateFast: mocks.updateFast, updateSlow: mocks.updateSlow }));
 vi.mock('./splatnet/index.mjs', () => ({ warmCaches: vi.fn() }));
 vi.mock('./social/index.mjs', () => ({ sendStatuses: mocks.sendStatuses }));
 vi.mock('./data/DataArchiver.mjs', () => ({ archiveData: mocks.archiveData }));
@@ -32,7 +33,8 @@ describe('cron update coordination', () => {
   beforeEach(() => {
     vi.resetModules();
     mocks.jobs.clear();
-    mocks.update.mockReset();
+    mocks.updateFast.mockReset();
+    mocks.updateSlow.mockReset();
     mocks.sendStatuses.mockReset();
     mocks.archiveData.mockReset();
   });
@@ -42,20 +44,33 @@ describe('cron update coordination', () => {
     vi.restoreAllMocks();
   });
 
+  it('posts after the fast updaters and before the slow ones', async () => {
+    const calls = [];
+    mocks.updateFast.mockImplementation(async mode => calls.push(`fast:${mode}`));
+    mocks.sendStatuses.mockImplementation(async () => calls.push('social'));
+    mocks.updateSlow.mockImplementation(async mode => calls.push(`slow:${mode}`));
+    mocks.archiveData.mockImplementation(async () => calls.push('archive'));
+    await loadJobs();
+
+    await mocks.jobs.get('20 * * * *')();
+
+    expect(calls).toEqual(['fast:all', 'social', 'slow:all', 'archive']);
+  });
+
   it('allows another update after an update rejects', async () => {
-    mocks.update.mockRejectedValueOnce(new Error('update failed'));
+    mocks.updateFast.mockRejectedValueOnce(new Error('update failed'));
     await loadJobs();
 
     const update = mocks.jobs.get('15 0,1,2,3,4 * * * *');
     await expect(update()).rejects.toThrow('update failed');
     await update();
 
-    expect(mocks.update).toHaveBeenCalledTimes(2);
+    expect(mocks.updateFast).toHaveBeenCalledTimes(2);
   });
 
   it('restarts after a bounded wait when an update never settles', async () => {
     vi.useFakeTimers();
-    mocks.update.mockReturnValue(new Promise(() => {}));
+    mocks.updateFast.mockReturnValue(new Promise(() => {}));
     vi.spyOn(console, 'log').mockImplementation(() => {});
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
     const exit = vi.spyOn(process, 'exit').mockImplementation(() => {});

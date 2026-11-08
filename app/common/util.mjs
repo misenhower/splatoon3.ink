@@ -1,4 +1,6 @@
-import crypto from 'crypto';
+// node:crypto in the Workers runtime has no shake256; this pure-JS version is byte-identical.
+import { shake256 } from '@noble/hashes/sha3.js';
+import { bytesToHex } from '@noble/hashes/utils.js';
 
 export function getTopOfCurrentHour(date = null) {
   date ??= new Date;
@@ -58,8 +60,7 @@ export function deriveId(node) {
 
   let path = normalizeSplatnetResourcePath(node.image.url);
 
-  let hash = crypto.createHash('shake256', { outputLength: 8 });
-  let id = hash.update(path).digest('hex');
+  let id = bytesToHex(shake256(new TextEncoder().encode(path), { dkLen: 8 }));
 
   return {
     '__splatoon3ink_id': id,

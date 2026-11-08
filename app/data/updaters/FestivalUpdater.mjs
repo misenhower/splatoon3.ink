@@ -4,7 +4,6 @@ import jsonpath from '../../common/jsonpath.mjs';
 import { getFestId } from '../../common/util.mjs';
 import ValueCache from '../../common/ValueCache.mjs';
 import { regionTokens } from '../../splatnet/NsoClient.mjs';
-import FestivalRankingUpdater from './FestivalRankingUpdater.mjs';
 import DataUpdater from './DataUpdater.mjs';
 
 const limit = pLimit(1);
@@ -80,22 +79,13 @@ export default class FestivalUpdater extends DataUpdater
     this.deriveFestivalIds(result);
 
     // Get the detailed data for each Splatfest
-    // (unless we're getting localization-specific data)
+    // (unless we're getting localization-specific data).
+    // Rankings are handled separately by FestivalRankingsUpdater.
     if (locale === this.defaultLocale) {
       await Promise.all(result.data.festRecords.nodes.map(async node => {
         let detailResult = await this.getFestivalDetails(node);
 
         Object.assign(node, detailResult.data.fest);
-
-        if (!this.settings.disableFestivalRankings && node.teams.find(t => t.result)) {
-          let rankingUpdater = new FestivalRankingUpdater(this.region, node.id, node.endTime);
-
-          try {
-            await rankingUpdater.updateIfNeeded();
-          } catch (e) {
-            this.console.error(e);
-          }
-        }
       }));
     }
 

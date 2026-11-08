@@ -1,11 +1,5 @@
 import createScreenshotDriver from './drivers/createScreenshotDriver.mjs';
-
-const defaultViewport = {
-  // Using a 16:9 ratio here by default to match Twitter's image card dimensions
-  width: 1200,
-  height: 675,
-  deviceScaleFactor: 2,
-};
+import { defaultScreenshotViewport } from '../../src/common/screenshot.mjs';
 
 export default class ScreenshotHelper
 {
@@ -51,7 +45,7 @@ export default class ScreenshotHelper
     }
 
     let viewport = {
-      ...defaultViewport,
+      ...defaultScreenshotViewport,
       ...options.viewport,
     };
 

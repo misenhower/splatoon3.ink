@@ -1,0 +1,20 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "splatoon3-ink-screenshot-preview",
+  "main": "index.mjs",
+  "compatibility_date": "2026-09-04",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "preview_urls": false,
+  "browser": {
+    "binding": "BROWSER",
+    "remote": true
+  },
+  "vars": {
+    "SITE_URL": "https://dev.splatoon3.ink"
+  },
+  "dev": {
+    "ip": "127.0.0.1",
+    "port": 8789
+  }
+}

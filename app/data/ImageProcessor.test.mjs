@@ -48,4 +48,33 @@ describe('ImageProcessor', () => {
       expect(proc.publicUrl('v2/weapon/image.png')).toBe('https://assets.splatoon3.ink/splatnet/v2/weapon/image.png');
     });
   });
+
+  describe('maybeDownload', () => {
+    it('downloads an image once when requested concurrently', async () => {
+      const { exists } = await import('../common/fs.mjs');
+      exists.mockResolvedValue(false);
+      const download = vi.spyOn(processor, 'download').mockResolvedValue();
+      const other = new ImageProcessor();
+      vi.spyOn(other, 'download').mockImplementation(download);
+
+      await Promise.all([
+        processor.maybeDownload('https://example.com/a.png', 'a.png'),
+        other.maybeDownload('https://example.com/a.png', 'a.png'),
+        processor.maybeDownload('https://example.com/b.png', 'b.png'),
+      ]);
+
+      expect(download).toHaveBeenCalledTimes(2);
+    });
+
+    it('checks again once an earlier download has finished', async () => {
+      const { exists } = await import('../common/fs.mjs');
+      exists.mockResolvedValue(false);
+      const download = vi.spyOn(processor, 'download').mockResolvedValue();
+
+      await processor.maybeDownload('https://example.com/c.png', 'c.png');
+      await processor.maybeDownload('https://example.com/c.png', 'c.png');
+
+      expect(download).toHaveBeenCalledTimes(2);
+    });
+  });
 });

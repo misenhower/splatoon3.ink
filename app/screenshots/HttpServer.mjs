@@ -1,4 +1,5 @@
 import http from 'http';
+import { access } from 'node:fs/promises';
 import sirv from 'sirv';
 
 export default class HttpServer
@@ -15,24 +16,30 @@ export default class HttpServer
     return this._server.address().port;
   }
 
-  open() {
-    return new Promise((resolve, reject) => {
-      if (this._server) {
-        return resolve();
-      }
+  async open() {
+    if (this._server) {
+      return;
+    }
 
+    await access(`${this.root}/screenshots/index.html`).catch(() => {
+      throw new Error(`Missing ${this.root}/screenshots/index.html. Run npm run build first.`);
+    });
+
+    await new Promise((resolve, reject) => {
       const handler = sirv(this.root);
       this._server = http.createServer(handler);
-      this._server.on('listening', () => resolve());
-      this._server.on('error', reject);
-      this._server.listen(0, this.host);
+      this._server.once('error', reject);
+      this._server.listen(0, this.host, resolve);
     });
   }
 
   async close() {
-    if (this._server?.listening) {
-      await new Promise((resolve, reject) => this._server.close(error => error ? reject(error) : resolve()));
+    if (this._server) {
+      let server = this._server;
+      this._server = null;
+
+      server.closeAllConnections();
+      await new Promise(resolve => server.close(resolve));
     }
-    this._server = null;
   }
 }

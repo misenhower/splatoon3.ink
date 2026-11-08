@@ -29,30 +29,74 @@ npm run build
 
 ### Screenshot Generation
 
-Set `SCREENSHOT_PROVIDER` explicitly for social-media screenshots. Use `browserless` for local development with the Docker Compose development configuration. Use `cloudflare` in production to call Cloudflare Browser Run Quick Actions against `${SITE_URL}/screenshots/`.
+Cloudflare screenshots use the Worker's `BROWSER` binding directly. No Browser Run API
+token or account ID is needed. The Cloudflare driver receives the binding explicitly:
 
-The Cloudflare provider requires `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_BROWSER_RUN_API_TOKEN`. Create the API token with the **Browser Rendering Write** permission. The provider does not automatically fall back to Browserless when a Cloudflare request fails.
+```js
+const driver = new CloudflareScreenshotDriver({ browser: env.BROWSER, env });
+```
 
-Wrangler can run a local browser for Puppeteer, Playwright, and CDP-based Workers, but Quick Actions are not supported by its local browser binding. Quick Actions require remote mode, so testing this provider still requires Cloudflare to reach the rendered page.
+`SITE_URL` selects the frontend to render. Screenshots wait for the page's explicit
+readiness marker after its data, fonts, images, and layout settle. Like Splatoon 2,
+Browser Run uses 10-second navigation, readiness, and action timeouts, with up to
+three retries after the first attempt (0.5/1/2-second backoff). Timeouts, network
+errors, and HTTP 5xx are retried; authentication, rate-limit, and other validation
+errors fail immediately. Exhausted retries surface the error to the caller.
 
-To test the real Cloudflare provider against a local build, build and serve `dist` in one terminal:
+For a capture-only test against `dev.splatoon3.ink`:
+
+```sh
+npm run screenshot:cloudflare
+```
+
+Then save a PNG from another terminal:
+
+```sh
+curl --fail-with-body --get 'http://127.0.0.1:8789/' \
+  --data-urlencode 'route=schedules' \
+  --output /tmp/splatoon3-schedules.png
+```
+
+The `route` parameter is the screenshot page's hash, including any query parameters
+(for example, `schedules?time=1789531200000`). It defaults to `schedules`.
+This local preview Worker captures images only; it does not update data, write
+posting checkpoints, or send social posts. It is for local testing, not deployment.
+
+Wrangler runs the endpoint on loopback with a **remote Browser binding**. Sign in
+with `npx wrangler login` if needed. The browser must be able to reach the rendering
+site, and captures use the account's Browser Run allowance. See
+[Cloudflare Quick Actions](https://developers.cloudflare.com/browser-run/quick-actions/).
+
+To capture an unpublished frontend, build and serve it, expose it through a tunnel,
+and override the preview Worker's site URL:
 
 ```sh
 npm run build
 npm run preview
+# In another terminal:
+npx wrangler tunnel quick-start http://localhost:5050
+# Use the printed tunnel URL:
+npm run screenshot:cloudflare -- --var SITE_URL:https://example.trycloudflare.com
 ```
 
-Expose that server through a temporary Wrangler tunnel in a second terminal:
+Local screenshots use `puppeteer-core` with an installed Chrome or Chromium (found
+automatically on macOS and common Linux paths; otherwise set `CHROME_PATH`). They always
+capture the built site in `dist/` through a temporary loopback server, regardless of
+`SITE_URL`. No Docker browser service is needed.
 
 ```sh
-npx wrangler@latest tunnel quick-start http://localhost:5050
+npm run build
+npm run screenshot -- --route schedules --output /tmp/splatoon3-local.png
 ```
 
-In a third terminal, use the printed `https://*.trycloudflare.com` URL for that run:
+The `--route` argument accepts a screenshot hash including its query parameters,
+just like the Cloudflare preview's `route` parameter. Built-site captures need the
+usual data and assets in `dist/`, or a build configured with `VITE_DATA_FROM`.
 
-```sh
-SCREENSHOT_PROVIDER=cloudflare SITE_URL=https://example.trycloudflare.com npm run social:test
-```
+For Node social commands, set `SCREENSHOT_PROVIDER=local`. The binding-based
+`cloudflare` provider runs through Workers tooling. Both providers wait for the
+page-ready marker; the local driver also fails fast when the page reports a
+screenshot error (for example, missing translations).
 
 ### Lint with [ESLint](https://eslint.org/)
 

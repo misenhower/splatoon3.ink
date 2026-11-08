@@ -7,6 +7,10 @@ import { exists, mkdirp } from '../common/fs.mjs';
 
 const queue = new PQueue({ concurrency: 4 });
 
+// Downloads in progress, by destination. Updaters run concurrently and often reference the
+// same images; without this, each would see the file as missing and download it again.
+const inFlight = new Map();
+
 export default class ImageProcessor
 {
   destinationDirectory = 'dist';
@@ -55,7 +59,19 @@ export default class ImageProcessor
     return `${this.siteUrl ?? ''}/${this.outputDirectory}/${file}`;
   }
 
-  async maybeDownload(url, destination) {
+  maybeDownload(url, destination) {
+    let pending = inFlight.get(destination);
+
+    if (!pending) {
+      pending = this._maybeDownload(url, destination)
+        .finally(() => inFlight.delete(destination));
+      inFlight.set(destination, pending);
+    }
+
+    return pending;
+  }
+
+  async _maybeDownload(url, destination) {
     // If the file already exists, we don't need to download it again
     if (await exists(this.localPath(destination))) {
       return;

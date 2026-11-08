@@ -24,7 +24,7 @@ npm run splatnet       # Default data update
 npm run splatnet:all   # Full data update (all regions, all features)
 npm run social         # Post status updates to social media
 npm run social:test    # Test social posting (writes to files)
-npm start              # Full production: sync → splatnet → social → cron
+npm start              # Run the Node backend locally: sync → splatnet → social → cron
 ```
 
 ## Architecture
@@ -35,7 +35,7 @@ npm start              # Full production: sync → splatnet → social → cron
 
 **Data pipeline**: `NsoClient` (Nintendo auth) → `SplatNet3Client` (GraphQL queries) → DataUpdaters (`app/data/updaters/`) → JSON files in `dist/data/` → Frontend Pinia stores → Vue components. Images are processed via sharp. Data is optionally archived and synced to S3.
 
-**Social media**: StatusGenerators (`app/social/generators/`) create content from data. Clients (`app/social/clients/`) post to each platform. `ScreenshotHelper` delegates rendering to drivers in `app/screenshots/drivers/`: production uses Cloudflare Browser Run Quick Actions against the public site, while local development can use puppeteer-core + Browserless.
+**Social media**: StatusGenerators (`app/social/generators/`) create content from data. Clients (`app/social/clients/`) post to each platform. `ScreenshotHelper` delegates rendering to drivers in `app/screenshots/drivers/`: local Node commands capture the built site with an installed Chrome via puppeteer-core; Workers use Cloudflare Browser Run through the `BROWSER` binding. `npm run screenshot` and `npm run screenshot:cloudflare` capture images without running social posting.
 
 **Scheduling**: Cron jobs (`app/cron.mjs`) run data updates and social posting at intervals.
 
@@ -53,7 +53,7 @@ Tests use Vitest. Test files live alongside source: `app/**/*.test.mjs` and `src
 
 ## Deployment
 
-- Frontend: built to `dist/` and deployed to AWS S3 (static hosting)
-- Backend: Docker container (`docker/app/Dockerfile`) pushed to GitHub Container Registry
+- Frontend: built to `dist/` and served by Cloudflare Pages
+- Backend: being migrated to Cloudflare Workers; there is no longer a Docker image or server deployment built from this repo
 - `dist/` is not emptied on build (preserves generated `dist/data/` from backend)
-- Browserless runs as a separate Docker service for local screenshot generation
+- Local screenshots run on the host with puppeteer-core and an installed Chrome; no separate browser service is needed

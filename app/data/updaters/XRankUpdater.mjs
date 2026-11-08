@@ -48,7 +48,11 @@ export default class XRankUpdater extends DataUpdater
 
     seasons.forEach(s => this.deriveSeasonId(s));
 
-    await Promise.all(seasons.map(season => this.updateSeasonDetail(season)));
+    // One season and detail type at a time: each detail file holds up to ~2 MB of JSON,
+    // and fetching them all concurrently costs far more memory than a Worker allows.
+    for (let season of seasons) {
+      await this.updateSeasonDetail(season);
+    }
 
     return result;
   }
@@ -65,9 +69,9 @@ export default class XRankUpdater extends DataUpdater
   }
 
   async updateSeasonDetail(season) {
-    await Promise.all(this.splatnet().getXRankingDetailQueryTypes().map(type => {
+    for (let type of this.splatnet().getXRankingDetailQueryTypes()) {
       let updater = new XRankDetailUpdater(season.id, season.endTime, type);
-      return updater.updateIfNeeded();
-    }));
+      await updater.updateIfNeeded();
+    }
   }
 }
