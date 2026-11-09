@@ -10,7 +10,7 @@ import ScreenshotHelper from '../screenshots/ScreenshotHelper.mjs';
 vi.mock('../common/prefixedConsole.mjs', () => ({
   default: () => ({ log: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() }),
 }));
-vi.mock('@sentry/node', () => ({ captureException: vi.fn() }));
+vi.mock('@sentry/core', () => ({ captureException: vi.fn() }));
 
 afterEach(() => {
   vi.restoreAllMocks();

@@ -1,14 +1,9 @@
-import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { readAvatar } from '#avatars';
 import prefixedConsole from '../common/prefixedConsole.mjs';
 import ValueCache from '../common/ValueCache.mjs';
 import { defaultClients } from './index.mjs';
 import { getCurrentVariant } from './avatarVariants.mjs';
 import TwitterClient from './clients/TwitterClient.mjs';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const avatarsDir = path.join(__dirname, 'avatars');
 
 const console = prefixedConsole('Social', 'Avatar');
 
@@ -40,8 +35,7 @@ export async function updateAvatars() {
     // Read avatar file on first client that needs an update
     if (!avatarBuffer) {
       try {
-        let avatarPath = path.join(avatarsDir, variant.avatar);
-        avatarBuffer = await fs.readFile(avatarPath);
+        avatarBuffer = await readAvatar(variant.avatar);
       } catch (error) {
         console.error(`Failed to read avatar file ${variant.avatar}:`, error.message);
         return;

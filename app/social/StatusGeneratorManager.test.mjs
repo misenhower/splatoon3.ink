@@ -1,10 +1,10 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { captureException } from '@sentry/node';
+import { captureException } from '@sentry/core';
 import StatusGeneratorManager from './StatusGeneratorManager.mjs';
 import BufferTwitterClient from './clients/BufferTwitterClient.mjs';
 import { defaultClients } from './index.mjs';
 
-vi.mock('@sentry/node', () => ({ captureException: vi.fn() }));
+vi.mock('@sentry/core', () => ({ captureException: vi.fn() }));
 vi.mock('../common/prefixedConsole.mjs', () => ({
   default: () => ({ log: vi.fn(), info: vi.fn(), error: vi.fn(), warn: vi.fn() }),
 }));

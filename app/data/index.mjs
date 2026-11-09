@@ -1,4 +1,5 @@
-import * as Sentry from '@sentry/node';
+// @sentry/core reports to whichever SDK the runtime initialized (Node or Cloudflare).
+import * as Sentry from '@sentry/core';
 import GearUpdater from './updaters/GearUpdater.mjs';
 import StageScheduleUpdater from './updaters/StageScheduleUpdater.mjs';
 import CoopUpdater from './updaters/CoopUpdater.mjs';

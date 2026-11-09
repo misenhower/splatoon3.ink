@@ -4,6 +4,20 @@
   "engines": {
     "node": "24.x"
   },
+  "imports": {
+    "#image-converter": {
+      "workerd": "./app/common/image/convert.worker.mjs",
+      "default": "./app/common/image/convert.node.mjs"
+    },
+    "#avatars": {
+      "workerd": "./app/social/avatars/index.worker.mjs",
+      "default": "./app/social/avatars/index.node.mjs"
+    },
+    "#local-screenshot-driver": {
+      "workerd": "./app/screenshots/drivers/LocalScreenshotDriver.worker.mjs",
+      "default": "./app/screenshots/drivers/LocalScreenshotDriver.mjs"
+    }
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -45,6 +59,7 @@
     "@headlessui/vue": "^1.7.23",
     "@heroicons/vue": "^2.2.0",
     "@noble/hashes": "^2.4.0",
+    "@sentry/core": "^10.38.0",
     "@sentry/node": "^10.38.0",
     "console-stamp": "^3.0.6",
     "cron": "^4.4.0",
@@ -53,7 +68,6 @@
     "jsonpath-plus": "^10.4.0",
     "lodash": "^4.17.21",
     "masto": "^8.0.0",
-    "nxapi": "1.6.1-next.257",
     "p-filter": "^4.1.0",
     "p-limit": "^7.3.0",
     "p-queue": "^9.1.0",
@@ -62,7 +76,6 @@
     "sharp": "^0.35.4",
     "sirv": "^3.0.2",
     "tar-stream": "^3.2.0",
-    "twitter-api-v2": "^1.29.0",
     "vue": "^3.5.42",
     "vue-i18n": "^11.4.10",
     "vue-router": "^5.0.2"

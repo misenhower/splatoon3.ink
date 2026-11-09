@@ -1,5 +1,6 @@
 import { BskyAgent, RichText } from '@atproto/api';
-import sharp from 'sharp';
+import { convertToJpeg } from '#image-converter';
+import { pngSize } from '../../common/image/png.mjs';
 import Client from './Client.mjs';
 
 export default class BlueskyClient extends Client
@@ -44,7 +45,7 @@ export default class BlueskyClient extends Client
   async updateProfile(avatarBuffer, displayName) {
     await this.login();
 
-    let jpeg = await sharp(avatarBuffer).jpeg().toBuffer();
+    let jpeg = await convertToJpeg(avatarBuffer);
     let uploadResponse = await this._agent.uploadBlob(jpeg, { encoding: 'image/jpeg' });
 
     await this._agent.upsertProfile((existing) => {
@@ -69,16 +70,15 @@ export default class BlueskyClient extends Client
       let images = await Promise.all(
         status.media.map(async m => {
           // We have to convert the PNG to a JPG for Bluesky because of size limits
-          let jpeg = sharp(m.file).jpeg();
-          let metadata = await jpeg.metadata();
-          let buffer = await jpeg.toBuffer();
+          let size = pngSize(m.file);
+          let buffer = await convertToJpeg(m.file);
 
           let response = await this._agent.uploadBlob(buffer, { encoding: 'image/jpeg' });
 
           return {
             image: response.data.blob,
             alt: m.altText || '',
-            aspectRatio: { width: metadata.width, height: metadata.height },
+            ...(size && { aspectRatio: size }),
           };
         }),
       );

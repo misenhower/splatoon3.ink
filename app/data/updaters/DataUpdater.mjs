@@ -1,4 +1,3 @@
-import { Console } from 'node:console';
 import ical from 'ical-generator';
 import pFilter from 'p-filter';
 import prefixedConsole from '../../common/prefixedConsole.mjs';
@@ -49,7 +48,7 @@ export default class DataUpdater
       : defaultLocale;
   }
 
-  /** @type {Console} */
+  /** @type {ReturnType<typeof prefixedConsole>} */
   get console() {
     this._console ??= prefixedConsole('Updater', this.region, this.name);
 

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Splatoon3.ink displays Splatoon 3 map rotations, Salmon Run schedules, SplatNet gear, and more. It has a Vue 3 frontend (`src/`) and a Node.js backend (`app/`) in a single repository. The backend fetches data from Nintendo's SplatNet3 GraphQL API via nxapi and publishes updates to social media (Mastodon, Bluesky, Threads).
+Splatoon3.ink displays Splatoon 3 map rotations, Salmon Run schedules, SplatNet gear, and more. It has a Vue 3 frontend (`src/`) and a Node.js backend (`app/`) in a single repository. The backend fetches data from Nintendo's SplatNet3 GraphQL API (authenticating through the nxapi znca API; `app/splatnet/coral.mjs` reimplements the nxapi client so it also runs in Workers) and publishes updates to social media (X via Buffer, Mastodon, Bluesky, Threads).
 
 ## Commands
 
@@ -43,9 +43,10 @@ npm start              # Run the Node backend locally: splatnet → social → c
 
 - ESLint flat config with Vue, JSDoc, and import-alias plugins
 - 2-space indentation, single quotes, semicolons, trailing commas on multiline
+- Shared backend code must also run in Cloudflare Workers: avoid Node-only APIs there. Runtime-specific pieces use package imports with `workerd` and `default` conditions (`#image-converter`, `#avatars`, `#local-screenshot-driver` in package.json)
 - In `src/` files, use `@/` import alias (e.g., `import Foo from '@/components/Foo.vue'`)
 - Vue: multi-word component names not required, up to 4 attributes per single line, self-closing void HTML elements
-- Node.js 22, ESM modules throughout (`.mjs` extension for backend files, `.js`/`.vue` for frontend)
+- Node.js 24, ESM modules throughout (`.mjs` extension for backend files, `.js`/`.vue` for frontend)
 
 ## Testing
 

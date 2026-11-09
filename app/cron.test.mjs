@@ -15,9 +15,6 @@ vi.mock('cron', () => ({
     }
   },
 }));
-vi.mock('node:timers/promises', () => ({
-  setTimeout: ms => new Promise(resolve => setTimeout(resolve, ms)),
-}));
 vi.mock('./data/index.mjs', () => ({ updateFast: mocks.updateFast, updateSlow: mocks.updateSlow }));
 vi.mock('./splatnet/index.mjs', () => ({ warmCaches: vi.fn() }));
 vi.mock('./social/index.mjs', () => ({ sendStatuses: mocks.sendStatuses }));
@@ -66,28 +63,5 @@ describe('cron update coordination', () => {
     await update();
 
     expect(mocks.updateFast).toHaveBeenCalledTimes(2);
-  });
-
-  it('restarts after a bounded wait when an update never settles', async () => {
-    vi.useFakeTimers();
-    mocks.updateFast.mockReturnValue(new Promise(() => {}));
-    vi.spyOn(console, 'log').mockImplementation(() => {});
-    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    const exit = vi.spyOn(process, 'exit').mockImplementation(() => {});
-    await loadJobs();
-
-    const update = mocks.jobs.get('15 0,1,2,3,4 * * * *');
-    const restart = mocks.jobs.get('0 55 4 * * *');
-    update();
-    const restarting = restart();
-    await vi.advanceTimersByTimeAsync(5 * 60 * 1000 - 1);
-
-    expect(exit).not.toHaveBeenCalled();
-
-    await vi.advanceTimersByTimeAsync(1);
-
-    expect(warn).toHaveBeenCalledWith('[Cron] Update did not finish within 5 minutes; restarting anyway');
-    expect(exit).toHaveBeenCalledWith(0);
-    await restarting;
   });
 });

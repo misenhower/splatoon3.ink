@@ -1,4 +1,5 @@
-import * as Sentry from '@sentry/node';
+// @sentry/core reports to whichever SDK the runtime initialized (Node or Cloudflare).
+import * as Sentry from '@sentry/core';
 import prefixedConsole from '../common/prefixedConsole.mjs';
 import ScreenshotHelper from '../screenshots/ScreenshotHelper.mjs';
 import Client from './clients/Client.mjs';

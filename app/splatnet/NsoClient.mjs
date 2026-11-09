@@ -1,60 +1,67 @@
-import { createHmac } from 'node:crypto';
-import CoralApi from 'nxapi/coral';
-import { addUserAgent, setClientAuthentication } from 'nxapi';
 import pLimit from 'p-limit';
 import ValueCache from '../common/ValueCache.mjs';
 import prefixedConsole from '../common/prefixedConsole.mjs';
 import { calculateCacheExpiry } from '../common/util.mjs';
+import { getRemoteConfig, getWebServiceToken, loginWithSessionToken, ZncaApiClient } from './coral.mjs';
 
 const coralLimit = pLimit(1);
 const webServiceLimit = pLimit(1);
 
-let _nxapiInitialized = false;
+// nxapi's remote config can disable Coral authentication, so refresh it regularly rather than
+// keeping it for the life of the process (the old Node container restarted daily for this).
+const remoteConfigLifetime = { min: 10 * 60, default: 60 * 60, max: 24 * 60 * 60 };
 
-class SharedSecretAssertionProvider {
-  constructor(clientId, sharedSecret) {
-    this.clientId = clientId;
-    this.sharedSecret = sharedSecret;
-    this.scope = 'ca:gf ca:er ca:dr';
-  }
+// One znca-api client per Nintendo account: its access token becomes bound to the first
+// account that uses it, so clients cannot be shared between regions.
+const zncaClients = new Map();
 
-  async create(aud, exp = 300) {
-    const now = Math.floor(Date.now() / 1000);
-
-    const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url');
-    const payload = Buffer.from(JSON.stringify({
-      typ: 'client_assertion',
-      iss: this.clientId,
-      aud,
-      exp: now + exp,
-      iat: now,
-    })).toString('base64url');
-
-    const signData = `${header}.${payload}`;
-    const signature = createHmac('sha256', this.sharedSecret)
-      .update(signData)
-      .digest()
-      .toString('base64url');
-
-    return {
-      assertion: `${signData}.${signature}`,
-      type: 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
-    };
-  }
+function userAgent() {
+  return ['splatoon3.ink', process.env.USER_AGENT].filter(Boolean).join(' ');
 }
 
-function initializeNxapi() {
-  if (!_nxapiInitialized) {
-    addUserAgent(process.env.USER_AGENT);
+function remoteConfigExpiry(cacheControl) {
+  let maxAge = Number(/max-age=(\d+)/.exec(cacheControl ?? '')?.[1]);
+  let seconds = Number.isFinite(maxAge) ? maxAge : remoteConfigLifetime.default;
+  seconds = Math.min(Math.max(seconds, remoteConfigLifetime.min), remoteConfigLifetime.max);
 
-    if (process.env.NXAPI_CLIENT_ID && process.env.NXAPI_SHARED_SECRET) {
-      setClientAuthentication(
-        new SharedSecretAssertionProvider(process.env.NXAPI_CLIENT_ID, process.env.NXAPI_SHARED_SECRET),
-      );
-    }
+  return Date.now() + seconds * 1000;
+}
+
+/**
+ * The znca-api client (f generation and Coral request encryption) selected by nxapi's remote
+ * configuration, plus the Nintendo Switch Online app version to present.
+ * @param {string} account Identifies the Nintendo account the client will be used for
+ * @returns {Promise<{ znca: ZncaApiClient, zncaVersion: string }>} The client and app version
+ */
+export async function getZnca(account) {
+  let cache = new ValueCache('nxapi.config');
+  let config = await cache.getData();
+
+  if (!config) {
+    config = await getRemoteConfig(userAgent());
+    await cache.setData(config, remoteConfigExpiry(config.cacheControl));
   }
 
-  _nxapiInitialized = true;
+  if (!process.env.NXAPI_CLIENT_ID || !process.env.NXAPI_SHARED_SECRET) {
+    throw new Error('NXAPI_CLIENT_ID and NXAPI_SHARED_SECRET are required for Coral authentication');
+  }
+
+  // Reuse the account's client (and its znca-api token) while the configuration is unchanged.
+  let zncaClient = zncaClients.get(account);
+
+  if (zncaClient?.configUrl !== config.zncaApiUrl || zncaClient?.zncaVersion !== config.zncaVersion) {
+    zncaClient = new ZncaApiClient({
+      url: config.zncaApiUrl,
+      clientId: process.env.NXAPI_CLIENT_ID,
+      sharedSecret: process.env.NXAPI_SHARED_SECRET,
+      zncaVersion: config.zncaVersion,
+      userAgent: userAgent(),
+    });
+    zncaClient.configUrl = config.zncaApiUrl;
+    zncaClients.set(account, zncaClient);
+  }
+
+  return { znca: zncaClient, zncaVersion: config.zncaVersion };
 }
 
 export function regionTokens() {
@@ -74,11 +81,13 @@ function getDefaultRegion() {
   throw new Error('Session token not set for any region');
 }
 
+function isCoralSession(data) {
+  return !!(data?.coralUserId && data.credential?.accessToken && data.user?.id);
+}
+
 export default class NsoClient
 {
   constructor(region, nintendoToken) {
-    initializeNxapi();
-
     this.console = prefixedConsole('NSO', region);
     this.region = region;
     this.nintendoToken = nintendoToken;
@@ -101,29 +110,35 @@ export default class NsoClient
     return `nso.${token}`;
   }
 
-  // Coral API
+  // Coral session
 
   _getCoralCache() {
     return new ValueCache(`${this.cachePrefix}.coral`);
   }
 
-  async getCoralApi(useCache = true) {
+  /**
+   * @param {boolean} [useCache] false to log in again
+   * @returns {Promise<{ user: object, coralUserId: number, credential: { accessToken: string, expiresIn: number } }>} The Coral session
+   */
+  async getCoralSession(useCache = true) {
     return coralLimit(async () => {
       let data = useCache
         ? await this._getCoralCache().getData()
         : null;
 
-      if (!data) {
+      // Sessions cached by the nxapi package have a different shape; log in again.
+      if (!isCoralSession(data)) {
         data = await this._createCoralSession();
       }
 
-      return CoralApi.createWithSavedToken(data);
+      return data;
     });
   }
 
   async _createCoralSession() {
     this.console.info('Creating Coral session...');
-    let { data } = await CoralApi.createWithSessionToken(this.nintendoToken);
+    let { znca, zncaVersion } = await getZnca(this.cachePrefix);
+    let data = await loginWithSessionToken(this.nintendoToken, { znca, zncaVersion });
 
     let expires = calculateCacheExpiry(data.credential.expiresIn);
     this.console.debug(`Caching Coral session until: ${expires}`);
@@ -154,10 +169,17 @@ export default class NsoClient
   }
 
   async _createWebServiceToken(id, tokenCache) {
-    let coral = await this.getCoralApi();
+    let session = await this.getCoralSession();
+    let { znca, zncaVersion } = await getZnca(this.cachePrefix);
 
     this.console.info(`Creating web service token for ID ${id}...`);
-    let { result } = await coral.getWebServiceToken(id);
+    let result = await getWebServiceToken(id, {
+      znca,
+      zncaVersion,
+      coralAccessToken: session.credential.accessToken,
+      coralUserId: session.coralUserId,
+      naId: session.user.id,
+    });
 
     let expires = calculateCacheExpiry(result.expiresIn);
     this.console.debug(`Caching web service token for ID ${id} until: ${expires}`);

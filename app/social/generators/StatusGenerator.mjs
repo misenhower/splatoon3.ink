@@ -1,4 +1,3 @@
-import { Console } from 'node:console';
 import { createPinia } from 'pinia';
 import { useCoopDataStore, useFestivalsDataStore, useGearDataStore, useSchedulesDataStore } from '../../../src/stores/data.mjs';
 import prefixedConsole from '../../common/prefixedConsole.mjs';
@@ -34,7 +33,7 @@ export default class StatusGenerator
     return this.messages.game(category, node, field);
   }
 
-  /** @type {Console} */
+  /** @type {ReturnType<typeof prefixedConsole>} */
   get console() {
     this._console ??= prefixedConsole('Social', this.name);
 

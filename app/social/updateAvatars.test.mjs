@@ -50,11 +50,10 @@ describe('Seasonal profile updates', () => {
     updateImage = vi.fn().mockResolvedValue({});
     updateProfile = vi.fn().mockResolvedValue({});
 
-    vi.spyOn(TwitterClient.prototype, 'api').mockReturnValue({
-      v1: {
-        updateAccountProfileImage: updateImage,
-        updateAccountProfile: updateProfile,
-      },
+    vi.spyOn(TwitterClient.prototype, 'request').mockImplementation(async (path, { params, body }) => {
+      return path === 'account/update_profile_image.json'
+        ? updateImage(new Uint8Array(await body.get('image').arrayBuffer()))
+        : updateProfile(params);
     });
   });
 
@@ -87,7 +86,7 @@ describe('Seasonal profile updates', () => {
     await updateAvatars();
     await updateAvatars();
 
-    expect(updateImage).toHaveBeenCalledExactlyOnceWith(avatar);
+    expect(updateImage).toHaveBeenCalledExactlyOnceWith(new Uint8Array(avatar));
     expect(updateProfile).toHaveBeenCalledExactlyOnceWith({ name: 'Splatoon3.eek 🎃' });
     expect(cache.get('social.twitter.avatar')).toBe('halloween');
   });

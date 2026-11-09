@@ -1,4 +1,4 @@
-import sharp from 'sharp';
+import { convertToJpeg } from '#image-converter';
 import Client from './Client.mjs';
 import prefixedConsole from '../../common/prefixedConsole.mjs';
 import ValueCache from '../../common/ValueCache.mjs';
@@ -80,7 +80,7 @@ export default class ThreadsClient extends Client {
       }
 
       let accessToken = await this._getAccessToken();
-      let jpeg = await sharp(status.media[0].file).jpeg().toBuffer();
+      let jpeg = await convertToJpeg(status.media[0].file);
 
       // Upload the image to public storage so Threads can fetch it
       let { imageUrl, storageKey } = await this._uploadImage(jpeg, generator.key);

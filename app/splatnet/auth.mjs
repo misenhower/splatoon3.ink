@@ -55,7 +55,7 @@ export class LocalAuth {
    * @param {import('./NsoClient.mjs').default} nsoClient
    */
   async refresh(nsoClient) {
-    await safe(() => nsoClient.getCoralApi(false));
+    await safe(() => nsoClient.getCoralSession(false));
     await safe(() => nsoClient.getWebServiceToken(SPLATNET3_WEB_SERVICE_ID, false));
     await safe(() => this.bulletToken(nsoClient, { useCache: false }));
   }

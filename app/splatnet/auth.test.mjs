@@ -10,7 +10,7 @@ function fakeNsoClient() {
   return {
     region: 'US',
     cachePrefix: 'nso.test',
-    getCoralApi: vi.fn().mockResolvedValue({}),
+    getCoralSession: vi.fn().mockResolvedValue({}),
     getWebServiceToken: vi.fn().mockResolvedValue('web-token'),
   };
 }
@@ -29,14 +29,14 @@ describe('auth', () => {
 
     await local.refresh(nso);
 
-    expect(nso.getCoralApi).toHaveBeenCalledWith(false);
+    expect(nso.getCoralSession).toHaveBeenCalledWith(false);
     expect(nso.getWebServiceToken).toHaveBeenCalledWith(SPLATNET3_WEB_SERVICE_ID, false);
     expect(bulletToken).toHaveBeenCalledWith(nso, { useCache: false });
   });
 
   it('keeps refreshing later credentials when an earlier step fails', async () => {
     let nso = fakeNsoClient();
-    nso.getCoralApi.mockRejectedValue(new Error('Coral unavailable'));
+    nso.getCoralSession.mockRejectedValue(new Error('Coral unavailable'));
     vi.spyOn(console, 'error').mockImplementation(() => {});
     let local = new LocalAuth;
     vi.spyOn(local, 'bulletToken').mockResolvedValue({ bulletToken: 'b' });

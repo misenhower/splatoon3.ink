@@ -1,62 +1,63 @@
-import { TwitterApi } from 'twitter-api-v2';
 import Client from './Client.mjs';
+import { oauth1Header } from './oauth1.mjs';
 
+const API_URL = 'https://api.x.com/1.1/';
+
+/**
+ * Direct X API access for seasonal profile updates (avatar and display name), which Buffer
+ * cannot change. Posts go through BufferTwitterClient instead.
+ */
 export default class TwitterClient extends Client
 {
   key = 'twitter';
   name = 'Twitter';
 
-  /** @member {TwitterApi} */
-  _api;
-
-  async canSend() {
-    return ['CONSUMER_KEY', 'CONSUMER_SECRET', 'ACCESS_TOKEN_KEY', 'ACCESS_TOKEN_SECRET']
-      .every(key => !!process.env[`TWITTER_${key}`]);
+  get credentials() {
+    return {
+      consumerKey: process.env.TWITTER_CONSUMER_KEY,
+      consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
+      accessToken: process.env.TWITTER_ACCESS_TOKEN_KEY,
+      accessSecret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
+    };
   }
 
-  api() {
-    if (!this._api) {
-      this._api = new TwitterApi({
-        appKey: process.env.TWITTER_CONSUMER_KEY,
-        appSecret: process.env.TWITTER_CONSUMER_SECRET,
-        accessToken: process.env.TWITTER_ACCESS_TOKEN_KEY,
-        accessSecret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
-      });
-    }
-
-    return this._api;
+  async canSend() {
+    return Object.values(this.credentials).every(Boolean);
   }
 
   async updateProfile(avatarBuffer, displayName) {
-    await this.api().v1.updateAccountProfileImage(avatarBuffer);
-    await this.api().v1.updateAccountProfile({ name: displayName });
+    // Multipart bodies are not part of the OAuth signature.
+    let form = new FormData();
+    form.append('image', new Blob([avatarBuffer], { type: 'image/png' }), 'avatar.png');
+    await this.request('account/update_profile_image.json', { body: form });
+
+    let params = { name: displayName };
+    await this.request('account/update_profile.json', { params, body: new URLSearchParams(params) });
   }
 
-  async send(status, generator) {
-    if (!status.media?.length) {
-      console.error(`[${this.name}] No media provided for ${generator.key}`);
-      return;
+  async request(path, { params = {}, body }) {
+    let url = new URL(path, API_URL).href;
+    let response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: await oauth1Header({ method: 'POST', url, params, credentials: this.credentials }),
+      },
+      body,
+    });
+
+    if (!response.ok) {
+      let detail = await response.text();
+
+      try {
+        let data = JSON.parse(detail);
+        detail = data.errors?.map(error => error.message).join('; ') || data.detail || detail;
+      } catch {
+        // Use the body as-is
+      }
+
+      throw new Error(`X API ${path} failed (${response.status}): ${detail}`);
     }
 
-    try {
-      // Upload images
-      let mediaIds = await Promise.all(
-        status.media.map(async m => {
-          let id = await this.api().v1.uploadMedia(Buffer.from(m.file), { mimeType: m.type });
-
-          if (m.altText) {
-            await this.api().v1.createMediaMetadata(id, { alt_text: { text: m.altText } });
-          }
-
-          return id;
-        }),
-      );
-
-      // Send status
-      await this.api().v2.tweet(status.status, { media: { media_ids: mediaIds } });
-    } catch (error) {
-      console.error(`[${this.name}] Failed to post ${generator.key}:`, error.message);
-      throw error;
-    }
+    return response.json();
   }
 }
