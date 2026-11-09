@@ -1,6 +1,6 @@
-import fs from 'fs/promises';
 import prefixedConsole from '../../common/prefixedConsole.mjs';
 import { regionTokens } from '../../splatnet/NsoClient.mjs';
+import { storage } from '../../common/storage/index.mjs';
 import FestivalRankingUpdater from './FestivalRankingUpdater.mjs';
 
 /**
@@ -13,7 +13,7 @@ import FestivalRankingUpdater from './FestivalRankingUpdater.mjs';
  */
 export default class FestivalRankingsUpdater
 {
-  festivalsFile = 'dist/data/festivals.json';
+  festivalsKey = 'data/festivals.json';
 
   settings = {};
 
@@ -45,11 +45,9 @@ export default class FestivalRankingsUpdater
   }
 
   async getFestivalsWithResults() {
-    let data;
+    let data = await storage().public.readJson(this.festivalsKey);
 
-    try {
-      data = JSON.parse(await fs.readFile(this.festivalsFile));
-    } catch {
+    if (!data) {
       this.console.warn('No published festivals data, skipping...');
 
       return [];

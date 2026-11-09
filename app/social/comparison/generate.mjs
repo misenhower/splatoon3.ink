@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { configureFilesystemStorage } from '../../common/storage/filesystem.mjs';
 import { createPinia } from 'pinia';
 import { defaultStatusGenerators } from '../index.mjs';
 import ScreenshotHelper from '../../screenshots/ScreenshotHelper.mjs';
@@ -112,6 +113,7 @@ export async function generateComparison(outputDirectory = 'temp/social-preview/
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  configureFilesystemStorage();
   generateComparison(process.argv[2]).catch(error => {
     console.error(error.message);
     process.exitCode = 1;

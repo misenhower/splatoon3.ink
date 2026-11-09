@@ -1,5 +1,5 @@
 import get from 'lodash/get.js';
-import fs from 'node:fs/promises';
+import { storage } from '../../common/storage/index.mjs';
 import english from './en-US.json' with { type: 'json' };
 import japanese from './ja-JP.json' with { type: 'json' };
 
@@ -24,11 +24,19 @@ export default class SocialMessages {
   async load() {
     if (this.locale === 'en-US' || this.translations) return;
 
+    let translations;
+
     try {
-      this.translations = JSON.parse(await fs.readFile(`dist/data/locale/${this.locale}.json`, 'utf8'));
+      translations = await storage().public.readJson(`data/locale/${this.locale}.json`);
     } catch (cause) {
       throw new MissingTranslationError(`Cannot load ${this.locale} game translations`, { cause });
     }
+
+    if (!translations) {
+      throw new MissingTranslationError(`Cannot load ${this.locale} game translations`);
+    }
+
+    this.translations = translations;
   }
 
   game(category, node, field = 'name') {

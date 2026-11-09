@@ -1,6 +1,4 @@
 import * as Sentry from '@sentry/node';
-import S3Syncer from '../sync/S3Syncer.mjs';
-import { canSyncS3, canUpload, upload } from '../sync/index.mjs';
 import GearUpdater from './updaters/GearUpdater.mjs';
 import StageScheduleUpdater from './updaters/StageScheduleUpdater.mjs';
 import CoopUpdater from './updaters/CoopUpdater.mjs';
@@ -65,17 +63,8 @@ const configs = {
 async function runLane(lane, config, run) {
   console.info(`Running ${config} ${lane} updaters...`);
 
-  // Download private files to get updated tokens if needed
-  if (canSyncS3()) {
-    await (new S3Syncer).download(false);
-  }
-
   await run(configs[config]);
-
-  if (canUpload()) {
-    await ImageProcessor.onIdle();
-    await upload();
-  }
+  await ImageProcessor.onIdle();
 
   console.info(`Done running ${config} ${lane} updaters`);
 }

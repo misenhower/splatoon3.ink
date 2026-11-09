@@ -41,6 +41,6 @@ describe('SocialMessages', () => {
     const generator = new SplatfestStatus('JP');
 
     expect(generator.locale).toBe('en-US');
-    expect(generator.lastPostCache({ key: 'bluesky' }).path).toBe('storage/cache/social.bluesky.splatfest.JP.json');
+    expect(generator.lastPostCache({ key: 'bluesky' }).path).toBe('cache/social.bluesky.splatfest.JP.json');
   });
 });

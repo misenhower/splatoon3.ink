@@ -1,12 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { testBuckets } from '../../test/storage.mjs';
 
-const { readFile, rankingUpdaters, failingFests } = vi.hoisted(() => ({
-  readFile: vi.fn(),
+const { rankingUpdaters, failingFests } = vi.hoisted(() => ({
   rankingUpdaters: [],
   failingFests: new Set(),
 }));
-
-vi.mock('fs/promises', () => ({ default: { readFile } }));
 vi.mock('../../common/prefixedConsole.mjs', () => ({
   default: () => ({ log: vi.fn(), warn: vi.fn(), error: vi.fn() }),
 }));
@@ -24,8 +22,10 @@ vi.mock('./FestivalRankingUpdater.mjs', () => ({
 
 const { default: FestivalRankingsUpdater } = await import('./FestivalRankingsUpdater.mjs');
 
-function festivals(region, nodes) {
-  return JSON.stringify({ [region]: { data: { festRecords: { nodes } } } });
+function publishFestivals(region, nodes) {
+  return testBuckets().public.put('data/festivals.json', JSON.stringify({
+    [region]: { data: { festRecords: { nodes } } },
+  }));
 }
 
 describe('FestivalRankingsUpdater', () => {
@@ -38,14 +38,13 @@ describe('FestivalRankingsUpdater', () => {
 
   afterEach(() => {
     vi.unstubAllEnvs();
-    readFile.mockReset();
   });
 
   it('updates rankings only for published Splatfests with results', async () => {
-    readFile.mockResolvedValue(festivals('US', [
+    await publishFestivals('US', [
       { id: 'fest-1', endTime: '2026-10-01T00:00:00Z', teams: [{ result: { isWinner: true } }, {}] },
       { id: 'fest-2', endTime: '2026-11-20T00:00:00Z', teams: [{}, {}] },
-    ]));
+    ]);
 
     await new FestivalRankingsUpdater('US').updateIfNeeded();
 
@@ -55,10 +54,10 @@ describe('FestivalRankingsUpdater', () => {
   });
 
   it('continues with other Splatfests when one ranking update fails', async () => {
-    readFile.mockResolvedValue(festivals('US', [
+    await publishFestivals('US', [
       { id: 'fest-1', teams: [{ result: {} }] },
       { id: 'fest-2', teams: [{ result: {} }] },
-    ]));
+    ]);
     failingFests.add('fest-1');
 
     await expect(new FestivalRankingsUpdater('US').updateIfNeeded()).resolves.toBeUndefined();
@@ -68,23 +67,24 @@ describe('FestivalRankingsUpdater', () => {
   });
 
   it('skips when rankings are disabled', async () => {
+    await publishFestivals('US', [{ id: 'fest-1', teams: [{ result: {} }] }]);
     let updater = new FestivalRankingsUpdater('US');
     updater.settings = { disableFestivalRankings: true };
 
     await updater.updateIfNeeded();
 
-    expect(readFile).not.toHaveBeenCalled();
+    expect(rankingUpdaters).toHaveLength(0);
   });
 
   it('skips regions without a session token', async () => {
+    await publishFestivals('EU', [{ id: 'fest-1', teams: [{ result: {} }] }]);
+
     await new FestivalRankingsUpdater('EU').updateIfNeeded();
 
-    expect(readFile).not.toHaveBeenCalled();
+    expect(rankingUpdaters).toHaveLength(0);
   });
 
   it('does nothing when festivals data has not been published yet', async () => {
-    readFile.mockRejectedValue(Object.assign(new Error('missing'), { code: 'ENOENT' }));
-
     await new FestivalRankingsUpdater('US').updateIfNeeded();
 
     expect(rankingUpdaters).toHaveLength(0);

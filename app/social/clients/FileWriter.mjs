@@ -1,5 +1,4 @@
 import fs from 'fs/promises';
-import { mkdirp } from '../../common/fs.mjs';
 import Client from './Client.mjs';
 
 export default class FileWriter extends Client {
@@ -14,7 +13,7 @@ export default class FileWriter extends Client {
   }
 
   async send(status, generator) {
-    await mkdirp(this.dir);
+    await fs.mkdir(this.dir, { recursive: true });
 
     if (status.media?.length > 0) {
       let imgFilename = `${this.dir}/${generator.key}.png`;

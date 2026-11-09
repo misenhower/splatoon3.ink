@@ -1,9 +1,7 @@
-import fs from 'fs/promises';
-import path from 'path';
 import PQueue from 'p-queue';
 import prefixedConsole from '../common/prefixedConsole.mjs';
 import { normalizeSplatnetResourcePath } from '../common/util.mjs';
-import { exists, mkdirp } from '../common/fs.mjs';
+import { storage } from '../common/storage/index.mjs';
 
 const queue = new PQueue({ concurrency: 4 });
 
@@ -13,7 +11,9 @@ const inFlight = new Map();
 
 export default class ImageProcessor
 {
-  destinationDirectory = 'dist';
+  // Public storage key prefix (served at ASSET_URL/splatnet/)
+  storagePrefix = 'splatnet';
+  // Path on the site for local runs without ASSET_URL
   outputDirectory = 'assets/splatnet';
 
   constructor() {
@@ -47,8 +47,8 @@ export default class ImageProcessor
     return normalizeSplatnetResourcePath(url);
   }
 
-  localPath(file) {
-    return `${this.destinationDirectory}/${this.outputDirectory}/${file}`;
+  storageKey(file) {
+    return `${this.storagePrefix}/${file}`;
   }
 
   publicUrl(file) {
@@ -73,7 +73,7 @@ export default class ImageProcessor
 
   async _maybeDownload(url, destination) {
     // If the file already exists, we don't need to download it again
-    if (await exists(this.localPath(destination))) {
+    if (await storage().public.exists(this.storageKey(destination))) {
       return;
     }
 
@@ -90,8 +90,7 @@ export default class ImageProcessor
         throw new Error(`Invalid image response code: ${result.status}`);
       }
 
-      await mkdirp(path.dirname(this.localPath(destination)));
-      await fs.writeFile(this.localPath(destination), result.body);
+      await storage().public.writeBytes(this.storageKey(destination), new Uint8Array(await result.arrayBuffer()));
     } catch (e) {
       this.console.error(`Image download failed for ${destination}`, e);
     }

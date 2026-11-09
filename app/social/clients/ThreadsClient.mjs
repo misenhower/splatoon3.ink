@@ -1,8 +1,8 @@
 import sharp from 'sharp';
-import { DeleteObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import Client from './Client.mjs';
 import prefixedConsole from '../../common/prefixedConsole.mjs';
 import ValueCache from '../../common/ValueCache.mjs';
+import { storage } from '../../common/storage/index.mjs';
 
 export default class ThreadsClient extends Client {
   key = 'threads';
@@ -17,10 +17,10 @@ export default class ThreadsClient extends Client {
   }
 
   async canSend() {
-    return process.env.THREADS_USER_ID
+    // Threads fetches the image by URL, so it needs publicly served storage (not local dist/).
+    return !!(process.env.THREADS_USER_ID
       && process.env.THREADS_ACCESS_TOKEN
-      && process.env.AWS_S3_BUCKET
-      && process.env.AWS_S3_ENDPOINT;
+      && storage().public.publicUrl);
   }
 
   async _getAccessToken() {
@@ -82,8 +82,8 @@ export default class ThreadsClient extends Client {
       let accessToken = await this._getAccessToken();
       let jpeg = await sharp(status.media[0].file).jpeg().toBuffer();
 
-      // Upload image to S3 so it's publicly accessible
-      let { imageUrl, s3Key } = await this._uploadImage(jpeg, generator.key);
+      // Upload the image to public storage so Threads can fetch it
+      let { imageUrl, storageKey } = await this._uploadImage(jpeg, generator.key);
 
       try {
         // Create a media container
@@ -95,8 +95,8 @@ export default class ThreadsClient extends Client {
         // Publish the container
         await this._publish(containerId, accessToken);
       } finally {
-        // Clean up the temporary image from S3
-        await this._deleteImage(s3Key);
+        // Clean up the temporary image
+        await this._deleteImage(storageKey);
       }
     } catch (error) {
       this.console.error(`Failed to post ${generator.key}:`, error.message);
@@ -105,46 +105,19 @@ export default class ThreadsClient extends Client {
   }
 
   async _uploadImage(buffer, key) {
-    let s3 = new S3Client({
-      endpoint: process.env.AWS_S3_ENDPOINT,
-      region: process.env.AWS_REGION,
-      credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-      },
-    });
+    let storageKey = `threads-tmp/${key}.jpg`;
 
-    let s3Key = `threads-tmp/${key}.jpg`;
+    await storage().public.writeBytes(storageKey, buffer, { contentType: 'image/jpeg' });
 
-    await s3.send(new PutObjectCommand({
-      Bucket: process.env.AWS_S3_BUCKET,
-      Key: s3Key,
-      Body: buffer,
-      ContentType: 'image/jpeg',
-      ACL: 'public-read',
-    }));
-
-    // Construct the public URL (path-style to avoid SSL issues with dotted bucket names)
-    let imageUrl = `${process.env.AWS_S3_ENDPOINT}/${process.env.AWS_S3_BUCKET}/${s3Key}`;
+    let imageUrl = `${storage().public.publicUrl}/${storageKey}`;
     this.console.log(`Image uploaded: ${imageUrl}`);
-    return { imageUrl, s3Key };
+    return { imageUrl, storageKey };
   }
 
-  async _deleteImage(s3Key) {
+  async _deleteImage(storageKey) {
     try {
-      let s3 = new S3Client({
-        endpoint: process.env.AWS_S3_ENDPOINT,
-        region: process.env.AWS_REGION,
-        credentials: {
-          accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-          secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-        },
-      });
-      await s3.send(new DeleteObjectCommand({
-        Bucket: process.env.AWS_S3_BUCKET,
-        Key: s3Key,
-      }));
-      this.console.log(`Temporary image deleted: ${s3Key}`);
+      await storage().public.delete(storageKey);
+      this.console.log(`Temporary image deleted: ${storageKey}`);
     } catch (error) {
       this.console.error('Failed to delete temporary image:', error.message);
     }

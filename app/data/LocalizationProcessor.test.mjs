@@ -9,12 +9,12 @@ describe('LocalizationProcessor', () => {
   describe('filename', () => {
     it('returns the correct path for the locale', () => {
       const processor = makeProcessor([]);
-      expect(processor.filename).toBe('dist/data/locale/en-US.json');
+      expect(processor.filename).toBe('data/locale/en-US.json');
     });
 
     it('uses the locale code', () => {
       const processor = new LocalizationProcessor({ code: 'ja-JP' }, []);
-      expect(processor.filename).toBe('dist/data/locale/ja-JP.json');
+      expect(processor.filename).toBe('data/locale/ja-JP.json');
     });
   });
 

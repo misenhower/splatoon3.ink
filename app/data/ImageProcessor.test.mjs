@@ -1,10 +1,9 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { testBuckets } from '../test/storage.mjs';
 
 // Mock dependencies that ImageProcessor imports but we don't need for pure method tests
 vi.mock('p-queue', () => ({ default: class { add(fn) { return fn(); } onIdle() {} } }));
 vi.mock('../common/prefixedConsole.mjs', () => ({ default: () => ({ info: vi.fn(), error: vi.fn() }) }));
-vi.mock('../common/fs.mjs', () => ({ exists: vi.fn(), mkdirp: vi.fn() }));
-vi.mock('fs/promises', () => ({ default: { writeFile: vi.fn() } }));
 
 const { default: ImageProcessor } = await import('./ImageProcessor.mjs');
 
@@ -24,9 +23,35 @@ describe('ImageProcessor', () => {
     });
   });
 
-  describe('localPath', () => {
-    it('returns dist/assets/splatnet/{file}', () => {
-      expect(processor.localPath('v2/weapon/image.png')).toBe('dist/assets/splatnet/v2/weapon/image.png');
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
+  describe('storageKey', () => {
+    it('returns the public storage key splatnet/{file}', () => {
+      expect(processor.storageKey('v2/weapon/image.png')).toBe('splatnet/v2/weapon/image.png');
+    });
+  });
+
+  describe('process', () => {
+    it('downloads a new image into public storage', async () => {
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response(new Uint8Array([1, 2, 3]))));
+
+      await processor.process('https://api.lp1.av5ja.srv.nintendo.net/resources/prod/v2/a.png', false);
+
+      expect(fetch).toHaveBeenCalledOnce();
+      expect(testBuckets().public.objects.get('splatnet/v2/a.png').httpMetadata.contentType).toBe('image/png');
+      expect([...testBuckets().public.objects.get('splatnet/v2/a.png').bytes]).toEqual([1, 2, 3]);
+    });
+
+    it('skips images that are already stored', async () => {
+      vi.stubGlobal('fetch', vi.fn());
+      await testBuckets().public.put('splatnet/v2/a.png', new Uint8Array([1]));
+
+      await processor.process('https://api.lp1.av5ja.srv.nintendo.net/resources/prod/v2/a.png', false);
+
+      expect(fetch).not.toHaveBeenCalled();
     });
   });
 
@@ -51,8 +76,6 @@ describe('ImageProcessor', () => {
 
   describe('maybeDownload', () => {
     it('downloads an image once when requested concurrently', async () => {
-      const { exists } = await import('../common/fs.mjs');
-      exists.mockResolvedValue(false);
       const download = vi.spyOn(processor, 'download').mockResolvedValue();
       const other = new ImageProcessor();
       vi.spyOn(other, 'download').mockImplementation(download);
@@ -67,8 +90,6 @@ describe('ImageProcessor', () => {
     });
 
     it('checks again once an earlier download has finished', async () => {
-      const { exists } = await import('../common/fs.mjs');
-      exists.mockResolvedValue(false);
       const download = vi.spyOn(processor, 'download').mockResolvedValue();
 
       await processor.maybeDownload('https://example.com/c.png', 'c.png');

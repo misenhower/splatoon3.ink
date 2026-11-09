@@ -1,4 +1,3 @@
-import { canUpload, upload } from '../sync/index.mjs';
 import FileWriter from './clients/FileWriter.mjs';
 import ImageWriter from './clients/ImageWriter.mjs';
 import MastodonClient from './clients/MastodonClient.mjs';
@@ -90,10 +89,6 @@ export async function sendStatuses() {
   ];
 
   await Promise.all(managers.map(manager => manager.sendStatuses()));
-
-  if (canUpload()) {
-    await upload();
-  }
 }
 
 export function testStatuses(additionalClients = []) {

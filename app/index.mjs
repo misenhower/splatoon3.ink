@@ -14,13 +14,14 @@ import { pruneArchivesFromCli } from './data/ArchivePruner.mjs';
 import { reportArchiveStatsFromCli } from './data/ArchiveStats.mjs';
 import { verifyArchivesFromCli } from './data/ArchiveVerifyCommand.mjs';
 import { sentryInit } from './common/sentry.mjs';
-import { sync, syncUpload, syncDownload } from './sync/index.mjs';
+import { configureFilesystemStorage } from './common/storage/filesystem.mjs';
 import { updateAvatars } from './social/updateAvatars.mjs';
 import listBufferChannels from './social/buffer/listChannels.mjs';
 
 consoleStamp(console);
 dotenv.config({ quiet: true });
 sentryInit();
+configureFilesystemStorage();
 
 const actions = {
   cron,
@@ -38,9 +39,6 @@ const actions = {
   archivePrune: (...args) => pruneArchivesFromCli(args),
   archiveStats: (...args) => reportArchiveStatsFromCli(args),
   archiveVerify: (...args) => verifyArchivesFromCli(args),
-  sync,
-  syncUpload,
-  syncDownload,
   updateAvatars,
 };
 

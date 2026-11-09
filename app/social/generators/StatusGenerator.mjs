@@ -1,4 +1,3 @@
-import fs from 'fs/promises';
 import { Console } from 'node:console';
 import { createPinia } from 'pinia';
 import { useCoopDataStore, useFestivalsDataStore, useGearDataStore, useSchedulesDataStore } from '../../../src/stores/data.mjs';
@@ -8,6 +7,7 @@ import ScreenshotHelper from '../../screenshots/ScreenshotHelper.mjs';
 import { getTopOfCurrentHour } from '../../common/util.mjs';
 import { useTimeStore } from '../../../src/stores/time.mjs';
 import ValueCache from '../../common/ValueCache.mjs';
+import { storage } from '../../common/storage/index.mjs';
 import SocialMessages from '../i18n/SocialMessages.mjs';
 import ImageDescriptions from '../ImageDescriptions.mjs';
 
@@ -63,7 +63,13 @@ export default class StatusGenerator
     ];
 
     await Promise.all(files.map(async ([name, store]) => {
-      store(this.pinia).setData(JSON.parse(await fs.readFile(`dist/data/${name}.json`)));
+      let data = await storage().public.readJson(`data/${name}.json`);
+
+      if (!data) {
+        throw new Error(`Missing published data: data/${name}.json`);
+      }
+
+      store(this.pinia).setData(data);
     }));
   }
 

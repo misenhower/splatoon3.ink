@@ -1,6 +1,6 @@
-import fs from 'fs/promises';
-import path from 'path';
-import { mkdirp } from './fs.mjs';
+import { storage } from './storage/index.mjs';
+
+/** A small JSON value with an optional expiry, kept in private storage under cache/. */
 export default class ValueCache
 {
   constructor(key) {
@@ -8,14 +8,12 @@ export default class ValueCache
   }
 
   get path() {
-    return `storage/cache/${this._key}.json`;
+    return `cache/${this._key}.json`;
   }
 
   async _getRawItem() {
     try {
-      let data = await fs.readFile(this.path);
-
-      return JSON.parse(data);
+      return await storage().private.readJson(this.path);
     } catch {
       return null;
     }
@@ -25,7 +23,7 @@ export default class ValueCache
     let item = await this._getRawItem();
 
     // If the cached value is already expired, return null
-    if (item && item.expires && item.expires < new Date) {
+    if (item && item.expires && new Date(item.expires) < new Date) {
       return null;
     }
 
@@ -48,7 +46,6 @@ export default class ValueCache
     let cachedAt = new Date;
     let serialized = JSON.stringify({ expires, data, cachedAt }, undefined, 2);
 
-    await mkdirp(path.dirname(this.path));
-    await fs.writeFile(this.path, serialized);
+    await storage().private.writeText(this.path, serialized);
   }
 }

@@ -1,22 +1,19 @@
-import fs from 'fs/promises';
 import pLimit from 'p-limit';
-import ValueCache from '../common/ValueCache.mjs';
 import prefixedConsole from '../common/prefixedConsole.mjs';
-import { calculateCacheExpiry } from '../common/util.mjs';
+import { auth, SPLATNET3_WEB_SERVICE_ID } from './auth.mjs';
+// Data from: https://github.com/imink-app/SplatNet3/blob/master/Data/splatnet3_webview_data.json
+import bundledQueryHashes from './queryHashes.json' with { type: 'json' };
 
-export const SPLATNET3_WEB_SERVICE_ID = '4834290508791808';
+export { SPLATNET3_WEB_SERVICE_ID };
 
 // Concurrent request limit
 const limit = pLimit(5);
-
-// Serialize token acquisition across client instances using the same account cache.
-const bulletTokenLimits = new Map();
 
 export default class SplatNet3Client
 {
   baseUrl = 'https://api.lp1.av5ja.srv.nintendo.net';
   bulletToken = null;
-  queryHashes = null;
+  queryHashes = bundledQueryHashes;
 
   constructor(nsoClient, acceptLanguage = 'en-US') {
     this.console = prefixedConsole('SplatNet', nsoClient.region);
@@ -29,23 +26,12 @@ export default class SplatNet3Client
   }
 
   // Query hashes
-  async _loadQueryHashes() {
-    if (!this.queryHashes) {
-      // Data from: https://github.com/imink-app/SplatNet3/blob/master/Data/splatnet3_webview_data.json
-      let data = await fs.readFile(new URL('./queryHashes.json', import.meta.url));
-      this.queryHashes = JSON.parse(data);
-    }
-  }
 
   async _webViewVersion() {
-    await this._loadQueryHashes();
-
     return this.queryHashes?.version;
   }
 
   async _queryHash(name) {
-    await this._loadQueryHashes();
-
     return this.queryHashes?.graphql?.hash_map?.[name];
   }
 
@@ -61,58 +47,13 @@ export default class SplatNet3Client
     }
   }
 
-  async getBulletToken(useCache = true) {
-    const key = this.nsoClient.cachePrefix;
-    let tokenLimit = bulletTokenLimits.get(key);
-
-    if (!tokenLimit) {
-      tokenLimit = pLimit(1);
-      bulletTokenLimits.set(key, tokenLimit);
-    }
-
-    return tokenLimit(async () => {
-      let bulletTokenCache = new ValueCache(`${key}.bulletToken`);
-
-      let bulletToken = useCache
-        ? await bulletTokenCache.getData()
-        : null;
-
-      if (!bulletToken) {
-        let webServiceToken = await this.nsoClient.getWebServiceToken(SPLATNET3_WEB_SERVICE_ID);
-        bulletToken = await this._createBulletToken(webServiceToken, bulletTokenCache);
-      }
-
-      return bulletToken;
-    });
-  }
-
-  async _createBulletToken(webServiceToken, bulletTokenCache) {
-    this.console.info('Creating bullet token...');
-
-    let response = await fetch(this.baseUrl + '/api/bullet_tokens', {
-      method: 'POST',
-      headers: {
-        'X-Web-View-Ver': await this._webViewVersion(),
-        'X-NACOUNTRY': 'US', // TODO
-        'X-GameWebToken': webServiceToken,
-        'Accept-Language': this.acceptLanguage,
-        'User-Agent': process.env.USER_AGENT,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Invalid bullet token response code: ${response.status}`);
-    }
-
-    let bulletToken = await response.json();
-
-    // We can assume the token expires after 7200 seconds
-    let expiry = calculateCacheExpiry(7200);
-    await bulletTokenCache.setData(bulletToken, expiry);
-
-    this.console.debug(`Caching bullet token until: ${expiry}`);
-
-    return bulletToken;
+  /**
+   * Shared per account; see auth.mjs.
+   * @param {boolean} [useCache] false to obtain a fresh token
+   * @returns {Promise<object>} The bullet token response
+   */
+  getBulletToken(useCache = true) {
+    return auth().bulletToken(this.nsoClient, { language: this.acceptLanguage, useCache });
   }
 
   // GraphQL

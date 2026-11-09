@@ -24,16 +24,16 @@ npm run splatnet       # Default data update
 npm run splatnet:all   # Full data update (all regions, all features)
 npm run social         # Post status updates to social media
 npm run social:test    # Test social posting (writes to files)
-npm start              # Run the Node backend locally: sync → splatnet → social → cron
+npm start              # Run the Node backend locally: splatnet → social → cron
 ```
 
 ## Architecture
 
 **Frontend** (`src/`): Vue 3 + Vue Router + Pinia + Tailwind CSS + vue-i18n (14 languages). Path alias `@/` maps to `src/`. Pinia stores in `src/stores/` fetch from `/data/*.json` endpoints. The `useDataStore` orchestrates loading schedules, gear, coop, and festival data.
 
-**Backend** (`app/`): Node.js CLI dispatched through `app/index.mjs`. Commands map to actions (splatnet, social, sync, cron, etc.).
+**Backend** (`app/`): Node.js CLI dispatched through `app/index.mjs`. Commands map to actions (splatnet, social, cron, etc.).
 
-**Data pipeline**: `NsoClient` (Nintendo auth) → `SplatNet3Client` (GraphQL queries) → DataUpdaters (`app/data/updaters/`) → JSON files in `dist/data/` → Frontend Pinia stores → Vue components. Images are processed via sharp. Data is optionally archived and synced to S3.
+**Data pipeline**: `NsoClient` (Nintendo auth) → `SplatNet3Client` (GraphQL queries) → DataUpdaters (`app/data/updaters/`) → storage → Frontend Pinia stores → Vue components. All file access goes through `storage()` (`app/common/storage/`), with `public` (data JSON, images, status screenshots), `private` (token and state caches), and `archive` areas keyed like the R2 objects. The Node runner maps them to `dist/` and `storage/`; the Worker will use R2 bindings. Bullet tokens come from `auth()` (`app/splatnet/auth.mjs`).
 
 **Social media**: StatusGenerators (`app/social/generators/`) create content from data. Clients (`app/social/clients/`) post to each platform. `ScreenshotHelper` delegates rendering to drivers in `app/screenshots/drivers/`: local Node commands capture the built site with an installed Chrome via puppeteer-core; Workers use Cloudflare Browser Run through the `BROWSER` binding. `npm run screenshot` and `npm run screenshot:cloudflare` capture images without running social posting.
 

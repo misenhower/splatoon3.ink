@@ -125,7 +125,7 @@ describe('SplatNet3Client bullet tokens', () => {
   });
 
   it('serializes forced refreshes while bypassing a cached token', async () => {
-    cache.set('storage/cache/test.US.bulletToken.json', { bulletToken: 'old-token' });
+    cache.set('cache/test.US.bulletToken.json', { bulletToken: 'old-token' });
 
     let activeRequests = 0;
     let maxActiveRequests = 0;
@@ -151,7 +151,7 @@ describe('SplatNet3Client bullet tokens', () => {
   });
 
   it('does not let an in-progress cache lookup suppress a forced refresh', async () => {
-    cache.set('storage/cache/test.US.bulletToken.json', { bulletToken: 'old-token' });
+    cache.set('cache/test.US.bulletToken.json', { bulletToken: 'old-token' });
 
     const cached = makeClient().getBulletToken();
     const refreshed = makeClient().getBulletToken(false);

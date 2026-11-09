@@ -1,4 +1,5 @@
 import { fileURLToPath } from 'node:url';
+import { configureFilesystemStorage } from '../common/storage/filesystem.mjs';
 import { defaultStatusGenerators } from './index.mjs';
 import FileWriter from './clients/FileWriter.mjs';
 import ScreenshotHelper from '../screenshots/ScreenshotHelper.mjs';
@@ -42,6 +43,7 @@ export async function previewStatuses(locale = 'en-US', date, onlyGenerator) {
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  configureFilesystemStorage();
   previewStatuses(...process.argv.slice(2)).catch(error => {
     console.error(error.message);
     process.exitCode = 1;

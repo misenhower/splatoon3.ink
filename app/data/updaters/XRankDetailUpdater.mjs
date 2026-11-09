@@ -1,4 +1,3 @@
-import { olderThan } from '../../common/fs.mjs';
 import prefixedConsole from '../../common/prefixedConsole.mjs';
 import { getXRankSeasonId } from '../../common/util.mjs';
 import DataUpdater from './DataUpdater.mjs';
@@ -40,7 +39,7 @@ export default class XRankDetailUpdater extends DataUpdater
     let cutoff = new Date(this.endTime);
     cutoff.setHours(cutoff.getHours() + 4);
 
-    return olderThan(this.getPath(this.filename), cutoff);
+    return this.olderThan(this.getPath(this.filename), cutoff);
   }
 
   async getData(locale) {

@@ -1,5 +1,5 @@
 import NsoClient, { regionTokens } from './NsoClient.mjs';
-import SplatNet3Client, { SPLATNET3_WEB_SERVICE_ID } from './SplatNet3Client.mjs';
+import { auth } from './auth.mjs';
 
 /**
  * Cache Warming
@@ -20,19 +20,6 @@ export async function warmCaches() {
   }
 }
 
-export async function warmCache(region) {
-  let nso = NsoClient.make(region);
-  let splatnet = new SplatNet3Client(nso);
-
-  await safe(() => nso.getCoralApi(false));
-  await safe(() => nso.getWebServiceToken(SPLATNET3_WEB_SERVICE_ID, false));
-  await safe(() => splatnet.getBulletToken(false));
-}
-
-async function safe(callable) {
-  try {
-    await callable();
-  } catch (e) {
-    console.error(e);
-  }
+export function warmCache(region) {
+  return auth().refresh(NsoClient.make(region));
 }

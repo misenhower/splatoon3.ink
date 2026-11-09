@@ -1,9 +1,9 @@
-import fs from 'fs/promises';
 import pLimit from 'p-limit';
 import jsonpath from '../../common/jsonpath.mjs';
 import { getFestId } from '../../common/util.mjs';
 import ValueCache from '../../common/ValueCache.mjs';
 import { regionTokens } from '../../splatnet/NsoClient.mjs';
+import { storage } from '../../common/storage/index.mjs';
 import DataUpdater from './DataUpdater.mjs';
 
 const limit = pLimit(1);
@@ -129,7 +129,7 @@ export default class FestivalUpdater extends DataUpdater
     // Combine this region's data with the other regions' data.
     let result = {};
     try {
-      result = JSON.parse(await fs.readFile(this.getPath(this.filename)));
+      result = { ...await storage().public.readJson(this.getPath(this.filename)) };
     } catch {
       //
     }

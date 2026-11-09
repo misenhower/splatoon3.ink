@@ -14,5 +14,6 @@ export default defineConfig({
       'app/**/*.test.mjs',
       'src/**/*.test.{js,mjs}',
     ],
+    setupFiles: ['app/test/setup.mjs'],
   },
 });

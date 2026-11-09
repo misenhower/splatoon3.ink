@@ -1,6 +1,4 @@
-import fs from 'fs/promises';
-import path from 'path';
-import { mkdirp } from '../common/fs.mjs';
+import { storage } from '../common/storage/index.mjs';
 import jsonpath from '../common/jsonpath.mjs';
 import get from 'lodash/get.js';
 import set from 'lodash/set.js';
@@ -13,7 +11,8 @@ function makeArray(value) {
 }
 
 export class LocalizationProcessor {
-  outputDirectory = 'dist/data/locale';
+  // Public storage key prefix
+  outputDirectory = 'data/locale';
 
   constructor(locale, rulesets) {
     this.locale = locale;
@@ -92,20 +91,15 @@ export class LocalizationProcessor {
 
     data = JSON.stringify(data, undefined, space);
 
-    await mkdirp(path.dirname(this.filename));
-    await fs.writeFile(this.filename, data);
+    await storage().public.writeText(this.filename, data);
   }
 
   async readData() {
     try {
-      let result = await fs.readFile(this.filename);
-
-      return JSON.parse(result) || {};
+      // Missing files (null) start out empty
+      return await storage().public.readJson(this.filename) || {};
     } catch (e) {
-      // File doesn't exist yet or is invalid - return empty object
-      if (e.code !== 'ENOENT') {
-        console.warn(`Failed to read localization file ${this.filename}:`, e.message);
-      }
+      console.warn(`Failed to read localization file ${this.filename}:`, e.message);
     }
 
     return {};

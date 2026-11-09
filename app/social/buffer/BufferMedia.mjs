@@ -1,28 +1,22 @@
-import { randomUUID } from 'node:crypto';
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { storage } from '../../common/storage/index.mjs';
 
+/**
+ * Hosts post images for Buffer, which fetches them by URL. Images go to public storage, so
+ * this needs storage served at a public HTTPS URL (the Worker's R2 bucket); the local Node
+ * runner writes to dist/ and cannot host them.
+ */
 export default class BufferMedia {
-  canUpload() {
-    return ['R2_ENDPOINT', 'R2_BUCKET', 'R2_PUBLIC_URL', 'R2_ACCESS_KEY_ID', 'R2_SECRET_ACCESS_KEY']
-      .every(key => !!process.env[key]);
+  get publicUrl() {
+    return storage().public.publicUrl;
   }
 
-  get s3() {
-    return this._s3 ??= new S3Client({
-      endpoint: process.env.R2_ENDPOINT,
-      region: 'auto',
-      requestChecksumCalculation: 'WHEN_REQUIRED',
-      responseChecksumValidation: 'WHEN_REQUIRED',
-      credentials: {
-        accessKeyId: process.env.R2_ACCESS_KEY_ID,
-        secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
-      },
-    });
+  canUpload() {
+    return !!this.publicUrl;
   }
 
   async upload(media) {
     if (!this.canUpload()) {
-      throw new Error('Buffer images require R2_ENDPOINT, R2_BUCKET, R2_PUBLIC_URL, R2_ACCESS_KEY_ID, and R2_SECRET_ACCESS_KEY');
+      throw new Error('Buffer images require public storage with a public URL');
     }
 
     const extension = { 'image/png': 'png', 'image/jpeg': 'jpg' }[media.type];
@@ -31,31 +25,22 @@ export default class BufferMedia {
       throw new Error('Buffer requires a nonempty PNG or JPEG image');
     }
 
-    const endpoint = new URL(process.env.R2_ENDPOINT);
-
-    if (endpoint.protocol !== 'https:' || endpoint.username || endpoint.password) {
-      throw new Error('Buffer images require an HTTPS R2 endpoint');
-    }
-
-    const publicUrl = new URL(process.env.R2_PUBLIC_URL);
+    const publicUrl = new URL(this.publicUrl);
 
     if (publicUrl.protocol !== 'https:' || publicUrl.username || publicUrl.password
       || publicUrl.search || publicUrl.hash) {
-      throw new Error('R2_PUBLIC_URL must be an HTTPS base URL without credentials, query, or fragment');
+      throw new Error('The public storage URL must be an HTTPS base URL without credentials, query, or fragment');
     }
 
     // Production R2 lifecycle rules delete all temporary images under this prefix
     // after seven days, leaving time for Buffer to fetch queued posts' images.
-    const key = `buffer-twitter/${randomUUID()}.${extension}`;
-    const object = { Bucket: process.env.R2_BUCKET, Key: key };
+    const key = `buffer-twitter/${crypto.randomUUID()}.${extension}`;
     publicUrl.pathname = `${publicUrl.pathname.replace(/\/+$/, '')}/${key}`;
 
-    await this.s3.send(new PutObjectCommand({
-      ...object,
-      Body: Buffer.from(media.file),
-      ContentType: media.type,
-      CacheControl: 'private, no-store',
-    }));
+    await storage().public.writeBytes(key, media.file, {
+      contentType: media.type,
+      cacheControl: 'private, no-store',
+    });
 
     return { key, url: publicUrl.href };
   }

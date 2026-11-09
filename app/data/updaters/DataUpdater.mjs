@@ -1,7 +1,4 @@
-import fs from 'fs/promises';
-import path from 'path';
 import { Console } from 'node:console';
-import { mkdirp } from '../../common/fs.mjs';
 import ical from 'ical-generator';
 import pFilter from 'p-filter';
 import prefixedConsole from '../../common/prefixedConsole.mjs';
@@ -12,6 +9,7 @@ import { locales, regionalLocales, defaultLocale } from '../../../src/common/i18
 import { LocalizationProcessor } from '../LocalizationProcessor.mjs';
 import jsonpath from '../../common/jsonpath.mjs';
 import { deriveId, getDateParts, getTopOfCurrentHour } from '../../common/util.mjs';
+import { storage } from '../../common/storage/index.mjs';
 export default class DataUpdater
 {
   name = null;
@@ -19,8 +17,8 @@ export default class DataUpdater
   directory = null;
   calendarName = null;
   calendarFilename = null;
-  outputDirectory = 'dist/data';
-  archiveOutputDirectory = 'storage/archive';
+  // Public storage key prefix for the published files
+  outputDirectory = 'data';
   archiveOnePerHour = true;
 
   imagePaths = [];
@@ -177,11 +175,11 @@ export default class DataUpdater
   async saveData(data) {
     let s = await this.formatDataForWrite(data);
 
-    await this.writeFile(this.getPath(this.filename), s);
+    await storage().public.writeText(this.getPath(this.filename), s);
 
     // Write a secondary file for archival
     if (process.env.ARCHIVE_DATA) {
-      await this.writeFile(this.getArchivePath(this.filename), s);
+      await storage().archive.writeText(this.getArchivePath(this.filename), s);
     }
   }
 
@@ -202,10 +200,7 @@ export default class DataUpdater
 
     let { year, month, day, hour, minute, second } = getDateParts(date);
 
-    return [
-      this.archiveOutputDirectory,
-      `${year}-${month}-${day}.${hour}-${minute}-${second}.${filename}.json`,
-    ].join('/');
+    return `${year}-${month}-${day}.${hour}-${minute}-${second}.${filename}.json`;
   }
 
   async formatDataForWrite(data) {
@@ -216,9 +211,16 @@ export default class DataUpdater
     return JSON.stringify(data, undefined, space);
   }
 
-  async writeFile(file, data) {
-    await mkdirp(path.dirname(file));
-    await fs.writeFile(file, data);
+  /**
+   * Whether a published file is older than the cutoff (or does not exist yet).
+   * @param {string} key Public storage key
+   * @param {Date} cutoff
+   * @returns {Promise<boolean>} True if the file should be refreshed
+   */
+  async olderThan(key, cutoff) {
+    let modified = await storage().public.lastModified(key);
+
+    return !modified || modified < cutoff;
   }
 
   // Calendar output
@@ -228,7 +230,7 @@ export default class DataUpdater
     if (!events) return;
 
     const ical = await this.getiCalData(events);
-    await this.writeFile(this.getCalendarPath(this.calendarFilename ?? this.filename), ical);
+    await storage().public.writeText(this.getCalendarPath(this.calendarFilename ?? this.filename), ical);
   }
 
   getCalendarPath(filename) {
