@@ -1,13 +1,7 @@
-import PQueue from 'p-queue';
 import prefixedConsole from '../common/prefixedConsole.mjs';
 import { normalizeSplatnetResourcePath } from '../common/util.mjs';
 import { storage } from '../common/storage/index.mjs';
-
-const queue = new PQueue({ concurrency: 4 });
-
-// Downloads in progress, by destination. Updaters run concurrently and often reference the
-// same images; without this, each would see the file as missing and download it again.
-const inFlight = new Map();
+import RunLimits from './RunLimits.mjs';
 
 export default class ImageProcessor
 {
@@ -16,7 +10,9 @@ export default class ImageProcessor
   // Path on the site for local runs without ASSET_URL
   outputDirectory = 'assets/splatnet';
 
-  constructor() {
+  /** @param {RunLimits} [limits] Shared with the other updaters in the same run */
+  constructor(limits = new RunLimits) {
+    this.limits = limits;
     this.console = prefixedConsole('Images');
     this.siteUrl = process.env.SITE_URL;
     this.assetUrl = process.env.ASSET_URL?.replace(/\/+$/, '');
@@ -30,7 +26,7 @@ export default class ImageProcessor
     let job = () => this.maybeDownload(url, destination);
     // defer ? queue.add(job) : await job();
     if (defer) {
-      queue.add(job);
+      this.limits.images.add(job);
     } else {
       await job();
     }
@@ -39,8 +35,8 @@ export default class ImageProcessor
     return [destination, this.publicUrl(destination)];
   }
 
-  static onIdle() {
-    return queue.onIdle();
+  onIdle() {
+    return this.limits.images.onIdle();
   }
 
   normalize(url) {
@@ -60,6 +56,9 @@ export default class ImageProcessor
   }
 
   maybeDownload(url, destination) {
+    // Updaters run concurrently and often reference the same images; without this, each
+    // would see the file as missing and download it again.
+    let inFlight = this.limits.imageDownloads;
     let pending = inFlight.get(destination);
 
     if (!pending) {

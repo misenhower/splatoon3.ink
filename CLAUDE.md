@@ -27,6 +27,13 @@ npm run social:test    # Test social posting (writes to files)
 npm start              # Run the Node backend locally: splatnet → social → cron
 ```
 
+Cloudflare Worker (`workers/updater/`, see its README):
+```bash
+npm run updater:test              # Worker tests in workerd (npm test runs these too)
+npm run updater:deploy:dry-run    # Bundle the dev Worker
+npm run updater:deploy            # Deploy dev (production: updater:deploy:production)
+```
+
 ## Architecture
 
 **Frontend** (`src/`): Vue 3 + Vue Router + Pinia + Tailwind CSS + vue-i18n (14 languages). Path alias `@/` maps to `src/`. Pinia stores in `src/stores/` fetch from `/data/*.json` endpoints. The `useDataStore` orchestrates loading schedules, gear, coop, and festival data.
@@ -37,7 +44,7 @@ npm start              # Run the Node backend locally: splatnet → social → c
 
 **Social media**: StatusGenerators (`app/social/generators/`) create content from data. Clients (`app/social/clients/`) post to each platform. `ScreenshotHelper` delegates rendering to drivers in `app/screenshots/drivers/`: local Node commands capture the built site with an installed Chrome via puppeteer-core; Workers use Cloudflare Browser Run through the `BROWSER` binding. `npm run screenshot` and `npm run screenshot:cloudflare` capture images without running social posting.
 
-**Scheduling**: Cron jobs (`app/cron.mjs`) run data updates and social posting at intervals.
+**Scheduling**: In Cloudflare, `workers/updater/` runs two Scheduler Durable Object lanes (fast: time-sensitive data + social; slow: X-Rank, rankings, avatars) and one RegionAuth Durable Object per region for Nintendo tokens. Locally, `app/cron.mjs` runs the same steps on a node-cron schedule.
 
 ## Code Style
 

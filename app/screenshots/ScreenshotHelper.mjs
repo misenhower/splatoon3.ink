@@ -1,6 +1,17 @@
 import createScreenshotDriver from './drivers/createScreenshotDriver.mjs';
 import { defaultScreenshotViewport } from '../../src/common/screenshot.mjs';
 
+let defaultDependencies = {};
+
+/**
+ * Set driver options for every ScreenshotHelper created afterwards. The Worker uses this to
+ * select the Cloudflare driver and pass its BROWSER binding.
+ * @param {object} dependencies For example { provider: 'cloudflare', browser: env.BROWSER }
+ */
+export function configureScreenshots(dependencies) {
+  defaultDependencies = { ...dependencies };
+}
+
 export default class ScreenshotHelper
 {
   _driver = null;
@@ -10,7 +21,7 @@ export default class ScreenshotHelper
   defaultParams = null;
 
   constructor(driverDependencies = {}) {
-    this._driverDependencies = driverDependencies;
+    this._driverDependencies = { ...defaultDependencies, ...driverDependencies };
   }
 
   get isOpen() {

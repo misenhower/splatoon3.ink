@@ -71,6 +71,7 @@ export default class XRankUpdater extends DataUpdater
   async updateSeasonDetail(season) {
     for (let type of this.splatnet().getXRankingDetailQueryTypes()) {
       let updater = new XRankDetailUpdater(season.id, season.endTime, type);
+      updater.limits = this.limits;
       await updater.updateIfNeeded();
     }
   }

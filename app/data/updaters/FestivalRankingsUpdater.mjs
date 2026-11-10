@@ -17,6 +17,9 @@ export default class FestivalRankingsUpdater
 
   settings = {};
 
+  /** @type {import('../RunLimits.mjs').default|undefined} */
+  limits;
+
   constructor(region) {
     this.region = region;
     this.console = prefixedConsole('Updater', region, 'FestivalRankings');
@@ -35,6 +38,11 @@ export default class FestivalRankingsUpdater
 
     for (let fest of await this.getFestivalsWithResults()) {
       let updater = new FestivalRankingUpdater(this.region, fest.id, fest.endTime);
+
+      if (this.limits) {
+        updater.limits = this.limits;
+      }
+
 
       try {
         await updater.updateIfNeeded();

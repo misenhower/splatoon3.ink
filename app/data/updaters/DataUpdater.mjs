@@ -3,6 +3,7 @@ import pFilter from 'p-filter';
 import prefixedConsole from '../../common/prefixedConsole.mjs';
 import SplatNet3Client from '../../splatnet/SplatNet3Client.mjs';
 import ImageProcessor from '../ImageProcessor.mjs';
+import RunLimits from '../RunLimits.mjs';
 import NsoClient from '../../splatnet/NsoClient.mjs';
 import { locales, regionalLocales, defaultLocale } from '../../../src/common/i18n.mjs';
 import { LocalizationProcessor } from '../LocalizationProcessor.mjs';
@@ -26,10 +27,20 @@ export default class DataUpdater
 
   settings = {};
 
+  /** @type {RunLimits} Shared by the updaters in one run (see app/data/index.mjs) */
+  limits = new RunLimits;
+
   constructor(region = null) {
     this.selectedRegion = region;
     this.nsoClient = NsoClient.make(region);
-    this.imageProcessor = new ImageProcessor;
+  }
+
+  get imageProcessor() {
+    if (this._imageProcessor?.limits !== this.limits) {
+      this._imageProcessor = new ImageProcessor(this.limits);
+    }
+
+    return this._imageProcessor;
   }
 
   get region() {
@@ -58,7 +69,7 @@ export default class DataUpdater
   splatnet(locale = null) {
     locale ??= this.defaultLocale;
 
-    return new SplatNet3Client(this.nsoClient, locale.code);
+    return new SplatNet3Client(this.nsoClient, locale.code, { requestLimit: this.limits.requests });
   }
 
   async shouldUpdate() {
@@ -122,6 +133,12 @@ export default class DataUpdater
   }
 
   async updateLocalizations(initialLocale, data) {
+    // Without rules there is nothing to record; skipping also avoids rewriting the shared
+    // locale files from updaters that run alongside the ones that own them.
+    if (!this.localizations.length) {
+      return;
+    }
+
     // Save localizations for the initial locale
     let processor = new LocalizationProcessor(initialLocale, this.localizations);
     await processor.updateLocalizations(data);
@@ -164,7 +181,7 @@ export default class DataUpdater
       jsonpath.apply(data, expression, url => mapping[url]);
     }
 
-    await ImageProcessor.onIdle();
+    await this.imageProcessor.onIdle();
 
     return images;
   }

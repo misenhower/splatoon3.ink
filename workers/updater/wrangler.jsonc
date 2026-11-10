@@ -1,0 +1,74 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "splatoon3-ink-updater",
+  "main": "src/index.mjs",
+  "compatibility_date": "2026-09-03",
+  "compatibility_flags": ["nodejs_compat"],
+  // Seasonal avatars are bundled as Data modules (app/social/avatars/index.worker.mjs).
+  "rules": [{ "type": "Data", "globs": ["**/*.png"], "fallthrough": true }],
+  "workers_dev": true,
+  "preview_urls": false,
+  // The dev updater Worker from the earlier attempt already applied v1 with Scheduler.
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["Scheduler"] },
+    { "tag": "v2", "new_sqlite_classes": ["RegionAuth"] }
+  ],
+  "limits": { "cpu_ms": 120000 },
+  "observability": { "enabled": true, "logs": { "head_sampling_rate": 1 } },
+  "dev": { "ip": "127.0.0.1", "port": 8787 },
+
+  // Select --env dev or --env production explicitly. Automatic scheduling starts off for a
+  // new scheduler; POST /schedule?enabled=true turns it on and the setting survives deploys.
+  // Secrets: NINTENDO_TOKEN_{US,EU,JP,AP}, NXAPI_CLIENT_ID, NXAPI_SHARED_SECRET, USER_AGENT,
+  // RUN_TOKEN, optional SENTRY_DSN, CLOUDFLARE_CACHE_PURGE_ZONE_ID/API_TOKEN, and (production
+  // only) the social account credentials.
+  "env": {
+    "dev": {
+      "name": "splatoon3-ink-dev-updater",
+      "vars": {
+        "SITE_URL": "https://dev.splatoon3.ink",
+        "ASSET_URL": "https://dev.splatoon3.ink",
+        "R2_PUBLIC_URL": "https://dev.splatoon3.ink",
+        "CLOUDFLARE_CACHE_PURGE_HOSTS": "dev.splatoon3.ink",
+        "AUTOMATIC_SCHEDULING_ENABLED": "false"
+      },
+      // Watchdog only; it never enables a disabled lane.
+      "triggers": { "crons": ["*/5 * * * *"] },
+      "durable_objects": {
+        "bindings": [
+          { "name": "SCHEDULER", "class_name": "Scheduler" },
+          { "name": "REGION_AUTH", "class_name": "RegionAuth" }
+        ]
+      },
+      "browser": { "binding": "BROWSER", "remote": true },
+      "images": { "binding": "IMAGES" },
+      "r2_buckets": [
+        { "binding": "ASSETS", "bucket_name": "splatoon3-ink-dev-assets" },
+        { "binding": "PRIVATE", "bucket_name": "splatoon3-ink-dev-private" }
+      ]
+    },
+    "production": {
+      "name": "splatoon3-ink-updater",
+      "vars": {
+        "SITE_URL": "https://splatoon3.ink",
+        "ASSET_URL": "https://assets.splatoon3.ink",
+        "R2_PUBLIC_URL": "https://assets.splatoon3.ink",
+        "CLOUDFLARE_CACHE_PURGE_HOSTS": "splatoon3.ink,assets.splatoon3.ink",
+        "AUTOMATIC_SCHEDULING_ENABLED": "false"
+      },
+      "triggers": { "crons": ["*/5 * * * *"] },
+      "durable_objects": {
+        "bindings": [
+          { "name": "SCHEDULER", "class_name": "Scheduler" },
+          { "name": "REGION_AUTH", "class_name": "RegionAuth" }
+        ]
+      },
+      "browser": { "binding": "BROWSER", "remote": true },
+      "images": { "binding": "IMAGES" },
+      "r2_buckets": [
+        { "binding": "ASSETS", "bucket_name": "splatoon3-ink-assets" },
+        { "binding": "PRIVATE", "bucket_name": "splatoon3-ink-private" }
+      ]
+    }
+  }
+}

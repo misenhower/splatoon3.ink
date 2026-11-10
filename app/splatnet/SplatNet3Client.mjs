@@ -6,8 +6,8 @@ import bundledQueryHashes from './queryHashes.json' with { type: 'json' };
 
 export { SPLATNET3_WEB_SERVICE_ID };
 
-// Concurrent request limit
-const limit = pLimit(5);
+// Default concurrent request limit, for clients created outside an update run
+const defaultLimit = pLimit(5);
 
 export default class SplatNet3Client
 {
@@ -15,10 +15,17 @@ export default class SplatNet3Client
   bulletToken = null;
   queryHashes = bundledQueryHashes;
 
-  constructor(nsoClient, acceptLanguage = 'en-US') {
+  /**
+   * @param {object} nsoClient
+   * @param {string} [acceptLanguage]
+   * @param {object} [options]
+   * @param {(task: () => Promise<Response>) => Promise<Response>} [options.requestLimit] A p-limit limiter shared by one update run
+   */
+  constructor(nsoClient, acceptLanguage = 'en-US', { requestLimit = defaultLimit } = {}) {
     this.console = prefixedConsole('SplatNet', nsoClient.region);
     this.nsoClient = nsoClient;
     this.acceptLanguage = acceptLanguage;
+    this.limit = requestLimit;
   }
 
   get hasSession() {
@@ -62,7 +69,7 @@ export default class SplatNet3Client
     await this._maybeStartSession();
     let webViewVersion = await this._webViewVersion();
 
-    let response = await limit(() => fetch(this.baseUrl + '/api/graphql', {
+    let response = await this.limit(() => fetch(this.baseUrl + '/api/graphql', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${this.bulletToken.bulletToken}`,

@@ -4,8 +4,20 @@ import prefixedConsole from '../common/prefixedConsole.mjs';
 import { calculateCacheExpiry } from '../common/util.mjs';
 import { getRemoteConfig, getWebServiceToken, loginWithSessionToken, ZncaApiClient } from './coral.mjs';
 
-const coralLimit = pLimit(1);
-const webServiceLimit = pLimit(1);
+// Serialize logins and token creation per account. Keyed by account rather than global: in
+// the Worker each account belongs to one RegionAuth Durable Object, and promises must not be
+// shared between Durable Objects in the same isolate.
+const accountLimits = new Map();
+
+function accountLimit(account, name) {
+  let key = `${account}:${name}`;
+
+  if (!accountLimits.has(key)) {
+    accountLimits.set(key, pLimit(1));
+  }
+
+  return accountLimits.get(key);
+}
 
 // nxapi's remote config can disable Coral authentication, so refresh it regularly rather than
 // keeping it for the life of the process (the old Node container restarted daily for this).
@@ -121,7 +133,7 @@ export default class NsoClient
    * @returns {Promise<{ user: object, coralUserId: number, credential: { accessToken: string, expiresIn: number } }>} The Coral session
    */
   async getCoralSession(useCache = true) {
-    return coralLimit(async () => {
+    return accountLimit(this.cachePrefix, 'coral')(async () => {
       let data = useCache
         ? await this._getCoralCache().getData()
         : null;
@@ -154,7 +166,7 @@ export default class NsoClient
   }
 
   async getWebServiceToken(id, useCache = true) {
-    return webServiceLimit(async () => {
+    return accountLimit(this.cachePrefix, 'webServiceToken')(async () => {
       let tokenCache = this._getWebServiceTokenCache(id);
       let token = useCache
         ? await tokenCache.getData()

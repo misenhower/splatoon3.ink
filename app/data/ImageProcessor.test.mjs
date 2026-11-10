@@ -6,6 +6,7 @@ vi.mock('p-queue', () => ({ default: class { add(fn) { return fn(); } onIdle() {
 vi.mock('../common/prefixedConsole.mjs', () => ({ default: () => ({ info: vi.fn(), error: vi.fn() }) }));
 
 const { default: ImageProcessor } = await import('./ImageProcessor.mjs');
+const { default: RunLimits } = await import('./RunLimits.mjs');
 
 describe('ImageProcessor', () => {
   let processor;
@@ -75,9 +76,11 @@ describe('ImageProcessor', () => {
   });
 
   describe('maybeDownload', () => {
-    it('downloads an image once when requested concurrently', async () => {
+    it('downloads an image once when requested concurrently in the same run', async () => {
+      const limits = new RunLimits;
+      processor = new ImageProcessor(limits);
       const download = vi.spyOn(processor, 'download').mockResolvedValue();
-      const other = new ImageProcessor();
+      const other = new ImageProcessor(limits);
       vi.spyOn(other, 'download').mockImplementation(download);
 
       await Promise.all([
