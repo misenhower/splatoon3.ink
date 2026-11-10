@@ -133,6 +133,59 @@ describe('Scheduler', () => {
     expect(status.lastRun).toMatchObject({ ok: true, trigger: 'manual', id: queued.run.id });
   });
 
+  it('continues an incomplete slow run a minute later, then returns to the hourly slot', async () => {
+    let run = vi.spyOn(LANES.slow, 'run')
+      .mockResolvedValueOnce({ ok: true, incomplete: true })
+      .mockResolvedValueOnce({ ok: true, incomplete: false });
+    let stub = scheduler();
+    let { next } = await stub.setAutomaticScheduling({ lane: 'slow', enabled: true });
+
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(next.at);
+
+    let status = await runAlarm(stub);
+    expect(status).toMatchObject({ continuing: true, continuations: 1, retries: 0, retryAt: next.at + 60_000, next });
+    expect(status.alarmAt).toBe(next.at + 60_000);
+
+    vi.setSystemTime(next.at + 60_000);
+    status = await runAlarm(stub);
+
+    expect(run).toHaveBeenCalledTimes(2);
+    expect(run.mock.calls[1][0]).toEqual({ mode: 'all', social: true });
+    expect(status.lastRun.trigger).toBe('continuation');
+    expect(status).toMatchObject({ continuing: false, continuations: 0, retryAt: null });
+    expect(status.next.at).toBe(next.at + 3600_000);
+
+    await stub.setAutomaticScheduling({ lane: 'slow', enabled: false });
+  });
+
+  it('queues a follow-up for an incomplete manual run', async () => {
+    let run = vi.spyOn(LANES.slow, 'run')
+      .mockResolvedValueOnce({ ok: true, incomplete: true })
+      .mockResolvedValueOnce({ ok: true });
+    let stub = scheduler();
+
+    let { run: first } = await stub.startManual({ lane: 'slow', mode: 'all', social: false });
+    let status = await runDurableObjectAlarm(stub).then(() => stub.status());
+
+    expect(status.pending).toMatchObject({ continuationOf: first.id, continuations: 1, mode: 'all', social: false, status: 'queued' });
+    expect(status.pending.notBefore).toBeGreaterThan(Date.now() + 50_000);
+    expect(status.alarmAt).toBe(status.pending.notBefore);
+
+    // Not yet due: an early alarm leaves it queued.
+    await runInDurableObject(stub, async (instance, ctx) => ctx.storage.setAlarm(Date.now()));
+    await runDurableObjectAlarm(stub);
+    expect(run).toHaveBeenCalledTimes(1);
+
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(status.pending.notBefore);
+    status = await runAlarm(stub);
+
+    expect(run).toHaveBeenCalledTimes(2);
+    expect(status.pending).toBeNull();
+    expect(status.lastRun).toMatchObject({ ok: true, continuationOf: first.id });
+  });
+
   it('reports an interrupted manual run instead of replaying it', async () => {
     let run = vi.spyOn(LANES.fast, 'run');
     let stub = scheduler();

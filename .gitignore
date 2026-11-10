@@ -35,3 +35,6 @@ docker-compose.override.yml
 
 # Personal
 /TODO.md
+
+# Wrangler local secrets
+.dev.vars*

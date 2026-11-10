@@ -79,14 +79,13 @@ const configs = {
 
 export const modes = Object.keys(configs);
 
-async function runLane(lane, config, run) {
+async function runLane(lane, config, run, limits = new RunLimits) {
   if (!configs[config]) {
     throw new Error(`Unknown update mode: ${config}`);
   }
 
   console.info(`Running ${config} ${lane} updaters...`);
 
-  let limits = new RunLimits;
   let results = await run(configs[config], limits);
   await limits.images.onIdle();
 
@@ -97,27 +96,37 @@ async function runLane(lane, config, run) {
 
 /**
  * @param {string} [config] Update mode (quick, default, or all)
+ * @param {object} [options]
+ * @param {RunLimits} [options.limits]
  * @returns {Promise<{ name: string, ok: boolean, error?: string }[]>} One result per updater
  */
-export function updateFast(config = 'default') {
+export function updateFast(config = 'default', { limits } = {}) {
   return runLane('fast', config, (settings, limits) =>
-    Promise.all(fastUpdaters().map(updater => runUpdater(updater, settings, limits))));
+    Promise.all(fastUpdaters().map(updater => runUpdater(updater, settings, limits))), limits);
 }
 
 /**
  * @param {string} [config] Update mode (quick, default, or all)
- * @returns {Promise<{ name: string, ok: boolean, error?: string }[]>} One result per updater
+ * @param {object} [options]
+ * @param {RunLimits} [options.limits] With a deadline, updaters stop starting new work once it
+ *   passes and `limits.incomplete` is set; the remaining work happens in a later run
+ * @returns {Promise<{ name: string, ok: boolean, skipped?: boolean, error?: string }[]>} One result per updater
  */
-export function updateSlow(config = 'default') {
+export function updateSlow(config = 'default', { limits } = {}) {
   return runLane('slow', config, async (settings, limits) => {
     let results = [];
 
     for (let updater of slowUpdaters()) {
+      if (limits.outOfTime()) {
+        results.push({ name: updaterName(updater), ok: true, skipped: true });
+        continue;
+      }
+
       results.push(await runUpdater(updater, settings, limits));
     }
 
     return results;
-  });
+  }, limits);
 }
 
 export async function update(config = 'default') {

@@ -50,7 +50,14 @@ export default class XRankUpdater extends DataUpdater
 
     // One season and detail type at a time: each detail file holds up to ~2 MB of JSON,
     // and fetching them all concurrently costs far more memory than a Worker allows.
+    // The current season comes first; past seasons rarely change, so when time runs out the
+    // rest wait for the next run.
     for (let season of seasons) {
+      if (this.limits.outOfTime()) {
+        this.console.warn('Out of time; remaining season details will update in a later run');
+        break;
+      }
+
       await this.updateSeasonDetail(season);
     }
 
@@ -70,6 +77,10 @@ export default class XRankUpdater extends DataUpdater
 
   async updateSeasonDetail(season) {
     for (let type of this.splatnet().getXRankingDetailQueryTypes()) {
+      if (this.limits.outOfTime()) {
+        return;
+      }
+
       let updater = new XRankDetailUpdater(season.id, season.endTime, type);
       updater.limits = this.limits;
       await updater.updateIfNeeded();

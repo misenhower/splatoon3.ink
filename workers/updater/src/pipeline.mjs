@@ -1,10 +1,15 @@
 // What each lane does in one run, using the shared app/ code.
 
 import { updateFast, updateSlow } from '../../../app/data/index.mjs';
+import RunLimits from '../../../app/data/RunLimits.mjs';
 import { sendStatuses } from '../../../app/social/index.mjs';
 import { updateAvatars } from '../../../app/social/updateAvatars.mjs';
 import CloudflareCachePurger from '../../../app/sync/CloudflareCachePurger.mjs';
 import { storage } from '../../../app/common/storage/index.mjs';
+
+// Durable Object alarms are stopped after 15 minutes. The slow lane stops starting new work
+// after this long and continues in a follow-up run instead.
+export const SLOW_LANE_TIME_BUDGET_MS = 10 * 60 * 1000;
 
 // The files the screenshot page loads from SITE_URL.
 const RENDERED_DATA = [
@@ -106,11 +111,12 @@ export async function runFastLane({ mode, social = true }) {
  * @param {{ mode: string }} options
  * @returns {Promise<object>} Run result
  */
-export async function runSlowLane({ mode }) {
-  let updaters = summarize(await updateSlow(mode));
+export async function runSlowLane({ mode, timeBudgetMs = SLOW_LANE_TIME_BUDGET_MS }) {
+  let limits = new RunLimits({ deadline: Date.now() + timeBudgetMs });
+  let updaters = summarize(await updateSlow(mode, { limits }));
   let purged = await purgeDataCache();
 
   await updateAvatars();
 
-  return { ok: updaters.ok, updaters, purged };
+  return { ok: updaters.ok, incomplete: limits.incomplete, updaters, purged };
 }

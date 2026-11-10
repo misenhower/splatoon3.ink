@@ -7,9 +7,18 @@ import { LANE_SCHEDULES, nextSlot } from './schedule.mjs';
 const MINUTE_MS = 60 * 1000;
 const MAX_HISTORY = 50;
 
+// Retries handle failures. Continuations pick up after a run that stopped at its time budget
+// with work left (only the slow lane has one); they do not count as retries.
 export const LANES = {
   fast: { schedule: LANE_SCHEDULES.fast, run: runFastLane, retryDelayMs: MINUTE_MS, maxRetries: 3 },
-  slow: { schedule: LANE_SCHEDULES.slow, run: runSlowLane, retryDelayMs: 5 * MINUTE_MS, maxRetries: 2 },
+  slow: {
+    schedule: LANE_SCHEDULES.slow,
+    run: runSlowLane,
+    retryDelayMs: 5 * MINUTE_MS,
+    maxRetries: 2,
+    continueDelayMs: MINUTE_MS,
+    maxContinuations: 10,
+  },
 };
 
 function describeError(error) {
@@ -61,16 +70,42 @@ export class Scheduler extends DurableObject {
       next: saved.next ?? null,
       retryAt: saved.retryAt ?? null,
       retries: saved.retries ?? 0,
+      continuing: saved.continuing ?? false,
+      continuations: saved.continuations ?? 0,
       lastRun: saved.lastRun ?? null,
     };
   }
 
   #alarmAt(state, pending) {
     if (state.paused) return null;
-    if (pending && pending.status !== 'done') return Date.now();
-    if (!state.enabled) return null;
 
-    return state.retryAt ?? state.next?.at ?? null;
+    let times = [
+      pending ? (pending.notBefore ?? Date.now()) : null,
+      state.enabled ? (state.retryAt ?? state.next?.at ?? null) : null,
+    ].filter(time => time !== null);
+
+    return times.length ? Math.min(...times) : null;
+  }
+
+  // A follow-up manual run for one that stopped at its time budget, or null.
+  #continuationOf(lane, pending, result) {
+    let config = LANES[lane];
+    let count = pending.continuations ?? 0;
+
+    if (!result.ok || !result.incomplete || !config.continueDelayMs || count >= config.maxContinuations) {
+      return null;
+    }
+
+    return {
+      id: crypto.randomUUID(),
+      mode: pending.mode,
+      social: pending.social,
+      status: 'queued',
+      requestedAt: Date.now(),
+      notBefore: Date.now() + config.continueDelayMs,
+      continuationOf: pending.continuationOf ?? pending.id,
+      continuations: count + 1,
+    };
   }
 
   async #save(storage, state) {
@@ -132,6 +167,8 @@ export class Scheduler extends DurableObject {
     state.next = enabled ? nextSlot(LANES[lane].schedule) : null;
     state.retryAt = null;
     state.retries = 0;
+    state.continuing = false;
+    state.continuations = 0;
     await this.ctx.storage.transaction(txn => this.#save(txn, state));
 
     return { ok: true, lane, enabled, next: state.next };
@@ -151,6 +188,8 @@ export class Scheduler extends DurableObject {
       state.next = nextSlot(LANES[lane].schedule);
       state.retryAt = null;
       state.retries = 0;
+      state.continuing = false;
+      state.continuations = 0;
     }
 
     await this.ctx.storage.transaction(txn => this.#save(txn, state));
@@ -239,6 +278,12 @@ export class Scheduler extends DurableObject {
 
       let runs = [];
       let pending = await this.ctx.storage.get('pending');
+      let followUp = null;
+
+      // A queued continuation waits for its time.
+      if (pending?.notBefore > Date.now()) {
+        pending = null;
+      }
 
       if (pending) {
         let result;
@@ -252,6 +297,7 @@ export class Scheduler extends DurableObject {
         }
 
         runs.push({ ...pending, ...result, id: pending.id, trigger: 'manual', status: 'done' });
+        followUp = this.#continuationOf(lane, pending, result);
       }
 
       if (state.enabled) {
@@ -263,23 +309,33 @@ export class Scheduler extends DurableObject {
           let result = await this.#execute(lane, { mode: state.next.mode, social: true });
           let upcoming = nextSlot(config.schedule);
           let retryAt = Date.now() + config.retryDelayMs;
+          let continueAt = Date.now() + (config.continueDelayMs ?? Infinity);
 
           runs.push({
             ...result,
             id: crypto.randomUUID(),
-            trigger: state.retryAt ? 'retry' : 'scheduled',
+            trigger: state.continuing ? 'continuation' : state.retryAt ? 'retry' : 'scheduled',
             scheduledFor: dueAt,
             driftMs: result.startedAt - dueAt,
           });
 
-          // Retry failures a few times, but never past the lane's next regular slot.
-          if (!result.ok && state.retries < config.maxRetries && retryAt < upcoming.at) {
+          // Continue unfinished work, and retry failures a few times, but never past the
+          // lane's next regular slot.
+          if (result.ok && result.incomplete && state.continuations < (config.maxContinuations ?? 0)
+            && continueAt < upcoming.at) {
+            state.retryAt = continueAt;
+            state.continuing = true;
+            state.continuations++;
+          } else if (!result.ok && state.retries < config.maxRetries && retryAt < upcoming.at) {
             state.retryAt = retryAt;
             state.retries++;
+            state.continuing = false;
           } else {
             state.next = upcoming;
             state.retryAt = null;
             state.retries = 0;
+            state.continuing = false;
+            state.continuations = 0;
           }
         }
       }
@@ -296,6 +352,10 @@ export class Scheduler extends DurableObject {
 
         if (pending && (await txn.get('pending'))?.id === pending.id) {
           await txn.delete('pending');
+
+          if (followUp) {
+            await txn.put('pending', followUp);
+          }
         }
 
         await this.#save(txn, state);

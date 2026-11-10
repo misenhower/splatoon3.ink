@@ -37,6 +37,11 @@ export default class FestivalRankingsUpdater
     }
 
     for (let fest of await this.getFestivalsWithResults()) {
+      if (this.limits?.outOfTime()) {
+        this.console.warn('Out of time; remaining rankings will update in a later run');
+        break;
+      }
+
       let updater = new FestivalRankingUpdater(this.region, fest.id, fest.endTime);
 
       if (this.limits) {

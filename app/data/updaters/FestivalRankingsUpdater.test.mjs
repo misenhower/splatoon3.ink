@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { testBuckets } from '../../test/storage.mjs';
+import RunLimits from '../RunLimits.mjs';
 
 const { rankingUpdaters, failingFests } = vi.hoisted(() => ({
   rankingUpdaters: [],
@@ -64,6 +65,30 @@ describe('FestivalRankingsUpdater', () => {
 
     expect(rankingUpdaters.map(u => u.festID)).toEqual(['fest-1', 'fest-2']);
     expect(rankingUpdaters[1].updateIfNeeded).toHaveBeenCalledOnce();
+  });
+
+  it('stops starting rankings once the run is out of time', async () => {
+    await publishFestivals('US', [
+      { id: 'fest-1', teams: [{ result: {} }] },
+      { id: 'fest-2', teams: [{ result: {} }] },
+    ]);
+    let limits = new RunLimits({ deadline: Date.now() + 60_000 });
+    let updater = new FestivalRankingsUpdater('US');
+    updater.limits = limits;
+    failingFests.clear();
+
+    // The first ranking uses up the time budget.
+    let outOfTime = vi.spyOn(limits, 'outOfTime').mockReturnValueOnce(false).mockImplementation(() => {
+      limits.incomplete = true;
+      return true;
+    });
+
+    await updater.updateIfNeeded();
+
+    expect(rankingUpdaters.map(u => u.festID)).toEqual(['fest-1']);
+    expect(rankingUpdaters[0].limits).toBe(limits);
+    expect(outOfTime).toHaveBeenCalledTimes(2);
+    expect(limits.incomplete).toBe(true);
   });
 
   it('skips when rankings are disabled', async () => {
