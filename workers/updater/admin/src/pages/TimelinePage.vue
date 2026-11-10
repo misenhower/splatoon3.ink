@@ -1,9 +1,20 @@
 <template>
-  <div class="flex flex-col gap-6">
+  <div class="flex flex-col gap-4">
+    <p
+      v-for="notice in notices"
+      :key="notice"
+      class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-warn/50 bg-warn/10 px-4 py-2.5 text-warn"
+    >
+      {{ notice }}
+      <RouterLink :to="{ name: 'controls' }" class="font-semibold underline underline-offset-2">
+        Open controls
+      </RouterLink>
+    </p>
+
     <section class="card flex flex-col gap-3" aria-label="Timeline">
       <div class="flex flex-wrap items-center justify-between gap-3">
         <h1 class="text-lg font-semibold">
-          {{ clock.time(start, false) }} to {{ clock.time(end, false) }} <span class="font-normal text-muted">{{ clock.zone() }}</span>
+          Timeline <span class="text-sm font-normal text-muted">{{ clock.zone() }} time · drag to move through the last {{ historyHours }} hours</span>
         </h1>
         <div class="flex flex-wrap items-center gap-x-5 gap-y-2">
           <ul class="flex flex-wrap gap-4 text-[13px] text-muted" aria-label="Legend">
@@ -20,122 +31,190 @@
               <span class="h-2.5 w-2.5 rounded-xs border border-muted/70" aria-hidden="true" />Upcoming
             </li>
           </ul>
-          <div class="segmented" role="group" aria-label="Timeline range">
+          <div class="flex items-center gap-2">
+            <div class="segmented" role="group" aria-label="Hours in view">
+              <button
+                v-for="option in ZOOMS"
+                :key="option"
+                type="button"
+                :aria-pressed="view.hours === option"
+                @click="setZoom(option)"
+              >
+                {{ option }}h
+              </button>
+            </div>
             <button
-              v-for="option in ranges"
-              :key="option"
               type="button"
-              :aria-pressed="hours === option"
-              @click="hours = option"
+              class="btn min-h-9"
+              :disabled="view.live"
+              @click="jumpToNow"
             >
-              {{ option }}h
+              Now
             </button>
           </div>
         </div>
       </div>
 
       <TimelineChart
-        :rows="rows"
-        :start="start"
+        :items="activity"
+        :origin="origin"
         :end="end"
-        :now="store.now"
+        :loaded-from="store.history.from"
         :selected-key="selectedKey"
         @select="select"
       />
     </section>
 
-    <div class="grid items-start gap-4 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] xl:grid-cols-[minmax(0,22rem)_minmax(0,1fr)_minmax(0,22rem)]">
-      <RunList :runs="runs" :selected-key="selectedKey" @select="select" />
-      <RunDetail :run="selected" />
-
-      <div class="flex flex-col gap-4 lg:col-span-2 lg:grid lg:grid-cols-2 xl:col-span-1 xl:row-span-2 xl:flex">
-        <section class="card flex flex-col gap-1 lg:col-span-2" aria-label="Up next">
-          <h2 class="card-title mb-1">
-            Up next
-          </h2>
-          <div
-            v-for="item in upNext"
-            :key="item.key"
-            class="flex items-baseline justify-between gap-3 border-b border-raised py-2 last:border-b-0"
-          >
-            <span>{{ item.label }}</span>
-            <span class="text-right whitespace-nowrap">
-              <span class="font-mono">{{ clock.time(item.at) }}</span>
-              <span class="text-muted"> · {{ formatRelative(item.at, store.now) }}</span>
-            </span>
-          </div>
-          <p v-if="!upNext.length" class="py-2 text-muted">
-            Nothing is scheduled.
-          </p>
-        </section>
-
-        <LaneCard
-          v-for="(state, lane) in store.status.lanes"
-          :key="lane"
-          :lane="lane"
-          :state="state"
-          :modes="store.status.modes"
-        />
-        <AuthCard :regions="store.status.auth" class="lg:col-span-2" />
-      </div>
-
-      <LogPanel class="lg:col-span-2" :selected-key="selectedKey" @select="select" />
+    <div class="grid items-start gap-4 lg:grid-cols-[minmax(0,25rem)_minmax(0,1fr)]">
+      <ActivityList :items="activity" :selected-key="selectedKey" @select="select" />
+      <ActivityDetail :item="selected" :missing="!!route.query.item && !selected" @select="select" />
     </div>
+
+    <LogPanel :selected-key="selectedKey" @select="select" />
   </div>
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { computed, onMounted, watch } from 'vue';
+import { RouterLink, useRoute, useRouter } from 'vue-router';
+import { api } from '../api.js';
 import { clock } from '../clock.js';
-import AuthCard from '../components/AuthCard.vue';
-import LaneCard from '../components/LaneCard.vue';
+import ActivityDetail from '../components/ActivityDetail.vue';
+import ActivityList from '../components/ActivityList.vue';
 import LogPanel from '../components/LogPanel.vue';
-import RunDetail from '../components/RunDetail.vue';
-import RunList from '../components/RunList.vue';
 import TimelineChart from '../components/TimelineChart.vue';
-import { formatRelative, LANE_LABELS } from '../lib/format.js';
-import { collectUpcoming, defaultSelection, HOUR, MINUTE, timelineRows } from '../lib/runs.js';
-import { runs, store } from '../store.js';
+import { defaultSelection, followSelection, FUTURE_MS, MARKER } from '../lib/activity.js';
+import { LANE_LABELS } from '../lib/format.js';
+import { HOUR, MINUTE } from '../lib/runs.js';
+import { activity, historyStart, loadHistory, store } from '../store.js';
+import { moveCursor, setZoom, view, ZOOMS } from '../view.js';
 
 const route = useRoute();
 const router = useRouter();
 
-const ranges = [3, 6, 12];
-const hours = ref(3);
+const historyHours = computed(() => Math.round((store.status.historyMs ?? 48 * HOUR) / HOUR));
 
-// Three quarters of the window is the past, the rest is what is coming. The window moves in
-// whole minutes so marks do not creep every second.
-const anchor = computed(() => Math.floor(store.now / MINUTE) * MINUTE);
-const start = computed(() => anchor.value - hours.value * HOUR * 0.75);
-const end = computed(() => anchor.value + hours.value * HOUR * 0.25);
+// The whole scrollable timeline: from the oldest history kept when the page opened, to a few
+// hours ahead. Its start stays put so that positions do not shift under the scroll; its end
+// moves on with the clock, an hour at a time.
+const origin = Math.floor(historyStart.value / HOUR) * HOUR;
+const end = computed(() => Math.ceil((store.status.now + FUTURE_MS) / HOUR) * HOUR);
 
-const rows = computed(() => timelineRows({ status: store.status, runs: runs.value, start: start.value, end: end.value }));
+const notices = computed(() => Object.entries(store.status.lanes).flatMap(([lane, state]) => {
+  if (state.paused) return [`${LANE_LABELS[lane]} is paused: no scheduled or manual runs until it is resumed.`];
+  if (!state.enabled) return [`${LANE_LABELS[lane]} scheduling is off: it only runs when started by hand.`];
 
-// The selected run lives in the address (?run=fast:<id>), so a run can be linked to.
-const selectedKey = computed(() => {
-  let key = route.query.run;
+  return [];
+}));
 
-  return runs.value.some(run => run.key === key) ? key : defaultSelection(runs.value);
-});
+// The selected item lives in the address (?item=run:fast:<id>), so it can be linked to.
+const selectedKey = computed(() => route.query.item ?? defaultSelection(activity.value));
+const selected = computed(() => activity.value.find(item => item.key === selectedKey.value) ?? null);
 
-const selected = computed(() => runs.value.find(run => run.key === selectedKey.value) ?? null);
+// Bring an item into the timeline's view if it is outside it. The list looks after itself.
+function reveal(item) {
+  let left = view.cursor - MARKER * view.span;
+  let margin = view.span * 0.04;
 
-function select(key) {
-  router.replace({ query: { ...route.query, run: key } });
+  if (item.at < left + margin || item.at > left + view.span - margin) {
+    view.live = false;
+    moveCursor(item.at, 'reveal');
+  }
 }
 
-const upNext = computed(() => {
-  let status = store.status;
-  let items = collectUpcoming(status, status.now + 2 * HOUR)
-    .map(item => ({ key: item.key, at: item.at, label: `${LANE_LABELS[item.lane]}, ${item.mode}${item.trigger === 'scheduled' ? '' : ` (${item.trigger})`}` }));
+function select(key) {
+  router.replace({ query: { ...route.query, item: key } });
 
-  let renewals = Object.values(status.auth).map(auth => auth.alarmAt).filter(at => at && at > status.now);
+  let item = activity.value.find(candidate => candidate.key === key);
 
-  if (renewals.length) {
-    items.push({ key: 'auth', at: Math.min(...renewals), label: `Auth renewal, ${renewals.length} ${renewals.length === 1 ? 'region' : 'regions'}` });
+  if (item) {
+    reveal(item);
+  }
+}
+
+function jumpToNow() {
+  view.live = true;
+  moveCursor(store.now, 'jump');
+}
+
+// An upcoming run that starts, or a running one that finishes, gets a new key; the selection
+// moves along with it.
+let last = null;
+
+watch(activity, items => {
+  let key = route.query.item;
+
+  if (key && last?.key === key && !items.some(item => item.key === key)) {
+    let next = followSelection(last, items);
+
+    if (next) {
+      router.replace({ query: { ...route.query, item: next } });
+    }
   }
 
-  return items.sort((a, b) => a.at - b.at).slice(0, 5);
+  last = selected.value ?? last;
+});
+
+watch(selected, item => last = item ?? last, { immediate: true });
+
+// Follow the clock until the timeline or the list is moved away from the present.
+watch(() => store.now, now => {
+  if (view.live && !view.dragging && Date.now() - view.scrubbedAt > 1500) {
+    moveCursor(now, 'now');
+  }
+});
+
+// Load earlier history as the timeline is scrolled back towards the part that is not loaded.
+watch(() => [view.cursor, view.span, store.history.from, store.history.loading], () => {
+  let wanted = view.cursor - (MARKER + 0.5) * view.span;
+
+  if (store.history.from !== null && !store.history.loading && !store.history.error && wanted < store.history.from) {
+    loadHistory(wanted);
+  }
+});
+
+// A link to something older than what is loaded: find out when it happened, load back to
+// then, and go there.
+async function openLinked(key) {
+  let [kind, owner, id] = key.split(':');
+  let at = null;
+
+  try {
+    if (kind === 'run' && !['current', 'pending', 'slot', 'retry'].includes(id)) {
+      at = (await api.run(owner, id)).run.startedAt;
+    } else if (kind === 'auth' && Number(id)) {
+      at = Number(id);
+    }
+  } catch {
+    // The details panel says it could not be found.
+  }
+
+  if (!at) return;
+
+  await loadHistory(at - 10 * MINUTE);
+
+  let item = activity.value.find(candidate => candidate.key === key);
+
+  if (item && route.query.item === key) {
+    view.live = false;
+    moveCursor(item.at, 'jump');
+  }
+}
+
+onMounted(() => {
+  view.live = true;
+  moveCursor(store.now, 'jump');
+
+  let key = route.query.item;
+
+  if (!key) return;
+
+  // Opening a link goes straight to the item, in the timeline and in the list.
+  if (selected.value) {
+    view.live = false;
+    moveCursor(selected.value.at, 'jump');
+  } else {
+    openLinked(key);
+  }
 });
 </script>

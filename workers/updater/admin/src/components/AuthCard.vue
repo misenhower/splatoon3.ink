@@ -17,8 +17,20 @@
           Renewed {{ formatRelative(auth.lastRefreshAt, store.now) }}
         </span>
         <span v-else class="text-muted">Not renewed yet</span>
-        <span v-if="auth.alarmAt" class="text-[13px] text-muted">
-          Next at <span class="font-mono">{{ clock.time(auth.alarmAt, false) }}</span>
+        <span class="text-[13px] text-muted">
+          <template v-if="auth.alarmAt">
+            Next at <span class="font-mono">{{ clock.time(auth.alarmAt, false) }}</span>
+          </template>
+          <template v-if="auth.alarmAt && auth.events?.[0]">
+            ·
+          </template>
+          <RouterLink
+            v-if="auth.events?.[0]"
+            :to="{ name: 'timeline', query: { item: `auth:${region}:${auth.events[0].at}` } }"
+            class="underline decoration-muted underline-offset-2 hover:decoration-ink"
+          >
+            Last renewal
+          </RouterLink>
         </span>
       </div>
       <button
@@ -34,6 +46,7 @@
 </template>
 
 <script setup>
+import { RouterLink } from 'vue-router';
 import { clock } from '../clock.js';
 import { formatRelative } from '../lib/format.js';
 import { act, store } from '../store.js';

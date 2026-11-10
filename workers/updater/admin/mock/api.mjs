@@ -4,6 +4,7 @@
 
 const MINUTE = 60_000;
 const HOUR = 60 * MINUTE;
+const HISTORY_MS = 48 * HOUR;
 const REGIONS = ['US', 'EU', 'JP', 'AP'];
 
 const SCHEDULES = {
@@ -84,6 +85,23 @@ function slotsBefore(schedule, now, count) {
       let at = hour + minute * MINUTE + schedule.second * 1000;
 
       if (at <= now && slots.length < count) {
+        slots.push({ at, mode });
+      }
+    }
+  }
+
+  return slots;
+}
+
+// A schedule's slots in [from, to), oldest first.
+function slotsIn(schedule, from, to) {
+  let slots = [];
+
+  for (let hour = from - (from % HOUR); hour < to; hour += HOUR) {
+    for (let [minute, mode] of schedule.slots) {
+      let at = hour + minute * MINUTE + schedule.second * 1000;
+
+      if (at >= from && at < to) {
         slots.push({ at, mode });
       }
     }
@@ -197,10 +215,8 @@ function slowRun(slot, now) {
 }
 
 function summarize(run) {
-  let logs = run.logs ?? { lines: [], omitted: 0 };
-  let summary = { ...run, logLines: logs.lines.length };
+  let summary = { ...run };
 
-  delete summary.logs;
   delete summary.duration;
 
   return summary;
@@ -223,7 +239,7 @@ export function createMockApi() {
       let generator = GENERATORS.find(candidate => candidate.key === key);
       let period = every * HOUR;
 
-      for (let at = Math.floor((now - offset * HOUR) / period) * period + offset * HOUR, count = 0; count < (every <= 4 ? 8 : 2); at -= period, count++) {
+      for (let at = Math.floor((now - offset * HOUR) / period) * period + offset * HOUR, count = 0; at > now - HISTORY_MS - period && count < 30; at -= period, count++) {
         ACCOUNTS.forEach((account, index) => {
           let posted = at + 38_000 + index * 900;
 
@@ -309,24 +325,28 @@ export function createMockApi() {
     };
   }
 
-  function history(lane, now) {
+  // Runs that started in [from, to), newest first, without their log lines.
+  function history(lane, now, from = now - HISTORY_MS, to = now + MINUTE) {
     let runs = [];
 
-    if (lane === 'fast') {
-      // One failure about an hour ago, retried a minute later.
-      let slots = slotsBefore(SCHEDULES.fast, now, 48);
-      let failingSlot = slots.find(slot => now - slot.at > 50 * MINUTE && slot.mode === 'default');
+    from = Math.max(from, now - HISTORY_MS);
+    to = Math.min(to, now + 1);
 
-      for (let slot of slots) {
-        if (slot === failingSlot) {
+    if (lane === 'fast') {
+      // One failure about an hour ago, retried a minute later, and the odd one further back.
+      let recent = slotsBefore(SCHEDULES.fast, now, 48).find(slot => now - slot.at > 50 * MINUTE && slot.mode === 'default');
+
+      for (let slot of slotsIn(SCHEDULES.fast, from - 2 * MINUTE, to)) {
+        let failing = slot.at === recent.at ? 'Co-op' : random(slot.at + 5) > 0.99 ? 'Gear' : null;
+
+        runs.push(fastRun(slot, now, { failing }));
+
+        if (failing && slot.at + MINUTE < now) {
           runs.push(fastRun({ at: slot.at + MINUTE, mode: slot.mode }, now, { trigger: 'retry' }));
-          runs.push(fastRun(slot, now, { failing: 'Co-op' }));
-        } else {
-          runs.push(fastRun(slot, now));
         }
       }
     } else {
-      for (let slot of slotsBefore(SCHEDULES.slow, now, 14)) {
+      for (let slot of slotsIn(SCHEDULES.slow, from - HOUR, to)) {
         let run = slowRun(slot, now);
 
         // The newest one may still be going; current() reports it instead.
@@ -337,9 +357,9 @@ export function createMockApi() {
     runs.push(...lanes[lane].extra);
 
     return runs
-      .map(run => ({ ...run, logs: logsFor(run, lane) }))
-      .sort((a, b) => b.startedAt - a.startedAt)
-      .slice(0, 50);
+      .filter(run => run.startedAt >= from && run.startedAt < to)
+      .map(run => ({ ...run, logLines: logsFor(run, lane).lines.length, postCount: run.posted ? ACCOUNTS.length : 0 }))
+      .sort((a, b) => b.startedAt - a.startedAt);
   }
 
   function current(lane, now) {
@@ -404,7 +424,7 @@ export function createMockApi() {
 
   function laneStatus(lane, now) {
     let state = lanes[lane];
-    let runs = history(lane, now);
+    let runs = history(lane, now, now - 3 * HOUR).slice(0, 20);
     let running = current(lane, now);
     let manual = state.manual;
 
@@ -426,30 +446,50 @@ export function createMockApi() {
     };
   }
 
-  function authStatus(region, now) {
+  // Renewals that started in [from, to), newest first.
+  function authEvents(region, now, from = now - HISTORY_MS, to = now + MINUTE) {
     let offset = (35 + REGIONS.indexOf(region)) * MINUTE;
     let events = [];
+    let latest = now - ((now - offset) % HOUR);
 
-    for (let hour = now - (now % HOUR); events.length < 6; hour -= HOUR) {
-      let at = hour + offset;
+    from = Math.max(from, now - HISTORY_MS);
 
-      if (at > now) continue;
-
+    for (let at = latest, count = 0; at >= from; at -= HOUR, count++) {
       // The AP region trips once, two renewals ago, to show what a failure looks like.
-      let failed = region === 'AP' && events.length === 1;
+      let failed = region === 'AP' && count === 1;
 
       events.push({
         at,
         finishedAt: at + 2200 + Math.round(random(at) * 1500),
         ok: !failed,
+        trigger: 'scheduled',
         errors: failed ? ['Invalid bullet token response code: 502'] : [],
       });
     }
 
     if (refreshed[region]) {
-      events.unshift({ at: refreshed[region], finishedAt: refreshed[region] + 2400, ok: true, errors: [] });
+      events.push({ at: refreshed[region], finishedAt: refreshed[region] + 2400, ok: true, trigger: 'manual', errors: [] });
     }
 
+    return events.filter(event => event.at >= from && event.at < to).sort((a, b) => b.at - a.at);
+  }
+
+  function authLogs(region, event) {
+    let lines = [
+      { at: event.at + 30, level: 'info', text: `[NSO] [${region}] Renewing credentials...` },
+      { at: event.at + 900, level: 'debug', text: `[NSO] [${region}] Got a web service token` },
+    ];
+
+    lines.push(event.ok
+      ? { at: event.finishedAt - 20, level: 'info', text: `[NSO] [${region}] Got a bullet token` }
+      : { at: event.finishedAt - 20, level: 'error', text: event.errors[0] });
+
+    return { lines, omitted: 0 };
+  }
+
+  function authStatus(region, now) {
+    let offset = (35 + REGIONS.indexOf(region)) * MINUTE;
+    let events = authEvents(region, now, now - 8 * HOUR).slice(0, 8);
     let hour = now - (now % HOUR);
 
     return {
@@ -469,16 +509,14 @@ export function createMockApi() {
 
       lines.push(...(live?.lines ?? []).map(line => ({ ...line, runId: 'current', source: lane })));
 
-      for (let run of history(lane, now).slice(0, lane === 'fast' ? 30 : 3)) {
-        lines.push(...run.logs.lines.map(line => ({ ...line, runId: run.id, source: lane })));
+      for (let run of history(lane, now, now - (lane === 'fast' ? 3 : 6) * HOUR)) {
+        lines.push(...logsFor(run, lane).lines.map(line => ({ ...line, runId: run.id, source: lane })));
       }
     }
 
     for (let region of REGIONS) {
-      for (let event of authStatus(region, now).events) {
-        lines.push(event.ok
-          ? { at: event.finishedAt, level: 'info', text: `${region}: credentials renewed`, source: 'auth' }
-          : { at: event.finishedAt, level: 'error', text: `${region}: ${event.errors[0]}`, source: 'auth' });
+      for (let event of authEvents(region, now, now - 6 * HOUR)) {
+        lines.push(...authLogs(region, event).lines.map(line => ({ ...line, text: `${region}: ${line.text}`, source: 'auth', region, eventAt: event.at })));
       }
     }
 
@@ -500,9 +538,10 @@ export function createMockApi() {
           now,
           modes: ['quick', 'default', 'all'],
           schedules: SCHEDULES,
+          historyMs: HISTORY_MS,
           lanes: Object.fromEntries(Object.keys(lanes).map(lane => [lane, laneStatus(lane, now)])),
           auth: Object.fromEntries(REGIONS.map(region => [region, authStatus(region, now)])),
-          posts: posts(now).slice(0, 80),
+          posts: posts(now).slice(0, 40),
         },
       };
     }
@@ -517,6 +556,26 @@ export function createMockApi() {
 
     if (method === 'GET' && pathname === '/log') {
       return { status: 200, body: { lines: log(now) } };
+    }
+
+    if (method === 'GET' && pathname === '/activity') {
+      let to = Number(query.get('to')) || now + MINUTE;
+      let from = Number(query.get('from')) || to - 6 * HOUR;
+
+      if (!(from < to)) return { status: 400, body: { ok: false, error: 'From must be before to.' } };
+
+      return {
+        status: 200,
+        body: {
+          now,
+          historyMs: HISTORY_MS,
+          from,
+          to,
+          runs: Object.fromEntries(Object.keys(lanes).map(lane => [lane, history(lane, now, from, to).map(summarize)])),
+          auth: Object.fromEntries(REGIONS.map(region => [region, authEvents(region, now, from, to)])),
+          posts: posts(now).filter(post => post.at >= from && post.at < to),
+        },
+      };
     }
 
     if (method === 'GET' && pathname === '/run') {
@@ -535,7 +594,18 @@ export function createMockApi() {
 
       let run = history(lane, now).find(candidate => candidate.id === id);
 
-      return run ? { status: 200, body: { lane, run } } : { status: 404, body: { ok: false, error: 'Run not found.' } };
+      return run
+        ? { status: 200, body: { lane, run: { ...summarize(run), logs: logsFor(run, lane) } } }
+        : { status: 404, body: { ok: false, error: 'Run not found.' } };
+    }
+
+    if (method === 'GET' && pathname === '/auth/event') {
+      let region = query.get('region');
+      let event = REGIONS.includes(region) && authEvents(region, now).find(candidate => candidate.at === Number(query.get('at')));
+
+      return event
+        ? { status: 200, body: { region, event: { ...event, logs: authLogs(region, event) } } }
+        : { status: 404, body: { ok: false, error: 'Renewal not found.' } };
     }
 
     if (method !== 'POST' || !body) {

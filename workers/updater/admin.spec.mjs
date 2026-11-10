@@ -8,6 +8,7 @@ import { verifyAccess } from './src/admin/access.mjs';
 vi.mock('./src/admin/access.mjs', () => ({ verifyAccess: vi.fn() }));
 
 const origin = 'https://admin.test';
+const HOUR = 60 * 60 * 1000;
 
 function adminEnv() {
   return {
@@ -107,9 +108,68 @@ describe('admin panel', () => {
       ['error', '[Test] failed: SplatNet returned HTTP 503'],
     ]);
 
+    // Knowing the start time finds the run without reading the whole history.
+    expect((await stub.run({ id: summary.id, at: summary.startedAt })).logs.lines).toHaveLength(2);
+    expect(await stub.run({ id: 'missing', at: summary.startedAt })).toBeNull();
+
     let lines = await stub.logLines();
     expect(lines.map(line => line.level)).toEqual(['error', 'info']);
     expect(lines[0].runId).toBe(summary.id);
+  });
+
+  it('serves runs by time span and forgets them after 48 hours', async () => {
+    let stub = env.SCHEDULER.getByName(`test-${crypto.randomUUID()}`);
+    let run = async () => {
+      let latest = (await stub.history())[0]?.id;
+
+      await stub.startManual({ lane: 'fast', mode: 'quick', social: false });
+      await runDurableObjectAlarm(stub);
+      await vi.waitFor(async () => expect((await stub.history())[0]?.id).not.toBe(latest));
+    };
+
+    vi.useFakeTimers({ toFake: ['Date'] });
+
+    try {
+      let start = Date.parse('2026-11-08T00:00:00Z');
+
+      vi.setSystemTime(start);
+      await run();
+      vi.setSystemTime(start + 47 * HOUR);
+      await run();
+
+      // The fake clock moves a little while each run is awaited.
+      let hours = async () => (await stub.history()).map(entry => Math.floor((entry.startedAt - start) / HOUR));
+
+      expect(await hours()).toEqual([47, 0]);
+      expect(await stub.history({ from: start + HOUR, to: start + 48 * HOUR })).toHaveLength(1);
+      expect(await stub.history({ from: start, to: start + HOUR })).toHaveLength(1);
+      expect(await stub.history({ from: start + HOUR, to: start + 2 * HOUR })).toHaveLength(0);
+
+      // The next run after the first one turns 48 hours old drops it, and its log lines.
+      vi.setSystemTime(start + 49 * HOUR);
+      await run();
+
+      expect(await hours()).toEqual([49, 47]);
+      expect((await stub.logLines()).every(line => line.at >= start + 47 * HOUR)).toBe(true);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('serves the activity of a time span', async () => {
+    let now = Date.now();
+    let response = await adminRequest(new Request(`${origin}/admin/api/activity?from=${now - HOUR}&to=${now + HOUR}`), adminEnv());
+    let body = await response.json();
+
+    expect(body).toMatchObject({ from: now - HOUR, to: now + HOUR, historyMs: 48 * HOUR, posts: expect.any(Array) });
+    expect(Object.keys(body.runs)).toEqual(['fast', 'slow']);
+    expect(Object.keys(body.auth)).toEqual(['US', 'EU', 'JP', 'AP']);
+
+    // A span older than anything kept is answered without reading storage.
+    let old = await adminRequest(new Request(`${origin}/admin/api/activity?from=${now - 80 * HOUR}&to=${now - 70 * HOUR}`), adminEnv());
+    expect(await old.json()).toMatchObject({ runs: {}, posts: [] });
+
+    expect((await adminRequest(new Request(`${origin}/admin/api/activity?from=5&to=4`), adminEnv())).status).toBe(400);
   });
 
   it('serves the combined log and single runs', async () => {
@@ -204,11 +264,23 @@ describe('admin panel', () => {
 
     expect(response.status).toBe(502);
     expect(body).toMatchObject({ ok: false, error: expect.any(String), hasSessionToken: true });
-    expect(body.events[0]).toMatchObject({ ok: false });
+    expect(body.events[0]).toMatchObject({ ok: false, trigger: 'manual' });
     expect(body.events[0].errors.length).toBeGreaterThan(0);
+    expect(body.events[0].logs).toBeUndefined();
+
+    // The renewal can be opened with what it printed, and its lines are in the combined log.
+    let at = body.events[0].at;
+    let detail = await (await adminRequest(new Request(`${origin}/admin/api/auth/event?region=US&at=${at}`), adminEnv())).json();
+    expect(detail.event.logs.lines.some(line => line.level === 'error')).toBe(true);
+    expect((await adminRequest(new Request(`${origin}/admin/api/auth/event?region=US&at=1`), adminEnv())).status).toBe(404);
+    expect((await adminRequest(new Request(`${origin}/admin/api/auth/event?region=XX&at=${at}`), adminEnv())).status).toBe(404);
 
     let log = await (await adminRequest(new Request(origin + '/admin/api/log'), adminEnv())).json();
-    expect(log.lines.some(line => line.source === 'auth' && line.level === 'error' && line.text.startsWith('US: '))).toBe(true);
+    let line = log.lines.find(entry => entry.source === 'auth' && entry.level === 'error');
+    expect(line).toMatchObject({ region: 'US', eventAt: at, text: expect.stringMatching(/^US: /) });
+
+    let span = await (await adminRequest(new Request(`${origin}/admin/api/activity?from=${at - 1000}&to=${at + 1000}`), adminEnv())).json();
+    expect(span.auth.US.map(event => event.at)).toEqual([at]);
   });
 
   it('rejects cross-origin and non-JSON actions', async () => {

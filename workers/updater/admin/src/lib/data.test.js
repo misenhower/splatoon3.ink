@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { formatSize, groupFiles, watchedFiles } from './data.js';
-import { deliveryGrid, describeGroup, groupPosts, postMarks } from './social.js';
+import { deliveryGrid, describeGroup, groupPosts } from './social.js';
 
 const NOW = Date.UTC(2026, 10, 9, 14, 0, 0);
 const MINUTE = 60_000;
@@ -84,16 +84,5 @@ describe('post log', () => {
     // After it, the delivery marker is newer than the failure.
     let fixed = deliveryGrid({ ...lastPosted, bluesky: { ...lastPosted.bluesky, 'gear.regular': { postedAt: NOW + 3 * MINUTE } } }, posts);
     expect(fixed.bluesky['gear.regular']).toMatchObject({ postedAt: NOW + 3 * MINUTE, failure: null });
-  });
-
-  it('turns posts in the window into timeline marks that open the Social page', () => {
-    let marks = postMarks(posts, NOW - MINUTE, NOW + MINUTE);
-
-    expect(marks.map(mark => [mark.state, mark.title])).toEqual([
-      ['ok', 'Schedules to 2 accounts'],
-      ['ok', 'Regular Gear to Mastodon'],
-      ['failed', 'Regular Gear on Bluesky: HTTP 502'],
-    ]);
-    expect(marks[0].to).toEqual({ name: 'social' });
   });
 });

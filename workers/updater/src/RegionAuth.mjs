@@ -3,10 +3,14 @@ import { LocalAuth } from '../../../app/splatnet/auth.mjs';
 import NsoClient, { regionTokens } from '../../../app/splatnet/NsoClient.mjs';
 import { captureLogs, RunLog } from './log.mjs';
 import { REGIONS, setupRuntime } from './runtime.mjs';
+import { HISTORY_MS } from './schedule.mjs';
 
 const HOUR_MS = 60 * 60 * 1000;
 const MINUTE_MS = 60 * 1000;
-const MAX_EVENTS = 24;
+
+// Renewals are kept as "event:<start time>", so they sort by time.
+const stamp = ms => String(Math.max(0, Math.floor(ms))).padStart(15, '0');
+const summarize = ({ logs, ...event }) => event;
 
 /**
  * When to renew a region's credentials: once an hour at :35–:38 (one minute apart per region),
@@ -27,6 +31,9 @@ export function nextRefreshAt(region, now = Date.now()) {
  * One instance per region (named by region). Every token request for the region comes here,
  * so parallel lanes share one token and never log in to the same account at the same time.
  * It runs the same LocalAuth code as the Node runner; caches stay in private R2 storage.
+ *
+ * Storage: "region"; "lastRefreshAt"; "event:*" (the last 48 hours of renewals, each with what
+ * it printed, for the admin panel).
  */
 export class RegionAuth extends DurableObject {
   #auth = new LocalAuth;
@@ -62,7 +69,7 @@ export class RegionAuth extends DurableObject {
 
   // Renewal logs its failures instead of throwing (the cached tokens usually still work), so
   // the outcome recorded for the admin panel comes from what it printed.
-  async refresh({ region }) {
+  async refresh({ region, trigger = 'manual' }) {
     await this.#remember(region);
 
     let startedAt = Date.now();
@@ -79,15 +86,59 @@ export class RegionAuth extends DurableObject {
     }
 
     let errors = log.lines.filter(line => line.level === 'error').map(line => line.text);
-    let events = (await this.ctx.storage.get('events')) ?? [];
+    let expired = await this.ctx.storage.list({ prefix: 'event:', end: `event:${stamp(Date.now() - HISTORY_MS)}` });
 
-    events.unshift({ at: startedAt, finishedAt: Date.now(), ok: errors.length === 0, errors });
-    await this.ctx.storage.put('events', events.slice(0, MAX_EVENTS));
+    await this.ctx.storage.put(`event:${stamp(startedAt)}`, {
+      at: startedAt,
+      finishedAt: Date.now(),
+      ok: errors.length === 0,
+      trigger,
+      errors,
+      logs: log.toJSON(),
+    });
     await this.ctx.storage.put('lastRefreshAt', Date.now());
+
+    if (expired.size) {
+      await this.ctx.storage.delete([...expired.keys()].slice(0, 128));
+    }
 
     if (failure) {
       throw failure;
     }
+  }
+
+  /**
+   * Renewals that started in a span of time, newest first, without their log lines.
+   * @param {{ from?: number, to?: number, limit?: number }} [options] `to` is exclusive
+   * @returns {Promise<object[]>} Renewals
+   */
+  async events({ from = 0, to = Date.now() + MINUTE_MS, limit = 1000 } = {}) {
+    let events = await this.ctx.storage.list({
+      start: `event:${stamp(from)}`,
+      end: `event:${stamp(to)}`,
+      reverse: true,
+      limit,
+    });
+
+    return [...events.values()].map(summarize);
+  }
+
+  /**
+   * One renewal with what it printed.
+   * @param {{ at: number }} options When it started
+   * @returns {Promise<object|null>} The renewal, or null if it is no longer kept
+   */
+  async event({ at }) {
+    return (await this.ctx.storage.get(`event:${stamp(at)}`)) ?? null;
+  }
+
+  /**
+   * The most recent renewals with their log lines, newest first.
+   * @param {{ limit?: number }} [options]
+   * @returns {Promise<object[]>} Renewals
+   */
+  async recentLogs({ limit = 12 } = {}) {
+    return [...(await this.ctx.storage.list({ prefix: 'event:', reverse: true, limit })).values()];
   }
 
   // Called by the cron watchdog: make sure the hourly refresh is scheduled.
@@ -118,7 +169,8 @@ export class RegionAuth extends DurableObject {
       alarmAt: await this.ctx.storage.getAlarm(),
       lastRefreshAt: (await this.ctx.storage.get('lastRefreshAt')) ?? null,
       hasSessionToken: !!regionTokens()[region ?? ''],
-      events: (await this.ctx.storage.get('events')) ?? [],
+      // The latest few; the panel loads the rest by time span.
+      events: await this.events({ limit: 8 }),
     };
   }
 
@@ -130,7 +182,7 @@ export class RegionAuth extends DurableObject {
     }
 
     try {
-      await this.refresh({ region });
+      await this.refresh({ region, trigger: 'scheduled' });
     } catch (error) {
       console.error(`[RegionAuth] [${region}] Refresh failed:`, error);
     }

@@ -33,7 +33,9 @@ export const api = {
   log: () => request('/log'),
   social: () => request('/social'),
   data: () => request('/data'),
-  run: (lane, id) => request(`/run?lane=${encodeURIComponent(lane)}&id=${encodeURIComponent(id)}`),
+  activity: (from, to) => request(`/activity?from=${Math.floor(from)}&to=${Math.ceil(to)}`),
+  run: (lane, id, at) => request(`/run?lane=${encodeURIComponent(lane)}&id=${encodeURIComponent(id)}${at ? `&at=${at}` : ''}`),
+  authEvent: (region, at) => request(`/auth/event?region=${encodeURIComponent(region)}&at=${at}`),
   post: (path, body) => request(path, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

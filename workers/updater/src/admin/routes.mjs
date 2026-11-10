@@ -8,14 +8,17 @@ import {
 } from '../../../../app/social/admin.mjs';
 import { purgeDataCache, verifyPublishedData } from '../pipeline.mjs';
 import { LANES } from '../Scheduler.mjs';
-import { LANE_SCHEDULES } from '../schedule.mjs';
+import { HISTORY_MS, LANE_SCHEDULES } from '../schedule.mjs';
 import { REGIONS } from '../runtime.mjs';
 import { verifyAccess } from './access.mjs';
 
 const LANE_NAMES = Object.keys(LANES);
-const HISTORY = 50;
 const LOG_LINES = 400;
-const TIMELINE_POSTS = 80;
+
+// Status is polled every few seconds, so it only carries the newest activity. The timeline
+// loads everything older by time span from /admin/api/activity.
+const RECENT_RUNS = 20;
+const RECENT_POSTS = 40;
 
 const headers = { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' };
 const pageHeaders = {
@@ -36,15 +39,29 @@ async function status(env, user) {
     now: Date.now(),
     modes,
     schedules: LANE_SCHEDULES,
+    historyMs: HISTORY_MS,
     lanes: Object.fromEntries(await Promise.all(
-      LANE_NAMES.map(async lane => [lane, await env.SCHEDULER.getByName(lane).status({ history: HISTORY })]),
+      LANE_NAMES.map(async lane => [lane, await env.SCHEDULER.getByName(lane).status({ history: RECENT_RUNS })]),
     )),
     auth: Object.fromEntries(await Promise.all(
       REGIONS.map(async region => [region, await env.REGION_AUTH.getByName(region).status()]),
     )),
     // Recent social posts and failures, for the timeline.
-    posts: await env.SCHEDULER.getByName('fast').posts({ limit: TIMELINE_POSTS }),
+    posts: await env.SCHEDULER.getByName('fast').posts({ limit: RECENT_POSTS }),
   };
+}
+
+// Everything that happened in a span of time: runs, credential renewals and social posts,
+// without log lines. `to` is exclusive.
+async function activity(env, from, to) {
+  let span = { from, to };
+  let [runs, auth, posts] = await Promise.all([
+    Promise.all(LANE_NAMES.map(async lane => [lane, await env.SCHEDULER.getByName(lane).history(span)])),
+    Promise.all(REGIONS.map(async region => [region, await env.REGION_AUTH.getByName(region).events(span)])),
+    env.SCHEDULER.getByName('fast').posts(span),
+  ]);
+
+  return { from, to, runs: Object.fromEntries(runs), auth: Object.fromEntries(auth), posts };
 }
 
 // Everything the Social page shows. The post log lives with the fast lane, which does the posting.
@@ -139,14 +156,22 @@ async function socialAction(pathname, body, env) {
   return json({ ok: false, error: 'Not found.' }, 404);
 }
 
-// Recent log lines from both lanes and credential renewals, newest first.
+// Recent log lines from both lanes and credential renewals, newest first. Each line names what
+// printed it (a run, or a region's renewal), so the panel can open it.
 async function log(env) {
   let lanes = await Promise.all(LANE_NAMES.map(async lane =>
     (await env.SCHEDULER.getByName(lane).logLines({ limit: LOG_LINES })).map(line => ({ ...line, source: lane }))));
   let auth = await Promise.all(REGIONS.map(async region =>
-    (await env.REGION_AUTH.getByName(region).status()).events.flatMap(event => event.ok
-      ? [{ at: event.finishedAt, level: 'info', text: `${region}: credentials renewed`, source: 'auth' }]
-      : event.errors.map(text => ({ at: event.finishedAt, level: 'error', text: `${region}: ${text}`, source: 'auth' })))));
+    (await env.REGION_AUTH.getByName(region).recentLogs()).flatMap(event => {
+      let lines = event.logs?.lines ?? [];
+
+      // A renewal that printed nothing still gets a line saying it happened.
+      if (!lines.length) {
+        lines = [{ at: event.finishedAt, level: event.ok ? 'info' : 'error', text: event.ok ? 'Credentials renewed' : 'Renewal failed' }];
+      }
+
+      return lines.map(line => ({ ...line, text: `${region}: ${line.text}`, source: 'auth', region, eventAt: event.at }));
+    })));
 
   return [...lanes.flat(), ...auth.flat()].sort((a, b) => b.at - a.at).slice(0, LOG_LINES);
 }
@@ -174,7 +199,7 @@ async function action(pathname, body, env) {
     let failure = null;
 
     try {
-      await stub.refresh({ region: body.region });
+      await stub.refresh({ region: body.region, trigger: 'manual' });
     } catch (error) {
       failure = error?.message ?? String(error);
     }
@@ -280,13 +305,42 @@ export async function adminRequest(request, env) {
     return json({ lines: await log(env) });
   }
 
+  if (request.method === 'GET' && url.pathname === '/admin/api/activity') {
+    let now = Date.now();
+    let to = Number(url.searchParams.get('to')) || now + 60_000;
+    let from = Number(url.searchParams.get('from')) || to - 6 * 60 * 60 * 1000;
+
+    if (!(from < to)) {
+      return json({ ok: false, error: 'From must be before to.' }, 400);
+    }
+
+    // Nothing older than the history is kept, so there is no point reading further back.
+    let oldest = now - HISTORY_MS - 60_000;
+
+    return json({
+      now,
+      historyMs: HISTORY_MS,
+      ...(to > oldest ? await activity(env, Math.max(from, oldest), to) : { from, to, runs: {}, auth: {}, posts: [] }),
+    });
+  }
+
   if (request.method === 'GET' && url.pathname === '/admin/api/run') {
     let lane = url.searchParams.get('lane');
+    let at = Number(url.searchParams.get('at')) || undefined;
     let run = LANE_NAMES.includes(lane)
-      ? await env.SCHEDULER.getByName(lane).run({ id: url.searchParams.get('id') ?? '' })
+      ? await env.SCHEDULER.getByName(lane).run({ id: url.searchParams.get('id') ?? '', at })
       : null;
 
     return run ? json({ lane, run }) : json({ ok: false, error: 'Run not found.' }, 404);
+  }
+
+  if (request.method === 'GET' && url.pathname === '/admin/api/auth/event') {
+    let region = url.searchParams.get('region');
+    let event = REGIONS.includes(region)
+      ? await env.REGION_AUTH.getByName(region).event({ at: Number(url.searchParams.get('at')) })
+      : null;
+
+    return event ? json({ region, event }) : json({ ok: false, error: 'Renewal not found.' }, 404);
   }
 
   if (request.method === 'POST' && ACTIONS.includes(url.pathname)) {

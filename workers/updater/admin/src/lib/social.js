@@ -98,21 +98,36 @@ export function deliveryGrid(lastPosted, posts) {
 }
 
 /**
- * Posts as marks for the timeline's social row.
- * @param {object[]} posts Events from the post log, newest first
- * @param {number} start
- * @param {number} end
- * @returns {object[]} Marks, oldest first
+ * Fold the post log into one entry per status per run (or per manual post), with every
+ * account it went to or failed on. This is what the timeline shows.
+ * @param {object[]} posts Events from the post log, in any order
+ * @returns {object[]} Entries with their deliveries, newest first
  */
-export function postMarks(posts, start, end) {
-  return groupPosts((posts ?? []).filter(post => post.at >= start && post.at <= end))
-    .map(group => ({
-      key: `post:${group.key}`,
-      at: group.at,
-      end: group.at,
-      state: group.type === 'error' ? 'failed' : 'ok',
-      title: group.error ? `${describeGroup(group)}: ${group.error}` : describeGroup(group),
-      to: { name: 'social' },
-    }))
-    .reverse();
+export function groupDeliveries(posts) {
+  let groups = [];
+  let sorted = [...posts ?? []].sort((a, b) => a.at - b.at);
+
+  for (let post of sorted) {
+    let group = groups.findLast(candidate =>
+      candidate.generator?.key === post.generator?.key
+      && (post.runId ? candidate.runId === post.runId : !candidate.runId && post.at - candidate.at < GROUP_WINDOW));
+
+    if (!group) {
+      group = {
+        key: `${post.generator?.key ?? 'unknown'}:${post.runId ?? `m${post.at}`}`,
+        first: post.at,
+        at: post.at,
+        generator: post.generator ?? null,
+        manual: !!post.manual,
+        runId: post.runId ?? null,
+        deliveries: [],
+      };
+      groups.push(group);
+    }
+
+    group.at = Math.max(group.at, post.at);
+    group.deliveries.push({ at: post.at, ok: post.type === 'posted', client: post.client ?? null, error: post.error ?? null });
+  }
+
+  return groups.reverse();
 }

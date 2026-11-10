@@ -84,6 +84,17 @@
     @apply bg-raised font-semibold text-ink;
   }
 
+  /* Vertical lines at each axis tick; the timeline sets their spacing and offset. */
+  .timeline-grid {
+    background-image: linear-gradient(to right, color-mix(in oklab, var(--color-line) 55%, transparent) 1px, transparent 1px);
+    background-repeat: repeat-x;
+  }
+
+  /* The part of the timeline whose history has not been loaded yet. */
+  .timeline-unloaded {
+    background-image: repeating-linear-gradient(135deg, transparent 0 6px, color-mix(in oklab, var(--color-line) 60%, transparent) 6px 7px);
+  }
+
   .field {
     @apply min-h-10 rounded-lg border border-line bg-raised px-2.5 text-sm text-ink;
   }

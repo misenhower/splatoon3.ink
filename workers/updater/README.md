@@ -86,9 +86,12 @@ A Vue app (`admin/`) served by this Worker on its own hostname (`admin.dev.splat
 token itself on every request, so nothing is served without it, and the panel is not reachable
 on any other hostname.
 
-- **Timeline**: runs of both lanes, credential renewals and social posts on a time axis, with
-  the upcoming slots; a run list; each run's updaters and log lines; lane controls (run now,
-  pause, automatic scheduling) and credential renewal; a combined log.
+- **Timeline**: runs of both lanes, credential renewals and social posts on a time axis that
+  scrolls back through the last 48 hours, and the same things as a list (with what is coming
+  up next). The two scroll together. Selecting anything in either shows its details and log
+  lines. A combined log sits below.
+- **Controls**: per lane, run now, pause, and automatic scheduling; credential renewal per
+  region.
 - **Social**: the post log (what was posted, what failed), a posting switch per account, when
   each status last went to each account, and a preview of any status with a confirmed post by
   hand. A manual run from the panel never posts unless "Post to social" is ticked.
@@ -111,9 +114,10 @@ npm run admin:build   # build to admin/dist, which the Worker serves
 
 What the panel stores:
 
-- Each run's log lines are kept with the run in its `Scheduler` (the last 50 runs per lane).
+- Each lane's `Scheduler` keeps its runs and their log lines for 48 hours (`HISTORY_MS` in
+  `src/schedule.mjs`).
 - Social posts and failures are kept in the fast lane's `Scheduler` (the last 300).
-- Each `RegionAuth` keeps its last 24 renewals.
+- Each `RegionAuth` keeps its renewals and their log lines for the same 48 hours.
 - Account posting switches are in private storage at `settings/social.json`; the Node runner
   honours them too.
 

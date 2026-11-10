@@ -34,7 +34,9 @@
           Last run
         </dt>
         <dd v-if="state.lastRun" class="mt-0.5">
-          <span class="font-mono">{{ clock.when(state.lastRun.startedAt) }}</span>
+          <RouterLink :to="timeline(state.lastRun.id)" class="underline decoration-muted underline-offset-2 hover:decoration-ink">
+            <span class="font-mono">{{ clock.when(state.lastRun.startedAt) }}</span>
+          </RouterLink>
           <span :class="state.lastRun.ok ? 'text-muted' : 'text-bad'"> · {{ state.lastRun.ok ? 'OK' : 'failed' }}</span>
         </dd>
         <dd v-else class="mt-0.5 text-muted">
@@ -43,9 +45,21 @@
       </div>
     </dl>
 
+    <div>
+      <p class="label">
+        Schedule
+      </p>
+      <p class="mt-0.5 text-muted">
+        {{ scheduleText }}
+      </p>
+    </div>
+
     <p v-if="note" class="text-warn">
       {{ note }}
     </p>
+    <RouterLink v-if="state.running || state.pending" :to="timeline(state.running ? 'current' : 'pending')" class="font-semibold underline underline-offset-2">
+      Watch this run on the timeline
+    </RouterLink>
 
     <div class="flex flex-col gap-3 border-t border-line pt-4">
       <div class="flex flex-wrap items-center gap-2">
@@ -97,6 +111,7 @@
 
 <script setup>
 import { computed, ref } from 'vue';
+import { RouterLink } from 'vue-router';
 import { clock } from '../clock.js';
 import { formatDuration, formatRelative, LANE_LABELS } from '../lib/format.js';
 import { act, store } from '../store.js';
@@ -107,6 +122,21 @@ const props = defineProps({
   lane: { type: String, required: true },
   state: { type: Object, required: true },
   modes: { type: Array, required: true },
+  // { second, slots: [[minute, mode], ...] }: when the lane runs each hour.
+  schedule: { type: Object, required: true },
+});
+
+const timeline = id => ({ name: 'timeline', query: { item: `run:${props.lane}:${id}` } });
+
+// For example "Every hour: quick at :00 :01, default at :05 :10".
+const scheduleText = computed(() => {
+  let byMode = {};
+
+  for (let [minute, mode] of props.schedule.slots) {
+    (byMode[mode] ??= []).push(`:${String(minute).padStart(2, '0')}`);
+  }
+
+  return `Every hour: ${Object.entries(byMode).map(([mode, minutes]) => `${mode} at ${minutes.join(' ')}`).join(', ')}.`;
 });
 
 const descriptions = {

@@ -84,11 +84,26 @@ export function formatRelative(ms, now) {
 
 export const LANE_LABELS = { fast: 'Fast lane', slow: 'Slow lane' };
 
+export const ROW_LABELS = { fast: 'Fast lane', slow: 'Slow lane', auth: 'Nintendo auth', social: 'Social posts' };
+
 export const STATE_LABELS = {
   ok: 'OK',
   failed: 'Failed',
   incomplete: 'Unfinished',
+  partial: 'Partly failed',
   running: 'Running',
+  queued: 'Queued',
+  upcoming: 'Upcoming',
+};
+
+export const STATE_TONES = {
+  ok: 'text-ok',
+  failed: 'text-bad',
+  incomplete: 'text-warn',
+  partial: 'text-warn',
+  running: 'text-busy',
+  queued: 'text-busy',
+  upcoming: 'text-muted',
 };
 
 export const TRIGGER_LABELS = {

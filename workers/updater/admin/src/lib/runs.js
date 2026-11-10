@@ -1,7 +1,5 @@
-// Turns the Worker's status document into what the panel draws: a flat list of runs, the
-// upcoming slots, and the rows of the timeline. Pure functions; no Vue in here.
-
-import { postMarks } from './social.js';
+// Lane runs as the panel shows them: finished runs, the one in progress, and what each lane
+// will do next. Pure functions; no Vue in here.
 
 export const MINUTE = 60_000;
 export const HOUR = 60 * MINUTE;
@@ -18,14 +16,18 @@ export function runState(run) {
   return 'ok';
 }
 
-function normalize(lane, run) {
+/**
+ * @param {string} lane
+ * @param {object} run A run from a lane's history
+ * @returns {object} The run with its lane, state, times and per-updater results filled in
+ */
+export function normalizeRun(lane, run) {
   // A manual run that was interrupted mid-way has no finish time.
   let startedAt = run.startedAt ?? run.requestedAt ?? null;
   let finishedAt = run.finishedAt ?? null;
 
   return {
     ...run,
-    key: `${lane}:${run.id}`,
     lane,
     startedAt,
     finishedAt,
@@ -37,35 +39,25 @@ function normalize(lane, run) {
 }
 
 /**
- * Every known run from both lanes, newest first, including the ones in progress.
- * @param {object|null} status The /admin/api/status document
- * @returns {object[]} Runs with their lane, key, state and duration
+ * @param {string} lane
+ * @param {object} state The lane's status
+ * @param {number} now
+ * @returns {object|null} The run in progress, shaped like normalizeRun()'s, or null
  */
-export function collectRuns(status) {
-  let runs = [];
+export function currentRun(lane, state, now) {
+  if (!state.running || !state.current) return null;
 
-  for (let [lane, state] of Object.entries(status?.lanes ?? {})) {
-    for (let run of state.history ?? []) {
-      runs.push(normalize(lane, run));
-    }
-
-    if (state.running && state.current) {
-      runs.push({
-        ...state.current,
-        key: `${lane}:current`,
-        id: 'current',
-        lane,
-        running: true,
-        finishedAt: null,
-        durationMs: Math.max(0, status.now - state.current.startedAt),
-        results: [],
-        failed: [],
-        state: 'running',
-      });
-    }
-  }
-
-  return runs.sort((a, b) => b.startedAt - a.startedAt);
+  return {
+    ...state.current,
+    id: 'current',
+    lane,
+    running: true,
+    finishedAt: null,
+    durationMs: Math.max(0, now - state.current.startedAt),
+    results: [],
+    failed: [],
+    state: 'running',
+  };
 }
 
 /**
@@ -130,82 +122,21 @@ export function collectUpcoming(status, until) {
 }
 
 /**
- * Credential renewals as timeline marks: past events and each region's next alarm.
- * @param {object|null} status
- * @param {number} start
- * @param {number} end
- * @returns {object[]} Marks for the timeline's auth row
+ * @param {number} span How much time the timeline shows at once, in milliseconds
+ * @returns {number} The time between axis ticks
  */
-export function authMarks(status, start, end) {
-  let marks = [];
-
-  for (let [region, auth] of Object.entries(status?.auth ?? {})) {
-    for (let event of auth.events ?? []) {
-      if (event.finishedAt < start || event.at > end) continue;
-
-      marks.push({
-        key: `auth:${region}:${event.at}`,
-        at: event.at,
-        end: event.finishedAt,
-        state: event.ok ? 'ok' : 'failed',
-        title: event.ok ? `${region}: credentials renewed` : `${region}: ${event.errors[0] ?? 'renewal failed'}`,
-      });
-    }
-
-    if (auth.alarmAt && auth.alarmAt > status.now && auth.alarmAt <= end) {
-      marks.push({ key: `auth:${region}:next`, at: auth.alarmAt, end: auth.alarmAt, state: 'upcoming', title: `${region}: renewal` });
-    }
-  }
-
-  return marks.sort((a, b) => a.at - b.at);
-}
-
-/**
- * The rows of the timeline for a window of time.
- * @param {object} options
- * @param {object|null} options.status
- * @param {object[]} options.runs From collectRuns()
- * @param {number} options.start
- * @param {number} options.end
- * @returns {{ key: string, label: string, marks: object[] }[]} One row per lane, then auth and social posts
- */
-export function timelineRows({ status, runs, start, end }) {
-  let now = status?.now ?? Date.now();
-  let upcoming = collectUpcoming(status, end);
-
-  let lane = name => [
-    ...runs
-      .filter(run => run.lane === name && (run.finishedAt ?? now) >= start && run.startedAt <= end)
-      .map(run => ({
-        key: run.key,
-        at: run.startedAt,
-        end: run.finishedAt ?? now,
-        state: run.state,
-        selectable: true,
-        title: `${run.trigger}, ${run.mode}`,
-      })),
-    ...upcoming
-      .filter(slot => slot.lane === name && slot.at <= end)
-      .map(slot => ({ key: slot.key, at: slot.at, end: slot.at, state: 'upcoming', title: `${slot.trigger}, ${slot.mode}` })),
-  ];
-
-  return [
-    { key: 'fast', label: 'Fast lane', marks: lane('fast') },
-    { key: 'slow', label: 'Slow lane', marks: lane('slow') },
-    { key: 'auth', label: 'Nintendo auth', marks: authMarks(status, start, end) },
-    { key: 'social', label: 'Social posts', marks: postMarks(status?.posts, start, end) },
-  ];
+export function tickStep(span) {
+  return span <= 3 * HOUR ? 30 * MINUTE : span <= 6 * HOUR ? HOUR : 2 * HOUR;
 }
 
 /**
  * Tick positions for the timeline's axis.
  * @param {number} start
  * @param {number} end
+ * @param {number} [step] Time between ticks; chosen from the span when left out
  * @returns {number[]} Epoch milliseconds, on round clock times
  */
-export function axisTicks(start, end) {
-  let span = end - start;
-  let step = span <= 3 * HOUR ? 30 * MINUTE : span <= 6 * HOUR ? HOUR : 2 * HOUR;
+export function axisTicks(start, end, step = tickStep(end - start)) {
   let ticks = [];
 
   for (let at = Math.ceil(start / step) * step; at <= end; at += step) {
@@ -213,15 +144,4 @@ export function axisTicks(start, end) {
   }
 
   return ticks;
-}
-
-/**
- * The run to show when nothing is selected: the latest failure if it is recent, else the latest run.
- * @param {object[]} runs Newest first
- * @returns {string|null} A run key
- */
-export function defaultSelection(runs) {
-  let recent = runs.slice(0, 12);
-
-  return (recent.find(run => run.state === 'failed') ?? runs[0])?.key ?? null;
 }

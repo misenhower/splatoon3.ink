@@ -73,6 +73,7 @@ const route = useRoute();
 
 const links = [
   { name: 'timeline', label: 'Timeline' },
+  { name: 'controls', label: 'Controls' },
   { name: 'social', label: 'Social' },
   { name: 'data', label: 'Data' },
 ];

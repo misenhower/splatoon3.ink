@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { axisTicks, collectRuns, collectUpcoming, defaultSelection, HOUR, MINUTE, slotsBetween, timelineRows } from './runs.js';
+import { axisTicks, collectUpcoming, currentRun, HOUR, MINUTE, normalizeRun, slotsBetween } from './runs.js';
 import { formatClock, formatDuration, formatRelative, formatWhen } from './format.js';
 
 const T0 = Date.UTC(2026, 10, 9, 14, 0, 0);
@@ -17,42 +17,29 @@ function status(now, lanes) {
   return { now, schedules, lanes: { fast: lane(), slow: lane(), ...lanes }, auth: {} };
 }
 
-describe('collectRuns', () => {
-  it('lists both lanes newest first with their state and duration', () => {
-    let runs = collectRuns(status(T0 + 10 * MINUTE, {
-      fast: lane({ history: [
-        { id: 'b', ok: false, startedAt: T0 + 5 * MINUTE, finishedAt: T0 + 5 * MINUTE + 9000, updaters: { ok: false, failed: [{ name: 'Gear', ok: false, error: 'HTTP 503' }] } },
-        { id: 'a', ok: true, startedAt: T0, finishedAt: T0 + 4000 },
-      ] }),
-      slow: lane({ history: [{ id: 'c', ok: true, incomplete: true, startedAt: T0 + MINUTE, finishedAt: T0 + 9 * MINUTE }] }),
-    }));
+describe('runs', () => {
+  it('fills in state, duration and failures', () => {
+    let failed = normalizeRun('fast', {
+      id: 'b', ok: false, startedAt: T0, finishedAt: T0 + 9000,
+      updaters: { ok: false, failed: [{ name: 'Gear', ok: false, error: 'HTTP 503' }] },
+    });
 
-    expect(runs.map(run => [run.key, run.state, run.durationMs])).toEqual([
-      ['fast:b', 'failed', 9000],
-      ['slow:c', 'incomplete', 8 * MINUTE],
-      ['fast:a', 'ok', 4000],
-    ]);
-    expect(runs[0].failed).toEqual([{ name: 'Gear', ok: false, error: 'HTTP 503' }]);
-  });
-
-  it('includes the run in progress, timed against the server clock', () => {
-    let [run] = collectRuns(status(T0 + 90_000, {
-      slow: lane({ running: true, current: { startedAt: T0, mode: 'all', trigger: 'scheduled' } }),
-    }));
-
-    expect(run).toMatchObject({ key: 'slow:current', state: 'running', durationMs: 90_000, finishedAt: null });
+    expect(failed).toMatchObject({ lane: 'fast', state: 'failed', durationMs: 9000 });
+    expect(failed.failed).toEqual([{ name: 'Gear', ok: false, error: 'HTTP 503' }]);
+    expect(normalizeRun('slow', { id: 'c', ok: true, incomplete: true, startedAt: T0, finishedAt: T0 + MINUTE }).state).toBe('incomplete');
   });
 
   it('keeps an interrupted manual run that never finished', () => {
-    let [run] = collectRuns(status(T0, {
-      fast: lane({ history: [{ id: 'x', ok: false, trigger: 'manual', requestedAt: T0 - 5000, startedAt: T0 - 4000, error: 'Run was interrupted' }] }),
-    }));
+    let run = normalizeRun('fast', { id: 'x', ok: false, trigger: 'manual', requestedAt: T0 - 5000, startedAt: T0 - 4000 });
 
     expect(run).toMatchObject({ state: 'failed', startedAt: T0 - 4000, durationMs: null });
   });
 
-  it('handles a missing status', () => {
-    expect(collectRuns(null)).toEqual([]);
+  it('times the run in progress against the server clock', () => {
+    let state = lane({ running: true, current: { startedAt: T0, mode: 'all', trigger: 'scheduled' } });
+
+    expect(currentRun('slow', state, T0 + 90_000)).toMatchObject({ id: 'current', state: 'running', durationMs: 90_000, finishedAt: null });
+    expect(currentRun('slow', lane(), T0)).toBeNull();
   });
 });
 
@@ -88,48 +75,10 @@ describe('upcoming slots', () => {
   });
 });
 
-describe('timelineRows', () => {
-  it('draws runs inside the window, upcoming slots, and credential renewals', () => {
-    let now = T0 + 10 * MINUTE;
-    let document = {
-      ...status(now, {
-        fast: lane({ history: [
-          { id: 'in', ok: true, trigger: 'scheduled', mode: 'default', startedAt: T0 + 5 * MINUTE, finishedAt: T0 + 5 * MINUTE + 5000 },
-          { id: 'old', ok: true, trigger: 'scheduled', mode: 'quick', startedAt: T0 - 3 * HOUR, finishedAt: T0 - 3 * HOUR + 5000 },
-        ] }),
-        slow: lane({ enabled: false }),
-      }),
-      auth: { US: { alarmAt: T0 + 35 * MINUTE, events: [{ at: T0 - 25 * MINUTE, finishedAt: T0 - 25 * MINUTE + 2000, ok: false, errors: ['HTTP 502'] }] } },
-    };
-
-    let rows = timelineRows({ status: document, runs: collectRuns(document), start: T0 - HOUR, end: T0 + HOUR });
-
-    expect(rows.map(row => row.key)).toEqual(['fast', 'slow', 'auth', 'social']);
-    expect(rows[0].marks.map(mark => [mark.key, mark.state])).toEqual([
-      ['fast:in', 'ok'],
-      [`fast:slot:${T0 + 30 * MINUTE + 15_000}`, 'upcoming'],
-    ]);
-    expect(rows[0].marks[0].selectable).toBe(true);
-    expect(rows[1].marks).toEqual([]);
-    expect(rows[2].marks.map(mark => [mark.state, mark.title])).toEqual([
-      ['failed', 'US: HTTP 502'],
-      ['upcoming', 'US: renewal'],
-    ]);
-  });
-});
-
 describe('axisTicks', () => {
   it('uses round clock times and fewer ticks for longer windows', () => {
     expect(axisTicks(T0 - 10 * MINUTE, T0 + 70 * MINUTE)).toEqual([T0, T0 + 30 * MINUTE, T0 + HOUR]);
     expect(axisTicks(T0, T0 + 12 * HOUR)).toHaveLength(7);
-  });
-});
-
-describe('defaultSelection', () => {
-  it('prefers a recent failure over the latest run', () => {
-    expect(defaultSelection([{ key: 'a', state: 'ok' }, { key: 'b', state: 'failed' }])).toBe('b');
-    expect(defaultSelection([{ key: 'a', state: 'ok' }])).toBe('a');
-    expect(defaultSelection([])).toBeNull();
   });
 });
 

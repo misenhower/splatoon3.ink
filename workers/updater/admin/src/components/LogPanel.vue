@@ -44,7 +44,7 @@
     </p>
 
     <p class="text-muted">
-      Newest first, {{ clock.zone() }} time. Select a line to open the run that printed it.
+      Newest first, {{ clock.zone() }} time. Select a line to open what printed it.
     </p>
   </section>
 </template>
@@ -68,6 +68,13 @@ const sources = [
   { key: 'auth', label: 'Auth' },
 ];
 
+// What printed a line: a lane run, or a region's credential renewal.
+function itemKey(line) {
+  if (line.source === 'auth') return line.eventAt ? `auth:${line.region}:${line.eventAt}` : null;
+
+  return line.runId ? `run:${line.source}:${line.runId}` : null;
+}
+
 const source = ref('all');
 const problemsOnly = ref(false);
 const search = ref('');
@@ -79,6 +86,6 @@ const lines = computed(() => {
     .filter(line => source.value === 'all' || line.source === source.value)
     .filter(line => !problemsOnly.value || line.level === 'error' || line.level === 'warn')
     .filter(line => !needle || line.text.toLowerCase().includes(needle))
-    .map(line => ({ ...line, runKey: line.runId ? `${line.source}:${line.runId}` : null }));
+    .map(line => ({ ...line, itemKey: itemKey(line) }));
 });
 </script>

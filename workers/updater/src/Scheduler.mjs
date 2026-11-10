@@ -3,11 +3,16 @@ import { modes } from '../../../app/data/index.mjs';
 import { captureLogs, RunLog } from './log.mjs';
 import { runFastLane, runSlowLane } from './pipeline.mjs';
 import { setupRuntime } from './runtime.mjs';
-import { LANE_SCHEDULES, nextSlot } from './schedule.mjs';
+import { HISTORY_MS, LANE_SCHEDULES, nextSlot } from './schedule.mjs';
 
 const MINUTE_MS = 60 * 1000;
-const MAX_HISTORY = 50;
 const MAX_POSTS = 300;
+const DELETE_BATCH = 128;
+
+// Keys sort by time: "run:<start time>:<id>". A run's log lines are kept apart under "log:"
+// with the same suffix, so listing runs stays cheap.
+const stamp = ms => String(Math.max(0, Math.floor(ms))).padStart(15, '0');
+const suffix = run => `${stamp(run.startedAt ?? run.requestedAt ?? Date.now())}:${run.id.slice(0, 8)}`;
 
 // Retries handle failures. Continuations pick up after a run that stopped at its time budget
 // with work left (only the slow lane has one); they do not count as retries.
@@ -27,12 +32,8 @@ function describeError(error) {
   return error instanceof Error ? error.message : String(error);
 }
 
-// A run as listed in status: everything but its log lines, which are fetched per run.
+// A run as stored and listed: everything but its log lines and posts, which are kept apart.
 function summarize(run) {
-  if (!run) {
-    return run;
-  }
-
   let { logs, ...summary } = run;
 
   delete summary.posts;
@@ -46,8 +47,8 @@ function summarize(run) {
  * separate instances and run independently of each other.
  *
  * Storage: "lane"; "state" (automatic scheduling, pause, next slot, retries, last run);
- * "pending" (one queued manual run); "run:*" (recent run history, each with its log lines);
- * "post:*" (the fast lane's social post log, which outlives the run history).
+ * "pending" (one queued manual run); "run:*" and "log:*" (the last 48 hours of runs and what
+ * they printed); "post:*" (the fast lane's social post log, which outlives the run history).
  */
 export class Scheduler extends DurableObject {
   // True while the alarm handler is running work; RPCs that change the schedule wait for it.
@@ -152,7 +153,7 @@ export class Scheduler extends DurableObject {
     for (let post of posts) {
       let id = crypto.randomUUID().slice(0, 8);
 
-      entries[`post:${String(post.at).padStart(15, '0')}:${id}`] = { ...post, id, ...source };
+      entries[`post:${stamp(post.at)}:${id}`] = { ...post, id, ...source };
     }
 
     await storage.put(entries);
@@ -164,15 +165,26 @@ export class Scheduler extends DurableObject {
     }
   }
 
-  async #record(storage, { posts, ...run }) {
-    let key = `run:${String(run.startedAt ?? Date.now()).padStart(15, '0')}:${run.id.slice(0, 8)}`;
-    await storage.put(key, { ...run, postCount: posts?.length ?? 0 });
-    await this.#recordPosts(storage, posts, { runId: run.id });
+  async #record(storage, run) {
+    let summary = { ...summarize(run), postCount: run.posts?.length ?? 0 };
 
-    let keys = [...(await storage.list({ prefix: 'run:', reverse: true })).keys()];
+    await storage.put(`run:${suffix(run)}`, summary);
+    await storage.put(`log:${suffix(run)}`, { id: run.id, ...(run.logs ?? { lines: [], omitted: 0 }) });
+    await this.#recordPosts(storage, run.posts, { runId: run.id });
+    await this.#prune(storage);
 
-    if (keys.length > MAX_HISTORY) {
-      await storage.delete(keys.slice(MAX_HISTORY));
+    return summary;
+  }
+
+  async #prune(storage) {
+    let cutoff = stamp(Date.now() - HISTORY_MS);
+
+    for (let prefix of ['run:', 'log:']) {
+      let keys = [...(await storage.list({ prefix, end: prefix + cutoff })).keys()];
+
+      for (let index = 0; index < keys.length; index += DELETE_BATCH) {
+        await storage.delete(keys.slice(index, index + DELETE_BATCH));
+      }
     }
   }
 
@@ -268,7 +280,7 @@ export class Scheduler extends DurableObject {
     let history = await this.ctx.storage.list({
       prefix: 'run:',
       reverse: true,
-      limit: Math.min(Math.max(1, Number(limit) || 10), MAX_HISTORY),
+      limit: Math.min(Math.max(1, Number(limit) || 10), 100),
     });
 
     return {
@@ -278,23 +290,43 @@ export class Scheduler extends DurableObject {
       running: this.#running,
       current: this.#current && { ...this.#current, log: undefined, logLines: this.#current.log.lines.length },
       alarmAt: await this.ctx.storage.getAlarm(),
-      history: [...history.values()].map(summarize),
+      history: [...history.values()],
     };
   }
 
   /**
+   * The runs that started in a span of time, newest first, without their log lines.
+   * @param {{ from?: number, to?: number }} [options] Epoch milliseconds; `to` is exclusive
+   * @returns {Promise<object[]>} Runs
+   */
+  async history({ from = 0, to = Date.now() + MINUTE_MS } = {}) {
+    let runs = await this.ctx.storage.list({ start: `run:${stamp(from)}`, end: `run:${stamp(to)}`, reverse: true });
+
+    return [...runs.values()];
+  }
+
+  /**
    * One run with its log lines: a run from the history, or the one in progress ("current").
-   * @param {{ id: string }} options
+   * @param {{ id: string, at?: number }} options The run's id, and its start time if known
+   *   (which finds it without reading the whole history)
    * @returns {Promise<object|null>} The run, or null if it is no longer kept
    */
-  async run({ id }) {
+  async run({ id, at }) {
     if (id === 'current') {
       return this.#current && { ...this.#current, id: 'current', log: undefined, logs: this.#current.log.toJSON() };
     }
 
-    let history = await this.ctx.storage.list({ prefix: 'run:' });
+    let find = async options => [...(await this.ctx.storage.list(options)).entries()].find(([, run]) => run.id === id);
+    let found = (Number.isFinite(at) && await find({ prefix: `run:${stamp(at)}:` })) || await find({ prefix: 'run:' });
 
-    return [...history.values()].find(run => run.id === id) ?? null;
+    if (!found) {
+      return null;
+    }
+
+    let [key, run] = found;
+    let { lines = [], omitted = 0 } = (await this.ctx.storage.get(key.replace('run:', 'log:'))) ?? {};
+
+    return { ...run, logs: { lines, omitted } };
   }
 
   /**
@@ -304,14 +336,21 @@ export class Scheduler extends DurableObject {
    */
   async logLines({ limit = 300 } = {}) {
     let lines = (this.#current?.log.lines ?? []).map(line => ({ ...line, runId: 'current' })).reverse();
-    let history = await this.ctx.storage.list({ prefix: 'run:', reverse: true });
+    let end;
 
-    for (let run of history.values()) {
-      if (lines.length >= limit) {
+    // Read a few runs at a time, newest first, until there are enough lines.
+    while (lines.length < limit) {
+      let page = await this.ctx.storage.list({ prefix: 'log:', reverse: true, limit: 25, ...(end && { end }) });
+
+      for (let log of page.values()) {
+        lines.push(...log.lines.map(line => ({ ...line, runId: log.id })).reverse());
+      }
+
+      if (page.size < 25) {
         break;
       }
 
-      lines.push(...(run.logs?.lines ?? []).map(line => ({ ...line, runId: run.id })).reverse());
+      end = [...page.keys()].at(-1);
     }
 
     return lines.slice(0, limit);
@@ -319,11 +358,16 @@ export class Scheduler extends DurableObject {
 
   /**
    * The social post log, newest first.
-   * @param {{ limit?: number }} [options]
+   * @param {{ limit?: number, from?: number, to?: number }} [options] `to` is exclusive
    * @returns {Promise<object[]>} Posts and failures (see StatusGeneratorManager.events)
    */
-  async posts({ limit = MAX_POSTS } = {}) {
-    let posts = await this.ctx.storage.list({ prefix: 'post:', reverse: true, limit: Math.min(limit, MAX_POSTS) });
+  async posts({ limit = MAX_POSTS, from = 0, to } = {}) {
+    let posts = await this.ctx.storage.list({
+      start: `post:${stamp(from)}`,
+      end: to === undefined ? 'post:~' : `post:${stamp(to)}`,
+      reverse: true,
+      limit: Math.min(Math.max(1, Number(limit) || MAX_POSTS), MAX_POSTS),
+    });
 
     return [...posts.values()];
   }
@@ -451,7 +495,7 @@ export class Scheduler extends DurableObject {
       }
 
       if (runs.length) {
-        state.lastRun = summarize(runs.at(-1));
+        state.lastRun = { ...summarize(runs.at(-1)), postCount: runs.at(-1).posts?.length ?? 0 };
       }
 
       // History, state, and the next alarm are saved together, without external I/O between.

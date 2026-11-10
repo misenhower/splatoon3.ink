@@ -5,6 +5,9 @@
 const MINUTE_MS = 60 * 1000;
 const HOUR_MS = 60 * MINUTE_MS;
 
+// How long runs and credential renewals are kept for the admin panel's timeline.
+export const HISTORY_MS = 48 * HOUR_MS;
+
 export const LANE_SCHEDULES = {
   fast: {
     second: 15,
