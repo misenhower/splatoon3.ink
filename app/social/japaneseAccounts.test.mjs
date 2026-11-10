@@ -93,6 +93,7 @@ describe('Japanese account routing', () => {
     vi.stubEnv('BUFFER_TWITTER_JP_CHANNEL_ID', 'jp-channel');
     const client = defaultClients('ja-JP').find(client => client.key === 'twitter.jp');
     client.api = api;
+    client.channelCache = { getData: async () => null, setData: async () => {} };
     client.media = { upload: vi.fn().mockResolvedValue({ url: 'https://example.com/image.png' }) };
 
     const status = {
