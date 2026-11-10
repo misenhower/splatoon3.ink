@@ -82,13 +82,17 @@ export function testStatusGeneratorManager(additionalClients) {
   );
 }
 
-export async function sendStatuses() {
-  const managers = [
-    defaultStatusGeneratorManager(),
-    defaultStatusGeneratorManager('ja-JP'),
-  ];
+export const SOCIAL_LOCALES = ['en-US', 'ja-JP'];
 
-  await Promise.all(managers.map(manager => manager.sendStatuses()));
+/**
+ * Post whatever is due to every account, in both languages.
+ * @returns {Promise<object[]>} What was posted and what failed (see StatusGeneratorManager.events)
+ */
+export async function sendStatuses() {
+  const managers = SOCIAL_LOCALES.map(locale => defaultStatusGeneratorManager(locale));
+  const events = await Promise.all(managers.map(manager => manager.sendStatuses()));
+
+  return events.flat().filter(Boolean).sort((a, b) => a.at - b.at);
 }
 
 export function testStatuses(additionalClients = []) {

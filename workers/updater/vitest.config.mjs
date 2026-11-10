@@ -1,6 +1,10 @@
+import { mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { cloudflareTest } from '@cloudflare/vitest-plugin';
 import { defineConfig } from 'vitest/config';
+
+// The Worker's static assets directory must exist; tests do not need the built admin app.
+mkdirSync(fileURLToPath(new URL('./admin/dist', import.meta.url)), { recursive: true });
 
 export default defineConfig({
   plugins: [

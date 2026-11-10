@@ -32,6 +32,8 @@ Cloudflare Worker (`workers/updater/`, see its README):
 npm run updater:test              # Worker tests in workerd (npm test runs these too)
 npm run updater:deploy:dry-run    # Bundle the dev Worker
 npm run updater:deploy            # Deploy dev (production: updater:deploy:production)
+npm run admin:dev                 # Admin panel with a simulated API (no Worker needed)
+npm run admin:build               # Build the admin panel (deploys do this first)
 ```
 
 ## Architecture
@@ -43,6 +45,8 @@ npm run updater:deploy            # Deploy dev (production: updater:deploy:produ
 **Data pipeline**: `NsoClient` (Nintendo auth) → `SplatNet3Client` (GraphQL queries) → DataUpdaters (`app/data/updaters/`) → storage → Frontend Pinia stores → Vue components. All file access goes through `storage()` (`app/common/storage/`), with `public` (data JSON, images, status screenshots), `private` (token and state caches), and `archive` areas keyed like the R2 objects. The Node runner maps them to `dist/` and `storage/`; the Worker will use R2 bindings. Bullet tokens come from `auth()` (`app/splatnet/auth.mjs`).
 
 **Social media**: StatusGenerators (`app/social/generators/`) create content from data. Clients (`app/social/clients/`) post to each platform. `ScreenshotHelper` delegates rendering to drivers in `app/screenshots/drivers/`: local Node commands capture the built site with an installed Chrome via puppeteer-core; Workers use Cloudflare Browser Run through the `BROWSER` binding. `npm run screenshot` and `npm run screenshot:cloudflare` capture images without running social posting.
+
+**Admin panel** (`workers/updater/admin/`): a separate small Vue + Tailwind app (its own Vite config, not part of the public site's bundle), served by the updater Worker on its own hostname behind Cloudflare Access. Its API is `workers/updater/src/admin/routes.mjs`; `admin/mock/api.mjs` simulates that API for `npm run admin:dev` and must be kept in step with it. Pure logic lives in `admin/src/lib/` with tests alongside.
 
 **Scheduling**: In Cloudflare, `workers/updater/` runs two Scheduler Durable Object lanes (fast: time-sensitive data + social; slow: X-Rank, rankings, avatars) and one RegionAuth Durable Object per region for Nintendo tokens. Locally, `app/cron.mjs` runs the same steps on a node-cron schedule.
 
@@ -57,7 +61,7 @@ npm run updater:deploy            # Deploy dev (production: updater:deploy:produ
 
 ## Testing
 
-Tests use Vitest. Test files live alongside source: `app/**/*.test.mjs` and `src/**/*.test.{js,mjs}`.
+Tests use Vitest. Test files live alongside source: `app/**/*.test.mjs`, `src/**/*.test.{js,mjs}`, and `workers/updater/admin/src/**/*.test.js`. Worker tests (`workers/updater/*.spec.mjs`) run in workerd.
 
 ## Deployment
 

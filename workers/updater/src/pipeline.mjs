@@ -85,6 +85,8 @@ function summarize(updaters) {
   return {
     ok: updaters.every(updater => updater.ok),
     failed: updaters.filter(updater => !updater.ok),
+    // Every updater's outcome, for the admin panel's run detail.
+    results: updaters,
   };
 }
 
@@ -99,7 +101,8 @@ export async function runFastLane({ mode, social = true }) {
 
   if (social) {
     await verifyPublishedData();
-    await sendStatuses();
+    // What was posted and what failed, for the admin panel's post log.
+    result.posts = await sendStatuses();
     result.social = true;
   }
 

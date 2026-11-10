@@ -1,11 +1,13 @@
 import { DurableObject } from 'cloudflare:workers';
 import { modes } from '../../../app/data/index.mjs';
+import { captureLogs, RunLog } from './log.mjs';
 import { runFastLane, runSlowLane } from './pipeline.mjs';
 import { setupRuntime } from './runtime.mjs';
 import { LANE_SCHEDULES, nextSlot } from './schedule.mjs';
 
 const MINUTE_MS = 60 * 1000;
 const MAX_HISTORY = 50;
+const MAX_POSTS = 300;
 
 // Retries handle failures. Continuations pick up after a run that stopped at its time budget
 // with work left (only the slow lane has one); they do not count as retries.
@@ -25,17 +27,34 @@ function describeError(error) {
   return error instanceof Error ? error.message : String(error);
 }
 
+// A run as listed in status: everything but its log lines, which are fetched per run.
+function summarize(run) {
+  if (!run) {
+    return run;
+  }
+
+  let { logs, ...summary } = run;
+
+  delete summary.posts;
+
+  return { ...summary, logLines: (logs?.lines.length ?? 0) + (logs?.omitted ?? 0) };
+}
+
 /**
  * Owns one lane (named "fast" or "slow"): its schedule, retries, manual runs, and history.
  * Only the alarm handler runs work, so runs never overlap within a lane. The lanes are
  * separate instances and run independently of each other.
  *
  * Storage: "lane"; "state" (automatic scheduling, pause, next slot, retries, last run);
- * "pending" (one queued manual run); "run:*" (recent run history).
+ * "pending" (one queued manual run); "run:*" (recent run history, each with its log lines);
+ * "post:*" (the fast lane's social post log, which outlives the run history).
  */
 export class Scheduler extends DurableObject {
   // True while the alarm handler is running work; RPCs that change the schedule wait for it.
   #running = false;
+
+  // The run in progress (start time, mode, trigger, and its log so far), or null.
+  #current = null;
 
   constructor(ctx, env) {
     super(ctx, env);
@@ -121,9 +140,34 @@ export class Scheduler extends DurableObject {
     }
   }
 
-  async #record(storage, run) {
+  // Social posts and failures, newest last. Kept apart from runs: there are few of them, and
+  // they stay useful for much longer than a run's details.
+  async #recordPosts(storage, posts, source) {
+    if (!posts?.length) {
+      return;
+    }
+
+    let entries = {};
+
+    for (let post of posts) {
+      let id = crypto.randomUUID().slice(0, 8);
+
+      entries[`post:${String(post.at).padStart(15, '0')}:${id}`] = { ...post, id, ...source };
+    }
+
+    await storage.put(entries);
+
+    let keys = [...(await storage.list({ prefix: 'post:', reverse: true })).keys()];
+
+    if (keys.length > MAX_POSTS) {
+      await storage.delete(keys.slice(MAX_POSTS));
+    }
+  }
+
+  async #record(storage, { posts, ...run }) {
     let key = `run:${String(run.startedAt ?? Date.now()).padStart(15, '0')}:${run.id.slice(0, 8)}`;
-    await storage.put(key, run);
+    await storage.put(key, { ...run, postCount: posts?.length ?? 0 });
+    await this.#recordPosts(storage, posts, { runId: run.id });
 
     let keys = [...(await storage.list({ prefix: 'run:', reverse: true })).keys()];
 
@@ -220,35 +264,100 @@ export class Scheduler extends DurableObject {
     return { ok: true, lane, run };
   }
 
-  async status() {
-    let history = await this.ctx.storage.list({ prefix: 'run:', reverse: true, limit: 10 });
+  async status({ history: limit = 10 } = {}) {
+    let history = await this.ctx.storage.list({
+      prefix: 'run:',
+      reverse: true,
+      limit: Math.min(Math.max(1, Number(limit) || 10), MAX_HISTORY),
+    });
 
     return {
       lane: (await this.ctx.storage.get('lane')) ?? null,
       ...(await this.#state()),
       pending: (await this.ctx.storage.get('pending')) ?? null,
       running: this.#running,
+      current: this.#current && { ...this.#current, log: undefined, logLines: this.#current.log.lines.length },
       alarmAt: await this.ctx.storage.getAlarm(),
-      history: [...history.values()],
+      history: [...history.values()].map(summarize),
     };
+  }
+
+  /**
+   * One run with its log lines: a run from the history, or the one in progress ("current").
+   * @param {{ id: string }} options
+   * @returns {Promise<object|null>} The run, or null if it is no longer kept
+   */
+  async run({ id }) {
+    if (id === 'current') {
+      return this.#current && { ...this.#current, id: 'current', log: undefined, logs: this.#current.log.toJSON() };
+    }
+
+    let history = await this.ctx.storage.list({ prefix: 'run:' });
+
+    return [...history.values()].find(run => run.id === id) ?? null;
+  }
+
+  /**
+   * The most recent log lines across runs, newest first.
+   * @param {{ limit?: number }} [options]
+   * @returns {Promise<{ at: number, level: string, text: string, runId: string }[]>} Log lines
+   */
+  async logLines({ limit = 300 } = {}) {
+    let lines = (this.#current?.log.lines ?? []).map(line => ({ ...line, runId: 'current' })).reverse();
+    let history = await this.ctx.storage.list({ prefix: 'run:', reverse: true });
+
+    for (let run of history.values()) {
+      if (lines.length >= limit) {
+        break;
+      }
+
+      lines.push(...(run.logs?.lines ?? []).map(line => ({ ...line, runId: run.id })).reverse());
+    }
+
+    return lines.slice(0, limit);
+  }
+
+  /**
+   * The social post log, newest first.
+   * @param {{ limit?: number }} [options]
+   * @returns {Promise<object[]>} Posts and failures (see StatusGeneratorManager.events)
+   */
+  async posts({ limit = MAX_POSTS } = {}) {
+    let posts = await this.ctx.storage.list({ prefix: 'post:', reverse: true, limit: Math.min(limit, MAX_POSTS) });
+
+    return [...posts.values()];
+  }
+
+  /**
+   * Add posts made outside a run (by hand, from the admin panel) to the post log.
+   * @param {{ posts: object[] }} options
+   */
+  async addPosts({ posts }) {
+    await this.ctx.storage.transaction(txn => this.#recordPosts(txn, posts, { manual: true }));
   }
 
   // Work
 
-  async #execute(lane, options) {
+  async #execute(lane, options, trigger) {
     let startedAt = Date.now();
+    let log = new RunLog;
     let result;
 
+    this.#current = { startedAt, mode: options.mode, social: options.social, trigger, log };
+
     try {
-      result = await LANES[lane].run(options);
+      result = await captureLogs(log, () => LANES[lane].run(options));
     } catch (error) {
       result = { ok: false, error: describeError(error) };
+      log.add('error', [`Run failed: ${result.error}`]);
+    } finally {
+      this.#current = null;
     }
 
     result = { ...result, mode: options.mode, social: options.social, startedAt, finishedAt: Date.now() };
     console[result.ok ? 'info' : 'error'](JSON.stringify({ event: 'lane-run', lane, ...result }));
 
-    return result;
+    return { ...result, logs: log.toJSON() };
   }
 
   async alarm() {
@@ -293,7 +402,7 @@ export class Scheduler extends DurableObject {
           result = { ok: false, error: 'Run was interrupted; check the results before retrying' };
         } else {
           await this.ctx.storage.put('pending', { ...pending, status: 'running', startedAt: Date.now() });
-          result = await this.#execute(lane, { mode: pending.mode, social: pending.social });
+          result = await this.#execute(lane, { mode: pending.mode, social: pending.social }, 'manual');
         }
 
         runs.push({ ...pending, ...result, id: pending.id, trigger: 'manual', status: 'done' });
@@ -306,7 +415,8 @@ export class Scheduler extends DurableObject {
         let dueAt = state.retryAt ?? state.next.at;
 
         if (Date.now() >= dueAt) {
-          let result = await this.#execute(lane, { mode: state.next.mode, social: true });
+          let trigger = state.continuing ? 'continuation' : state.retryAt ? 'retry' : 'scheduled';
+          let result = await this.#execute(lane, { mode: state.next.mode, social: true }, trigger);
           let upcoming = nextSlot(config.schedule);
           let retryAt = Date.now() + config.retryDelayMs;
           let continueAt = Date.now() + (config.continueDelayMs ?? Infinity);
@@ -314,7 +424,7 @@ export class Scheduler extends DurableObject {
           runs.push({
             ...result,
             id: crypto.randomUUID(),
-            trigger: state.continuing ? 'continuation' : state.retryAt ? 'retry' : 'scheduled',
+            trigger,
             scheduledFor: dueAt,
             driftMs: result.startedAt - dueAt,
           });
@@ -341,7 +451,7 @@ export class Scheduler extends DurableObject {
       }
 
       if (runs.length) {
-        state.lastRun = runs.at(-1);
+        state.lastRun = summarize(runs.at(-1));
       }
 
       // History, state, and the next alarm are saved together, without external I/O between.

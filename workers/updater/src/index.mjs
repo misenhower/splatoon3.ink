@@ -4,6 +4,7 @@
 import { LANES, Scheduler } from './Scheduler.mjs';
 import { RegionAuth } from './RegionAuth.mjs';
 import { REGIONS, setupRuntime } from './runtime.mjs';
+import { adminRequest } from './admin/routes.mjs';
 
 export { Scheduler, RegionAuth };
 
@@ -138,6 +139,17 @@ export default {
 
   async fetch(request, env) {
     setupRuntime(env);
+
+    // The admin panel has its own hostname and sign-in (Cloudflare Access).
+    if (env.ADMIN_HOSTNAME && new URL(request.url).hostname === env.ADMIN_HOSTNAME) {
+      try {
+        return await adminRequest(request, env);
+      } catch (error) {
+        console.error('Admin request failed:', error);
+
+        return json({ ok: false, error: 'The request failed. Refresh status before retrying.' }, 500);
+      }
+    }
 
     if (!authorized(request, env)) {
       return new Response(env.RUN_TOKEN ? 'Unauthorized' : 'Control endpoints are disabled', { status: 401 });

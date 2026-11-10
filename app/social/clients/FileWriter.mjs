@@ -4,6 +4,7 @@ import Client from './Client.mjs';
 export default class FileWriter extends Client {
   key = 'file';
   name = 'FileWriter';
+  internal = true;
 
   dir = 'temp';
 

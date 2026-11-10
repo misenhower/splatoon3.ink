@@ -1,10 +1,12 @@
 import { DurableObject } from 'cloudflare:workers';
 import { LocalAuth } from '../../../app/splatnet/auth.mjs';
 import NsoClient, { regionTokens } from '../../../app/splatnet/NsoClient.mjs';
+import { captureLogs, RunLog } from './log.mjs';
 import { REGIONS, setupRuntime } from './runtime.mjs';
 
 const HOUR_MS = 60 * 60 * 1000;
 const MINUTE_MS = 60 * 1000;
+const MAX_EVENTS = 24;
 
 /**
  * When to renew a region's credentials: once an hour at :35–:38 (one minute apart per region),
@@ -58,10 +60,34 @@ export class RegionAuth extends DurableObject {
     return this.#auth.bulletToken(this.#nsoClient(region), { language, useCache });
   }
 
+  // Renewal logs its failures instead of throwing (the cached tokens usually still work), so
+  // the outcome recorded for the admin panel comes from what it printed.
   async refresh({ region }) {
     await this.#remember(region);
-    await this.#auth.refresh(this.#nsoClient(region));
+
+    let startedAt = Date.now();
+    let log = new RunLog;
+    let failure = null;
+
+    try {
+      let nsoClient = this.#nsoClient(region);
+
+      await captureLogs(log, () => this.#auth.refresh(nsoClient));
+    } catch (error) {
+      failure = error;
+      log.add('error', [error]);
+    }
+
+    let errors = log.lines.filter(line => line.level === 'error').map(line => line.text);
+    let events = (await this.ctx.storage.get('events')) ?? [];
+
+    events.unshift({ at: startedAt, finishedAt: Date.now(), ok: errors.length === 0, errors });
+    await this.ctx.storage.put('events', events.slice(0, MAX_EVENTS));
     await this.ctx.storage.put('lastRefreshAt', Date.now());
+
+    if (failure) {
+      throw failure;
+    }
   }
 
   // Called by the cron watchdog: make sure the hourly refresh is scheduled.
@@ -85,10 +111,14 @@ export class RegionAuth extends DurableObject {
   }
 
   async status() {
+    let region = (await this.ctx.storage.get('region')) ?? null;
+
     return {
-      region: (await this.ctx.storage.get('region')) ?? null,
+      region,
       alarmAt: await this.ctx.storage.getAlarm(),
       lastRefreshAt: (await this.ctx.storage.get('lastRefreshAt')) ?? null,
+      hasSessionToken: !!regionTokens()[region ?? ''],
+      events: (await this.ctx.storage.get('events')) ?? [],
     };
   }
 

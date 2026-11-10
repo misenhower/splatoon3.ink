@@ -5,6 +5,7 @@ import Client from './Client.mjs';
 export default class ImageWriter extends Client {
   key = 'image';
   name = 'ImageWriter';
+  internal = true;
 
   // Public storage key prefix (`/screenshots` is the page used to render them)
   prefix = 'status-screenshots';

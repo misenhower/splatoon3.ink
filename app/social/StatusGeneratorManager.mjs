@@ -5,6 +5,11 @@ import ScreenshotHelper from '../screenshots/ScreenshotHelper.mjs';
 import Client from './clients/Client.mjs';
 import StatusGenerator from './generators/StatusGenerator.mjs';
 import { MissingTranslationError } from './i18n/SocialMessages.mjs';
+import { readSocialSettings } from './SocialSettings.mjs';
+
+function describe(target) {
+  return target ? { key: target.key, name: target.name } : null;
+}
 
 export default class StatusGeneratorManager
 {
@@ -13,6 +18,13 @@ export default class StatusGeneratorManager
 
   /** @type {Client[]} */
   clients;
+
+  /**
+   * What this manager did, for the admin panel's post log: one entry per post sent to an
+   * account and one per failure (generating a status, or sending it anywhere).
+   * @type {{ at: number, type: 'posted'|'error', generator: object, client: object|null, locale: string, error?: string }[]}
+   */
+  events = [];
 
   console(generator = null, client = null) {
     let prefixes = ['Social', generator?.name, client?.name].filter(s => s);
@@ -32,14 +44,38 @@ export default class StatusGeneratorManager
 
     // Process each client in parallel (while maintaining post order)
     await this._sendStatusesToClients(statusPromises, availableClients);
+
+    return this.events;
+  }
+
+  _record(type, generator, client, error) {
+    // Internal writers succeed on every run; only their failures are worth keeping.
+    if (type === 'posted' && client?.internal) {
+      return;
+    }
+
+    this.events.push({
+      at: Date.now(),
+      type,
+      generator: describe(generator),
+      client: describe(client),
+      locale: client?.locale ?? generator?.locale ?? 'en-US',
+      ...(error !== undefined && { error: error?.message ?? String(error) }),
+    });
   }
 
   async _getAvailableClients() {
     let clients = [];
+    let { disabledClients } = await readSocialSettings();
 
     for (let client of this.clients) {
       if (!(await client.canSend())) {
         this.console(client).warn('Client cannot send (missing credentials)');
+        continue;
+      }
+
+      if (disabledClients[client.key]) {
+        this.console(client).info('Posting is turned off for this account, skipping');
         continue;
       }
 
@@ -80,6 +116,7 @@ export default class StatusGeneratorManager
       } else {
         this.console(generator).error('Error generating status:', e);
         Sentry.captureException(e);
+        this._record('error', generator, null, e);
       }
     } finally {
       await screenshotHelper.close();
@@ -116,9 +153,11 @@ export default class StatusGeneratorManager
 
       await client.send(status, generator);
       await generator.updatelastPostCache(client);
+      this._record('posted', generator, client);
     } catch (e) {
       this.console(generator, client).error('Error posting:', e);
       Sentry.captureException(e);
+      this._record('error', generator, client, e);
     }
   }
 }

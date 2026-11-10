@@ -31,12 +31,15 @@ With `CLOUDFLARE_CACHE_PURGE_*` configured, data JSON is purged from the edge af
 1. R2 buckets: dev uses `splatoon3-ink-dev-assets` and `splatoon3-ink-dev-private`;
    production uses `splatoon3-ink-assets` and `splatoon3-ink-private` (create the private
    bucket before the first production deploy; never make it public).
-2. Dev routing: `dev.splatoon3.ink` must serve `/data/` and `/splatnet/` from the dev bucket
-   (Cloud Connector rule), or the fast lane's published-data check fails.
+2. Routing: images are served from each bucket's custom domain (`assets.splatoon3.ink`,
+   `dev-assets.splatoon3.ink`). Cloud Connector rules send `/data` and `/status-screenshots`
+   on the site hostname to its bucket (production: "Data Assets" for `splatoon3.ink`; dev:
+   "Dev Data Assets" for `dev.splatoon3.ink`), or the fast lane's published-data check fails.
 3. Secrets (`npx wrangler secret put NAME --config workers/updater/wrangler.jsonc --env dev`):
    `NINTENDO_TOKEN_US`, `NINTENDO_TOKEN_EU`, `NINTENDO_TOKEN_JP`, `NINTENDO_TOKEN_AP`,
-   `NXAPI_CLIENT_ID`, `NXAPI_SHARED_SECRET`, `USER_AGENT`, `RUN_TOKEN`, optional `SENTRY_DSN`
-   and `CLOUDFLARE_CACHE_PURGE_ZONE_ID` / `CLOUDFLARE_CACHE_PURGE_API_TOKEN`. Social account
+   `NXAPI_CLIENT_ID`, `NXAPI_SHARED_SECRET`, `USER_AGENT`, `RUN_TOKEN`, `ACCESS_TEAM_DOMAIN`
+   and `ACCESS_AUD` (see Admin panel), optional `SENTRY_DSN` and
+   `CLOUDFLARE_CACHE_PURGE_ZONE_ID` / `CLOUDFLARE_CACHE_PURGE_API_TOKEN`. Social account
    credentials go on production only (leave them unset in dev).
 4. Deploy, check status, run once by hand, then turn on automatic scheduling.
 
@@ -76,8 +79,45 @@ Manual runs are queued and executed by the lane's alarm; poll `/status` for the 
 A manual run interrupted mid-way is reported as failed rather than replayed, so social posts
 are never repeated automatically.
 
+## Admin panel
+
+A Vue app (`admin/`) served by this Worker on its own hostname (`admin.dev.splatoon3.ink`,
+`admin.splatoon3.ink`), behind a Cloudflare Access application. The Worker checks the Access
+token itself on every request, so nothing is served without it, and the panel is not reachable
+on any other hostname.
+
+- **Timeline**: runs of both lanes, credential renewals and social posts on a time axis, with
+  the upcoming slots; a run list; each run's updaters and log lines; lane controls (run now,
+  pause, automatic scheduling) and credential renewal; a combined log.
+- **Social**: the post log (what was posted, what failed), a posting switch per account, when
+  each status last went to each account, and a preview of any status with a confirmed post by
+  hand. A manual run from the panel never posts unless "Post to social" is ticked.
+- **Data**: the published data files with their age, a check that the site serves them, and a
+  cache purge.
+
+Setup, once per environment:
+
+1. Create a Cloudflare Access self-hosted application for the whole admin hostname, allowing
+   only the owner.
+2. Set the secrets `ACCESS_TEAM_DOMAIN` (`<team>.cloudflareaccess.com`) and `ACCESS_AUD` (the
+   application's audience tag). Without both, every admin request is refused.
+3. Deploy. The deploy scripts build the app first (`npm run admin:build`), and the first
+   deploy attaches the admin hostname as a Worker custom domain.
+
+```sh
+npm run admin:dev     # the panel with a simulated API on http://localhost:5180 (no Worker)
+npm run admin:build   # build to admin/dist, which the Worker serves
+```
+
+What the panel stores:
+
+- Each run's log lines are kept with the run in its `Scheduler` (the last 50 runs per lane).
+- Social posts and failures are kept in the fast lane's `Scheduler` (the last 300).
+- Each `RegionAuth` keeps its last 24 renewals.
+- Account posting switches are in private storage at `settings/social.json`; the Node runner
+  honours them too.
+
 ## Not yet
 
 - Archives (`ARCHIVE_DATA`): the Worker has no archive storage yet; snapshots to Spaces and the
   daily compression container are the next step.
-- Admin panel: the endpoints above are the whole interface for now.

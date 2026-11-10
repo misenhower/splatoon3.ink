@@ -72,6 +72,7 @@ export default [
     ignores: [
       '**/.wrangler/**',
       'dist/**',
+      'workers/updater/admin/dist/**',
       'src/assets/i18n/index.mjs',
     ],
   },

@@ -13,6 +13,7 @@ export default defineConfig({
     include: [
       'app/**/*.test.mjs',
       'src/**/*.test.{js,mjs}',
+      'workers/updater/admin/src/**/*.test.js',
     ],
     setupFiles: ['app/test/setup.mjs'],
   },

@@ -20,15 +20,29 @@
   // Select --env dev or --env production explicitly. Automatic scheduling starts off for a
   // new scheduler; POST /schedule?enabled=true turns it on and the setting survives deploys.
   // Secrets: NINTENDO_TOKEN_{US,EU,JP,AP}, NXAPI_CLIENT_ID, NXAPI_SHARED_SECRET, USER_AGENT,
-  // RUN_TOKEN, optional SENTRY_DSN, CLOUDFLARE_CACHE_PURGE_ZONE_ID/API_TOKEN, and (production
-  // only) the social account credentials.
+  // RUN_TOKEN, ACCESS_TEAM_DOMAIN and ACCESS_AUD (admin panel sign-in), optional SENTRY_DSN,
+  // CLOUDFLARE_CACHE_PURGE_ZONE_ID/API_TOKEN, and (production only) the social account
+  // credentials.
   "env": {
     "dev": {
       "name": "splatoon3-ink-dev-updater",
+      // The admin panel's own hostname, protected by a Cloudflare Access application.
+      "routes": [{ "pattern": "admin.dev.splatoon3.ink", "custom_domain": true }],
+      // The built admin app (npm run admin:build). Requests reach the Worker first, so
+      // nothing is served without Access.
+      "assets": {
+        "directory": "./admin/dist",
+        "binding": "ADMIN_ASSETS",
+        "not_found_handling": "single-page-application",
+        "run_worker_first": true
+      },
       "vars": {
+        "ENVIRONMENT": "dev",
+        "ADMIN_HOSTNAME": "admin.dev.splatoon3.ink",
         "SITE_URL": "https://dev.splatoon3.ink",
-        "ASSET_URL": "https://dev.splatoon3.ink",
-        "R2_PUBLIC_URL": "https://dev.splatoon3.ink",
+        // The dev bucket's own custom domain, like assets.splatoon3.ink in production.
+        "ASSET_URL": "https://dev-assets.splatoon3.ink",
+        "R2_PUBLIC_URL": "https://dev-assets.splatoon3.ink",
         "CLOUDFLARE_CACHE_PURGE_HOSTS": "dev.splatoon3.ink",
         "AUTOMATIC_SCHEDULING_ENABLED": "false"
       },
@@ -49,7 +63,19 @@
     },
     "production": {
       "name": "splatoon3-ink-updater",
+      // The admin panel's own hostname, protected by a Cloudflare Access application.
+      "routes": [{ "pattern": "admin.splatoon3.ink", "custom_domain": true }],
+      // The built admin app (npm run admin:build). Requests reach the Worker first, so
+      // nothing is served without Access.
+      "assets": {
+        "directory": "./admin/dist",
+        "binding": "ADMIN_ASSETS",
+        "not_found_handling": "single-page-application",
+        "run_worker_first": true
+      },
       "vars": {
+        "ENVIRONMENT": "production",
+        "ADMIN_HOSTNAME": "admin.splatoon3.ink",
         "SITE_URL": "https://splatoon3.ink",
         "ASSET_URL": "https://assets.splatoon3.ink",
         "R2_PUBLIC_URL": "https://assets.splatoon3.ink",
