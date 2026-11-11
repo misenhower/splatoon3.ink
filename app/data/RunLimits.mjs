@@ -22,8 +22,10 @@ export default class RunLimits {
     this.deferArchive = deferArchive;
   }
 
-  // Archive snapshots waiting to be written, when deferArchive is set
-  heldSnapshots = [];
+  // Archive snapshots waiting to be written, when deferArchive is set, by archive key. Several
+  // updaters can save the same file in one run (each region's FestivalUpdater writes the
+  // combined festivals.json); a newer copy replaces the one held, so each is written once.
+  heldSnapshots = new Map();
 
   // Set once work was left for a later run because the deadline passed
   incomplete = false;

@@ -28,7 +28,9 @@ describe('archive', () => {
   it('writes only the newest copy of a snapshot saved more than once', async () => {
     let limits = new RunLimits({ deferArchive: true });
     let festivals = text => ({ key: '2026-11-08.12-00-00.festivals.json', text, name: 'festivals' });
-    limits.heldSnapshots.push(festivals('{"US":1}'), snapshot('gear'), festivals('{"US":1,"EU":1}'));
+    for (let held of [festivals('{"US":1}'), snapshot('gear'), festivals('{"US":1,"EU":1}')]) {
+      limits.heldSnapshots.set(held.key, held);
+    }
 
     expect(await flushArchive(limits)).toEqual({ archived: 2, failed: 0 });
     expect(testBuckets().archive.text('2026-11-08.12-00-00.festivals.json')).toBe('{"US":1,"EU":1}');
@@ -36,7 +38,9 @@ describe('archive', () => {
 
   it('flushes held snapshots once, counting the ones that failed', async () => {
     let limits = new RunLimits({ deferArchive: true });
-    limits.heldSnapshots.push(snapshot('gear'), snapshot('coop'), snapshot('schedules'));
+    for (let held of [snapshot('gear'), snapshot('coop'), snapshot('schedules')]) {
+      limits.heldSnapshots.set(held.key, held);
+    }
 
     let write = storage().archive.writeText.bind(storage().archive);
     vi.spyOn(storage().archive, 'writeText').mockImplementation((key, text) =>
@@ -48,7 +52,7 @@ describe('archive', () => {
       '2026-11-08.12-00-00.gear.json',
       '2026-11-08.12-00-00.schedules.json',
     ]);
-    expect(limits.heldSnapshots).toEqual([]);
+    expect(limits.heldSnapshots.size).toBe(0);
     expect(await flushArchive(limits)).toEqual({ archived: 0, failed: 0 });
   });
 });

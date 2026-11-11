@@ -116,7 +116,7 @@ describe('DataUpdater', () => {
 
       expect(testBuckets().public.json('data/gear.json')).toEqual({ data: { a: 1 } });
       expect(testBuckets().archive.objects.size).toBe(0);
-      expect(limits.heldSnapshots).toEqual([
+      expect([...limits.heldSnapshots.values()]).toEqual([
         { key: '2026-11-08.12-00-00.gear.json', text: JSON.stringify({ data: { a: 1 } }), name: 'gear' },
       ]);
     });

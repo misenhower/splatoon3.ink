@@ -31,9 +31,9 @@ export async function archiveSnapshot({ key, text, name }, console = prefixedCon
  * @returns {Promise<{ archived: number, failed: number }>} How many were written and not
  */
 export async function flushArchive(limits) {
-  // Several updaters can save the same file in one run (each region's FestivalUpdater writes
-  // the combined festivals.json); only the newest copy of each snapshot is written.
-  let snapshots = [...new Map(limits.heldSnapshots.splice(0).map(snapshot => [snapshot.key, snapshot])).values()];
+  let snapshots = [...limits.heldSnapshots.values()];
+  limits.heldSnapshots.clear();
+
   let limit = pLimit(4);
   let results = await Promise.all(snapshots.map(snapshot => limit(() => archiveSnapshot(snapshot))));
   let archived = results.filter(Boolean).length;

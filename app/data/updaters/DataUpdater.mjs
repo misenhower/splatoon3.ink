@@ -200,7 +200,7 @@ export default class DataUpdater
       let snapshot = { key: this.getArchivePath(this.filename), text: s, name: this.filename };
 
       if (this.limits.deferArchive) {
-        this.limits.heldSnapshots.push(snapshot);
+        this.limits.heldSnapshots.set(snapshot.key, snapshot);
       } else {
         await archiveSnapshot(snapshot, { warn: (...args) => this.console.warn(...args) });
       }
