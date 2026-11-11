@@ -20,9 +20,10 @@
   // Select --env dev or --env production explicitly. Automatic scheduling starts off for a
   // new scheduler; POST /schedule?enabled=true turns it on and the setting survives deploys.
   // Secrets: NINTENDO_TOKEN_{US,EU,JP,AP}, NXAPI_CLIENT_ID, NXAPI_SHARED_SECRET, USER_AGENT,
-  // RUN_TOKEN, ACCESS_TEAM_DOMAIN and ACCESS_AUD (admin panel sign-in), optional SENTRY_DSN,
-  // CLOUDFLARE_CACHE_PURGE_ZONE_ID/API_TOKEN, and (production only) the social account
-  // credentials.
+  // RUN_TOKEN, ACCESS_TEAM_DOMAIN and ACCESS_AUD (admin panel sign-in), AWS_ACCESS_KEY_ID and
+  // AWS_SECRET_ACCESS_KEY (a DigitalOcean Spaces key that can write to the archive bucket),
+  // optional SENTRY_DSN, CLOUDFLARE_CACHE_PURGE_ZONE_ID/API_TOKEN, and (production only) the
+  // social account credentials.
   "env": {
     "dev": {
       "name": "splatoon3-ink-dev-updater",
@@ -44,7 +45,13 @@
         "ASSET_URL": "https://dev-assets.splatoon3.ink",
         "R2_PUBLIC_URL": "https://dev-assets.splatoon3.ink",
         "CLOUDFLARE_CACHE_PURGE_HOSTS": "dev.splatoon3.ink",
-        "AUTOMATIC_SCHEDULING_ENABLED": "false"
+        "AUTOMATIC_SCHEDULING_ENABLED": "false",
+        // Data snapshots go to a DigitalOcean Space. Dev has its own: both environments write
+        // the same object keys, so they must never share a bucket.
+        "ARCHIVE_DATA": "true",
+        "AWS_S3_ENDPOINT": "https://nyc3.digitaloceanspaces.com",
+        "AWS_REGION": "nyc3",
+        "AWS_S3_ARCHIVE_BUCKET": "splatoon3ink-archive-test"
       },
       // Watchdog only; it never enables a disabled lane.
       "triggers": { "crons": ["*/5 * * * *"] },
@@ -81,6 +88,8 @@
         "R2_PUBLIC_URL": "https://assets.splatoon3.ink",
         "CLOUDFLARE_CACHE_PURGE_HOSTS": "splatoon3.ink,assets.splatoon3.ink",
         "AUTOMATIC_SCHEDULING_ENABLED": "false"
+        // Before cutover: ARCHIVE_DATA, AWS_S3_ENDPOINT, AWS_REGION and AWS_S3_ARCHIVE_BUCKET
+        // (the real archive Space), as in dev. Without them no snapshots are archived.
       },
       "triggers": { "crons": ["*/5 * * * *"] },
       "durable_objects": {

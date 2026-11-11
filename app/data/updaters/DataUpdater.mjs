@@ -4,6 +4,7 @@ import prefixedConsole from '../../common/prefixedConsole.mjs';
 import SplatNet3Client from '../../splatnet/SplatNet3Client.mjs';
 import ImageProcessor from '../ImageProcessor.mjs';
 import RunLimits from '../RunLimits.mjs';
+import { archiveSnapshot } from '../archive.mjs';
 import NsoClient from '../../splatnet/NsoClient.mjs';
 import { locales, regionalLocales, defaultLocale } from '../../../src/common/i18n.mjs';
 import { LocalizationProcessor } from '../LocalizationProcessor.mjs';
@@ -193,9 +194,16 @@ export default class DataUpdater
 
     await storage().public.writeText(this.getPath(this.filename), s);
 
-    // Write a secondary file for archival
+    // Write a secondary file for archival (a warning, not a failure, if it cannot be written).
+    // The key is fixed now, so a snapshot written later still lands in this hour.
     if (process.env.ARCHIVE_DATA) {
-      await storage().archive.writeText(this.getArchivePath(this.filename), s);
+      let snapshot = { key: this.getArchivePath(this.filename), text: s, name: this.filename };
+
+      if (this.limits.deferArchive) {
+        this.limits.heldSnapshots.push(snapshot);
+      } else {
+        await archiveSnapshot(snapshot, { warn: (...args) => this.console.warn(...args) });
+      }
     }
   }
 

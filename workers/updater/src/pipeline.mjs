@@ -1,6 +1,7 @@
 // What each lane does in one run, using the shared app/ code.
 
 import { updateFast, updateSlow } from '../../../app/data/index.mjs';
+import { flushArchive } from '../../../app/data/archive.mjs';
 import RunLimits from '../../../app/data/RunLimits.mjs';
 import { sendStatuses } from '../../../app/social/index.mjs';
 import { updateAvatars } from '../../../app/social/updateAvatars.mjs';
@@ -96,17 +97,27 @@ function summarize(updaters) {
  * @returns {Promise<object>} Run result
  */
 export async function runFastLane({ mode, social = true }) {
-  let updaters = summarize(await updateFast(mode));
-  let result = { updaters, purged: await purgeDataCache() };
+  // Archive snapshots are uploaded at the end, after social posts, so a slow archive bucket
+  // can only delay the archive. They are uploaded even when posting fails.
+  let limits = new RunLimits({ deferArchive: true });
+  let result;
+  let archive;
 
-  if (social) {
-    await verifyPublishedData();
-    // What was posted and what failed, for the admin panel's post log.
-    result.posts = await sendStatuses();
-    result.social = true;
+  try {
+    let updaters = summarize(await updateFast(mode, { limits }));
+    result = { ok: updaters.ok, updaters, purged: await purgeDataCache() };
+
+    if (social) {
+      await verifyPublishedData();
+      // What was posted and what failed, for the admin panel's post log.
+      result.posts = await sendStatuses();
+      result.social = true;
+    }
+  } finally {
+    archive = await flushArchive(limits);
   }
 
-  return { ok: updaters.ok, ...result };
+  return archive.archived || archive.failed ? { ...result, archive } : result;
 }
 
 /**

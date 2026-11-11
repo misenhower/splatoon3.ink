@@ -13,10 +13,17 @@ export default class RunLimits {
    * @param {object} [options]
    * @param {number|null} [options.deadline] Epoch ms after which long-running updaters stop
    *   starting new work (the rest continues in a later run)
+   * @param {boolean} [options.deferArchive] Hold archive snapshots in `heldSnapshots` instead of
+   *   writing them as data is published; the caller writes them later (flushArchive in
+   *   app/data/archive.mjs), so archive uploads never delay what follows, such as social posts
    */
-  constructor({ deadline = null } = {}) {
+  constructor({ deadline = null, deferArchive = false } = {}) {
     this.deadline = deadline;
+    this.deferArchive = deferArchive;
   }
+
+  // Archive snapshots waiting to be written, when deferArchive is set
+  heldSnapshots = [];
 
   // Set once work was left for a later run because the deadline passed
   incomplete = false;

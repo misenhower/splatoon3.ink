@@ -38,7 +38,8 @@ With `CLOUDFLARE_CACHE_PURGE_*` configured, data JSON is purged from the edge af
 3. Secrets (`npx wrangler secret put NAME --config workers/updater/wrangler.jsonc --env dev`):
    `NINTENDO_TOKEN_US`, `NINTENDO_TOKEN_EU`, `NINTENDO_TOKEN_JP`, `NINTENDO_TOKEN_AP`,
    `NXAPI_CLIENT_ID`, `NXAPI_SHARED_SECRET`, `USER_AGENT`, `RUN_TOKEN`, `ACCESS_TEAM_DOMAIN`
-   and `ACCESS_AUD` (see Admin panel), optional `SENTRY_DSN` and
+   and `ACCESS_AUD` (see Admin panel), `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` (see
+   Archive), optional `SENTRY_DSN` and
    `CLOUDFLARE_CACHE_PURGE_ZONE_ID` / `CLOUDFLARE_CACHE_PURGE_API_TOKEN`. Social account
    credentials go on production only (leave them unset in dev).
 4. Deploy, check status, run once by hand, then turn on automatic scheduling.
@@ -78,6 +79,27 @@ curl -X POST -H "$AUTH" "$BASE/arm"                                     # what t
 Manual runs are queued and executed by the lane's alarm; poll `/status` for the result.
 A manual run interrupted mid-way is reported as failed rather than replayed, so social posts
 are never repeated automatically.
+
+## Archive
+
+With `ARCHIVE_DATA` set, every data file an updater publishes is also written to the archive
+bucket on DigitalOcean Spaces, at the same keys the Node runner uploads to
+(`YYYY/MM/DD/<date>.<time>.<name>.json`, publicly readable). The Worker has no disk, so the
+snapshot goes straight to Spaces as part of the update (`app/common/storage/S3ArchiveStorage.mjs`).
+
+- Settings: the vars `ARCHIVE_DATA`, `AWS_S3_ENDPOINT`, `AWS_REGION` and `AWS_S3_ARCHIVE_BUCKET`
+  in `wrangler.jsonc`, and a Spaces key that can write to that bucket as the secrets
+  `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
+- Dev writes to its own Space (`splatoon3ink-archive-test`). Environments write the same keys,
+  so they must never share a bucket.
+- The fast lane holds its snapshots until after social posts (even failed ones), then uploads
+  the newest copy of each, so a slow archive bucket never delays a post. The slow lane uploads
+  as it goes, to avoid holding large X-Rank files in memory.
+- A snapshot that cannot be written is a warning in the run's log (and a Sentry event), never
+  a failed update. Each write is tried three times. Most snapshots are named for the hour and
+  written again by every run in it, so a short Spaces outage costs nothing; X-Rank snapshots
+  are stamped to the second and written once, so one that fails all three tries is lost.
+- Production has no archive settings yet; add them before cutover.
 
 ## Admin panel
 
@@ -123,5 +145,6 @@ What the panel stores:
 
 ## Not yet
 
-- Archives (`ARCHIVE_DATA`): the Worker has no archive storage yet; snapshots to Spaces and the
-  daily compression container are the next step.
+- Daily archive compression: rolling each day's snapshots into a `tar.zst` needs the `zstd`
+  binary and local disk, so it will run in a container. Until then the Node command
+  (`npm run data:archive:compress`) does it from anywhere with access to the bucket.

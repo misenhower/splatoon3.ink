@@ -1,6 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import DataUpdater from './DataUpdater.mjs';
+import { storage } from '../../common/storage/index.mjs';
 import { testBuckets } from '../../test/storage.mjs';
+import RunLimits from '../RunLimits.mjs';
 
 describe('DataUpdater', () => {
   describe('deriveIds', () => {
@@ -47,6 +49,7 @@ describe('DataUpdater', () => {
         filename: 'gear',
         outputDirectory: 'data',
         archiveOnePerHour: true,
+        limits: new RunLimits,
         ...props,
       });
     }
@@ -54,6 +57,7 @@ describe('DataUpdater', () => {
     afterEach(() => {
       vi.unstubAllEnvs();
       vi.useRealTimers();
+      vi.restoreAllMocks();
     });
 
     it('publishes data to public storage', async () => {
@@ -77,6 +81,44 @@ describe('DataUpdater', () => {
       await makeUpdater().saveData({ data: { a: 1 } });
 
       expect([...testBuckets().archive.objects.keys()]).toEqual(['2026-11-08.12-00-00.gear.json']);
+    });
+
+    it('stamps a snapshot to the second when it is not hourly', async () => {
+      vi.stubEnv('ARCHIVE_DATA', 'true');
+      vi.useFakeTimers();
+      vi.setSystemTime(new Date('2026-11-08T12:34:56Z'));
+
+      await makeUpdater({ archiveOnePerHour: false, filename: 'xrank' }).saveData({});
+
+      expect([...testBuckets().archive.objects.keys()]).toEqual(['2026-11-08.12-34-56.xrank.json']);
+    });
+
+    it('still publishes when the snapshot cannot be archived', async () => {
+      vi.stubEnv('ARCHIVE_DATA', 'true');
+
+      let warn = vi.fn();
+      let writeText = vi.spyOn(storage().archive, 'writeText').mockRejectedValue(new Error('Archive upload failed with HTTP 503'));
+
+      await makeUpdater({ _console: { warn } }).saveData({ data: { a: 1 } });
+
+      expect(writeText).toHaveBeenCalledOnce();
+      expect(testBuckets().public.json('data/gear.json')).toEqual({ data: { a: 1 } });
+      expect(warn).toHaveBeenCalledWith('Could not archive gear:', expect.objectContaining({ message: 'Archive upload failed with HTTP 503' }));
+    });
+
+    it('holds the snapshot for later when the run defers archiving', async () => {
+      vi.stubEnv('ARCHIVE_DATA', 'true');
+      vi.useFakeTimers();
+      vi.setSystemTime(new Date('2026-11-08T12:59:58Z'));
+      let limits = new RunLimits({ deferArchive: true });
+
+      await makeUpdater({ limits }).saveData({ data: { a: 1 } });
+
+      expect(testBuckets().public.json('data/gear.json')).toEqual({ data: { a: 1 } });
+      expect(testBuckets().archive.objects.size).toBe(0);
+      expect(limits.heldSnapshots).toEqual([
+        { key: '2026-11-08.12-00-00.gear.json', text: JSON.stringify({ data: { a: 1 } }), name: 'gear' },
+      ]);
     });
 
     it('publishes calendars next to the data', async () => {
