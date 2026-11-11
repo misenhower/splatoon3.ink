@@ -2,7 +2,6 @@
 // its JSON API under /admin/api/. Everything here is behind Cloudflare Access.
 
 import { Buffer } from 'node:buffer';
-import { modes } from '../../../../app/data/index.mjs';
 import {
   lastPosted, postStatus, previewStatus, setAccountEnabled, socialAccounts, socialGenerators,
 } from '../../../../app/social/admin.mjs';
@@ -37,7 +36,6 @@ async function status(env, user) {
     environment: env.ENVIRONMENT ?? null,
     siteUrl: env.SITE_URL ?? null,
     now: Date.now(),
-    modes,
     schedules: LANE_SCHEDULES,
     historyMs: HISTORY_MS,
     lanes: Object.fromEntries(await Promise.all(
@@ -223,7 +221,7 @@ async function action(pathname, body, env) {
   switch (pathname) {
     case '/admin/api/run': {
       // Posting to social networks is never the default from the panel.
-      let result = await stub.startManual({ lane, mode: body.mode, social: body.social === true });
+      let result = await stub.startManual({ lane, translations: body.translations, social: body.social === true });
 
       return json(result, result.ok ? 202 : actionStatus(result));
     }

@@ -91,16 +91,6 @@ describe('FestivalRankingsUpdater', () => {
     expect(limits.incomplete).toBe(true);
   });
 
-  it('skips when rankings are disabled', async () => {
-    await publishFestivals('US', [{ id: 'fest-1', teams: [{ result: {} }] }]);
-    let updater = new FestivalRankingsUpdater('US');
-    updater.settings = { disableFestivalRankings: true };
-
-    await updater.updateIfNeeded();
-
-    expect(rankingUpdaters).toHaveLength(0);
-  });
-
   it('skips regions without a session token', async () => {
     await publishFestivals('EU', [{ id: 'fest-1', teams: [{ result: {} }] }]);
 

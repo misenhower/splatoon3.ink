@@ -28,12 +28,12 @@
             {{ TRIGGER_LABELS[item.slot.trigger] ?? item.slot.trigger }}
           </dd>
         </div>
-        <div v-if="item.slot">
+        <div v-if="item.slot && runKind(item.slot)">
           <dt class="label">
-            Mode
+            Kind
           </dt>
           <dd class="mt-0.5 font-mono">
-            {{ item.slot.mode }}
+            {{ runKind(item.slot) }}
           </dd>
         </div>
       </dl>
@@ -199,7 +199,7 @@ import { RouterLink } from 'vue-router';
 import { api } from '../api.js';
 import { clock } from '../clock.js';
 import { isFuture } from '../lib/activity.js';
-import { formatDuration, formatRelative, TRIGGER_LABELS } from '../lib/format.js';
+import { formatDuration, formatRelative, runKind, TRIGGER_LABELS } from '../lib/format.js';
 import { act, activity, store } from '../store.js';
 import LogLines from './LogLines.vue';
 import RunDetail from './RunDetail.vue';

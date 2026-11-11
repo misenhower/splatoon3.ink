@@ -40,6 +40,12 @@ function json(body, status = 200) {
   return Response.json(body, { status, headers: { 'Cache-Control': 'no-store' } });
 }
 
+// "true" and "false" as booleans, a missing parameter as undefined; anything else is passed on
+// as is, for the scheduler to reject.
+function flag(value) {
+  return value === null ? undefined : { true: true, false: false }[value] ?? value;
+}
+
 function lanesFrom(url) {
   let lane = url.searchParams.get('lane') ?? 'all';
 
@@ -80,7 +86,8 @@ async function control(request, env) {
 
       let result = await scheduler(env, lane).startManual({
         lane,
-        mode: url.searchParams.get('mode') ?? (lane === 'slow' ? 'all' : 'default'),
+        // Fast lane only: translations=false for a quick run.
+        translations: flag(url.searchParams.get('translations')),
         social: url.searchParams.get('social') !== 'false',
       });
 

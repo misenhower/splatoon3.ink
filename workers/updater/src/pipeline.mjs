@@ -93,10 +93,10 @@ function summarize(updaters) {
 
 /**
  * Time-sensitive data, then social posts.
- * @param {{ mode: string, social?: boolean }} options
+ * @param {{ translations?: boolean, social?: boolean }} options Quick runs skip translations
  * @returns {Promise<object>} Run result
  */
-export async function runFastLane({ mode, social = true }) {
+export async function runFastLane({ translations = true, social = true } = {}) {
   // Archive snapshots are uploaded at the end, after social posts, so a slow archive bucket
   // can only delay the archive. They are uploaded even when posting fails.
   let limits = new RunLimits({ deferArchive: true });
@@ -104,7 +104,7 @@ export async function runFastLane({ mode, social = true }) {
   let archive;
 
   try {
-    let updaters = summarize(await updateFast(mode, { limits }));
+    let updaters = summarize(await updateFast({ translations, limits }));
     result = { ok: updaters.ok, updaters, purged: await purgeDataCache() };
 
     if (social) {
@@ -122,12 +122,12 @@ export async function runFastLane({ mode, social = true }) {
 
 /**
  * X-Rank, Splatfest rankings, and seasonal profile updates.
- * @param {{ mode: string }} options
+ * @param {{ timeBudgetMs?: number }} [options]
  * @returns {Promise<object>} Run result
  */
-export async function runSlowLane({ mode, timeBudgetMs = SLOW_LANE_TIME_BUDGET_MS }) {
+export async function runSlowLane({ timeBudgetMs = SLOW_LANE_TIME_BUDGET_MS } = {}) {
   let limits = new RunLimits({ deadline: Date.now() + timeBudgetMs });
-  let updaters = summarize(await updateSlow(mode, { limits }));
+  let updaters = summarize(await updateSlow({ limits }));
   let purged = await purgeDataCache();
 
   await updateAvatars();

@@ -8,7 +8,9 @@ import { updateAvatars } from './social/updateAvatars.mjs';
 
 let updating = false;
 
-async function updateIfNotUpdating(mode) {
+// Same cadence as the Worker's lanes (workers/updater/src/schedule.mjs): quick runs skip
+// translations, and X-Rank and rankings update once an hour.
+async function updateIfNotUpdating({ translations = true, slow = false } = {}) {
   if (updating) {
     console.log('[Cron] Update already in progress');
 
@@ -19,9 +21,13 @@ async function updateIfNotUpdating(mode) {
 
   try {
     // Post as soon as the time-sensitive data is ready; X-Rank and rankings follow.
-    await updateFast(mode);
+    await updateFast({ translations });
     await sendStatuses();
-    await updateSlow(mode);
+
+    if (slow) {
+      await updateSlow();
+    }
+
     await archiveData();
   } finally {
     updating = false;
@@ -31,13 +37,13 @@ async function updateIfNotUpdating(mode) {
 export default function() {
   new CronJob('5,20,35,50 * * * *', warmCaches, null, true);
   new CronJob('15 0,1,2,3,4 * * * *', () => {
-    return updateIfNotUpdating('quick');
+    return updateIfNotUpdating({ translations: false });
   }, null, true);
   new CronJob('15 5,10,15,30,45 * * * *', () => {
-    return updateIfNotUpdating('default');
+    return updateIfNotUpdating();
   }, null, true);
   new CronJob('20 * * * *', () => {
-    return updateIfNotUpdating('all');
+    return updateIfNotUpdating({ slow: true });
   }, null, true);
 
   new CronJob('30 * * * *', updateAvatars, null, true);

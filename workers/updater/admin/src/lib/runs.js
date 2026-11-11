@@ -62,20 +62,20 @@ export function currentRun(lane, state, now) {
 
 /**
  * A schedule's slots in (from, until].
- * @param {{ second: number, slots: Array<[number, string]> }} schedule
+ * @param {{ second: number, slots: Array<[number, object]> }} schedule
  * @param {number} from
  * @param {number} until
- * @returns {{ at: number, mode: string }[]} When each slot runs, and in which mode
+ * @returns {{ at: number, options: object }[]} When each slot runs, and the run's options
  */
 export function slotsBetween(schedule, from, until) {
   let slots = [];
 
   for (let hour = from - (from % HOUR); hour <= until; hour += HOUR) {
-    for (let [minute, mode] of schedule.slots) {
+    for (let [minute, options] of schedule.slots) {
       let at = hour + minute * MINUTE + schedule.second * 1000;
 
       if (at > from && at <= until) {
-        slots.push({ at, mode });
+        slots.push({ at, options });
       }
     }
   }
@@ -87,7 +87,8 @@ export function slotsBetween(schedule, from, until) {
  * What each lane is going to do between now and `until`, soonest first.
  * @param {object|null} status
  * @param {number} until
- * @returns {{ key: string, lane: string, at: number, mode: string, trigger: string }[]} The coming runs
+ * @returns {{ key: string, lane: string, at: number, translations?: boolean, trigger: string }[]} The coming
+ *   runs, with the fast lane's run option
  */
 export function collectUpcoming(status, until) {
   let upcoming = [];
@@ -98,14 +99,14 @@ export function collectUpcoming(status, until) {
     if (state.pending?.status === 'queued') {
       let at = Math.max(state.pending.notBefore ?? status.now, status.now);
 
-      upcoming.push({ key: `${lane}:pending`, lane, at, mode: state.pending.mode, trigger: state.pending.continuationOf ? 'continuation' : 'manual' });
+      upcoming.push({ key: `${lane}:pending`, lane, at, translations: state.pending.translations, trigger: state.pending.continuationOf ? 'continuation' : 'manual' });
     }
 
     if (!state.enabled) continue;
 
     // A retry or continuation runs before the lane returns to its regular slots.
     if (state.retryAt) {
-      upcoming.push({ key: `${lane}:retry`, lane, at: state.retryAt, mode: state.next?.mode, trigger: state.continuing ? 'continuation' : 'retry' });
+      upcoming.push({ key: `${lane}:retry`, lane, at: state.retryAt, translations: state.next?.options?.translations, trigger: state.continuing ? 'continuation' : 'retry' });
     }
 
     let from = Math.max(status.now, state.retryAt ?? 0);
@@ -114,7 +115,7 @@ export function collectUpcoming(status, until) {
       // While retrying, the slot the lane is stuck on has already been attempted.
       if (state.retryAt && state.next && slot.at <= state.next.at) continue;
 
-      upcoming.push({ key: `${lane}:slot:${slot.at}`, lane, at: slot.at, mode: slot.mode, trigger: 'scheduled' });
+      upcoming.push({ key: `${lane}:slot:${slot.at}`, lane, at: slot.at, translations: slot.options.translations, trigger: 'scheduled' });
     }
   }
 

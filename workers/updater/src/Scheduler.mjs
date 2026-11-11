@@ -1,5 +1,4 @@
 import { DurableObject } from 'cloudflare:workers';
-import { modes } from '../../../app/data/index.mjs';
 import { captureLogs, RunLog } from './log.mjs';
 import { runFastLane, runSlowLane } from './pipeline.mjs';
 import { setupRuntime } from './runtime.mjs';
@@ -14,12 +13,23 @@ const DELETE_BATCH = 128;
 const stamp = ms => String(Math.max(0, Math.floor(ms))).padStart(15, '0');
 const suffix = run => `${stamp(run.startedAt ?? run.requestedAt ?? Date.now())}:${run.id.slice(0, 8)}`;
 
+// A run's options, from a manual request, a schedule slot, or a stored run. The fast lane has
+// one: quick runs skip translations. The slow lane has none.
+function fastOptions({ translations = true } = {}) {
+  if (typeof translations !== 'boolean') {
+    throw new TypeError('translations must be true or false');
+  }
+
+  return { translations };
+}
+
 // Retries handle failures. Continuations pick up after a run that stopped at its time budget
 // with work left (only the slow lane has one); they do not count as retries.
 export const LANES = {
-  fast: { schedule: LANE_SCHEDULES.fast, run: runFastLane, retryDelayMs: MINUTE_MS, maxRetries: 3 },
+  fast: { schedule: LANE_SCHEDULES.fast, options: fastOptions, run: runFastLane, retryDelayMs: MINUTE_MS, maxRetries: 3 },
   slow: {
     schedule: LANE_SCHEDULES.slow,
+    options: () => ({}),
     run: runSlowLane,
     retryDelayMs: 5 * MINUTE_MS,
     maxRetries: 2,
@@ -54,7 +64,7 @@ export class Scheduler extends DurableObject {
   // True while the alarm handler is running work; RPCs that change the schedule wait for it.
   #running = false;
 
-  // The run in progress (start time, mode, trigger, and its log so far), or null.
+  // The run in progress (start time, options, trigger, and its log so far), or null.
   #current = null;
 
   constructor(ctx, env) {
@@ -118,7 +128,7 @@ export class Scheduler extends DurableObject {
 
     return {
       id: crypto.randomUUID(),
-      mode: pending.mode,
+      ...config.options(pending),
       social: pending.social,
       status: 'queued',
       requestedAt: Date.now(),
@@ -254,18 +264,24 @@ export class Scheduler extends DurableObject {
   }
 
   // Queue one manual run; the alarm executes it, so the caller does not wait.
-  async startManual({ lane, mode, social = true }) {
+  async startManual({ lane, social = true, ...input }) {
     let error = await this.#claimLane(lane);
     if (error) return { ok: false, lane, error };
 
-    if (!modes.includes(mode)) return { ok: false, error: `mode must be one of ${modes.join(', ')}` };
+    let options;
+
+    try {
+      options = LANES[lane].options(input);
+    } catch (error) {
+      return { ok: false, error: describeError(error) };
+    }
 
     let state = await this.#state();
 
     if (state.paused) return { ok: false, paused: true, error: 'Scheduler is paused' };
     if (await this.ctx.storage.get('pending')) return { ok: false, busy: true, error: 'A manual run is already queued' };
 
-    let run = { id: crypto.randomUUID(), mode, social: !!social, status: 'queued', requestedAt: Date.now() };
+    let run = { id: crypto.randomUUID(), ...options, social: !!social, status: 'queued', requestedAt: Date.now() };
 
     await this.ctx.storage.put('pending', run);
 
@@ -382,12 +398,13 @@ export class Scheduler extends DurableObject {
 
   // Work
 
+  // `options` are the lane's run options plus `social`; runs are recorded with them.
   async #execute(lane, options, trigger) {
     let startedAt = Date.now();
     let log = new RunLog;
     let result;
 
-    this.#current = { startedAt, mode: options.mode, social: options.social, trigger, log };
+    this.#current = { startedAt, ...options, trigger, log };
 
     try {
       result = await captureLogs(log, () => LANES[lane].run(options));
@@ -398,7 +415,7 @@ export class Scheduler extends DurableObject {
       this.#current = null;
     }
 
-    result = { ...result, mode: options.mode, social: options.social, startedAt, finishedAt: Date.now() };
+    result = { ...result, ...options, startedAt, finishedAt: Date.now() };
     console[result.ok ? 'info' : 'error'](JSON.stringify({ event: 'lane-run', lane, ...result }));
 
     return { ...result, logs: log.toJSON() };
@@ -446,7 +463,7 @@ export class Scheduler extends DurableObject {
           result = { ok: false, error: 'Run was interrupted; check the results before retrying' };
         } else {
           await this.ctx.storage.put('pending', { ...pending, status: 'running', startedAt: Date.now() });
-          result = await this.#execute(lane, { mode: pending.mode, social: pending.social }, 'manual');
+          result = await this.#execute(lane, { ...config.options(pending), social: pending.social }, 'manual');
         }
 
         runs.push({ ...pending, ...result, id: pending.id, trigger: 'manual', status: 'done' });
@@ -460,7 +477,8 @@ export class Scheduler extends DurableObject {
 
         if (Date.now() >= dueAt) {
           let trigger = state.continuing ? 'continuation' : state.retryAt ? 'retry' : 'scheduled';
-          let result = await this.#execute(lane, { mode: state.next.mode, social: true }, trigger);
+          // A slot saved before run options existed has none; it runs with the defaults.
+          let result = await this.#execute(lane, { ...config.options(state.next.options), social: true }, trigger);
           let upcoming = nextSlot(config.schedule);
           let retryAt = Date.now() + config.retryDelayMs;
           let continueAt = Date.now() + (config.continueDelayMs ?? Infinity);

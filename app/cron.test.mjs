@@ -43,15 +43,25 @@ describe('cron update coordination', () => {
 
   it('posts after the fast updaters and before the slow ones', async () => {
     const calls = [];
-    mocks.updateFast.mockImplementation(async mode => calls.push(`fast:${mode}`));
+    mocks.updateFast.mockImplementation(async options => calls.push(`fast:${JSON.stringify(options)}`));
     mocks.sendStatuses.mockImplementation(async () => calls.push('social'));
-    mocks.updateSlow.mockImplementation(async mode => calls.push(`slow:${mode}`));
+    mocks.updateSlow.mockImplementation(async () => calls.push('slow'));
     mocks.archiveData.mockImplementation(async () => calls.push('archive'));
     await loadJobs();
 
     await mocks.jobs.get('20 * * * *')();
 
-    expect(calls).toEqual(['fast:all', 'social', 'slow:all', 'archive']);
+    expect(calls).toEqual(['fast:{"translations":true}', 'social', 'slow', 'archive']);
+  });
+
+  it('skips translations and the slow updaters in quick runs', async () => {
+    await loadJobs();
+
+    await mocks.jobs.get('15 0,1,2,3,4 * * * *')();
+    await mocks.jobs.get('15 5,10,15,30,45 * * * *')();
+
+    expect(mocks.updateFast.mock.calls).toEqual([[{ translations: false }], [{ translations: true }]]);
+    expect(mocks.updateSlow).not.toHaveBeenCalled();
   });
 
   it('allows another update after an update rejects', async () => {

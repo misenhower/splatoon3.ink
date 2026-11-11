@@ -16,12 +16,12 @@
           {{ TRIGGER_LABELS[run.trigger] ?? run.trigger }}
         </dd>
       </div>
-      <div>
+      <div v-if="kind">
         <dt class="label">
-          Mode
+          Kind
         </dt>
         <dd class="mt-0.5 font-mono">
-          {{ run.mode }}
+          {{ kind }}
         </dd>
       </div>
       <div>
@@ -90,7 +90,7 @@
         :disabled="!!store.busy || lanePaused"
         @click="rerun"
       >
-        Run {{ run.mode }} again, data only
+        Run {{ kind ? `${kind} ` : '' }}again, data only
       </button>
       <button type="button" class="btn" @click="copyLink">
         {{ copied ? 'Link copied' : 'Copy link' }}
@@ -103,7 +103,7 @@
 import { computed, ref, watch } from 'vue';
 import { api } from '../api.js';
 import { clock } from '../clock.js';
-import { formatDuration, LANE_LABELS, TRIGGER_LABELS } from '../lib/format.js';
+import { formatDuration, LANE_LABELS, runKind, TRIGGER_LABELS } from '../lib/format.js';
 import { act, store } from '../store.js';
 import LogLines from './LogLines.vue';
 import StateChip from './StateChip.vue';
@@ -114,6 +114,7 @@ const props = defineProps({
 });
 
 const key = computed(() => `${props.run.lane}:${props.run.id}`);
+const kind = computed(() => runKind(props.run));
 
 // Finished runs never change, so their log lines are fetched once.
 const cache = new Map();
@@ -162,9 +163,10 @@ watch(key, () => {
 watch(() => store.loadedAt, () => props.run.running && load());
 
 function rerun() {
-  let { lane, mode } = props.run;
+  let { lane, translations } = props.run;
+  let description = kind.value ? `${kind.value} run` : 'run';
 
-  act(`run:${lane}`, '/run', { lane, mode, social: false }, `Queued a ${mode} run on the ${lane} lane, data only.`);
+  act(`run:${lane}`, '/run', { lane, translations, social: false }, `Queued a ${description} on the ${lane} lane, data only.`);
 }
 
 async function copyLink() {

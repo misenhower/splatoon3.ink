@@ -26,10 +26,6 @@ export default class FestivalRankingsUpdater
   }
 
   async updateIfNeeded() {
-    if (this.settings.disableFestivalRankings) {
-      return;
-    }
-
     if (!regionTokens()[this.region]) {
       this.console.log(`No token provided for ${this.region} region, skipping...`);
 

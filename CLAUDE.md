@@ -19,9 +19,9 @@ npm run test:watch     # Vitest in watch mode
 
 Backend commands (require .env configuration):
 ```bash
-npm run splatnet:quick # Quick data update (skip localizations, X-Rank, fest rankings)
-npm run splatnet       # Default data update
-npm run splatnet:all   # Full data update (all regions, all features)
+npm run splatnet:quick # Fast lane data without translations
+npm run splatnet       # Fast lane data (schedules, gear, co-op, festivals, stages)
+npm run splatnet:all   # Both lanes: also X-Rank and Splatfest rankings
 npm run social         # Post status updates to social media
 npm run social:test    # Test social posting (writes to files)
 npm start              # Run the Node backend locally: splatnet → social → cron

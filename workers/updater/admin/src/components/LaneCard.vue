@@ -63,12 +63,6 @@
 
     <div class="flex flex-col gap-3 border-t border-line pt-4">
       <div class="flex flex-wrap items-center gap-2">
-        <label class="sr-only" :for="`${lane}-mode`">Mode</label>
-        <select :id="`${lane}-mode`" v-model="mode" class="field">
-          <option v-for="option in modes" :key="option" :value="option">
-            {{ option }}
-          </option>
-        </select>
         <ConfirmButton
           variant="primary"
           :confirm="social"
@@ -78,10 +72,16 @@
         >
           Run now
         </ConfirmButton>
-        <label v-if="lane === 'fast'" class="flex min-h-10 items-center gap-2">
-          <input v-model="social" type="checkbox" class="size-4 accent-accent" />
-          Post to social
-        </label>
+        <template v-if="lane === 'fast'">
+          <label class="flex min-h-10 items-center gap-2">
+            <input v-model="translations" type="checkbox" class="size-4 accent-accent" />
+            Include translations
+          </label>
+          <label class="flex min-h-10 items-center gap-2">
+            <input v-model="social" type="checkbox" class="size-4 accent-accent" />
+            Post to social
+          </label>
+        </template>
       </div>
 
       <div class="flex flex-wrap items-center gap-2">
@@ -113,7 +113,7 @@
 import { computed, ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import { clock } from '../clock.js';
-import { formatDuration, formatRelative, LANE_LABELS } from '../lib/format.js';
+import { formatDuration, formatRelative, LANE_LABELS, runKind } from '../lib/format.js';
 import { act, store } from '../store.js';
 import ConfirmButton from './ConfirmButton.vue';
 import StateChip from './StateChip.vue';
@@ -121,30 +121,33 @@ import StateChip from './StateChip.vue';
 const props = defineProps({
   lane: { type: String, required: true },
   state: { type: Object, required: true },
-  modes: { type: Array, required: true },
-  // { second, slots: [[minute, mode], ...] }: when the lane runs each hour.
+  // { second, slots: [[minute, options], ...] }: when the lane runs each hour.
   schedule: { type: Object, required: true },
 });
 
 const timeline = id => ({ name: 'timeline', query: { item: `run:${props.lane}:${id}` } });
 
-// For example "Every hour: quick at :00 :01, default at :05 :10".
+// For example "Every hour: quick at :00 :01, full at :05 :10", or "Every hour at :20".
 const scheduleText = computed(() => {
-  let byMode = {};
+  let byKind = new Map();
 
-  for (let [minute, mode] of props.schedule.slots) {
-    (byMode[mode] ??= []).push(`:${String(minute).padStart(2, '0')}`);
+  for (let [minute, options] of props.schedule.slots) {
+    let kind = runKind(options);
+
+    byKind.set(kind, [...(byKind.get(kind) ?? []), `:${String(minute).padStart(2, '0')}`]);
   }
 
-  return `Every hour: ${Object.entries(byMode).map(([mode, minutes]) => `${mode} at ${minutes.join(' ')}`).join(', ')}.`;
+  let parts = [...byKind].map(([kind, minutes]) => [kind, 'at', minutes.join(' ')].filter(Boolean).join(' '));
+
+  return byKind.size === 1 && byKind.has(null) ? `Every hour ${parts[0]}.` : `Every hour: ${parts.join(', ')}.`;
 });
 
 const descriptions = {
-  fast: 'Schedules, gear, co-op, festivals and stages, then social posts.',
+  fast: 'Schedules, gear, co-op, festivals and stages, then social posts. Quick runs skip translations.',
   slow: 'X-Rank, Splatfest rankings and seasonal avatars.',
 };
 
-const mode = ref(props.lane === 'slow' ? 'all' : 'default');
+const translations = ref(true);
 const social = ref(false);
 
 const busy = computed(() => !!store.busy);
@@ -168,7 +171,7 @@ const nextAt = computed(() => {
 const note = computed(() => {
   let state = props.state;
 
-  if (state.pending?.status === 'queued') return `A manual ${state.pending.mode} run is queued.`;
+  if (state.pending?.status === 'queued') return `A manual ${[runKind(state.pending), 'run'].filter(Boolean).join(' ')} is queued.`;
   if (state.retryAt && state.continuing) return `Continuing unfinished work (${state.continuations} so far).`;
   if (state.retryAt) return `Retrying after a failure (attempt ${state.retries}).`;
   if (state.paused) return 'Paused: no scheduled or manual runs until resumed.';
@@ -178,11 +181,15 @@ const note = computed(() => {
 });
 
 function run() {
-  let withSocial = props.lane === 'fast' && social.value;
+  let fast = props.lane === 'fast';
+  let withSocial = fast && social.value;
+  let options = fast ? { translations: translations.value } : {};
+  let description = [runKind(options), 'run'].filter(Boolean).join(' ');
 
-  act(`run:${props.lane}`, '/run', { lane: props.lane, mode: mode.value, social: withSocial },
-    `Queued a ${mode.value} run on the ${props.lane} lane${withSocial ? ', with social posts' : ', data only'}.`);
+  act(`run:${props.lane}`, '/run', { lane: props.lane, ...options, social: withSocial },
+    `Queued a ${description} on the ${props.lane} lane${withSocial ? ', with social posts' : ', data only'}.`);
   social.value = false;
+  translations.value = true;
 }
 
 function setPaused(paused) {

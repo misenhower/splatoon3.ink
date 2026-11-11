@@ -16,7 +16,6 @@
         :key="lane"
         :lane="lane"
         :state="state"
-        :modes="store.status.modes"
         :schedule="store.status.schedules[lane]"
       />
       <AuthCard :regions="store.status.auth" class="lg:col-span-2 xl:col-span-1" />

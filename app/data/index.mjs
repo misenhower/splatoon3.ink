@@ -65,57 +65,39 @@ async function runUpdater(updater, settings, limits) {
   }
 }
 
-const configs = {
-  quick: {
-    disableLocalizations: true,
-    disableXRank: true,
-    disableFestivalRankings: true,
-  },
-  default: {
-    disableXRank: true,
-  },
-  all: {
-    // Everything enabled
-  },
-};
+async function runLane(lane, settings, run, limits = new RunLimits) {
+  console.info(`Running ${lane} updaters...`);
 
-export const modes = Object.keys(configs);
-
-async function runLane(lane, config, run, limits = new RunLimits) {
-  if (!configs[config]) {
-    throw new Error(`Unknown update mode: ${config}`);
-  }
-
-  console.info(`Running ${config} ${lane} updaters...`);
-
-  let results = await run(configs[config], limits);
+  let results = await run(settings, limits);
   await limits.images.onIdle();
 
-  console.info(`Done running ${config} ${lane} updaters`);
+  console.info(`Done running ${lane} updaters`);
 
   return results;
 }
 
 /**
- * @param {string} [config] Update mode (quick, default, or all)
+ * Schedules, gear, co-op, festivals and stages.
  * @param {object} [options]
+ * @param {boolean} [options.translations] Also update the localization files. Quick runs skip
+ *   them, since only the first update after the hour turns over needs to be fast.
  * @param {RunLimits} [options.limits]
  * @returns {Promise<{ name: string, ok: boolean, error?: string }[]>} One result per updater
  */
-export function updateFast(config = 'default', { limits } = {}) {
-  return runLane('fast', config, (settings, limits) =>
+export function updateFast({ translations = true, limits } = {}) {
+  return runLane('fast', { disableLocalizations: !translations }, (settings, limits) =>
     Promise.all(fastUpdaters().map(updater => runUpdater(updater, settings, limits))), limits);
 }
 
 /**
- * @param {string} [config] Update mode (quick, default, or all)
+ * X-Rank and Splatfest rankings, one updater at a time.
  * @param {object} [options]
  * @param {RunLimits} [options.limits] With a deadline, updaters stop starting new work once it
  *   passes and `limits.incomplete` is set; the remaining work happens in a later run
  * @returns {Promise<{ name: string, ok: boolean, skipped?: boolean, error?: string }[]>} One result per updater
  */
-export function updateSlow(config = 'default', { limits } = {}) {
-  return runLane('slow', config, async (settings, limits) => {
+export function updateSlow({ limits } = {}) {
+  return runLane('slow', {}, async (settings, limits) => {
     let results = [];
 
     for (let updater of slowUpdaters()) {
@@ -131,6 +113,23 @@ export function updateSlow(config = 'default', { limits } = {}) {
   }, limits);
 }
 
-export async function update(config = 'default') {
-  return [...await updateFast(config), ...await updateSlow(config)];
+// What `npm run splatnet[:quick|:all]` updates.
+const scopes = {
+  quick: () => updateFast({ translations: false }),
+  default: () => updateFast(),
+  all: async () => [...await updateFast(), ...await updateSlow()],
+};
+
+/**
+ * Update from the command line.
+ * @param {string} [scope] quick (the fast lane without translations), default (the fast lane),
+ *   or all (both lanes)
+ * @returns {Promise<object[]>} One result per updater
+ */
+export function update(scope = 'default') {
+  if (!scopes[scope]) {
+    throw new Error(`Unknown update scope: ${scope} (use ${Object.keys(scopes).join(', ')})`);
+  }
+
+  return scopes[scope]();
 }

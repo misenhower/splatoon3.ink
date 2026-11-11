@@ -72,7 +72,7 @@ describe('Scheduler', () => {
     expect(await stub.ensureArmed({ lane: 'slow' })).toMatchObject({ ok: false, error: 'This scheduler owns the fast lane' });
   });
 
-  it('runs the due slot in its mode, records it, and moves to the next slot', async () => {
+  it('runs the due slot with its options, records it, and moves to the next slot', async () => {
     let run = vi.spyOn(LANES.fast, 'run').mockResolvedValue({ ok: true, updaters: { ok: true, failed: [] } });
     let stub = scheduler();
     let { next } = await stub.setAutomaticScheduling({ lane: 'fast', enabled: true });
@@ -82,8 +82,8 @@ describe('Scheduler', () => {
 
     let status = await runAlarm(stub);
 
-    expect(run).toHaveBeenCalledExactlyOnceWith({ mode: next.mode, social: true });
-    expect(status.lastRun).toMatchObject({ ok: true, trigger: 'scheduled', scheduledFor: next.at, mode: next.mode });
+    expect(run).toHaveBeenCalledExactlyOnceWith({ ...next.options, social: true });
+    expect(status.lastRun).toMatchObject({ ok: true, trigger: 'scheduled', scheduledFor: next.at, ...next.options });
     expect(status.lastRun.driftMs).toBeGreaterThanOrEqual(50);
     expect(status.next).toEqual(nextSlot(LANE_SCHEDULES.fast, next.at + 50));
     expect(status.alarmAt).toBe(status.next.at);
@@ -123,12 +123,12 @@ describe('Scheduler', () => {
     let run = vi.spyOn(LANES.slow, 'run').mockResolvedValue({ ok: true });
     let stub = scheduler();
 
-    let queued = await stub.startManual({ lane: 'slow', mode: 'all', social: false });
-    expect(queued).toMatchObject({ ok: true, run: { mode: 'all', social: false, status: 'queued' } });
-    expect(await stub.startManual({ lane: 'slow', mode: 'all' })).toMatchObject({ ok: false, busy: true });
+    let queued = await stub.startManual({ lane: 'slow', social: false });
+    expect(queued).toMatchObject({ ok: true, run: { social: false, status: 'queued' } });
+    expect(await stub.startManual({ lane: 'slow' })).toMatchObject({ ok: false, busy: true });
 
     let status = await runAlarm(stub);
-    expect(run).toHaveBeenCalledExactlyOnceWith({ mode: 'all', social: false });
+    expect(run).toHaveBeenCalledExactlyOnceWith({ social: false });
     expect(status).toMatchObject({ pending: null, enabled: false, alarmAt: null });
     expect(status.lastRun).toMatchObject({ ok: true, trigger: 'manual', id: queued.run.id });
   });
@@ -151,7 +151,7 @@ describe('Scheduler', () => {
     status = await runAlarm(stub);
 
     expect(run).toHaveBeenCalledTimes(2);
-    expect(run.mock.calls[1][0]).toEqual({ mode: 'all', social: true });
+    expect(run.mock.calls[1][0]).toEqual({ social: true });
     expect(status.lastRun.trigger).toBe('continuation');
     expect(status).toMatchObject({ continuing: false, continuations: 0, retryAt: null });
     expect(status.next.at).toBe(next.at + 3600_000);
@@ -165,10 +165,10 @@ describe('Scheduler', () => {
       .mockResolvedValueOnce({ ok: true });
     let stub = scheduler();
 
-    let { run: first } = await stub.startManual({ lane: 'slow', mode: 'all', social: false });
+    let { run: first } = await stub.startManual({ lane: 'slow', social: false });
     let status = await runDurableObjectAlarm(stub).then(() => stub.status());
 
-    expect(status.pending).toMatchObject({ continuationOf: first.id, continuations: 1, mode: 'all', social: false, status: 'queued' });
+    expect(status.pending).toMatchObject({ continuationOf: first.id, continuations: 1, social: false, status: 'queued' });
     expect(status.pending.notBefore).toBeGreaterThan(Date.now() + 50_000);
     expect(status.alarmAt).toBe(status.pending.notBefore);
 
@@ -191,7 +191,7 @@ describe('Scheduler', () => {
     let stub = scheduler();
     await stub.ensureArmed({ lane: 'fast' });
     await runInDurableObject(stub, async (instance, ctx) => {
-      await ctx.storage.put('pending', { id: crypto.randomUUID(), mode: 'quick', social: true, status: 'running' });
+      await ctx.storage.put('pending', { id: crypto.randomUUID(), translations: false, social: true, status: 'running' });
       await ctx.storage.setAlarm(Date.now());
     });
 
@@ -201,17 +201,37 @@ describe('Scheduler', () => {
     expect((await stub.status()).lastRun).toMatchObject({ ok: false, error: expect.stringContaining('interrupted') });
   });
 
-  it('rejects unknown modes and stays stopped while paused', async () => {
+  it('runs a slot saved before run options existed with the defaults', async () => {
+    let run = vi.spyOn(LANES.fast, 'run').mockResolvedValue({ ok: true });
+    let stub = scheduler();
+    await stub.ensureArmed({ lane: 'fast' });
+    await runInDurableObject(stub, async (instance, ctx) => {
+      await ctx.storage.put('state', { enabled: true, next: { at: Date.now() - 1000, mode: 'quick' } });
+      await ctx.storage.setAlarm(Date.now());
+    });
+
+    let status = await runAlarm(stub);
+
+    expect(run).toHaveBeenCalledExactlyOnceWith({ translations: true, social: true });
+    expect(status.next.options).toBeDefined();
+
+    await stub.setAutomaticScheduling({ lane: 'fast', enabled: false });
+  });
+
+  it('rejects invalid options and stays stopped while paused', async () => {
     let stub = scheduler();
 
-    expect(await stub.startManual({ lane: 'fast', mode: 'everything' })).toMatchObject({ ok: false });
+    expect(await stub.startManual({ lane: 'fast', translations: 'sometimes' })).toMatchObject({ ok: false });
+    expect(await stub.startManual({ lane: 'fast', translations: false, social: false }))
+      .toMatchObject({ ok: true, run: { translations: false, social: false } });
+    await runInDurableObject(stub, async (instance, ctx) => ctx.storage.delete('pending'));
 
     await stub.setAutomaticScheduling({ lane: 'fast', enabled: true });
     await stub.setPaused({ lane: 'fast', paused: true });
 
     expect((await stub.status()).alarmAt).toBeNull();
     expect(await stub.ensureArmed({ lane: 'fast' })).toMatchObject({ paused: true, alarmAt: null });
-    expect(await stub.startManual({ lane: 'fast', mode: 'quick' })).toMatchObject({ ok: false, paused: true });
+    expect(await stub.startManual({ lane: 'fast' })).toMatchObject({ ok: false, paused: true });
 
     await stub.setPaused({ lane: 'fast', paused: false });
     expect((await stub.status()).alarmAt).not.toBeNull();
@@ -259,14 +279,14 @@ describe('control endpoints', () => {
     vi.spyOn(LANES.fast, 'run').mockResolvedValue({ ok: true });
 
     expect((await request('/run?lane=elsewhere', { method: 'POST' })).status).toBe(400);
-    expect((await request('/run?lane=fast&mode=sometimes', { method: 'POST' })).status).toBe(400);
+    expect((await request('/run?lane=fast&translations=sometimes', { method: 'POST' })).status).toBe(400);
 
-    let response = await request('/run?lane=fast&mode=quick&social=false', { method: 'POST' });
+    let response = await request('/run?lane=fast&translations=false&social=false', { method: 'POST' });
     expect(response.status).toBe(202);
-    expect(await response.json()).toMatchObject({ ok: true, run: { mode: 'quick', social: false } });
+    expect(await response.json()).toMatchObject({ ok: true, run: { translations: false, social: false } });
 
     await runAlarm(env.SCHEDULER.getByName('fast'));
-    expect(LANES.fast.run).toHaveBeenCalledExactlyOnceWith({ mode: 'quick', social: false });
+    expect(LANES.fast.run).toHaveBeenCalledExactlyOnceWith({ translations: false, social: false });
   });
 
   it('toggles automatic scheduling for both lanes', async () => {

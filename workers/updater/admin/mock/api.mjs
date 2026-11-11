@@ -7,15 +7,18 @@ const HOUR = 60 * MINUTE;
 const HISTORY_MS = 48 * HOUR;
 const REGIONS = ['US', 'EU', 'JP', 'AP'];
 
+const QUICK = { translations: false };
+const FULL = { translations: true };
+
 const SCHEDULES = {
   fast: {
     second: 15,
     slots: [
-      [0, 'quick'], [1, 'quick'], [2, 'quick'], [3, 'quick'], [4, 'quick'],
-      [5, 'default'], [10, 'default'], [15, 'default'], [20, 'default'], [30, 'default'], [45, 'default'],
+      [0, QUICK], [1, QUICK], [2, QUICK], [3, QUICK], [4, QUICK],
+      [5, FULL], [10, FULL], [15, FULL], [20, FULL], [30, FULL], [45, FULL],
     ],
   },
-  slow: { second: 45, slots: [[20, 'all']] },
+  slow: { second: 45, slots: [[20, {}]] },
 };
 
 const FAST_UPDATERS = ['Schedules', 'Gear', 'Co-op', 'Festival US', 'Festival EU', 'Festival JP', 'Festival AP', 'Stages'];
@@ -81,11 +84,11 @@ function slotsBefore(schedule, now, count) {
   let slots = [];
 
   for (let hour = now - (now % HOUR); slots.length < count; hour -= HOUR) {
-    for (let [minute, mode] of [...schedule.slots].reverse()) {
+    for (let [minute, options] of [...schedule.slots].reverse()) {
       let at = hour + minute * MINUTE + schedule.second * 1000;
 
       if (at <= now && slots.length < count) {
-        slots.push({ at, mode });
+        slots.push({ at, options });
       }
     }
   }
@@ -98,11 +101,11 @@ function slotsIn(schedule, from, to) {
   let slots = [];
 
   for (let hour = from - (from % HOUR); hour < to; hour += HOUR) {
-    for (let [minute, mode] of schedule.slots) {
+    for (let [minute, options] of schedule.slots) {
       let at = hour + minute * MINUTE + schedule.second * 1000;
 
       if (at >= from && at < to) {
-        slots.push({ at, mode });
+        slots.push({ at, options });
       }
     }
   }
@@ -112,10 +115,10 @@ function slotsIn(schedule, from, to) {
 
 function nextSlot(schedule, now) {
   for (let hour = now - (now % HOUR); ; hour += HOUR) {
-    for (let [minute, mode] of schedule.slots) {
+    for (let [minute, options] of schedule.slots) {
       let at = hour + minute * MINUTE + schedule.second * 1000;
 
-      if (at > now) return { at, mode };
+      if (at > now) return { at, options };
     }
   }
 }
@@ -138,7 +141,7 @@ function logsFor(run, lane) {
     lines.push({ at: Math.min(at, run.finishedAt ?? at), level, text });
   };
 
-  add('info', `Running ${run.mode} ${lane} updaters...`, 20);
+  add('info', `Running ${lane} updaters...`, 20);
 
   for (let result of run.updaters?.results ?? []) {
     add('info', `[${result.name}] Updating...`, 120);
@@ -150,7 +153,7 @@ function logsFor(run, lane) {
     }
   }
 
-  add('info', `Done running ${run.mode} ${lane} updaters`);
+  add('info', `Done running ${lane} updaters`);
 
   if (run.posted) {
     add('info', '[Social] [Schedules] Generating status...');
@@ -179,7 +182,7 @@ function fastRun(slot, now, { trigger = 'scheduled', failing = null } = {}) {
     id: `fast-${slot.at}-${trigger}`,
     ok: failed.length === 0,
     trigger,
-    mode: slot.mode,
+    ...slot.options,
     social: true,
     posted: topOfHour,
     startedAt,
@@ -202,7 +205,7 @@ function slowRun(slot, now) {
     ok: true,
     incomplete: false,
     trigger: 'scheduled',
-    mode: slot.mode,
+    ...slot.options,
     social: true,
     startedAt,
     finishedAt: startedAt + duration,
@@ -334,7 +337,7 @@ export function createMockApi() {
 
     if (lane === 'fast') {
       // One failure about an hour ago, retried a minute later, and the odd one further back.
-      let recent = slotsBefore(SCHEDULES.fast, now, 48).find(slot => now - slot.at > 50 * MINUTE && slot.mode === 'default');
+      let recent = slotsBefore(SCHEDULES.fast, now, 48).find(slot => now - slot.at > 50 * MINUTE && slot.options.translations);
 
       for (let slot of slotsIn(SCHEDULES.fast, from - 2 * MINUTE, to)) {
         let failing = slot.at === recent.at ? 'Co-op' : random(slot.at + 5) > 0.99 ? 'Gear' : null;
@@ -342,7 +345,7 @@ export function createMockApi() {
         runs.push(fastRun(slot, now, { failing }));
 
         if (failing && slot.at + MINUTE < now) {
-          runs.push(fastRun({ at: slot.at + MINUTE, mode: slot.mode }, now, { trigger: 'retry' }));
+          runs.push(fastRun({ at: slot.at + MINUTE, options: slot.options }, now, { trigger: 'retry' }));
         }
       }
     } else {
@@ -366,7 +369,9 @@ export function createMockApi() {
     let manual = lanes[lane].manual;
 
     if (manual && now >= manual.startAt) {
-      return { startedAt: manual.startAt, mode: manual.run.mode, social: manual.run.social, trigger: 'manual' };
+      let { translations, social } = manual.run;
+
+      return { startedAt: manual.startAt, translations, social, trigger: 'manual' };
     }
 
     if (lane === 'slow' && lanes.slow.enabled && !lanes.slow.paused) {
@@ -374,7 +379,7 @@ export function createMockApi() {
       let run = slowRun(slot, now);
 
       if (run.finishedAt > now) {
-        return { startedAt: run.startedAt, mode: run.mode, social: true, trigger: 'scheduled' };
+        return { startedAt: run.startedAt, social: true, trigger: 'scheduled' };
       }
     }
 
@@ -387,7 +392,7 @@ export function createMockApi() {
     if (!running) return null;
 
     let names = lane === 'fast' ? FAST_UPDATERS : SLOW_UPDATERS;
-    let lines = [{ at: running.startedAt + 20, level: 'info', text: `Running ${running.mode} ${lane} updaters...` }];
+    let lines = [{ at: running.startedAt + 20, level: 'info', text: `Running ${lane} updaters...` }];
     let elapsed = now - running.startedAt;
     let step = lane === 'fast' ? 900 : 60_000;
 
@@ -536,7 +541,6 @@ export function createMockApi() {
           environment: 'preview',
           siteUrl: 'https://dev.splatoon3.ink',
           now,
-          modes: ['quick', 'default', 'all'],
           schedules: SCHEDULES,
           historyMs: HISTORY_MS,
           lanes: Object.fromEntries(Object.keys(lanes).map(lane => [lane, laneStatus(lane, now)])),
@@ -693,7 +697,13 @@ export function createMockApi() {
       if (state.paused) return { status: 409, body: { ok: false, paused: true, error: 'Scheduler is paused' } };
       if (state.manual) return { status: 409, body: { ok: false, busy: true, error: 'A manual run is already queued' } };
 
-      let run = { id: `manual-${now}`, mode: body.mode, social: body.social === true, status: 'queued', requestedAt: now };
+      if (body.lane === 'fast' && body.translations !== undefined && typeof body.translations !== 'boolean') {
+        return { status: 400, body: { ok: false, error: 'translations must be true or false' } };
+      }
+
+      // Like the Scheduler: the fast lane's one option, and none for the slow lane.
+      let options = body.lane === 'fast' ? { translations: body.translations ?? true } : {};
+      let run = { id: `manual-${now}`, ...options, social: body.social === true, status: 'queued', requestedAt: now };
 
       state.manual = { run, startAt: now + 1500, endAt: now + (body.lane === 'fast' ? 9000 : 40_000) };
 

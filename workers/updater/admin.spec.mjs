@@ -81,7 +81,6 @@ describe('admin panel', () => {
     expect(Object.keys(status.lanes)).toEqual(['fast', 'slow']);
     expect(Object.keys(status.auth)).toEqual(['US', 'EU', 'JP', 'AP']);
     expect(status.schedules.fast.slots.length).toBeGreaterThan(0);
-    expect(status.modes).toContain('quick');
   });
 
   it('keeps what a run prints and serves it per run and as a combined log', async () => {
@@ -94,7 +93,7 @@ describe('admin panel', () => {
 
     let stub = env.SCHEDULER.getByName(`test-${crypto.randomUUID()}`);
 
-    await stub.startManual({ lane: 'fast', mode: 'quick', social: false });
+    await stub.startManual({ lane: 'fast', translations: false, social: false });
     await runDurableObjectAlarm(stub);
     await vi.waitFor(async () => expect((await stub.status()).history).toHaveLength(1));
 
@@ -122,7 +121,7 @@ describe('admin panel', () => {
     let run = async () => {
       let latest = (await stub.history())[0]?.id;
 
-      await stub.startManual({ lane: 'fast', mode: 'quick', social: false });
+      await stub.startManual({ lane: 'fast', translations: false, social: false });
       await runDurableObjectAlarm(stub);
       await vi.waitFor(async () => expect((await stub.history())[0]?.id).not.toBe(latest));
     };
@@ -188,7 +187,7 @@ describe('admin panel', () => {
 
     let stub = env.SCHEDULER.getByName(`test-${crypto.randomUUID()}`);
 
-    await stub.startManual({ lane: 'fast', mode: 'quick', social: true });
+    await stub.startManual({ lane: 'fast', translations: false, social: true });
     await runDurableObjectAlarm(stub);
     await vi.waitFor(async () => expect((await stub.status()).history).toHaveLength(1));
 
@@ -284,15 +283,14 @@ describe('admin panel', () => {
   });
 
   it('rejects cross-origin and non-JSON actions', async () => {
-    let body = { lane: 'fast', mode: 'quick' };
+    let body = { lane: 'fast', translations: false };
 
     expect((await post('/admin/api/run', body, { Origin: 'https://other.test', 'Content-Type': 'application/json' })).status).toBe(403);
     expect((await post('/admin/api/run', body, { Origin: origin, 'Content-Type': 'text/plain' })).status).toBe(403);
   });
 
   it('validates actions before reaching a scheduler', async () => {
-    expect((await post('/admin/api/run', { lane: 'medium', mode: 'quick' })).status).toBe(400);
-    expect((await post('/admin/api/run', { lane: 'fast', mode: 'everything' })).status).toBe(400);
+    expect((await post('/admin/api/run', { lane: 'medium' })).status).toBe(400);
     expect((await post('/admin/api/scheduling', { lane: 'fast', enabled: 'yes' })).status).toBe(400);
     expect((await post('/admin/api/pause', { lane: 'fast' })).status).toBe(400);
     expect((await post('/admin/api/auth/refresh', { region: 'XX' })).status).toBe(400);
@@ -307,13 +305,13 @@ describe('admin panel', () => {
       body: JSON.stringify(body),
     }), fake);
 
-    expect((await send({ lane: 'fast', mode: 'quick' })).status).toBe(202);
-    expect(startManual).toHaveBeenLastCalledWith({ lane: 'fast', mode: 'quick', social: false });
+    expect((await send({ lane: 'fast', translations: false })).status).toBe(202);
+    expect(startManual).toHaveBeenLastCalledWith({ lane: 'fast', translations: false, social: false });
 
-    await send({ lane: 'fast', mode: 'default', social: true });
-    expect(startManual).toHaveBeenLastCalledWith({ lane: 'fast', mode: 'default', social: true });
+    await send({ lane: 'fast', social: true });
+    expect(startManual).toHaveBeenLastCalledWith({ lane: 'fast', translations: undefined, social: true });
 
     startManual.mockResolvedValue({ ok: false, busy: true });
-    expect((await send({ lane: 'fast', mode: 'quick' })).status).toBe(409);
+    expect((await send({ lane: 'fast' })).status).toBe(409);
   });
 });

@@ -32,16 +32,6 @@ export default class XRankUpdater extends DataUpdater
     return this._console;
   }
 
-  shouldUpdate() {
-    if (this.settings.disableXRank) {
-      this.console.log('X-Rank updates disabled');
-
-      return false;
-    }
-
-    return super.shouldUpdate();
-  }
-
   async getData(locale) {
     let result = await this.splatnet(locale).getXRankingData(this.divisionKey);
     let seasons = this.getSeasons(result.data);

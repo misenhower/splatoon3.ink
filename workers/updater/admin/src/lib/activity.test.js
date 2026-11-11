@@ -8,8 +8,8 @@ import { groupDeliveries } from './social.js';
 const T0 = Date.UTC(2026, 10, 9, 14, 0, 0);
 
 const schedules = {
-  fast: { second: 15, slots: [[0, 'quick'], [30, 'default']] },
-  slow: { second: 45, slots: [[20, 'all']] },
+  fast: { second: 15, slots: [[0, { translations: false }], [30, { translations: true }]] },
+  slow: { second: 45, slots: [[20, {}]] },
 };
 
 function lane(overrides = {}) {
@@ -38,8 +38,8 @@ describe('buildActivity', () => {
       history: history({
         runs: {
           fast: {
-            a: { id: 'a', ok: true, trigger: 'scheduled', mode: 'quick', startedAt: T0 + 15_000, finishedAt: T0 + 19_000 },
-            b: { id: 'b', ok: false, trigger: 'manual', mode: 'default', startedAt: T0 + 5 * MINUTE, finishedAt: T0 + 5 * MINUTE + 2000 },
+            a: { id: 'a', ok: true, trigger: 'scheduled', translations: false, startedAt: T0 + 15_000, finishedAt: T0 + 19_000 },
+            b: { id: 'b', ok: false, trigger: 'manual', translations: true, startedAt: T0 + 5 * MINUTE, finishedAt: T0 + 5 * MINUTE + 2000 },
           },
           slow: {},
         },
@@ -80,8 +80,8 @@ describe('buildActivity', () => {
     let items = buildActivity({
       status: status(now, {
         lanes: {
-          fast: lane({ enabled: false, pending: { id: 'm', status: 'queued', mode: 'quick' } }),
-          slow: lane({ enabled: false, running: true, current: { startedAt: T0 + 20 * MINUTE + 45_000, mode: 'all', trigger: 'scheduled' } }),
+          fast: lane({ enabled: false, pending: { id: 'm', status: 'queued', translations: false } }),
+          slow: lane({ enabled: false, running: true, current: { startedAt: T0 + 20 * MINUTE + 45_000, social: true, trigger: 'scheduled' } }),
         },
       }),
       history: history(),
@@ -89,7 +89,7 @@ describe('buildActivity', () => {
 
     expect(items.map(item => [item.key, item.state, item.summary])).toEqual([
       ['run:fast:pending', 'queued', 'Manual · quick'],
-      ['run:slow:current', 'running', 'Scheduled · all · running'],
+      ['run:slow:current', 'running', 'Scheduled · running'],
     ]);
   });
 

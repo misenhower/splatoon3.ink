@@ -8,11 +8,12 @@ Node runner (`npm run splatnet`, `npm run social`, …) uses the same code with 
 
 - **Fast lane** (`Scheduler` Durable Object named `fast`): schedules, gear, co-op, festivals
   (including results), and stages, then social posts. Same cadence as the old Node cron:
-  quick updates at :00–:04, default updates at :05, :10, :15, :20, :30, :45 (15 seconds past
-  the minute). Failed runs retry after a minute, up to three times, never past the next slot.
+  quick runs at :00–:04, full runs at :05, :10, :15, :20, :30, :45 (15 seconds past the
+  minute). Quick runs skip translations (`translations: false`), the run's only option. Failed
+  runs retry after a minute, up to three times, never past the next slot.
 - **Slow lane** (`Scheduler` named `slow`): X-Rank (one request at a time to save memory),
-  Splatfest rankings, and seasonal avatar updates, hourly at :20:45. Retries after five minutes,
-  up to twice.
+  Splatfest rankings, and seasonal avatar updates, hourly at :20:45. It has no run options.
+  Retries after five minutes, up to twice.
 - **RegionAuth** (one Durable Object per region, `US`/`EU`/`JP`/`AP`): the only place that logs
   in to Nintendo for its region. Both lanes get bullet tokens from it, so they share one token
   and never log in at the same time. It renews credentials hourly at :35–:38.
@@ -66,14 +67,14 @@ BASE=https://splatoon3-ink-dev-updater.<subdomain>.workers.dev
 AUTH="Authorization: Bearer $RUN_TOKEN"
 
 curl -H "$AUTH" "$BASE/status"
-curl -X POST -H "$AUTH" "$BASE/run?lane=fast&mode=default"              # queue a run (202)
-curl -X POST -H "$AUTH" "$BASE/run?lane=fast&mode=quick&social=false"   # data only
-curl -X POST -H "$AUTH" "$BASE/run?lane=slow&mode=all"
-curl -X POST -H "$AUTH" "$BASE/schedule?lane=all&enabled=true"          # automatic scheduling
-curl -X POST -H "$AUTH" "$BASE/pause?lane=all"                          # maintenance stop
+curl -X POST -H "$AUTH" "$BASE/run?lane=fast"                                   # queue a run (202)
+curl -X POST -H "$AUTH" "$BASE/run?lane=fast&translations=false&social=false"   # quick, data only
+curl -X POST -H "$AUTH" "$BASE/run?lane=slow"
+curl -X POST -H "$AUTH" "$BASE/schedule?lane=all&enabled=true"                  # automatic scheduling
+curl -X POST -H "$AUTH" "$BASE/pause?lane=all"                                  # maintenance stop
 curl -X POST -H "$AUTH" "$BASE/resume?lane=all"
-curl -X POST -H "$AUTH" "$BASE/auth/refresh?region=US"                  # renew credentials now
-curl -X POST -H "$AUTH" "$BASE/arm"                                     # what the cron does
+curl -X POST -H "$AUTH" "$BASE/auth/refresh?region=US"                          # renew credentials now
+curl -X POST -H "$AUTH" "$BASE/arm"                                             # what the cron does
 ```
 
 Manual runs are queued and executed by the lane's alarm; poll `/status` for the result.

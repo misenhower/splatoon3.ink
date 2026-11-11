@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { axisTicks, collectUpcoming, currentRun, HOUR, MINUTE, normalizeRun, slotsBetween } from './runs.js';
-import { formatClock, formatDuration, formatRelative, formatWhen } from './format.js';
+import { formatClock, formatDuration, formatRelative, formatWhen, runKind } from './format.js';
 
 const T0 = Date.UTC(2026, 10, 9, 14, 0, 0);
 
 const schedules = {
-  fast: { second: 15, slots: [[0, 'quick'], [5, 'default'], [30, 'default']] },
-  slow: { second: 45, slots: [[20, 'all']] },
+  fast: { second: 15, slots: [[0, { translations: false }], [5, { translations: true }], [30, { translations: true }]] },
+  slow: { second: 45, slots: [[20, {}]] },
 };
 
 function lane(overrides = {}) {
@@ -36,41 +36,51 @@ describe('runs', () => {
   });
 
   it('times the run in progress against the server clock', () => {
-    let state = lane({ running: true, current: { startedAt: T0, mode: 'all', trigger: 'scheduled' } });
+    let state = lane({ running: true, current: { startedAt: T0, social: true, trigger: 'scheduled' } });
 
     expect(currentRun('slow', state, T0 + 90_000)).toMatchObject({ id: 'current', state: 'running', durationMs: 90_000, finishedAt: null });
     expect(currentRun('slow', lane(), T0)).toBeNull();
   });
 });
 
+describe('run kinds', () => {
+  it('names fast lane runs by their translations option', () => {
+    expect(runKind({ translations: false })).toBe('quick');
+    expect(runKind({ translations: true })).toBe('full');
+    expect(runKind({})).toBeNull();
+    // Runs recorded before run options existed.
+    expect(runKind({ mode: 'default' })).toBe('default');
+  });
+});
+
 describe('upcoming slots', () => {
   it('finds the slots after a time, across the hour', () => {
     expect(slotsBetween(schedules.fast, T0 + 20 * MINUTE, T0 + 66 * MINUTE)).toEqual([
-      { at: T0 + 30 * MINUTE + 15_000, mode: 'default' },
-      { at: T0 + HOUR + 15_000, mode: 'quick' },
-      { at: T0 + HOUR + 5 * MINUTE + 15_000, mode: 'default' },
+      { at: T0 + 30 * MINUTE + 15_000, options: { translations: true } },
+      { at: T0 + HOUR + 15_000, options: { translations: false } },
+      { at: T0 + HOUR + 5 * MINUTE + 15_000, options: { translations: true } },
     ]);
   });
 
   it('lists nothing for a paused lane or one with scheduling off, except a queued manual run', () => {
     let upcoming = collectUpcoming(status(T0 + MINUTE, {
       fast: lane({ paused: true }),
-      slow: lane({ enabled: false, pending: { id: 'm', status: 'queued', mode: 'all' } }),
+      slow: lane({ enabled: false, pending: { id: 'm', status: 'queued', social: false } }),
     }), T0 + HOUR);
 
-    expect(upcoming).toEqual([{ key: 'slow:pending', lane: 'slow', at: T0 + MINUTE, mode: 'all', trigger: 'manual' }]);
+    expect(upcoming).toEqual([{ key: 'slow:pending', lane: 'slow', at: T0 + MINUTE, translations: undefined, trigger: 'manual' }]);
   });
 
   it('puts a retry before the regular slots and does not repeat the slot being retried', () => {
     let slot = T0 + 5 * MINUTE + 15_000;
     let upcoming = collectUpcoming(status(slot + 20_000, {
-      fast: lane({ next: { at: slot, mode: 'default' }, retryAt: slot + MINUTE }),
+      fast: lane({ next: { at: slot, options: { translations: true } }, retryAt: slot + MINUTE }),
       slow: lane({ enabled: false }),
     }), T0 + 40 * MINUTE);
 
-    expect(upcoming.map(item => [item.trigger, item.at])).toEqual([
-      ['retry', slot + MINUTE],
-      ['scheduled', T0 + 30 * MINUTE + 15_000],
+    expect(upcoming.map(item => [item.trigger, item.at, runKind(item)])).toEqual([
+      ['retry', slot + MINUTE, 'full'],
+      ['scheduled', T0 + 30 * MINUTE + 15_000, 'full'],
     ]);
   });
 });

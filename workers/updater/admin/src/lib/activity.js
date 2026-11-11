@@ -2,7 +2,7 @@
 // and social posts. The timeline and the activity list both draw from it, so they always show
 // the same things. Pure functions; no Vue in here.
 
-import { formatDuration, ROW_LABELS, TRIGGER_LABELS } from './format.js';
+import { formatDuration, ROW_LABELS, runKind, TRIGGER_LABELS } from './format.js';
 import { collectUpcoming, currentRun, HOUR, MINUTE, normalizeRun } from './runs.js';
 import { groupDeliveries } from './social.js';
 
@@ -34,7 +34,7 @@ function runItem(lane, run) {
     end: run.finishedAt ?? null,
     state: run.state,
     title: ROW_LABELS[lane],
-    summary: `${trigger} · ${run.mode} · ${run.running ? 'running' : formatDuration(run.durationMs)}`,
+    summary: [trigger, runKind(run), run.running ? 'running' : formatDuration(run.durationMs)].filter(Boolean).join(' · '),
     manual: run.trigger === 'manual',
     run,
   };
@@ -51,7 +51,7 @@ function upcomingItem(slot) {
     end: null,
     state: queued ? 'queued' : 'upcoming',
     title: ROW_LABELS[slot.lane],
-    summary: `${TRIGGER_LABELS[slot.trigger] ?? slot.trigger} · ${slot.mode}`,
+    summary: [TRIGGER_LABELS[slot.trigger] ?? slot.trigger, runKind(slot)].filter(Boolean).join(' · '),
     manual: slot.trigger === 'manual',
     slot,
   };

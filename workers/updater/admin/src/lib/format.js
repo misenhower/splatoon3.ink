@@ -84,6 +84,21 @@ export function formatRelative(ms, now) {
 
 export const LANE_LABELS = { fast: 'Fast lane', slow: 'Slow lane' };
 
+/**
+ * What kind of run a run, queued run or schedule slot is. Fast lane runs are quick (without
+ * translations) or full; the slow lane has only one kind.
+ * @param {{ translations?: boolean, mode?: string }} [run] Its options
+ * @returns {string|null} quick, full, or null when there is nothing to tell apart
+ */
+export function runKind(run) {
+  if (typeof run?.translations === 'boolean') {
+    return run.translations ? 'full' : 'quick';
+  }
+
+  // Runs recorded before run options existed have an update mode instead.
+  return run?.mode ?? null;
+}
+
 export const ROW_LABELS = { fast: 'Fast lane', slow: 'Slow lane', auth: 'Nintendo auth', social: 'Social posts' };
 
 export const STATE_LABELS = {
