@@ -25,18 +25,34 @@ export async function archiveSnapshot({ key, text, name }, console = prefixedCon
   }
 }
 
+const plural = (count, noun) => `${count} ${noun}${count === 1 ? '' : 's'}`;
+
 /**
  * Write the snapshots a run held back (see RunLimits' deferArchive), and forget them.
  * @param {import('./RunLimits.mjs').default} limits
+ * @param {{ info: (...args: unknown[]) => void, warn: (...args: unknown[]) => void }} [console]
  * @returns {Promise<{ archived: number, failed: number }>} How many were written and not
  */
-export async function flushArchive(limits) {
+export async function flushArchive(limits, console = prefixedConsole('Archive')) {
   let snapshots = [...limits.heldSnapshots.values()];
   limits.heldSnapshots.clear();
 
-  let limit = pLimit(4);
-  let results = await Promise.all(snapshots.map(snapshot => limit(() => archiveSnapshot(snapshot))));
-  let archived = results.filter(Boolean).length;
+  if (!snapshots.length) {
+    return { archived: 0, failed: 0 };
+  }
 
-  return { archived, failed: results.length - archived };
+  console.info(`Uploading ${plural(snapshots.length, 'snapshot')}...`);
+
+  let limit = pLimit(4);
+  let results = await Promise.all(snapshots.map(snapshot => limit(() => archiveSnapshot(snapshot, console))));
+  let archived = results.filter(Boolean).length;
+  let failed = results.length - archived;
+
+  if (failed) {
+    console.warn(`Archived ${archived} of ${plural(results.length, 'snapshot')}, ${failed} failed`);
+  } else {
+    console.info(`Archived ${plural(archived, 'snapshot')}`);
+  }
+
+  return { archived, failed };
 }

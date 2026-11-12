@@ -32,7 +32,10 @@ describe('archive', () => {
       limits.heldSnapshots.set(held.key, held);
     }
 
-    expect(await flushArchive(limits)).toEqual({ archived: 2, failed: 0 });
+    let log = { info: vi.fn(), warn: vi.fn() };
+
+    expect(await flushArchive(limits, log)).toEqual({ archived: 2, failed: 0 });
+    expect(log.info.mock.calls).toEqual([['Uploading 2 snapshots...'], ['Archived 2 snapshots']]);
     expect(testBuckets().archive.text('2026-11-08.12-00-00.festivals.json')).toBe('{"US":1,"EU":1}');
   });
 
@@ -45,14 +48,18 @@ describe('archive', () => {
     let write = storage().archive.writeText.bind(storage().archive);
     vi.spyOn(storage().archive, 'writeText').mockImplementation((key, text) =>
       key.includes('coop') ? Promise.reject(new Error('slow down')) : write(key, text));
-    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    let log = { info: vi.fn(), warn: vi.fn() };
 
-    expect(await flushArchive(limits)).toEqual({ archived: 2, failed: 1 });
+    expect(await flushArchive(limits, log)).toEqual({ archived: 2, failed: 1 });
+    expect(log.info).toHaveBeenCalledWith('Uploading 3 snapshots...');
+    expect(log.warn).toHaveBeenCalledWith('Could not archive coop:', expect.any(Error));
+    expect(log.warn).toHaveBeenLastCalledWith('Archived 2 of 3 snapshots, 1 failed');
     expect([...testBuckets().archive.objects.keys()].sort()).toEqual([
       '2026-11-08.12-00-00.gear.json',
       '2026-11-08.12-00-00.schedules.json',
     ]);
     expect(limits.heldSnapshots.size).toBe(0);
-    expect(await flushArchive(limits)).toEqual({ archived: 0, failed: 0 });
+    expect(await flushArchive(limits, log)).toEqual({ archived: 0, failed: 0 });
+    expect(log.info).toHaveBeenCalledTimes(1);
   });
 });
