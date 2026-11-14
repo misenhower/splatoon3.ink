@@ -184,6 +184,9 @@ async function openLinked(key) {
       at = (await api.run(owner, id)).run.startedAt;
     } else if (kind === 'auth' && Number(id)) {
       at = Number(id);
+    } else if (kind === 'archive') {
+      // The compressor's whole history comes with the status.
+      at = store.status?.archive?.runs.find(run => run.id === owner)?.startedAt ?? null;
     }
   } catch {
     // The details panel says it could not be found.

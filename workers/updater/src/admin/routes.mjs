@@ -30,6 +30,19 @@ const pageHeaders = {
 const json = (body, status = 200) => Response.json(body, { status, headers });
 const actionStatus = result => result.ok ? 200 : result.busy || result.paused ? 409 : 400;
 
+// The archive compressor (workers/compressor/), if this environment is bound to it: the run in
+// progress, recent runs and the next scheduled one. A compressor that cannot be reached is
+// reported rather than failing the whole status.
+async function archive(env) {
+  if (!env.COMPRESSOR) return null;
+
+  try {
+    return await env.COMPRESSOR.getByName('archive').status();
+  } catch (error) {
+    return { error: error?.message ?? String(error), nextAt: null, current: null, runs: [] };
+  }
+}
+
 async function status(env, user) {
   return {
     user,
@@ -46,20 +59,24 @@ async function status(env, user) {
     )),
     // Recent social posts and failures, for the timeline.
     posts: await env.SCHEDULER.getByName('fast').posts({ limit: RECENT_POSTS }),
+    archive: await archive(env),
   };
 }
 
-// Everything that happened in a span of time: runs, credential renewals and social posts,
-// without log lines. `to` is exclusive.
+// Everything that happened in a span of time: runs, credential renewals, social posts and
+// archive compressions, without log lines. `to` is exclusive.
 async function activity(env, from, to) {
   let span = { from, to };
-  let [runs, auth, posts] = await Promise.all([
+  let [runs, auth, posts, compressor] = await Promise.all([
     Promise.all(LANE_NAMES.map(async lane => [lane, await env.SCHEDULER.getByName(lane).history(span)])),
     Promise.all(REGIONS.map(async region => [region, await env.REGION_AUTH.getByName(region).events(span)])),
     env.SCHEDULER.getByName('fast').posts(span),
+    archive(env),
   ]);
+  // The compressor keeps a month of daily runs, so it hands them all over and they are cut here.
+  let compressions = (compressor?.runs ?? []).filter(run => run.startedAt >= from && run.startedAt < to);
 
-  return { from, to, runs: Object.fromEntries(runs), auth: Object.fromEntries(auth), posts };
+  return { from, to, runs: Object.fromEntries(runs), auth: Object.fromEntries(auth), posts, archive: compressions };
 }
 
 // Everything the Social page shows. The post log lives with the fast lane, which does the posting.
@@ -188,6 +205,20 @@ async function action(pathname, body, env) {
     }
   }
 
+  if (pathname === '/admin/api/archive/run') {
+    if (!env.COMPRESSOR) {
+      return json({ ok: false, error: 'The archive compressor is not set up for this environment.' }, 400);
+    }
+
+    if (body.dryRun !== undefined && typeof body.dryRun !== 'boolean') {
+      return json({ ok: false, error: 'Dry run must be a boolean.' }, 400);
+    }
+
+    let result = await env.COMPRESSOR.getByName('archive').start({ trigger: 'manual', dryRun: body.dryRun === true });
+
+    return json(result, result.ok ? 202 : actionStatus(result));
+  }
+
   if (pathname === '/admin/api/auth/refresh') {
     if (!REGIONS.includes(body.region)) {
       return json({ ok: false, error: `Region must be one of ${REGIONS.join(', ')}.` }, 400);
@@ -251,7 +282,7 @@ async function action(pathname, body, env) {
 }
 
 const ACTIONS = [
-  '/admin/api/run', '/admin/api/scheduling', '/admin/api/pause', '/admin/api/auth/refresh',
+  '/admin/api/run', '/admin/api/scheduling', '/admin/api/pause', '/admin/api/auth/refresh', '/admin/api/archive/run',
   '/admin/api/social/account', '/admin/api/social/preview', '/admin/api/social/post',
   '/admin/api/data/purge', '/admin/api/data/verify',
 ];
@@ -318,7 +349,7 @@ export async function adminRequest(request, env) {
     return json({
       now,
       historyMs: HISTORY_MS,
-      ...(to > oldest ? await activity(env, Math.max(from, oldest), to) : { from, to, runs: {}, auth: {}, posts: [] }),
+      ...(to > oldest ? await activity(env, Math.max(from, oldest), to) : { from, to, runs: {}, auth: {}, posts: [], archive: [] }),
     });
   }
 
@@ -330,6 +361,12 @@ export async function adminRequest(request, env) {
       : null;
 
     return run ? json({ lane, run }) : json({ ok: false, error: 'Run not found.' }, 404);
+  }
+
+  if (request.method === 'GET' && url.pathname === '/admin/api/archive/run') {
+    let run = env.COMPRESSOR ? await env.COMPRESSOR.getByName('archive').run(url.searchParams.get('id') ?? '') : null;
+
+    return run ? json({ run }) : json({ ok: false, error: 'Compression not found.' }, 404);
   }
 
   if (request.method === 'GET' && url.pathname === '/admin/api/auth/event') {

@@ -75,6 +75,32 @@ describe('buildActivity', () => {
     expect(byKey[`auth:US:${T0 - 25 * MINUTE}`]).toMatchObject({ row: 'auth', region: 'US', title: 'Nintendo auth · US', summary: 'HTTP 502' });
   });
 
+  it('shows archive compressions, the one in progress, and the next when it is close', () => {
+    let now = T0 + 10 * MINUTE;
+    let done = { id: 'c1', trigger: 'scheduled', maxDays: 10, dryRun: false, startedAt: T0 - 9 * HOUR, finishedAt: T0 - 9 * HOUR + 43_000, ok: true, exitCode: 0 };
+    let failed = { id: 'c2', trigger: 'manual', dryRun: true, startedAt: T0 - HOUR, finishedAt: T0 - HOUR + 5000, ok: false, exitCode: 1, error: 'Exit code 1' };
+    let current = { id: 'c3', trigger: 'manual', dryRun: false, startedAt: T0 + 5 * MINUTE };
+    let archive = item => [item.key, item.state, item.title, item.summary];
+    let only = items => items.filter(item => item.kind === 'archive').map(archive);
+
+    let items = buildActivity({
+      status: status(now, { archive: { nextAt: T0 + 2 * HOUR, current, runs: [] } }),
+      history: history({ archive: { c1: done, c2: failed } }),
+    });
+
+    expect(only(items)).toEqual([
+      [`archive:next:${T0 + 2 * HOUR}`, 'upcoming', 'Archive', 'Scheduled'],
+      ['archive:c3', 'running', 'Archive', 'Manual · running'],
+      ['archive:c2', 'failed', 'Archive · dry run', 'Exit code 1'],
+      ['archive:c1', 'ok', 'Archive', 'Scheduled · 43s'],
+    ]);
+
+    // The next run is a day away: too far for the timeline. Without the compressor, nothing.
+    let later = buildActivity({ status: status(now, { archive: { nextAt: T0 + 20 * HOUR, current: null, runs: [] } }), history: history() });
+    expect(only(later)).toEqual([]);
+    expect(only(buildActivity({ status: status(now), history: history({ archive: { c1: done } }) }))).toEqual([]);
+  });
+
   it('shows the run in progress and a queued manual run', () => {
     let now = T0 + 20 * MINUTE + 50_000;
     let items = buildActivity({

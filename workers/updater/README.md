@@ -109,12 +109,12 @@ A Vue app (`admin/`) served by this Worker on its own hostname (`admin.dev.splat
 token itself on every request, so nothing is served without it, and the panel is not reachable
 on any other hostname.
 
-- **Timeline**: runs of both lanes, credential renewals and social posts on a time axis that
-  scrolls back through the last 48 hours, and the same things as a list (with what is coming
+- **Timeline**: runs of both lanes, credential renewals, social posts and archive
+  compressions on a time axis that scrolls back through the last 48 hours, and the same things as a list (with what is coming
   up next). The two scroll together. Selecting anything in either shows its details and log
   lines. A combined log sits below.
 - **Controls**: per lane, run now, pause, and automatic scheduling; credential renewal per
-  region.
+  region; archive compression now, or as a dry run.
 - **Social**: the post log (what was posted, what failed), a posting switch per account, when
   each status last went to each account, and a preview of any status with a confirmed post by
   hand. A manual run from the panel never posts unless "Post to social" is ticked.
@@ -149,3 +149,8 @@ What the panel stores:
 - Daily archive compression: rolling each day's snapshots into a `tar.zst` needs the `zstd`
   binary and local disk, so it will run in a container. Until then the Node command
   (`npm run data:archive:compress`) does it from anywhere with access to the bucket.
+
+The archive rows and card come from the compressor Worker (`workers/compressor/`) through the
+`COMPRESSOR` Durable Object binding. Without that binding (production, until its compressor is
+deployed) the panel leaves the archive out. In the Worker tests, `test/fakeCompressor.mjs`
+stands in for that Worker.

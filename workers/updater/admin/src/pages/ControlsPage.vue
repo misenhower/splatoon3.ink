@@ -5,8 +5,8 @@
         Controls
       </h1>
       <p class="mt-0.5 text-muted">
-        Start a run, pause a lane, turn its schedule on or off, and renew Nintendo credentials.
-        What happens shows up on the timeline.
+        Start a run, pause a lane, turn its schedule on or off, renew Nintendo credentials, and
+        compress the archive. What happens shows up on the timeline.
       </p>
     </div>
 
@@ -19,11 +19,13 @@
         :schedule="store.status.schedules[lane]"
       />
       <AuthCard :regions="store.status.auth" class="lg:col-span-2 xl:col-span-1" />
+      <ArchiveCard v-if="store.status.archive" :archive="store.status.archive" />
     </div>
   </div>
 </template>
 
 <script setup>
+import ArchiveCard from '../components/ArchiveCard.vue';
 import AuthCard from '../components/AuthCard.vue';
 import LaneCard from '../components/LaneCard.vue';
 import { store } from '../store.js';

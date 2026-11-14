@@ -99,7 +99,7 @@ export function runKind(run) {
   return run?.mode ?? null;
 }
 
-export const ROW_LABELS = { fast: 'Fast lane', slow: 'Slow lane', auth: 'Nintendo auth', social: 'Social posts' };
+export const ROW_LABELS = { fast: 'Fast lane', slow: 'Slow lane', auth: 'Nintendo auth', social: 'Social posts', archive: 'Archive' };
 
 export const STATE_LABELS = {
   ok: 'OK',

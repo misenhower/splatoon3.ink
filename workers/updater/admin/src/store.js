@@ -27,13 +27,14 @@ export const store = reactive({
   clockOffset: 0,
   now: Date.now(),
 
-  // Runs (by lane, then id), credential renewals (by region, then start time) and social posts
-  // (by id) loaded so far. Everything from `from` up to now is here; status polls keep the
+  // Runs (by lane, then id), credential renewals (by region, then start time), social posts
+  // and archive compressions (both by id) loaded so far. Everything from `from` up to now is here; status polls keep the
   // newest end current, and the timeline asks for more as it is scrolled back.
   history: {
     runs: { fast: {}, slow: {} },
     auth: {},
     posts: {},
+    archive: {},
     from: null,
     loading: false,
     error: null,
@@ -59,7 +60,7 @@ export const activity = computed(() => buildActivity({ status: store.status, his
 // The oldest moment the updater still has history for.
 export const historyStart = computed(() => store.status ? store.status.now - (store.status.historyMs ?? 48 * HOUR) : 0);
 
-function merge({ runs = {}, auth = {}, posts = [] }) {
+function merge({ runs = {}, auth = {}, posts = [], archive = [] }) {
   let history = store.history;
 
   for (let [lane, list] of Object.entries(runs)) {
@@ -76,6 +77,10 @@ function merge({ runs = {}, auth = {}, posts = [] }) {
 
   for (let post of posts ?? []) {
     history.posts[post.id ?? `${post.at}:${post.generator?.key}:${post.client?.key}`] = markRaw(post);
+  }
+
+  for (let run of archive ?? []) {
+    history.archive[run.id] = markRaw(run);
   }
 }
 
@@ -148,6 +153,7 @@ export async function refreshStatus() {
       runs: Object.fromEntries(Object.entries(status.lanes).map(([lane, state]) => [lane, state.history])),
       auth: Object.fromEntries(Object.entries(status.auth).map(([region, auth]) => [region, auth.events])),
       posts: status.posts,
+      archive: status.archive?.runs,
     });
 
     store.status = status;

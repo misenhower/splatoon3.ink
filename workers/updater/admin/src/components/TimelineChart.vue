@@ -135,7 +135,10 @@ const x = at => (at - props.origin) * scale.value;
 const MIN_MARK = 6;
 const LEVEL_PX = 15;
 
-const rows = computed(() => Object.entries(ROW_LABELS).map(([key, text]) => {
+// The archive row only where the compressor is set up.
+const rowLabels = computed(() => Object.entries(ROW_LABELS).filter(([key]) => key !== 'archive' || store.status.archive));
+
+const rows = computed(() => rowLabels.value.map(([key, text]) => {
   let items = props.items.filter(item => item.row === key);
   let spans = items.map(item => {
     // A run in progress reaches up to the present, as of the last status.

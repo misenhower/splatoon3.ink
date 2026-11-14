@@ -58,7 +58,9 @@
       "durable_objects": {
         "bindings": [
           { "name": "SCHEDULER", "class_name": "Scheduler" },
-          { "name": "REGION_AUTH", "class_name": "RegionAuth" }
+          { "name": "REGION_AUTH", "class_name": "RegionAuth" },
+          // The archive compressor Worker (workers/compressor/), for the admin panel.
+          { "name": "COMPRESSOR", "class_name": "Compressor", "script_name": "splatoon3-ink-dev-compressor" }
         ]
       },
       "browser": { "binding": "BROWSER", "remote": true },
@@ -96,6 +98,9 @@
         "bindings": [
           { "name": "SCHEDULER", "class_name": "Scheduler" },
           { "name": "REGION_AUTH", "class_name": "RegionAuth" }
+          // Once the production compressor is deployed (after spectre stops), add
+          // { "name": "COMPRESSOR", "class_name": "Compressor", "script_name": "splatoon3-ink-compressor" }
+          // for the admin panel. Without it the panel leaves the archive out.
         ]
       },
       "browser": { "binding": "BROWSER", "remote": true },

@@ -282,6 +282,41 @@ describe('admin panel', () => {
     expect(span.auth.US.map(event => event.at)).toEqual([at]);
   });
 
+  it('starts archive compressions and shows them in status and activity', async () => {
+    let started = await post('/admin/api/archive/run', { dryRun: true });
+    expect(started.status).toBe(202);
+    expect(await started.json()).toMatchObject({ ok: true, current: { trigger: 'manual', dryRun: true } });
+
+    // One at a time.
+    expect((await post('/admin/api/archive/run', {})).status).toBe(409);
+    expect((await post('/admin/api/archive/run', { dryRun: 'yes' })).status).toBe(400);
+
+    let status = await (await adminRequest(new Request(origin + '/admin/api/status'), adminEnv())).json();
+    expect(status.archive).toMatchObject({ nextAt: expect.any(Number), current: { dryRun: true }, runs: [] });
+
+    await env.COMPRESSOR.getByName('archive').finish({ ok: true, exitCode: 0 });
+
+    let now = Date.now();
+    let activity = async (from, to) =>
+      (await adminRequest(new Request(`${origin}/admin/api/activity?from=${from}&to=${to}`), adminEnv())).json();
+
+    expect((await activity(now - HOUR, now + HOUR)).archive).toEqual([expect.objectContaining({ ok: true, dryRun: true })]);
+    expect((await activity(now - 2 * HOUR, now - HOUR)).archive).toEqual([]);
+
+    // A run's log comes from the compressor, by id.
+    let id = (await activity(now - HOUR, now + HOUR)).archive[0].id;
+    let get = async query => adminRequest(new Request(`${origin}/admin/api/archive/run?${query}`), adminEnv());
+    expect(await (await get(`id=${id}`)).json()).toMatchObject({ run: { id, running: false, logs: { lines: [{ text: 'Found 0 dates to archive' }] } } });
+    expect((await get('id=missing')).status).toBe(404);
+
+    // An environment without the compressor leaves it out.
+    let unbound = { ...adminEnv(), COMPRESSOR: undefined };
+    expect((await (await adminRequest(new Request(origin + '/admin/api/status'), unbound)).json()).archive).toBeNull();
+    expect((await adminRequest(new Request(origin + '/admin/api/archive/run', {
+      method: 'POST', headers: { Origin: origin, 'Content-Type': 'application/json' }, body: '{}',
+    }), unbound)).status).toBe(400);
+  });
+
   it('rejects cross-origin and non-JSON actions', async () => {
     let body = { lane: 'fast', translations: false };
 

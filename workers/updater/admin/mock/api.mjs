@@ -233,6 +233,8 @@ export function createMockApi() {
   let refreshed = {};
   let disabled = { threads: { at: Date.now() - 26 * HOUR } };
   let manualPosts = [];
+  // Archive compressions started from the panel; each takes 40 seconds.
+  let compressions = [];
 
   // Posts follow the rotation clock. One delivery failed, to show what that looks like.
   function posts(now) {
@@ -506,6 +508,80 @@ export function createMockApi() {
     };
   }
 
+  // The archive compressor (workers/compressor/): a run every day at 00:30 UTC for the last
+  // month, one failed and one that stopped without reporting, plus any started from the panel.
+  function archiveStatus(now) {
+    let next = new Date(now);
+    next.setUTCHours(0, 30, 0, 0);
+    if (next.getTime() <= now) next.setUTCDate(next.getUTCDate() + 1);
+    let nextAt = next.getTime();
+
+    let runs = [];
+
+    for (let day = 1; day <= 30; day++) {
+      let startedAt = nextAt - day * 24 * HOUR;
+      let failed = day === 4;
+
+      if (day === 2) {
+        runs.push({
+          id: `daily-${startedAt}`, trigger: 'scheduled', maxDays: 10, dryRun: false, startedAt,
+          finishedAt: startedAt + 5 * 60_000, ok: false, lost: true, exitCode: null,
+          error: 'The container stopped before it reported how the run went',
+        });
+        continue;
+      }
+
+      runs.push({
+        id: `daily-${startedAt}`,
+        trigger: 'scheduled',
+        maxDays: 10,
+        dryRun: false,
+        startedAt,
+        finishedAt: startedAt + (failed ? 6000 : 35_000 + Math.round(random(startedAt) * 15_000)),
+        ok: !failed,
+        exitCode: failed ? 1 : 0,
+        ...(failed ? { error: 'The compressor exited with code 1' } : {}),
+      });
+    }
+
+    let current = null;
+
+    for (let run of compressions) {
+      if (now - run.startedAt < 40_000) {
+        current = run;
+      } else {
+        runs.push({ ...run, finishedAt: run.startedAt + 40_000, ok: true, exitCode: 0 });
+      }
+    }
+
+    return { now, nextAt, current, runs: runs.sort((a, b) => b.startedAt - a.startedAt) };
+  }
+
+  // What a compression printed: the [Archive Compressor] lines, as far as it has got by now.
+  function archiveLogs(run, now) {
+    let say = (offset, text, level = 'info') => ({ at: run.startedAt + offset, level, text: `[Archive Compressor] ${text}` });
+    let days = run.dryRun || run.trigger === 'manual' ? 0 : 1;
+    let date = new Date(run.startedAt - 24 * HOUR).toISOString().slice(0, 10);
+    let key = `${date.slice(0, 4)}/${date.slice(5, 7)}/${date}`;
+    let lines = [say(1200, `Found ${days} dates to archive`)];
+
+    if (days) {
+      lines.push(
+        say(1900, `Would create ${key}.tar.zst and ${key}.tar.zst.manifest.json from 552 files`),
+        say(2000, `Creating ${key}.tar.zst`),
+      );
+    }
+
+    if (run.error && !run.lost) {
+      lines.push(say(6000, 'Archive compressor failed', 'error'), say(6010, 'Tar archive is missing files from its manifest', 'error'));
+    } else if (!run.lost) {
+      lines.push(say(Math.max(2500, (run.finishedAt ?? run.startedAt + 40_000) - run.startedAt - 500),
+        run.dryRun ? `Would compress ${days} daily archives` : `Compressed ${days} daily archives`));
+    }
+
+    return { lines: lines.filter(line => line.at <= now), omitted: 0 };
+  }
+
   function log(now) {
     let lines = [];
 
@@ -546,6 +622,7 @@ export function createMockApi() {
           lanes: Object.fromEntries(Object.keys(lanes).map(lane => [lane, laneStatus(lane, now)])),
           auth: Object.fromEntries(REGIONS.map(region => [region, authStatus(region, now)])),
           posts: posts(now).slice(0, 40),
+          archive: archiveStatus(now),
         },
       };
     }
@@ -578,6 +655,7 @@ export function createMockApi() {
           runs: Object.fromEntries(Object.keys(lanes).map(lane => [lane, history(lane, now, from, to).map(summarize)])),
           auth: Object.fromEntries(REGIONS.map(region => [region, authEvents(region, now, from, to)])),
           posts: posts(now).filter(post => post.at >= from && post.at < to),
+          archive: archiveStatus(now).runs.filter(run => run.startedAt >= from && run.startedAt < to),
         },
       };
     }
@@ -612,6 +690,16 @@ export function createMockApi() {
         : { status: 404, body: { ok: false, error: 'Renewal not found.' } };
     }
 
+    if (method === 'GET' && pathname === '/archive/run') {
+      let status = archiveStatus(now);
+      let id = query.get('id');
+      let run = status.current?.id === id ? { ...status.current, running: true } : status.runs.find(candidate => candidate.id === id);
+
+      return run
+        ? { status: 200, body: { run: { ...run, logs: archiveLogs(run, now) } } }
+        : { status: 404, body: { ok: false, error: 'Compression not found.' } };
+    }
+
     if (method !== 'POST' || !body) {
       return { status: 404, body: { ok: false, error: 'Not found.' } };
     }
@@ -622,6 +710,21 @@ export function createMockApi() {
       refreshed[body.region] = now;
 
       return { status: 200, body: { ok: true, ...authStatus(body.region, now) } };
+    }
+
+    if (pathname === '/archive/run') {
+      if (body.dryRun !== undefined && typeof body.dryRun !== 'boolean') {
+        return { status: 400, body: { ok: false, error: 'Dry run must be a boolean.' } };
+      }
+
+      let { current } = archiveStatus(now);
+
+      if (current) return { status: 409, body: { ok: false, busy: true, current } };
+
+      let run = { id: `manual-${now}`, trigger: 'manual', maxDays: 10, dryRun: body.dryRun === true, startedAt: now };
+      compressions.push(run);
+
+      return { status: 202, body: { ok: true, current: run } };
     }
 
     if (pathname === '/data/purge') {

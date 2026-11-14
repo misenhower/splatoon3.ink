@@ -35,6 +35,7 @@ export const api = {
   data: () => request('/data'),
   activity: (from, to) => request(`/activity?from=${Math.floor(from)}&to=${Math.ceil(to)}`),
   run: (lane, id, at) => request(`/run?lane=${encodeURIComponent(lane)}&id=${encodeURIComponent(id)}${at ? `&at=${at}` : ''}`),
+  archiveRun: id => request(`/archive/run?id=${encodeURIComponent(id)}`),
   authEvent: (region, at) => request(`/auth/event?region=${encodeURIComponent(region)}&at=${at}`),
   post: (path, body) => request(path, {
     method: 'POST',

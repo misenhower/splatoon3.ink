@@ -18,6 +18,14 @@ export default defineConfig({
           NXAPI_CLIENT_ID: 'client',
           NXAPI_SHARED_SECRET: 'secret',
         },
+        // The archive compressor Worker the COMPRESSOR binding points at, without its container.
+        workers: [{
+          name: 'splatoon3-ink-dev-compressor',
+          modules: true,
+          scriptPath: fileURLToPath(new URL('./test/fakeCompressor.mjs', import.meta.url)),
+          compatibilityDate: '2026-09-03',
+          durableObjects: { COMPRESSOR: 'Compressor' },
+        }],
       },
       wrangler: {
         environment: 'dev',

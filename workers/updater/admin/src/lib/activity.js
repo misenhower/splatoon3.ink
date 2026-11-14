@@ -1,5 +1,5 @@
-// Everything the updater did or is about to do, as one list: lane runs, credential renewals
-// and social posts. The timeline and the activity list both draw from it, so they always show
+// Everything the updater did or is about to do, as one list: lane runs, credential renewals,
+// social posts and archive compressions. The timeline and the activity list both draw from it, so they always show
 // the same things. Pure functions; no Vue in here.
 
 import { formatDuration, ROW_LABELS, runKind, TRIGGER_LABELS } from './format.js';
@@ -75,6 +75,34 @@ function authItem(region, event) {
   };
 }
 
+// A run of the archive compressor (workers/compressor/). There is one a day, so the timeline
+// usually shows the next one only when it is close.
+function archiveItem(run, running = false) {
+  let trigger = TRIGGER_LABELS[run.trigger] ?? run.trigger;
+  let summary;
+
+  if (running) {
+    summary = `${trigger} · running`;
+  } else if (run.ok) {
+    summary = `${trigger} · ${formatDuration(run.finishedAt - run.startedAt)}`;
+  } else {
+    summary = run.error ?? 'Failed';
+  }
+
+  return {
+    key: `archive:${run.id}`,
+    kind: 'archive',
+    row: 'archive',
+    at: run.startedAt,
+    end: run.finishedAt ?? null,
+    state: running ? 'running' : run.ok ? 'ok' : 'failed',
+    title: run.dryRun ? `${ROW_LABELS.archive} · dry run` : ROW_LABELS.archive,
+    summary,
+    manual: run.trigger === 'manual',
+    archive: run,
+  };
+}
+
 function postItem(group) {
   let failed = group.deliveries.filter(delivery => !delivery.ok);
   let accounts = group.deliveries.filter(delivery => delivery.client);
@@ -107,8 +135,9 @@ function postItem(group) {
 /**
  * @param {object} options
  * @param {object|null} options.status The /admin/api/status document
- * @param {{ runs: object, auth: object, posts: object }} options.history What has been loaded so
- *   far: runs by lane then id, renewals by region then start time, posts by id
+ * @param {{ runs: object, auth: object, posts: object, archive?: object }} options.history What
+ *   has been loaded so far: runs by lane then id, renewals by region then start time, posts by
+ *   id, archive compressions by id
  * @returns {object[]} Every item, newest first; things still to come are at the front
  */
 export function buildActivity({ status, history }) {
@@ -160,6 +189,33 @@ export function buildActivity({ status, history }) {
 
   for (let group of groupDeliveries(Object.values(history.posts))) {
     items.push(postItem(group));
+  }
+
+  // Only when this environment has the archive compressor.
+  let archive = status.archive;
+
+  if (archive) {
+    for (let run of Object.values(history.archive ?? {})) {
+      items.push(archiveItem(run));
+    }
+
+    if (archive.current && !history.archive?.[archive.current.id]) {
+      items.push(archiveItem(archive.current, true));
+    }
+
+    if (archive.nextAt > now && archive.nextAt <= until) {
+      items.push({
+        key: `archive:next:${archive.nextAt}`,
+        kind: 'archive',
+        row: 'archive',
+        at: archive.nextAt,
+        end: null,
+        state: 'upcoming',
+        title: ROW_LABELS.archive,
+        summary: 'Scheduled',
+        manual: false,
+      });
+    }
   }
 
   return items.sort((a, b) => (isFuture(b) - isFuture(a)) || b.at - a.at || (a.key < b.key ? -1 : 1));
@@ -214,6 +270,7 @@ export const FILTERS = [
   { key: 'slow', label: 'Slow' },
   { key: 'auth', label: 'Auth' },
   { key: 'social', label: 'Social' },
+  { key: 'archive', label: 'Archive' },
 ];
 
 /**
