@@ -14,6 +14,7 @@ export default defineConfig({
       'app/**/*.test.mjs',
       'src/**/*.test.{js,mjs}',
       'workers/updater/admin/src/**/*.test.js',
+      'workers/compressor/src/**/*.test.mjs',
     ],
     setupFiles: ['app/test/setup.mjs'],
   },

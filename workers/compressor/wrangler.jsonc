@@ -1,0 +1,59 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "splatoon3-ink-compressor",
+  "main": "src/index.mjs",
+  "compatibility_date": "2026-09-03",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "preview_urls": false,
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Compressor"] }],
+  "observability": { "enabled": true, "logs": { "head_sampling_rate": 1 } },
+
+  // Select --env dev or --env production explicitly. Deploying builds the container image with
+  // a local Docker-compatible CLI (Dockerfile, built from the repository root).
+  // Secrets: RUN_TOKEN, AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY (a DigitalOcean Spaces key
+  // that can read and write the archive bucket), optional SENTRY_DSN.
+  "env": {
+    "dev": {
+      "name": "splatoon3-ink-dev-compressor",
+      "vars": {
+        // Dev's own archive Space, the one the dev updater writes. Never the production one.
+        "AWS_S3_ENDPOINT": "https://nyc3.digitaloceanspaces.com",
+        "AWS_REGION": "nyc3",
+        "AWS_S3_ARCHIVE_BUCKET": "splatoon3ink-archive-test"
+      },
+      "triggers": { "crons": ["30 0 * * *"] },
+      "containers": [
+        {
+          "class_name": "Compressor",
+          "image": "./Dockerfile",
+          "image_build_context": "../..",
+          // 1/2 vCPU, 4 GiB, 8 GB disk: a day (~430 MB of snapshots) compresses in under a minute.
+          "instance_type": "standard-1",
+          "max_instances": 1
+        }
+      ],
+      "durable_objects": { "bindings": [{ "name": "COMPRESSOR", "class_name": "Compressor" }] }
+    },
+    "production": {
+      "name": "splatoon3-ink-compressor",
+      "vars": {
+        "AWS_S3_ENDPOINT": "https://nyc3.digitaloceanspaces.com",
+        "AWS_REGION": "nyc3",
+        "AWS_S3_ARCHIVE_BUCKET": "splatoon3ink-archive"
+      },
+      // Spectre also compresses at 00:30 UTC until cutover; deploy this only once it stops.
+      "triggers": { "crons": ["30 0 * * *"] },
+      "containers": [
+        {
+          "class_name": "Compressor",
+          "image": "./Dockerfile",
+          "image_build_context": "../..",
+          "instance_type": "standard-1",
+          "max_instances": 1
+        }
+      ],
+      "durable_objects": { "bindings": [{ "name": "COMPRESSOR", "class_name": "Compressor" }] }
+    }
+  }
+}

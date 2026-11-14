@@ -34,6 +34,7 @@ npm run updater:deploy:dry-run    # Bundle the dev Worker
 npm run updater:deploy            # Deploy dev (production: updater:deploy:production)
 npm run admin:dev                 # Admin panel with a simulated API (no Worker needed)
 npm run admin:build               # Build the admin panel (deploys do this first)
+npm run compressor:deploy         # Deploy the dev archive compressor (workers/compressor/, needs Docker)
 ```
 
 ## Architecture
@@ -48,7 +49,7 @@ npm run admin:build               # Build the admin panel (deploys do this first
 
 **Admin panel** (`workers/updater/admin/`): a separate small Vue + Tailwind app (its own Vite config, not part of the public site's bundle), served by the updater Worker on its own hostname behind Cloudflare Access. Its API is `workers/updater/src/admin/routes.mjs`; `admin/mock/api.mjs` simulates that API for `npm run admin:dev` and must be kept in step with it. Pure logic lives in `admin/src/lib/` with tests alongside.
 
-**Scheduling**: In Cloudflare, `workers/updater/` runs two Scheduler Durable Object lanes (fast: time-sensitive data + social; slow: X-Rank, rankings, avatars) and one RegionAuth Durable Object per region for Nintendo tokens. Locally, `app/cron.mjs` runs the same steps on a node-cron schedule.
+**Scheduling**: In Cloudflare, `workers/updater/` runs two Scheduler Durable Object lanes (fast: time-sensitive data + social; slow: X-Rank, rankings, avatars) and one RegionAuth Durable Object per region for Nintendo tokens. `workers/compressor/` compresses each finished day of archive snapshots into a tar.zst once a day, running `app/data/ArchiveCompressor.mjs` in a Cloudflare Container (deploying it needs Docker or OrbStack). Locally, `app/cron.mjs` runs the same steps on a node-cron schedule.
 
 ## Code Style
 
@@ -66,6 +67,6 @@ Tests use Vitest. Test files live alongside source: `app/**/*.test.mjs`, `src/**
 ## Deployment
 
 - Frontend: built to `dist/` and served by Cloudflare Pages
-- Backend: being migrated to Cloudflare Workers; there is no longer a Docker image or server deployment built from this repo
+- Backend: being migrated to Cloudflare Workers; there is no longer a server deployment built from this repo. The only Docker image is the archive compressor's container (`workers/compressor/Dockerfile`), which `wrangler deploy` builds and pushes to Cloudflare
 - `dist/` is not emptied on build (preserves generated `dist/data/` from backend)
 - Local screenshots run on the host with puppeteer-core and an installed Chrome; no separate browser service is needed

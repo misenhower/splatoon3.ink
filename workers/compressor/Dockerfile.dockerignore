@@ -1,0 +1,7 @@
+# The build context is the whole repository; send only what the image copies.
+*
+!package.json
+!package-lock.json
+!app
+!workers/compressor/container
+**/*.test.mjs
