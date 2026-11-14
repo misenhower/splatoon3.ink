@@ -20,7 +20,8 @@
         // Dev's own archive Space, the one the dev updater writes. Never the production one.
         "AWS_S3_ENDPOINT": "https://nyc3.digitaloceanspaces.com",
         "AWS_REGION": "nyc3",
-        "AWS_S3_ARCHIVE_BUCKET": "splatoon3ink-archive-test"
+        "AWS_S3_ARCHIVE_BUCKET": "splatoon3ink-archive-test",
+        "ENVIRONMENT": "dev"
       },
       "triggers": { "crons": ["30 0 * * *"] },
       "containers": [
@@ -40,7 +41,8 @@
       "vars": {
         "AWS_S3_ENDPOINT": "https://nyc3.digitaloceanspaces.com",
         "AWS_REGION": "nyc3",
-        "AWS_S3_ARCHIVE_BUCKET": "splatoon3ink-archive"
+        "AWS_S3_ARCHIVE_BUCKET": "splatoon3ink-archive",
+        "ENVIRONMENT": "production"
       },
       // Spectre also compresses at 00:30 UTC until cutover; deploy this only once it stops.
       "triggers": { "crons": ["30 0 * * *"] },

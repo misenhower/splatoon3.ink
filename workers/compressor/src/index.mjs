@@ -1,9 +1,19 @@
 // splatoon3.ink archive compressor Worker: once a day, runs app/data/ArchiveCompressor.mjs in a
 // Cloudflare Container against the archive Space. See workers/compressor/README.md.
 
-import { Compressor } from './Compressor.mjs';
+import { instrumentDurableObjectWithSentry, withSentry } from '@sentry/cloudflare';
+import { Compressor as CompressorClass } from './Compressor.mjs';
 
-export { Compressor };
+// Failed runs are reported to Sentry from the Durable Object. Without a SENTRY_DSN secret
+// nothing is sent.
+const sentryOptions = env => ({ dsn: env.SENTRY_DSN, environment: env.ENVIRONMENT, tracesSampleRate: 0 });
+
+// Its RPC methods (start(), which reports a container that would not start) run without a Sentry
+// client unless they are wrapped; see the same option in workers/updater/src/index.mjs.
+export const Compressor = instrumentDurableObjectWithSentry(
+  env => ({ ...sentryOptions(env), instrumentPrototypeMethods: true }),
+  CompressorClass,
+);
 
 function compressor(env) {
   return env.COMPRESSOR.getByName('archive');
@@ -31,7 +41,7 @@ function json(body, status = 200) {
   return Response.json(body, { status, headers: { 'Cache-Control': 'no-store' } });
 }
 
-export default {
+export default withSentry(sentryOptions, {
   async fetch(request, env) {
     if (!authorized(request, env)) {
       return json({ ok: false, error: 'Unauthorized' }, 401);
@@ -71,4 +81,4 @@ export default {
       console.warn(JSON.stringify({ event: 'compress-skipped', ...result }));
     }
   },
-};
+});

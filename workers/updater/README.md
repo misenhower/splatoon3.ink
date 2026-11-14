@@ -27,6 +27,11 @@ Before social posts, the fast lane checks that `SITE_URL` serves the data it jus
 (screenshots render the public site). A mismatch fails the run so it retries a minute later.
 With `CLOUDFLARE_CACHE_PURGE_*` configured, data JSON is purged from the edge after writes.
 
+With a `SENTRY_DSN` secret, errors go to Sentry (`@sentry/cloudflare`): a failed updater,
+social post or archive snapshot (reported by the shared `app/` code through `@sentry/core`), a
+lane run that fails outright, a failed credential renewal, and anything uncaught. The Node
+runner does not report to Sentry.
+
 ## Setup (once per environment)
 
 1. R2 buckets: dev uses `splatoon3-ink-dev-assets` and `splatoon3-ink-dev-private`;
@@ -75,6 +80,7 @@ curl -X POST -H "$AUTH" "$BASE/pause?lane=all"                                  
 curl -X POST -H "$AUTH" "$BASE/resume?lane=all"
 curl -X POST -H "$AUTH" "$BASE/auth/refresh?region=US"                          # renew credentials now
 curl -X POST -H "$AUTH" "$BASE/arm"                                             # what the cron does
+curl -X POST -H "$AUTH" "$BASE/sentry-test"                                     # two test events
 ```
 
 Manual runs are queued and executed by the lane's alarm; poll `/status` for the result.
@@ -144,13 +150,8 @@ What the panel stores:
 - Account posting switches are in private storage at `settings/social.json`; the Node runner
   honours them too.
 
-## Not yet
-
-- Daily archive compression: rolling each day's snapshots into a `tar.zst` needs the `zstd`
-  binary and local disk, so it will run in a container. Until then the Node command
-  (`npm run data:archive:compress`) does it from anywhere with access to the bucket.
-
-The archive rows and card come from the compressor Worker (`workers/compressor/`) through the
-`COMPRESSOR` Durable Object binding. Without that binding (production, until its compressor is
-deployed) the panel leaves the archive out. In the Worker tests, `test/fakeCompressor.mjs`
+Daily archive compression (each day's snapshots into one `tar.zst`) is the compressor Worker's
+job (`workers/compressor/`), since it needs the `zstd` binary and local disk. The archive rows
+and card come from that Worker through the `COMPRESSOR` Durable Object binding. Without the
+binding (production, until its compressor is deployed) the panel leaves the archive out. In the Worker tests, `test/fakeCompressor.mjs`
 stands in for that Worker.

@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/node';
 import { S3Client } from '@aws-sdk/client-s3';
 import prefixedConsole from '../common/prefixedConsole.mjs';
 import ArchiveBuilder from './ArchiveBuilder.mjs';
@@ -76,14 +75,7 @@ export default class ArchiveCompressor
         }
       }
     } catch (e) {
-      this.console.error(e);
-      Sentry.withScope(scope => {
-        if (currentDate) {
-          scope.setTag('archive.date', currentDate);
-        }
-        Sentry.captureException(e);
-      });
-      await Sentry.flush(2000).catch(() => {});
+      this.console.error(currentDate ? `Failed on ${currentDate}:` : 'Failed:', e);
       throw e;
     }
 

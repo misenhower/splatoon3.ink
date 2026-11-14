@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/node';
 import {
   DeleteObjectsCommand,
   S3Client,
@@ -108,14 +107,7 @@ export default class ArchivePruner
           : `Pruned ${processedDays} daily archives`,
       );
     } catch (e) {
-      this.console.error(e);
-      Sentry.withScope(scope => {
-        if (currentDate) {
-          scope.setTag('archive.date', currentDate);
-        }
-        Sentry.captureException(e);
-      });
-      await Sentry.flush(2000).catch(() => {});
+      this.console.error(currentDate ? `Failed on ${currentDate}:` : 'Failed:', e);
       throw e;
     }
   }

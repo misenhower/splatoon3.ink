@@ -38,7 +38,8 @@ by hand.
    image from the repository root and pushes it to Cloudflare's registry.
 2. Secrets (`npx wrangler secret put NAME --config workers/compressor/wrangler.jsonc --env dev`):
    `RUN_TOKEN`, `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` (a Spaces key for the archive
-   bucket), optional `SENTRY_DSN`.
+   bucket), optional `SENTRY_DSN` (the Durable Object reports each failed run to Sentry; the
+   container itself does not).
 3. The bucket is a var: dev uses `splatoon3ink-archive-test` and must never point at the
    production `splatoon3ink-archive`.
 4. Production: deploy only once spectre stops, which also compresses at 00:30 UTC.

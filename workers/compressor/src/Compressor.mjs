@@ -7,6 +7,7 @@
 // next alarm carries on from what is stored. The run ends when the container reports its exit
 // code; the container waits until that report has been fetched before it exits.
 
+import * as Sentry from '@sentry/core';
 import { DurableObject } from 'cloudflare:workers';
 import { nextScheduledRun } from './schedule.mjs';
 
@@ -117,6 +118,12 @@ export class Compressor extends DurableObject {
 
     let elapsed = Date.now() - current.startedAt;
 
+    if (current.crash) {
+      await this.#finish({ ok: false, ...current.crash });
+
+      return;
+    }
+
     if (!this.ctx.container.running && elapsed > START_GRACE_MS) {
       // It crashed, or was stopped, before reporting. Its log shows how far it got.
       await this.#finish({ ok: false, lost: true, exitCode: null, error: STOPPED });
@@ -177,7 +184,6 @@ export class Compressor extends DurableObject {
       AWS_S3_ARCHIVE_BUCKET: this.env.AWS_S3_ARCHIVE_BUCKET,
       AWS_ACCESS_KEY_ID: this.env.AWS_ACCESS_KEY_ID,
       AWS_SECRET_ACCESS_KEY: this.env.AWS_SECRET_ACCESS_KEY,
-      SENTRY_DSN: this.env.SENTRY_DSN,
       LOG_PORT: String(LOG_PORT),
       MAX_DAYS: String(maxDays),
       DRY_RUN: String(dryRun),
@@ -188,8 +194,9 @@ export class Compressor extends DurableObject {
   }
 
   // A container that dies (out of memory, say) never reports; monitor() gives its exit code if
-  // this object is still in memory. A clean exit comes after the report, which already ended
-  // the run, so only failures count here.
+  // this object is still in memory. It is kept with the run for the next alarm to finish, so
+  // the failure is reported from the alarm. A clean exit comes after the report, which already
+  // ended the run, so only failures count here.
   #watch(id) {
     if (this.#watching) {
       return;
@@ -199,8 +206,12 @@ export class Compressor extends DurableObject {
       .then(
         () => null,
         async error => {
-          if ((await this.ctx.storage.get('current'))?.id === id) {
-            await this.#finish({ ok: false, exitCode: error?.exitCode ?? null, error: String(error?.message ?? error) });
+          let current = await this.ctx.storage.get('current');
+
+          if (current?.id === id) {
+            let crash = { exitCode: error?.exitCode ?? null, error: String(error?.message ?? error) };
+
+            await this.ctx.storage.put('current', { ...current, crash });
           }
         },
       )
@@ -216,6 +227,8 @@ export class Compressor extends DurableObject {
     }
 
     let run = { ...current, ...result, finishedAt: Date.now() };
+
+    delete run.crash;
     let kept = [run, ...((await this.ctx.storage.get('runs')) ?? [])];
 
     await this.ctx.storage.put('runs', kept.slice(0, HISTORY));
@@ -224,6 +237,13 @@ export class Compressor extends DurableObject {
     await this.ctx.storage.deleteAlarm();
 
     console[run.ok ? 'info' : 'error'](JSON.stringify({ event: 'compress-run', ...run }));
+
+    if (!run.ok) {
+      Sentry.captureException(new Error(`Archive compression failed: ${run.error}`), {
+        tags: { trigger: run.trigger, dryRun: run.dryRun },
+        extra: { run },
+      });
+    }
 
     return run;
   }

@@ -1,12 +1,26 @@
 // splatoon3.ink updater Worker: runs the shared app/ updaters and social posters on a schedule.
 // See workers/updater/README.md.
 
-import { LANES, Scheduler } from './Scheduler.mjs';
-import { RegionAuth } from './RegionAuth.mjs';
+import { instrumentDurableObjectWithSentry, withSentry } from '@sentry/cloudflare';
+import * as Sentry from '@sentry/core';
+import { LANES, Scheduler as SchedulerClass } from './Scheduler.mjs';
+import { RegionAuth as RegionAuthClass } from './RegionAuth.mjs';
 import { REGIONS, setupRuntime } from './runtime.mjs';
 import { adminRequest } from './admin/routes.mjs';
 
-export { Scheduler, RegionAuth };
+// Sentry: the shared app/ code reports through @sentry/core, which lands on the client these
+// wrappers set up for each request, alarm and RPC call. Without a SENTRY_DSN secret nothing is
+// sent.
+const sentryOptions = env => ({ dsn: env.SENTRY_DSN, environment: env.ENVIRONMENT, tracesSampleRate: 0 });
+// Durable Object RPC methods (a renewal started from the admin panel, say) run without a Sentry
+// client unless they are wrapped, and their events are silently dropped. instrumentPrototypeMethods
+// wraps every one. Its replacement, enableRpcTracePropagation, only wraps calls that carry trace
+// data from an instrumented caller, which ours do not. It is deprecated: check this when
+// upgrading @sentry/cloudflare to a new major version.
+const durableObjectSentryOptions = env => ({ ...sentryOptions(env), instrumentPrototypeMethods: true });
+
+export const Scheduler = instrumentDurableObjectWithSentry(durableObjectSentryOptions, SchedulerClass);
+export const RegionAuth = instrumentDurableObjectWithSentry(durableObjectSentryOptions, RegionAuthClass);
 
 const LANE_NAMES = Object.keys(LANES);
 
@@ -116,6 +130,16 @@ async function control(request, env) {
       return json({ ok: results.every(result => result.ok), results }, results.some(result => result.busy) ? 409 : 200);
     }
 
+    // Send one test event from this Worker and one from a Durable Object (where the shared code
+    // runs), to check SENTRY_DSN after setting it.
+    case 'POST /sentry-test': {
+      let message = `Sentry test from the ${env.ENVIRONMENT ?? 'unknown'} updater`;
+      let worker = Sentry.captureException(new Error(`${message} (Worker)`));
+      let durableObject = await scheduler(env, 'fast').sentryTest({ message: `${message} (Durable Object)` });
+
+      return json({ ok: true, sent: !!env.SENTRY_DSN, eventIds: { worker, durableObject } });
+    }
+
     case 'POST /auth/refresh': {
       let region = url.searchParams.get('region');
 
@@ -136,7 +160,7 @@ async function control(request, env) {
   }
 }
 
-export default {
+export default withSentry(sentryOptions, {
   // Watchdog: alarms do the work; this only re-arms anything missing. Disabled or paused
   // lanes stay that way.
   async scheduled(controller, env) {
@@ -170,4 +194,4 @@ export default {
       return json({ ok: false, error: 'Request failed; check status before retrying' }, 500);
     }
   },
-};
+});

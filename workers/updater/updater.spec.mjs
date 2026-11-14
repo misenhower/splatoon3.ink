@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { env, runDurableObjectAlarm, runInDurableObject, createScheduledController } from 'cloudflare:test';
+import { env, runDurableObjectAlarm, runInDurableObject, createExecutionContext, createScheduledController, waitOnExecutionContext } from 'cloudflare:test';
 import worker from './src/index.mjs';
 import { LANES } from './src/Scheduler.mjs';
 import { LANE_SCHEDULES, nextSlot } from './src/schedule.mjs';
@@ -299,10 +299,20 @@ describe('control endpoints', () => {
     await request('/schedule?lane=all&enabled=false', { method: 'POST' });
   });
 
+  it('sends Sentry test events (none leave without SENTRY_DSN)', async () => {
+    let response = await request('/sentry-test', { method: 'POST' });
+
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({ ok: true, sent: false });
+  });
+
   it('re-arms everything from the cron watchdog', async () => {
     let log = vi.spyOn(console, 'info').mockImplementation(() => {});
 
-    await worker.scheduled(createScheduledController({ cron: '*/5 * * * *' }), env);
+    let ctx = createExecutionContext();
+
+    await worker.scheduled(createScheduledController({ cron: '*/5 * * * *' }), env, ctx);
+    await waitOnExecutionContext(ctx);
 
     let entry = JSON.parse(log.mock.calls.find(([line]) => line.includes('watchdog'))[0]);
     expect(entry.lanes.map(lane => lane.lane)).toEqual(['fast', 'slow']);

@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/core';
 import { DurableObject } from 'cloudflare:workers';
 import { LocalAuth } from '../../../app/splatnet/auth.mjs';
 import NsoClient, { regionTokens } from '../../../app/splatnet/NsoClient.mjs';
@@ -100,6 +101,10 @@ export class RegionAuth extends DurableObject {
 
     if (expired.size) {
       await this.ctx.storage.delete([...expired.keys()].slice(0, 128));
+    }
+
+    if (errors.length) {
+      Sentry.captureException(failure ?? new Error(`Nintendo credential renewal failed: ${errors[0]}`), { tags: { region, trigger } });
     }
 
     if (failure) {

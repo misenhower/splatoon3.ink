@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/core';
 import { DurableObject } from 'cloudflare:workers';
 import { captureLogs, RunLog } from './log.mjs';
 import { runFastLane, runSlowLane } from './pipeline.mjs';
@@ -292,6 +293,11 @@ export class Scheduler extends DurableObject {
     return { ok: true, lane, run };
   }
 
+  // For POST /sentry-test: an event reported the way the shared app/ code reports one.
+  async sentryTest({ message }) {
+    return Sentry.captureException(new Error(message));
+  }
+
   async status({ history: limit = 10 } = {}) {
     let history = await this.ctx.storage.list({
       prefix: 'run:',
@@ -409,6 +415,9 @@ export class Scheduler extends DurableObject {
     try {
       result = await captureLogs(log, () => LANES[lane].run(options));
     } catch (error) {
+      // Failures inside the updaters are reported where they happen (app/data/index.mjs); this
+      // is the run itself failing, for example when no bullet token can be had.
+      Sentry.captureException(error, { tags: { lane, trigger } });
       result = { ok: false, error: describeError(error) };
       log.add('error', [`Run failed: ${result.error}`]);
     } finally {
