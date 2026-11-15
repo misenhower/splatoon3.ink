@@ -17,7 +17,6 @@ const classes = {
   incomplete: 'border-warn/70 text-warn',
   partial: 'border-warn/70 text-warn',
   upcoming: 'border-line text-muted',
-  paused: 'border-warn/70 text-warn',
   running: 'border-busy/70 text-busy',
   queued: 'border-busy/70 text-busy',
   off: 'border-line text-muted',
@@ -32,7 +31,6 @@ const labels = {
   running: 'Running',
   queued: 'Queued',
   scheduled: 'Scheduled',
-  paused: 'Paused',
   off: 'Off',
 };
 </script>

@@ -5,7 +5,7 @@
         Controls
       </h1>
       <p class="mt-0.5 text-muted">
-        Start a run, pause a lane, renew Nintendo credentials, and compress the archive. Everything
+        Start a run, renew Nintendo credentials, and compress the archive. Everything
         that runs on its own (both lanes, credential renewals and the daily compression) has a
         switch here; social accounts have theirs on the Social page. What happens shows up on the
         timeline.

@@ -28,7 +28,7 @@ const pageHeaders = {
 };
 
 const json = (body, status = 200) => Response.json(body, { status, headers });
-const actionStatus = result => result.ok ? 200 : result.busy || result.paused ? 409 : 400;
+const actionStatus = result => result.ok ? 200 : result.busy ? 409 : 400;
 
 // The archive compressor (workers/compressor/), if this environment is bound to it: the run in
 // progress, recent runs and the next scheduled one. A compressor that cannot be reached is
@@ -290,23 +290,13 @@ async function action(pathname, body, env) {
 
       return json(result, actionStatus(result));
     }
-
-    case '/admin/api/pause': {
-      if (typeof body.paused !== 'boolean') {
-        return json({ ok: false, error: 'Paused must be a boolean.' }, 400);
-      }
-
-      let result = await stub.setPaused({ lane, paused: body.paused });
-
-      return json(result, actionStatus(result));
-    }
   }
 
   return json({ ok: false, error: 'Not found.' }, 404);
 }
 
 const ACTIONS = [
-  '/admin/api/run', '/admin/api/scheduling', '/admin/api/pause',
+  '/admin/api/run', '/admin/api/scheduling',
   '/admin/api/auth/refresh', '/admin/api/auth/scheduling', '/admin/api/archive/run', '/admin/api/archive/scheduling',
   '/admin/api/social/account', '/admin/api/social/preview', '/admin/api/social/post',
   '/admin/api/data/purge', '/admin/api/data/verify',

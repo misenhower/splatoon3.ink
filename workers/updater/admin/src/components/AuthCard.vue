@@ -60,13 +60,9 @@
         cost of a slower first request.
       </p>
       <div>
-        <ConfirmButton
-          :confirm-label="scheduled ? 'Stop scheduled renewals?' : 'Start scheduled renewals?'"
-          :disabled="!!store.busy"
-          @confirmed="setScheduling(!scheduled)"
-        >
-          Turn scheduled renewals {{ scheduled ? 'off' : 'on' }}
-        </ConfirmButton>
+        <ToggleSwitch :on="scheduled" :disabled="!!store.busy" @toggle="setScheduling">
+          Scheduled renewals
+        </ToggleSwitch>
       </div>
     </div>
   </section>
@@ -78,8 +74,8 @@ import { RouterLink } from 'vue-router';
 import { clock } from '../clock.js';
 import { formatRelative } from '../lib/format.js';
 import { act, store } from '../store.js';
-import ConfirmButton from './ConfirmButton.vue';
 import StateChip from './StateChip.vue';
+import ToggleSwitch from './ToggleSwitch.vue';
 
 const props = defineProps({
   regions: { type: Object, required: true },

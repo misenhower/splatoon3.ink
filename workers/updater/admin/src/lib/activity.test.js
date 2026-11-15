@@ -13,7 +13,7 @@ const schedules = {
 };
 
 function lane(overrides = {}) {
-  return { enabled: true, paused: false, next: null, retryAt: null, pending: null, running: false, current: null, ...overrides };
+  return { enabled: true, next: null, retryAt: null, pending: null, running: false, current: null, ...overrides };
 }
 
 function status(now, overrides = {}) {

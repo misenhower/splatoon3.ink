@@ -105,27 +105,18 @@ async function control(request, env) {
         social: url.searchParams.get('social') !== 'false',
       });
 
-      return json(result, result.ok ? 202 : result.busy || result.paused ? 409 : 400);
+      return json(result, result.ok ? 202 : result.busy ? 409 : 400);
     }
 
-    case 'POST /schedule':
-    case 'POST /pause':
-    case 'POST /resume': {
+    case 'POST /schedule': {
       let lanes = lanesFrom(url);
 
       if (!lanes) {
         return json({ ok: false, error: `lane must be all or one of ${LANE_NAMES.join(', ')}` }, 400);
       }
 
-      let results = await Promise.all(lanes.map(lane => {
-        let stub = scheduler(env, lane);
-
-        if (route === 'POST /schedule') {
-          return stub.setAutomaticScheduling({ lane, enabled: url.searchParams.get('enabled') === 'true' });
-        }
-
-        return stub.setPaused({ lane, paused: route === 'POST /pause' });
-      }));
+      let enabled = url.searchParams.get('enabled') === 'true';
+      let results = await Promise.all(lanes.map(lane => scheduler(env, lane).setAutomaticScheduling({ lane, enabled })));
 
       return json({ ok: results.every(result => result.ok), results }, results.some(result => result.busy) ? 409 : 200);
     }
@@ -161,8 +152,8 @@ async function control(request, env) {
 }
 
 export default withSentry(sentryOptions, {
-  // Watchdog: alarms do the work; this only re-arms anything missing. Disabled or paused
-  // lanes stay that way.
+  // Watchdog: alarms do the work; this only re-arms anything missing. Lanes with scheduling
+  // off stay that way.
   async scheduled(controller, env) {
     setupRuntime(env);
     console.info(JSON.stringify({ event: 'watchdog', cron: controller.cron, ...(await armAll(env)) }));

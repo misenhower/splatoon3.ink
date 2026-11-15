@@ -20,20 +20,16 @@
         </span>
         <span v-else class="text-muted">Posting</span>
       </div>
-      <label class="flex min-h-10 items-center gap-2 whitespace-nowrap" :class="account.configured ? '' : 'text-muted'">
-        <input
-          type="checkbox"
-          class="size-4 accent-accent"
-          :checked="account.enabled"
-          :disabled="!!store.busy"
-          @change="toggle(account, $event)"
-        />
-        Posting
-      </label>
+      <ToggleSwitch
+        :on="account.enabled"
+        :disabled="!!store.busy"
+        :aria-label="`Posting to ${account.name}`"
+        @toggle="enabled => toggle(account, enabled)"
+      />
     </div>
 
     <p class="pt-2 text-muted">
-      An unticked account gets no posts, scheduled or by hand. When ticked again, it gets whatever is current at the next run.
+      An account switched off gets no posts, scheduled or by hand. When switched on again, it gets whatever is current at the next run.
     </p>
   </section>
 </template>
@@ -41,6 +37,7 @@
 <script setup>
 import { clock } from '../clock.js';
 import { act, refreshSocial, store } from '../store.js';
+import ToggleSwitch from './ToggleSwitch.vue';
 
 defineProps({
   accounts: { type: Array, required: true },
@@ -48,15 +45,9 @@ defineProps({
   failures: { type: Object, default: () => ({}) },
 });
 
-async function toggle(account, event) {
-  let enabled = event.target.checked;
-  let result = await act(`social:account:${account.key}`, '/social/account', { key: account.key, enabled },
+async function toggle(account, enabled) {
+  await act(`social:account:${account.key}`, '/social/account', { key: account.key, enabled },
     `Posting turned ${enabled ? 'on' : 'off'} for ${account.name}.`);
-
-  if (!result) {
-    event.target.checked = account.enabled;
-  }
-
   await refreshSocial();
 }
 </script>

@@ -70,13 +70,11 @@
       >
         Dry run
       </button>
-      <ConfirmButton
-        :confirm-label="archive.enabled ? 'Stop the daily run?' : 'Start the daily run?'"
-        :disabled="!!store.busy || !!archive.error"
-        @confirmed="setScheduling(!archive.enabled)"
-      >
-        Turn daily run {{ archive.enabled ? 'off' : 'on' }}
-      </ConfirmButton>
+    </div>
+    <div>
+      <ToggleSwitch :on="archive.enabled === true" :disabled="!!store.busy || !!archive.error" @toggle="setScheduling">
+        Daily run
+      </ToggleSwitch>
     </div>
   </section>
 </template>
@@ -87,8 +85,8 @@ import { RouterLink } from 'vue-router';
 import { clock } from '../clock.js';
 import { formatRelative } from '../lib/format.js';
 import { act, store } from '../store.js';
-import ConfirmButton from './ConfirmButton.vue';
 import StateChip from './StateChip.vue';
+import ToggleSwitch from './ToggleSwitch.vue';
 
 const props = defineProps({
   // The status document's archive part: { enabled, nextAt, current, runs, error? }.

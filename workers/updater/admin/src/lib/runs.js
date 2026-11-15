@@ -94,8 +94,6 @@ export function collectUpcoming(status, until) {
   let upcoming = [];
 
   for (let [lane, state] of Object.entries(status?.lanes ?? {})) {
-    if (state.paused) continue;
-
     if (state.pending?.status === 'queued') {
       let at = Math.max(state.pending.notBefore ?? status.now, status.now);
 

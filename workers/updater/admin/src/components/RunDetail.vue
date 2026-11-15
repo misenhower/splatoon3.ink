@@ -87,7 +87,7 @@
       <button
         type="button"
         class="btn"
-        :disabled="!!store.busy || lanePaused"
+        :disabled="!!store.busy"
         @click="rerun"
       >
         Run {{ kind ? `${kind} ` : '' }}again, data only
@@ -122,8 +122,6 @@ const cache = new Map();
 const logs = ref(null);
 const logError = ref(null);
 const copied = ref(false);
-
-const lanePaused = computed(() => !!store.status?.lanes[props.run.lane]?.paused);
 
 async function load() {
   let run = props.run;

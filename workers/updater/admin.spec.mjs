@@ -353,7 +353,7 @@ describe('admin panel', () => {
   it('validates actions before reaching a scheduler', async () => {
     expect((await post('/admin/api/run', { lane: 'medium' })).status).toBe(400);
     expect((await post('/admin/api/scheduling', { lane: 'fast', enabled: 'yes' })).status).toBe(400);
-    expect((await post('/admin/api/pause', { lane: 'fast' })).status).toBe(400);
+    expect((await post('/admin/api/pause', { lane: 'fast', paused: true })).status).toBe(404);
     expect((await post('/admin/api/auth/refresh', { region: 'XX' })).status).toBe(400);
   });
 

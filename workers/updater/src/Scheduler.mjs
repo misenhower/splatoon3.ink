@@ -57,7 +57,7 @@ function summarize(run) {
  * Only the alarm handler runs work, so runs never overlap within a lane. The lanes are
  * separate instances and run independently of each other.
  *
- * Storage: "lane"; "state" (automatic scheduling, pause, next slot, retries, last run);
+ * Storage: "lane"; "state" (automatic scheduling, next slot, retries, last run);
  * "pending" (one queued manual run); "run:*" and "log:*" (the last 48 hours of runs and what
  * they printed); "post:*" (the fast lane's social post log, which outlives the run history).
  */
@@ -97,7 +97,6 @@ export class Scheduler extends DurableObject {
 
     return {
       enabled: saved.enabled ?? this.env.AUTOMATIC_SCHEDULING_ENABLED === 'true',
-      paused: saved.paused ?? false,
       next: saved.next ?? null,
       retryAt: saved.retryAt ?? null,
       retries: saved.retries ?? 0,
@@ -108,8 +107,6 @@ export class Scheduler extends DurableObject {
   }
 
   #alarmAt(state, pending) {
-    if (state.paused) return null;
-
     let times = [
       pending ? (pending.notBefore ?? Date.now()) : null,
       state.enabled ? (state.retryAt ?? state.next?.at ?? null) : null,
@@ -217,7 +214,7 @@ export class Scheduler extends DurableObject {
 
     await this.ctx.storage.transaction(txn => this.#save(txn, state));
 
-    return { ok: true, lane, enabled: state.enabled, paused: state.paused, alarmAt: await this.ctx.storage.getAlarm() };
+    return { ok: true, lane, enabled: state.enabled, alarmAt: await this.ctx.storage.getAlarm() };
   }
 
   async setAutomaticScheduling({ lane, enabled }) {
@@ -241,29 +238,6 @@ export class Scheduler extends DurableObject {
     return { ok: true, lane, enabled, next: state.next };
   }
 
-  // Maintenance stop: no scheduled or manual runs until resumed.
-  async setPaused({ lane, paused }) {
-    let error = await this.#claimLane(lane);
-    if (error) return { ok: false, lane, error };
-
-    if (this.#running) return { ok: false, busy: true, error: 'Wait for the current run to finish' };
-
-    let state = await this.#state();
-    state.paused = !!paused;
-
-    if (!state.paused && state.enabled) {
-      state.next = nextSlot(LANES[lane].schedule);
-      state.retryAt = null;
-      state.retries = 0;
-      state.continuing = false;
-      state.continuations = 0;
-    }
-
-    await this.ctx.storage.transaction(txn => this.#save(txn, state));
-
-    return { ok: true, lane, paused: state.paused };
-  }
-
   // Queue one manual run; the alarm executes it, so the caller does not wait.
   async startManual({ lane, social = true, ...input }) {
     let error = await this.#claimLane(lane);
@@ -277,9 +251,6 @@ export class Scheduler extends DurableObject {
       return { ok: false, error: describeError(error) };
     }
 
-    let state = await this.#state();
-
-    if (state.paused) return { ok: false, paused: true, error: 'Scheduler is paused' };
     if (await this.ctx.storage.get('pending')) return { ok: false, busy: true, error: 'A manual run is already queued' };
 
     let run = { id: crypto.randomUUID(), ...options, social: !!social, status: 'queued', requestedAt: Date.now() };
@@ -448,13 +419,6 @@ export class Scheduler extends DurableObject {
     try {
       let config = LANES[lane];
       let state = await this.#state();
-
-      if (state.paused) {
-        await this.ctx.storage.deleteAlarm();
-
-        return;
-      }
-
       let runs = [];
       let pending = await this.ctx.storage.get('pending');
       let followUp = null;

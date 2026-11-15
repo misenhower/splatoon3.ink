@@ -26,7 +26,7 @@
           <span class="text-muted"> · {{ formatRelative(nextAt, store.now) }}</span>
         </dd>
         <dd v-else class="mt-0.5 text-muted">
-          {{ state.paused ? 'Paused' : 'Nothing scheduled' }}
+          {{ state.enabled ? 'Nothing scheduled' : 'Off' }}
         </dd>
       </div>
       <div>
@@ -84,27 +84,14 @@
         </template>
       </div>
 
-      <div class="flex flex-wrap items-center gap-2">
-        <button
-          type="button"
-          class="btn"
-          :disabled="busy || state.running"
-          @click="setPaused(!state.paused)"
-        >
-          {{ state.paused ? 'Resume' : 'Pause' }}
-        </button>
-        <ConfirmButton
-          :confirm-label="state.enabled ? 'Stop scheduled runs?' : 'Start scheduled runs?'"
-          :disabled="busy || state.running"
-          @confirmed="setScheduling(!state.enabled)"
-        >
-          Turn scheduling {{ state.enabled ? 'off' : 'on' }}
-        </ConfirmButton>
+      <div>
+        <ToggleSwitch :on="state.enabled" :disabled="busy || state.running" @toggle="setScheduling">
+          Scheduled runs
+        </ToggleSwitch>
+        <p v-if="state.running" class="text-muted">
+          The switch unlocks when the current run finishes.
+        </p>
       </div>
-
-      <p v-if="state.running" class="text-muted">
-        Pause and scheduling unlock when the current run finishes.
-      </p>
     </div>
   </section>
 </template>
@@ -117,6 +104,7 @@ import { formatDuration, formatRelative, LANE_LABELS, runKind } from '../lib/for
 import { act, store } from '../store.js';
 import ConfirmButton from './ConfirmButton.vue';
 import StateChip from './StateChip.vue';
+import ToggleSwitch from './ToggleSwitch.vue';
 
 const props = defineProps({
   lane: { type: String, required: true },
@@ -151,18 +139,16 @@ const translations = ref(true);
 const social = ref(false);
 
 const busy = computed(() => !!store.busy);
-const canRun = computed(() => !busy.value && !props.state.paused && !props.state.pending);
+const canRun = computed(() => !busy.value && !props.state.pending);
 
 const chip = computed(() => {
   if (props.state.running) return 'running';
   if (props.state.pending) return 'queued';
-  if (props.state.paused) return 'paused';
 
   return props.state.enabled ? 'scheduled' : 'off';
 });
 
 const nextAt = computed(() => {
-  if (props.state.paused) return null;
   if (props.state.pending?.status === 'queued') return props.state.pending.notBefore ?? store.now;
 
   return props.state.enabled ? props.state.retryAt ?? props.state.next?.at ?? null : null;
@@ -174,7 +160,6 @@ const note = computed(() => {
   if (state.pending?.status === 'queued') return `A manual ${[runKind(state.pending), 'run'].filter(Boolean).join(' ')} is queued.`;
   if (state.retryAt && state.continuing) return `Continuing unfinished work (${state.continuations} so far).`;
   if (state.retryAt) return `Retrying after a failure (attempt ${state.retries}).`;
-  if (state.paused) return 'Paused: no scheduled or manual runs until resumed.';
   if (!state.enabled) return 'Scheduled runs are off. Manual runs still work.';
 
   return null;
@@ -190,10 +175,6 @@ function run() {
     `Queued a ${description} on the ${props.lane} lane${withSocial ? ', with social posts' : ', data only'}.`);
   social.value = false;
   translations.value = true;
-}
-
-function setPaused(paused) {
-  act(`pause:${props.lane}`, '/pause', { lane: props.lane, paused }, `${LANE_LABELS[props.lane]} ${paused ? 'paused' : 'resumed'}.`);
 }
 
 function setScheduling(enabled) {

@@ -10,7 +10,7 @@ const schedules = {
 };
 
 function lane(overrides = {}) {
-  return { enabled: true, paused: false, next: null, retryAt: null, pending: null, running: false, current: null, history: [], ...overrides };
+  return { enabled: true, next: null, retryAt: null, pending: null, running: false, current: null, history: [], ...overrides };
 }
 
 function status(now, lanes) {
@@ -62,9 +62,9 @@ describe('upcoming slots', () => {
     ]);
   });
 
-  it('lists nothing for a paused lane or one with scheduling off, except a queued manual run', () => {
+  it('lists nothing for a lane with scheduling off, except a queued manual run', () => {
     let upcoming = collectUpcoming(status(T0 + MINUTE, {
-      fast: lane({ paused: true }),
+      fast: lane({ enabled: false }),
       slow: lane({ enabled: false, pending: { id: 'm', status: 'queued', social: false } }),
     }), T0 + HOUR);
 

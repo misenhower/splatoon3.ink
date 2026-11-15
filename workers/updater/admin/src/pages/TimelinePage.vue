@@ -101,7 +101,6 @@ const origin = Math.floor(historyStart.value / HOUR) * HOUR;
 const end = computed(() => Math.ceil((store.status.now + FUTURE_MS) / HOUR) * HOUR);
 
 const notices = computed(() => Object.entries(store.status.lanes).flatMap(([lane, state]) => {
-  if (state.paused) return [`${LANE_LABELS[lane]} is paused: no scheduled or manual runs until it is resumed.`];
   if (!state.enabled) return [`${LANE_LABELS[lane]} scheduling is off: it only runs when started by hand.`];
 
   return [];

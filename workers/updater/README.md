@@ -80,8 +80,7 @@ curl -X POST -H "$AUTH" "$BASE/run?lane=fast"                                   
 curl -X POST -H "$AUTH" "$BASE/run?lane=fast&translations=false&social=false"   # quick, data only
 curl -X POST -H "$AUTH" "$BASE/run?lane=slow"
 curl -X POST -H "$AUTH" "$BASE/schedule?lane=all&enabled=true"                  # automatic scheduling
-curl -X POST -H "$AUTH" "$BASE/pause?lane=all"                                  # maintenance stop
-curl -X POST -H "$AUTH" "$BASE/resume?lane=all"
+curl -X POST -H "$AUTH" "$BASE/schedule?lane=all&enabled=false"                 # stop it
 curl -X POST -H "$AUTH" "$BASE/auth/refresh?region=US"                          # renew credentials now
 curl -X POST -H "$AUTH" "$BASE/arm"                                             # what the cron does
 curl -X POST -H "$AUTH" "$BASE/sentry-test"                                     # two test events
@@ -123,7 +122,7 @@ on any other hostname.
   compressions on a time axis that scrolls back through the last 48 hours, and the same things as a list (with what is coming
   up next). The two scroll together. Selecting anything in either shows its details and log
   lines. A combined log sits below.
-- **Controls**: per lane, run now, pause, and automatic scheduling; credential renewal per
+- **Controls**: per lane, run now and a switch for automatic scheduling; credential renewal per
   region, and one switch for scheduled renewals in every region; archive compression now, or as
   a dry run, and a switch for the daily run. Everything that runs on its own has a switch here
   (social accounts have theirs on the Social page).

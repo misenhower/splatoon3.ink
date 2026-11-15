@@ -219,7 +219,7 @@ describe('Scheduler', () => {
     await stub.setAutomaticScheduling({ lane: 'fast', enabled: false });
   });
 
-  it('rejects invalid options and stays stopped while paused', async () => {
+  it('rejects invalid options, and arms nothing with scheduling off', async () => {
     let stub = scheduler();
 
     expect(await stub.startManual({ lane: 'fast', translations: 'sometimes' })).toMatchObject({ ok: false });
@@ -227,15 +227,15 @@ describe('Scheduler', () => {
       .toMatchObject({ ok: true, run: { translations: false, social: false } });
     await runInDurableObject(stub, async (instance, ctx) => ctx.storage.delete('pending'));
 
-    await stub.setAutomaticScheduling({ lane: 'fast', enabled: true });
-    await stub.setPaused({ lane: 'fast', paused: true });
+    await stub.setAutomaticScheduling({ lane: 'fast', enabled: false });
 
     expect((await stub.status()).alarmAt).toBeNull();
-    expect(await stub.ensureArmed({ lane: 'fast' })).toMatchObject({ paused: true, alarmAt: null });
-    expect(await stub.startManual({ lane: 'fast' })).toMatchObject({ ok: false, paused: true });
+    expect(await stub.ensureArmed({ lane: 'fast' })).toMatchObject({ enabled: false, alarmAt: null });
 
-    await stub.setPaused({ lane: 'fast', paused: false });
+    await stub.setAutomaticScheduling({ lane: 'fast', enabled: true });
     expect((await stub.status()).alarmAt).not.toBeNull();
+
+    await stub.setAutomaticScheduling({ lane: 'fast', enabled: false });
   });
 });
 

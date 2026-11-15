@@ -227,8 +227,8 @@ function summarize(run) {
 
 export function createMockApi() {
   let lanes = {
-    fast: { enabled: true, paused: false, manual: null, extra: [] },
-    slow: { enabled: true, paused: false, manual: null, extra: [] },
+    fast: { enabled: true, manual: null, extra: [] },
+    slow: { enabled: true, manual: null, extra: [] },
   };
   let refreshed = {};
   // The switches for scheduled credential renewals (every region) and the daily compression.
@@ -379,7 +379,7 @@ export function createMockApi() {
       return { startedAt: manual.startAt, translations, social, trigger: 'manual' };
     }
 
-    if (lane === 'slow' && lanes.slow.enabled && !lanes.slow.paused) {
+    if (lane === 'slow' && lanes.slow.enabled) {
       let [slot] = slotsBefore(SCHEDULES.slow, now, 1);
       let run = slowRun(slot, now);
 
@@ -441,7 +441,6 @@ export function createMockApi() {
     return {
       lane,
       enabled: state.enabled,
-      paused: state.paused,
       next: state.enabled ? nextSlot(SCHEDULES[lane], now) : null,
       retryAt: null,
       retries: 0,
@@ -451,7 +450,7 @@ export function createMockApi() {
       pending: manual ? { ...manual.run, status: now >= manual.startAt ? 'running' : 'queued' } : null,
       running: !!running,
       current: running && { ...running, logLines: currentLogs(lane, now).lines.length },
-      alarmAt: state.paused || !state.enabled ? null : nextSlot(SCHEDULES[lane], now).at,
+      alarmAt: !state.enabled ? null : nextSlot(SCHEDULES[lane], now).at,
       history: runs.map(summarize),
     };
   }
@@ -825,7 +824,6 @@ export function createMockApi() {
     if (!state) return { status: 400, body: { ok: false, error: 'Unknown lane.' } };
 
     if (pathname === '/run') {
-      if (state.paused) return { status: 409, body: { ok: false, paused: true, error: 'Scheduler is paused' } };
       if (state.manual) return { status: 409, body: { ok: false, busy: true, error: 'A manual run is already queued' } };
 
       if (body.lane === 'fast' && body.translations !== undefined && typeof body.translations !== 'boolean') {
@@ -845,12 +843,6 @@ export function createMockApi() {
       state.enabled = body.enabled === true;
 
       return { status: 200, body: { ok: true, lane: body.lane, enabled: state.enabled } };
-    }
-
-    if (pathname === '/pause') {
-      state.paused = body.paused === true;
-
-      return { status: 200, body: { ok: true, lane: body.lane, paused: state.paused } };
     }
 
     return { status: 404, body: { ok: false, error: 'Not found.' } };
