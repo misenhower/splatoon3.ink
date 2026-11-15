@@ -341,17 +341,13 @@ export function createMockApi() {
     to = Math.min(to, now + 1);
 
     if (lane === 'fast') {
-      // One failure about an hour ago, retried a minute later, and the odd one further back.
+      // One failure about an hour ago, and the odd one further back.
       let recent = slotsBefore(SCHEDULES.fast, now, 48).find(slot => now - slot.at > 50 * MINUTE && slot.options.translations);
 
       for (let slot of slotsIn(SCHEDULES.fast, from - 2 * MINUTE, to)) {
         let failing = slot.at === recent.at ? 'Co-op' : random(slot.at + 5) > 0.99 ? 'Gear' : null;
 
         runs.push(fastRun(slot, now, { failing }));
-
-        if (failing && slot.at + MINUTE < now) {
-          runs.push(fastRun({ at: slot.at + MINUTE, options: slot.options }, now, { trigger: 'retry' }));
-        }
       }
     } else {
       for (let slot of slotsIn(SCHEDULES.slow, from - HOUR, to)) {
@@ -442,10 +438,6 @@ export function createMockApi() {
       lane,
       enabled: state.enabled,
       next: state.enabled ? nextSlot(SCHEDULES[lane], now) : null,
-      retryAt: null,
-      retries: 0,
-      continuing: false,
-      continuations: 0,
       lastRun: runs[0] ? summarize(runs[0]) : null,
       pending: manual ? { ...manual.run, status: now >= manual.startAt ? 'running' : 'queued' } : null,
       running: !!running,

@@ -321,7 +321,6 @@ const upcomingNote = computed(() => {
   if (item.kind === 'auth') return `Renews the ${item.region} region's Nintendo tokens, which last about two hours.`;
   if (item.kind === 'archive') return 'Compresses each finished day of data snapshots in the archive into one file.';
   if (item.state === 'queued') return 'Queued from the panel. It starts as soon as the lane is free.';
-  if (item.slot.trigger === 'retry') return 'The last run failed, so the lane tries again before its next regular slot.';
   if (item.slot.trigger === 'continuation') return 'The last run stopped at its time budget; this one picks up what was left.';
 
   return item.row === 'fast'

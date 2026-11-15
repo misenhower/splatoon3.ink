@@ -151,15 +151,14 @@ const chip = computed(() => {
 const nextAt = computed(() => {
   if (props.state.pending?.status === 'queued') return props.state.pending.notBefore ?? store.now;
 
-  return props.state.enabled ? props.state.retryAt ?? props.state.next?.at ?? null : null;
+  return props.state.enabled ? props.state.next?.at ?? null : null;
 });
 
 const note = computed(() => {
   let state = props.state;
 
+  if (state.pending?.continuationOf) return `Continuing unfinished work (continuation ${state.pending.continuations}).`;
   if (state.pending?.status === 'queued') return `A manual ${[runKind(state.pending), 'run'].filter(Boolean).join(' ')} is queued.`;
-  if (state.retryAt && state.continuing) return `Continuing unfinished work (${state.continuations} so far).`;
-  if (state.retryAt) return `Retrying after a failure (attempt ${state.retries}).`;
   if (!state.enabled) return 'Scheduled runs are off. Manual runs still work.';
 
   return null;

@@ -123,7 +123,6 @@ export const STATE_TONES = {
 
 export const TRIGGER_LABELS = {
   scheduled: 'Scheduled',
-  retry: 'Retry',
   continuation: 'Continuation',
   manual: 'Manual',
 };

@@ -10,7 +10,7 @@ const schedules = {
 };
 
 function lane(overrides = {}) {
-  return { enabled: true, next: null, retryAt: null, pending: null, running: false, current: null, history: [], ...overrides };
+  return { enabled: true, next: null, pending: null, running: false, current: null, history: [], ...overrides };
 }
 
 function status(now, lanes) {
@@ -71,16 +71,15 @@ describe('upcoming slots', () => {
     expect(upcoming).toEqual([{ key: 'slow:pending', lane: 'slow', at: T0 + MINUTE, translations: undefined, trigger: 'manual' }]);
   });
 
-  it('puts a retry before the regular slots and does not repeat the slot being retried', () => {
-    let slot = T0 + 5 * MINUTE + 15_000;
-    let upcoming = collectUpcoming(status(slot + 20_000, {
-      fast: lane({ next: { at: slot, options: { translations: true } }, retryAt: slot + MINUTE }),
-      slow: lane({ enabled: false }),
-    }), T0 + 40 * MINUTE);
+  it('lists a queued continuation at its time, alongside the regular slots', () => {
+    let upcoming = collectUpcoming(status(T0 + 21 * MINUTE, {
+      fast: lane({ enabled: false }),
+      slow: lane({ pending: { id: 'c', status: 'queued', continuationOf: 'a', notBefore: T0 + 22 * MINUTE } }),
+    }), T0 + 2 * HOUR);
 
-    expect(upcoming.map(item => [item.trigger, item.at, runKind(item)])).toEqual([
-      ['retry', slot + MINUTE, 'full'],
-      ['scheduled', T0 + 30 * MINUTE + 15_000, 'full'],
+    expect(upcoming.map(item => [item.trigger, item.at])).toEqual([
+      ['continuation', T0 + 22 * MINUTE],
+      ['scheduled', T0 + HOUR + 20 * MINUTE + 45_000],
     ]);
   });
 });

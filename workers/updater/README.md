@@ -9,11 +9,11 @@ Node runner (`npm run splatnet`, `npm run social`, …) uses the same code with 
 - **Fast lane** (`Scheduler` Durable Object named `fast`): schedules, gear, co-op, festivals
   (including results), and stages, then social posts. Same cadence as the old Node cron:
   quick runs at :00–:04, full runs at :05, :10, :15, :20, :30, :45 (15 seconds past the
-  minute). Quick runs skip translations (`translations: false`), the run's only option. Failed
-  runs retry after a minute, up to three times, never past the next slot.
+  minute). Quick runs skip translations (`translations: false`), the run's only option.
 - **Slow lane** (`Scheduler` named `slow`): X-Rank (one request at a time to save memory),
   Splatfest rankings, and seasonal avatar updates, hourly at :20:45. It has no run options.
-  Retries after five minutes, up to twice.
+  A run stops starting new work after 10 minutes; if work is left (a large backfill), it queues
+  a continuation a minute later, up to ten in a row.
 - **RegionAuth** (one Durable Object per region, `US`/`EU`/`JP`/`AP`): the only place that logs
   in to Nintendo for its region. Both lanes get bullet tokens from it, so they share one token
   and never log in at the same time. It renews credentials hourly at :35–:38, unless scheduled
@@ -22,12 +22,14 @@ Node runner (`npm run splatnet`, `npm run social`, …) uses the same code with 
   failed and was made up for by a later one is kept as a warning.
 - A cron trigger every five minutes only re-arms missing alarms. It never enables a lane.
 
-Each lane runs one thing at a time; the lanes run independently of each other. Run limits
+Failed runs are not retried: the lane's next slot runs again, 1–15 minutes later for the
+fast lane. Each lane runs one thing at a time, and one run per alarm; the lanes run
+independently of each other. Run limits
 (concurrent SplatNet requests, image downloads) are created per run, never shared between
 Durable Objects (see `app/data/RunLimits.mjs`).
 
 Before social posts, the fast lane checks that `SITE_URL` serves the data it just published
-(screenshots render the public site). A mismatch fails the run so it retries a minute later.
+(screenshots render the public site). A mismatch fails the run, and the next slot tries again.
 With `CLOUDFLARE_CACHE_PURGE_*` configured, data JSON is purged from the edge after writes.
 
 With a `SENTRY_DSN` secret, errors go to Sentry (`@sentry/cloudflare`): a failed updater,

@@ -24,16 +24,15 @@ function fastOptions({ translations = true } = {}) {
   return { translations };
 }
 
-// Retries handle failures. Continuations pick up after a run that stopped at its time budget
-// with work left (only the slow lane has one); they do not count as retries.
+// A failed run is not retried: the lane's next slot runs it again. A run that stopped at its
+// time budget with work left (only the slow lane has one) queues a follow-up run, a
+// continuation, which waits continueDelayMs.
 export const LANES = {
-  fast: { schedule: LANE_SCHEDULES.fast, options: fastOptions, run: runFastLane, retryDelayMs: MINUTE_MS, maxRetries: 3 },
+  fast: { schedule: LANE_SCHEDULES.fast, options: fastOptions, run: runFastLane },
   slow: {
     schedule: LANE_SCHEDULES.slow,
     options: () => ({}),
     run: runSlowLane,
-    retryDelayMs: 5 * MINUTE_MS,
-    maxRetries: 2,
     continueDelayMs: MINUTE_MS,
     maxContinuations: 10,
   },
@@ -53,12 +52,12 @@ function summarize(run) {
 }
 
 /**
- * Owns one lane (named "fast" or "slow"): its schedule, retries, manual runs, and history.
+ * Owns one lane (named "fast" or "slow"): its schedule, manual runs, continuations, and history.
  * Only the alarm handler runs work, so runs never overlap within a lane. The lanes are
  * separate instances and run independently of each other.
  *
- * Storage: "lane"; "state" (automatic scheduling, next slot, retries, last run);
- * "pending" (one queued manual run); "run:*" and "log:*" (the last 48 hours of runs and what
+ * Storage: "lane"; "state" (automatic scheduling, next slot, last run);
+ * "pending" (one queued manual run or continuation); "run:*" and "log:*" (the last 48 hours of runs and what
  * they printed); "post:*" (the fast lane's social post log, which outlives the run history).
  */
 export class Scheduler extends DurableObject {
@@ -98,10 +97,6 @@ export class Scheduler extends DurableObject {
     return {
       enabled: saved.enabled ?? this.env.AUTOMATIC_SCHEDULING_ENABLED === 'true',
       next: saved.next ?? null,
-      retryAt: saved.retryAt ?? null,
-      retries: saved.retries ?? 0,
-      continuing: saved.continuing ?? false,
-      continuations: saved.continuations ?? 0,
       lastRun: saved.lastRun ?? null,
     };
   }
@@ -109,29 +104,29 @@ export class Scheduler extends DurableObject {
   #alarmAt(state, pending) {
     let times = [
       pending ? (pending.notBefore ?? Date.now()) : null,
-      state.enabled ? (state.retryAt ?? state.next?.at ?? null) : null,
+      state.enabled ? (state.next?.at ?? null) : null,
     ].filter(time => time !== null);
 
     return times.length ? Math.min(...times) : null;
   }
 
-  // A follow-up manual run for one that stopped at its time budget, or null.
-  #continuationOf(lane, pending, result) {
+  // The queued follow-up for a run that stopped at its time budget with work left, or null.
+  #continuationOf(lane, run) {
     let config = LANES[lane];
-    let count = pending.continuations ?? 0;
+    let count = run.continuations ?? 0;
 
-    if (!result.ok || !result.incomplete || !config.continueDelayMs || count >= config.maxContinuations) {
+    if (!run.ok || !run.incomplete || !config.continueDelayMs || count >= config.maxContinuations) {
       return null;
     }
 
     return {
       id: crypto.randomUUID(),
-      ...config.options(pending),
-      social: pending.social,
+      ...config.options(run),
+      social: run.social,
       status: 'queued',
       requestedAt: Date.now(),
       notBefore: Date.now() + config.continueDelayMs,
-      continuationOf: pending.continuationOf ?? pending.id,
+      continuationOf: run.continuationOf ?? run.id,
       continuations: count + 1,
     };
   }
@@ -229,10 +224,6 @@ export class Scheduler extends DurableObject {
     // Missed slots are not replayed: enabling starts at the next slot.
     state.enabled = enabled;
     state.next = enabled ? nextSlot(LANES[lane].schedule) : null;
-    state.retryAt = null;
-    state.retries = 0;
-    state.continuing = false;
-    state.continuations = 0;
     await this.ctx.storage.transaction(txn => this.#save(txn, state));
 
     return { ok: true, lane, enabled, next: state.next };
@@ -419,16 +410,23 @@ export class Scheduler extends DurableObject {
     try {
       let config = LANES[lane];
       let state = await this.#state();
-      let runs = [];
       let pending = await this.ctx.storage.get('pending');
-      let followUp = null;
+      let due = state.enabled && (state.next ??= nextSlot(config.schedule)).at <= Date.now();
+      let run;
 
-      // A queued continuation waits for its time.
-      if (pending?.notBefore > Date.now()) {
+      // One run per alarm, so a run always has the whole alarm's time; a scheduled slot that is
+      // due goes before a queued run. Whatever is left due sets the next alarm to now.
+      if (due) {
+        let slot = state.next;
+        // A slot saved before run options existed has none; it runs with the defaults.
+        let result = await this.#execute(lane, { ...config.options(slot.options), social: true }, 'scheduled');
+
+        run = { ...result, id: crypto.randomUUID(), trigger: 'scheduled', scheduledFor: slot.at, driftMs: result.startedAt - slot.at };
+        state.next = nextSlot(config.schedule);
+        // A queued run was not started.
         pending = null;
-      }
-
-      if (pending) {
+      } else if (pending && !(pending.notBefore > Date.now())) {
+        let trigger = pending.continuationOf ? 'continuation' : 'manual';
         let result;
 
         if (pending.status === 'running') {
@@ -436,71 +434,34 @@ export class Scheduler extends DurableObject {
           result = { ok: false, error: 'Run was interrupted; check the results before retrying' };
         } else {
           await this.ctx.storage.put('pending', { ...pending, status: 'running', startedAt: Date.now() });
-          result = await this.#execute(lane, { ...config.options(pending), social: pending.social }, 'manual');
+          result = await this.#execute(lane, { ...config.options(pending), social: pending.social }, trigger);
         }
 
-        runs.push({ ...pending, ...result, id: pending.id, trigger: 'manual', status: 'done' });
-        followUp = this.#continuationOf(lane, pending, result);
+        run = { ...pending, ...result, id: pending.id, trigger, status: 'done' };
+      } else {
+        // An early alarm, or a continuation that is not due yet.
+        pending = null;
       }
 
-      if (state.enabled) {
-        state.next ??= nextSlot(config.schedule);
+      let followUp = run && this.#continuationOf(lane, run);
 
-        let dueAt = state.retryAt ?? state.next.at;
-
-        if (Date.now() >= dueAt) {
-          let trigger = state.continuing ? 'continuation' : state.retryAt ? 'retry' : 'scheduled';
-          // A slot saved before run options existed has none; it runs with the defaults.
-          let result = await this.#execute(lane, { ...config.options(state.next.options), social: true }, trigger);
-          let upcoming = nextSlot(config.schedule);
-          let retryAt = Date.now() + config.retryDelayMs;
-          let continueAt = Date.now() + (config.continueDelayMs ?? Infinity);
-
-          runs.push({
-            ...result,
-            id: crypto.randomUUID(),
-            trigger,
-            scheduledFor: dueAt,
-            driftMs: result.startedAt - dueAt,
-          });
-
-          // Continue unfinished work, and retry failures a few times, but never past the
-          // lane's next regular slot.
-          if (result.ok && result.incomplete && state.continuations < (config.maxContinuations ?? 0)
-            && continueAt < upcoming.at) {
-            state.retryAt = continueAt;
-            state.continuing = true;
-            state.continuations++;
-          } else if (!result.ok && state.retries < config.maxRetries && retryAt < upcoming.at) {
-            state.retryAt = retryAt;
-            state.retries++;
-            state.continuing = false;
-          } else {
-            state.next = upcoming;
-            state.retryAt = null;
-            state.retries = 0;
-            state.continuing = false;
-            state.continuations = 0;
-          }
-        }
-      }
-
-      if (runs.length) {
-        state.lastRun = { ...summarize(runs.at(-1)), postCount: runs.at(-1).posts?.length ?? 0 };
+      if (run) {
+        state.lastRun = { ...summarize(run), postCount: run.posts?.length ?? 0 };
       }
 
       // History, state, and the next alarm are saved together, without external I/O between.
       await this.ctx.storage.transaction(async txn => {
-        for (let run of runs) {
+        if (run) {
           await this.#record(txn, run);
         }
 
         if (pending && (await txn.get('pending'))?.id === pending.id) {
           await txn.delete('pending');
+        }
 
-          if (followUp) {
-            await txn.put('pending', followUp);
-          }
+        // A manual run queued meanwhile goes ahead instead; it picks up the same work.
+        if (followUp && !(await txn.get('pending'))) {
+          await txn.put('pending', followUp);
         }
 
         await this.#save(txn, state);

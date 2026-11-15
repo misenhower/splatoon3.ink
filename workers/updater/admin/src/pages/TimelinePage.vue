@@ -179,7 +179,7 @@ async function openLinked(key) {
   let at = null;
 
   try {
-    if (kind === 'run' && !['current', 'pending', 'slot', 'retry'].includes(id)) {
+    if (kind === 'run' && !['current', 'pending', 'slot'].includes(id)) {
       at = (await api.run(owner, id)).run.startedAt;
     } else if (kind === 'auth' && Number(id)) {
       at = Number(id);

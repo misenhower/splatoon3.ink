@@ -27,6 +27,14 @@ async function runAlarm(stub) {
   return stub.status();
 }
 
+// For a run that leaves another queued: waits only for the run itself.
+async function runAlarmLeavingQueued(stub) {
+  await runDurableObjectAlarm(stub);
+  await vi.waitFor(async () => expect((await stub.status()).running).toBe(false));
+
+  return stub.status();
+}
+
 function request(path, { method = 'GET', token = 'test-run-token' } = {}) {
   return worker.fetch(new Request(`https://updater.test${path}`, {
     method,
@@ -91,33 +99,25 @@ describe('Scheduler', () => {
     expect(status.history).toHaveLength(1);
   });
 
-  it('retries a failed run after a minute, but not past the next slot', async () => {
+  it('does not retry a failed run: the next slot runs again', async () => {
     vi.spyOn(LANES.fast, 'run').mockResolvedValue({ ok: false, error: 'SplatNet unavailable' });
     let stub = scheduler();
     await stub.setAutomaticScheduling({ lane: 'fast', enabled: true });
 
-    // :05:15 is followed by :10:15, leaving room for retries.
-    let fiveAfter = nextSlot(LANE_SCHEDULES.fast, Date.parse('2026-11-08T12:04:30Z'));
+    let slot = nextSlot(LANE_SCHEDULES.fast, Date.parse('2026-11-08T12:04:30Z'));
     await runInDurableObject(stub, async (instance, ctx) => {
-      await ctx.storage.put('state', { enabled: true, next: fiveAfter });
+      await ctx.storage.put('state', { enabled: true, next: slot });
     });
 
     vi.useFakeTimers({ toFake: ['Date'] });
-    vi.setSystemTime(fiveAfter.at);
+    vi.setSystemTime(slot.at);
 
     let status = await runAlarm(stub);
-    expect(status).toMatchObject({ retries: 1, retryAt: fiveAfter.at + 60_000, next: fiveAfter });
+    expect(status.lastRun).toMatchObject({ ok: false, trigger: 'scheduled' });
+    expect(status.next).toEqual(nextSlot(LANE_SCHEDULES.fast, slot.at));
+    expect(status.pending).toBeNull();
 
-    // During the quick-update minutes, the next slot comes before any retry would.
-    let quick = nextSlot(LANE_SCHEDULES.fast, Date.parse('2026-11-08T12:59:00Z'));
-    await runInDurableObject(stub, async (instance, ctx) => {
-      await ctx.storage.put('state', { enabled: true, next: quick });
-    });
-    vi.setSystemTime(quick.at);
-
-    status = await runAlarm(stub);
-    expect(status).toMatchObject({ retries: 0, retryAt: null });
-    expect(status.next.at).toBe(quick.at + 60_000);
+    await stub.setAutomaticScheduling({ lane: 'fast', enabled: false });
   });
 
   it('runs a queued manual request without changing the schedule', async () => {
@@ -134,7 +134,7 @@ describe('Scheduler', () => {
     expect(status.lastRun).toMatchObject({ ok: true, trigger: 'manual', id: queued.run.id });
   });
 
-  it('continues an incomplete slow run a minute later, then returns to the hourly slot', async () => {
+  it('queues a continuation for an incomplete scheduled run', async () => {
     let run = vi.spyOn(LANES.slow, 'run')
       .mockResolvedValueOnce({ ok: true, incomplete: true })
       .mockResolvedValueOnce({ ok: true, incomplete: false });
@@ -144,8 +144,11 @@ describe('Scheduler', () => {
     vi.useFakeTimers({ toFake: ['Date'] });
     vi.setSystemTime(next.at);
 
-    let status = await runAlarm(stub);
-    expect(status).toMatchObject({ continuing: true, continuations: 1, retries: 0, retryAt: next.at + 60_000, next });
+    let status = await runAlarmLeavingQueued(stub);
+    let first = status.history[0];
+
+    expect(status.next.at).toBe(next.at + 3600_000);
+    expect(status.pending).toMatchObject({ continuationOf: first.id, continuations: 1, social: true, notBefore: next.at + 60_000 });
     expect(status.alarmAt).toBe(next.at + 60_000);
 
     vi.setSystemTime(next.at + 60_000);
@@ -153,9 +156,34 @@ describe('Scheduler', () => {
 
     expect(run).toHaveBeenCalledTimes(2);
     expect(run.mock.calls[1][0]).toEqual({ social: true });
-    expect(status.lastRun.trigger).toBe('continuation');
-    expect(status).toMatchObject({ continuing: false, continuations: 0, retryAt: null });
-    expect(status.next.at).toBe(next.at + 3600_000);
+    expect(status.lastRun).toMatchObject({ trigger: 'continuation', continuationOf: first.id });
+    expect(status.pending).toBeNull();
+    expect(status.alarmAt).toBe(next.at + 3600_000);
+
+    await stub.setAutomaticScheduling({ lane: 'slow', enabled: false });
+  });
+
+  it('runs a due slot before a queued run, then the queued run straight after', async () => {
+    let run = vi.spyOn(LANES.slow, 'run').mockResolvedValue({ ok: true });
+    let stub = scheduler();
+    let { next } = await stub.setAutomaticScheduling({ lane: 'slow', enabled: true });
+
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(next.at);
+
+    let { run: queued } = await stub.startManual({ lane: 'slow', social: false });
+    let status = await runAlarmLeavingQueued(stub);
+
+    expect(run).toHaveBeenCalledTimes(1);
+    expect(status.lastRun.trigger).toBe('scheduled');
+    expect(status.pending).toMatchObject({ id: queued.id, status: 'queued' });
+    expect(status.alarmAt).toBeLessThanOrEqual(Date.now());
+
+    status = await runAlarm(stub);
+
+    expect(run).toHaveBeenCalledTimes(2);
+    expect(status.lastRun).toMatchObject({ trigger: 'manual', id: queued.id });
+    expect(status.pending).toBeNull();
 
     await stub.setAutomaticScheduling({ lane: 'slow', enabled: false });
   });

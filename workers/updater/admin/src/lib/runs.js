@@ -102,17 +102,7 @@ export function collectUpcoming(status, until) {
 
     if (!state.enabled) continue;
 
-    // A retry or continuation runs before the lane returns to its regular slots.
-    if (state.retryAt) {
-      upcoming.push({ key: `${lane}:retry`, lane, at: state.retryAt, translations: state.next?.options?.translations, trigger: state.continuing ? 'continuation' : 'retry' });
-    }
-
-    let from = Math.max(status.now, state.retryAt ?? 0);
-
-    for (let slot of slotsBetween(status.schedules[lane], from, until)) {
-      // While retrying, the slot the lane is stuck on has already been attempted.
-      if (state.retryAt && state.next && slot.at <= state.next.at) continue;
-
+    for (let slot of slotsBetween(status.schedules[lane], status.now, until)) {
       upcoming.push({ key: `${lane}:slot:${slot.at}`, lane, at: slot.at, translations: slot.options.translations, trigger: 'scheduled' });
     }
   }

@@ -52,7 +52,7 @@ export async function purgeDataCache() {
 
 /**
  * Screenshots render SITE_URL, not the bucket. Before rendering, make sure the site serves the
- * data this Worker just published; otherwise fail so the scheduler retries shortly.
+ * data this Worker just published; otherwise fail, and the lane's next slot tries again.
  * @param {string} siteUrl
  */
 export async function verifyPublishedData(siteUrl = process.env.SITE_URL) {
