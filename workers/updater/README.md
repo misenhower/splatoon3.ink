@@ -128,7 +128,7 @@ snapshot goes straight to Spaces as part of the update (`app/common/storage/S3Ar
   a failed update. Each write is tried three times. Most snapshots are named for the hour and
   written again by every run in it, so a short Spaces outage costs nothing; X-Rank snapshots
   are stamped to the second and written once, so one that fails all three tries is lost.
-- Production has no archive settings yet; add them before cutover.
+- Production writes to the archive Space the Node server used (`splatoon3ink-archive`).
 
 ## Admin panel
 

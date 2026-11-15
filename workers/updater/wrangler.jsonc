@@ -94,18 +94,20 @@
         "ASSET_URL": "https://assets.splatoon3.ink",
         "R2_PUBLIC_URL": "https://assets.splatoon3.ink",
         "CLOUDFLARE_CACHE_PURGE_HOSTS": "splatoon3.ink,assets.splatoon3.ink",
-        "AUTOMATIC_SCHEDULING_ENABLED": "false"
-        // Before cutover: ARCHIVE_DATA, AWS_S3_ENDPOINT, AWS_REGION and AWS_S3_ARCHIVE_BUCKET
-        // (the real archive Space), as in dev. Without them no snapshots are archived.
+        "AUTOMATIC_SCHEDULING_ENABLED": "false",
+        // The real archive Space, which the Node server wrote to before.
+        "ARCHIVE_DATA": "true",
+        "AWS_S3_ENDPOINT": "https://nyc3.digitaloceanspaces.com",
+        "AWS_REGION": "nyc3",
+        "AWS_S3_ARCHIVE_BUCKET": "splatoon3ink-archive"
       },
       "triggers": { "crons": ["*/5 * * * *"] },
       "durable_objects": {
         "bindings": [
           { "name": "SCHEDULER", "class_name": "Scheduler" },
-          { "name": "REGION_AUTH", "class_name": "RegionAuth" }
-          // Once the production compressor is deployed (its daily run starts off), add
-          // { "name": "COMPRESSOR", "class_name": "Compressor", "script_name": "splatoon3-ink-compressor" }
-          // for the admin panel. Without it the panel leaves the archive out.
+          { "name": "REGION_AUTH", "class_name": "RegionAuth" },
+          // The archive compressor Worker (workers/compressor/), for the admin panel.
+          { "name": "COMPRESSOR", "class_name": "Compressor", "script_name": "splatoon3-ink-compressor" }
         ]
       },
       "browser": { "binding": "BROWSER", "remote": true },
