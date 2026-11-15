@@ -471,6 +471,15 @@ export function createMockApi() {
       });
     }
 
+    // The iPad uploads a North America token about once an hour, at no fixed minute.
+    if (region === 'US') {
+      for (let at = now - (now % HOUR) + 12 * MINUTE; at >= from; at -= HOUR) {
+        let uploadAt = at + Math.round(random(at + 1) * 20 * MINUTE);
+
+        events.push({ at: uploadAt, finishedAt: uploadAt + 40, ok: true, trigger: 'upload', errors: [], warnings: [] });
+      }
+    }
+
     if (refreshed[region]) {
       events.push({ at: refreshed[region], finishedAt: refreshed[region] + 2400, ok: true, trigger: 'manual', errors: [], warnings: [] });
     }
@@ -479,6 +488,10 @@ export function createMockApi() {
   }
 
   function authLogs(region, event) {
+    if (event.trigger === 'upload') {
+      return { lines: [{ at: event.at, level: 'info', text: `Cached a bullet token uploaded from the iPad, until ${new Date(event.at + 115 * MINUTE).toISOString()}` }], omitted: 0 };
+    }
+
     let lines = [
       { at: event.at + 30, level: 'info', text: `[NSO] [${region}] Renewing credentials...` },
       ...event.warnings.map(text => ({ at: event.at + 600, level: 'error', text })),
@@ -500,7 +513,7 @@ export function createMockApi() {
     return {
       region,
       alarmAt: !authScheduled ? null : hour + offset > now ? hour + offset : hour + HOUR + offset,
-      lastRefreshAt: events[0]?.finishedAt ?? null,
+      lastRefreshAt: events.find(event => event.trigger !== 'upload')?.finishedAt ?? null,
       enabled: authScheduled,
       hasSessionToken: true,
       events,

@@ -67,7 +67,7 @@
             {{ TRIGGER_LABELS[item.event.trigger] ?? 'Renewal' }}
           </dd>
         </div>
-        <div>
+        <div v-if="item.event.trigger !== 'upload'">
           <dt class="label">
             Duration
           </dt>
@@ -104,6 +104,9 @@
           A step failed along the way, but a later one made up for it and the renewal finished with new tokens.
         </p>
       </template>
+      <p v-if="item.event.trigger === 'upload'" class="text-muted">
+        A bullet token the iPad's SplatNet 3 app received, captured by splat-mitmproxy on ghost. It replaced the cached token until the next renewal or upload.
+      </p>
       <p v-if="!item.event.ok" class="text-muted">
         The tokens from the last successful renewal keep working for about two hours, so one failed renewal does not stop updates.
       </p>
@@ -117,7 +120,7 @@
         </div>
         <LogLines v-if="logs?.lines.length" :lines="logs.lines" class="max-h-72" />
         <p v-else class="text-muted">
-          {{ logError ?? (logs ? 'This renewal printed nothing.' : 'Loading…') }}
+          {{ logError ?? (logs ? 'Nothing was printed.' : 'Loading…') }}
         </p>
       </div>
 

@@ -14,6 +14,7 @@ export default defineConfig({
       miniflare: {
         bindings: {
           RUN_TOKEN: 'test-run-token',
+          TOKEN_UPLOAD_TOKEN: 'test-upload-token',
           NINTENDO_TOKEN_US: 'session-token-us-12345678',
           NXAPI_CLIENT_ID: 'client',
           NXAPI_SHARED_SECRET: 'secret',

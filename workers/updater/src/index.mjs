@@ -40,14 +40,18 @@ function timingSafeEqual(a, b) {
   return left.byteLength === right.byteLength && crypto.subtle.timingSafeEqual(left, right);
 }
 
-function authorized(request, env) {
-  if (!env.RUN_TOKEN) {
+function hasBearer(request, secret) {
+  if (!secret) {
     return false;
   }
 
   let [scheme, token] = (request.headers.get('Authorization') ?? '').split(' ');
 
-  return scheme === 'Bearer' && !!token && timingSafeEqual(token, env.RUN_TOKEN);
+  return scheme === 'Bearer' && !!token && timingSafeEqual(token, secret);
+}
+
+function authorized(request, env) {
+  return hasBearer(request, env.RUN_TOKEN);
 }
 
 function json(body, status = 200) {
@@ -74,6 +78,44 @@ async function armAll(env) {
     lanes: await Promise.all(LANE_NAMES.map(lane => scheduler(env, lane).ensureArmed({ lane }))),
     auth: await Promise.all(REGIONS.map(region => regionAuth(env, region).ensureArmed({ region }))),
   };
+}
+
+/**
+ * PUT /bullet-token: splat-mitmproxy on ghost uploads the bullet token response it captured from
+ * the iPad's SplatNet 3 app. It belongs to the account of TOKEN_UPLOAD_REGION and replaces that
+ * region's cached token. The upload token only allows this; it cannot start runs.
+ * @param {Request} request
+ * @param {object} env Worker environment
+ * @returns {Promise<Response>} The response
+ */
+async function tokenUpload(request, env) {
+  if (!hasBearer(request, env.TOKEN_UPLOAD_TOKEN)) {
+    return new Response(env.TOKEN_UPLOAD_TOKEN ? 'Unauthorized' : 'Token uploads are disabled', { status: 401 });
+  }
+
+  if (request.method !== 'PUT') {
+    return json({ ok: false, error: 'Use PUT' }, 405);
+  }
+
+  let region = env.TOKEN_UPLOAD_REGION;
+
+  if (!REGIONS.includes(region)) {
+    return json({ ok: false, error: 'TOKEN_UPLOAD_REGION is not set to a region' }, 500);
+  }
+
+  let bulletToken;
+
+  try {
+    bulletToken = await request.json();
+  } catch {
+    return json({ ok: false, error: 'The body must be the bullet token response as JSON' }, 400);
+  }
+
+  if (typeof bulletToken?.bulletToken !== 'string' || !bulletToken.bulletToken) {
+    return json({ ok: false, error: 'The body has no bulletToken' }, 400);
+  }
+
+  return json({ ok: true, ...(await regionAuth(env, region).storeUpload({ region, bulletToken })) });
 }
 
 async function control(request, env) {
@@ -170,6 +212,17 @@ export default withSentry(sentryOptions, {
         console.error('Admin request failed:', error);
 
         return json({ ok: false, error: 'The request failed. Refresh status before retrying.' }, 500);
+      }
+    }
+
+    if (new URL(request.url).pathname === '/bullet-token') {
+      try {
+        return await tokenUpload(request, env);
+      } catch (error) {
+        // RegionAuth reports its own errors to Sentry.
+        console.error('Token upload failed:', error);
+
+        return json({ ok: false, error: 'The upload failed' }, 500);
       }
     }
 

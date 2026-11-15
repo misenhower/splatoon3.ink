@@ -34,7 +34,8 @@ export function nextRefreshAt(region, now = Date.now()) {
  * It runs the same LocalAuth code as the Node runner; caches stay in private R2 storage.
  *
  * Storage: "region"; "scheduled" (false once scheduled renewals are turned off); "lastRefreshAt";
- * "event:*" (the last 48 hours of renewals, each with what it printed, for the admin panel).
+ * "event:*" (the last 48 hours of renewals and iPad uploads, each with what it printed, for the
+ * admin panel).
  */
 export class RegionAuth extends DurableObject {
   #auth = new LocalAuth;
@@ -92,9 +93,8 @@ export class RegionAuth extends DurableObject {
     let problems = log.lines.filter(line => line.level === 'error').map(line => line.text);
     // A renewal that failed without printing why still needs a reason.
     let errors = ok ? [] : problems.length ? problems : ['The renewal did not end with a new bullet token'];
-    let expired = await this.ctx.storage.list({ prefix: 'event:', end: `event:${stamp(Date.now() - HISTORY_MS)}` });
 
-    await this.ctx.storage.put(`event:${stamp(startedAt)}`, {
+    await this.#record({
       at: startedAt,
       finishedAt: Date.now(),
       ok,
@@ -105,16 +105,48 @@ export class RegionAuth extends DurableObject {
     });
     await this.ctx.storage.put('lastRefreshAt', Date.now());
 
-    if (expired.size) {
-      await this.ctx.storage.delete([...expired.keys()].slice(0, 128));
-    }
-
     if (errors.length) {
       Sentry.captureException(failure ?? new Error(`Nintendo credential renewal failed: ${errors[0]}`), { tags: { region, trigger } });
     }
 
     if (failure) {
       throw failure;
+    }
+  }
+
+  /**
+   * Cache a bullet token uploaded from the iPad (splat-mitmproxy) in place of the region's
+   * current one, and show it among the renewals. The next renewal replaces it in turn.
+   * @param {{ region: string, bulletToken: object }} options
+   * @returns {Promise<{ region: string, expires: number }>} When the cached token expires
+   */
+  async storeUpload({ region, bulletToken }) {
+    await this.#remember(region);
+
+    let at = Date.now();
+    let expires = await this.#auth.storeBulletToken(this.#nsoClient(region), bulletToken);
+
+    await this.#record({
+      at,
+      finishedAt: Date.now(),
+      ok: true,
+      trigger: 'upload',
+      errors: [],
+      warnings: [],
+      logs: { lines: [{ at, level: 'info', text: `Cached a bullet token uploaded from the iPad, until ${new Date(expires).toISOString()}` }], omitted: 0 },
+    });
+
+    return { region, expires };
+  }
+
+  // Keep an event for the admin panel, and forget those older than the history it shows.
+  async #record(event) {
+    let expired = await this.ctx.storage.list({ prefix: 'event:', end: `event:${stamp(Date.now() - HISTORY_MS)}` });
+
+    await this.ctx.storage.put(`event:${stamp(event.at)}`, event);
+
+    if (expired.size) {
+      await this.ctx.storage.delete([...expired.keys()].slice(0, 128));
     }
   }
 

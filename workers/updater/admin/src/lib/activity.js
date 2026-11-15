@@ -1,6 +1,6 @@
-// Everything the updater did or is about to do, as one list: lane runs, credential renewals,
-// social posts and archive compressions. The timeline and the activity list both draw from it, so they always show
-// the same things. Pure functions; no Vue in here.
+// Everything the updater did or is about to do, as one list: lane runs, credential renewals and
+// iPad token uploads, social posts and archive compressions. The timeline and the activity list
+// both draw from it, so they always show the same things. Pure functions; no Vue in here.
 
 import { formatDuration, ROW_LABELS, runKind, TRIGGER_LABELS } from './format.js';
 import { collectUpcoming, currentRun, HOUR, MINUTE, normalizeRun } from './runs.js';
@@ -58,6 +58,17 @@ function upcomingItem(slot) {
 }
 
 function authItem(region, event) {
+  let summary;
+
+  if (!event.ok) {
+    summary = event.errors?.[0] ?? 'Renewal failed';
+  } else if (event.trigger === 'upload') {
+    // Received, not obtained: there is no duration worth showing.
+    summary = TRIGGER_LABELS.upload;
+  } else {
+    summary = `${TRIGGER_LABELS[event.trigger] ?? 'Renewal'} · ${formatDuration(event.finishedAt - event.at)}`;
+  }
+
   return {
     key: `auth:${region}:${event.at}`,
     kind: 'auth',
@@ -66,9 +77,7 @@ function authItem(region, event) {
     end: event.finishedAt,
     state: event.ok ? 'ok' : 'failed',
     title: `${ROW_LABELS.auth} · ${region}`,
-    summary: event.ok
-      ? `${TRIGGER_LABELS[event.trigger] ?? 'Renewal'} · ${formatDuration(event.finishedAt - event.at)}`
-      : event.errors?.[0] ?? 'Renewal failed',
+    summary,
     manual: event.trigger === 'manual',
     region,
     event,

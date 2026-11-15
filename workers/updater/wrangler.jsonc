@@ -20,7 +20,8 @@
   // Select --env dev or --env production explicitly. Automatic scheduling starts off for a
   // new scheduler; POST /schedule?enabled=true turns it on and the setting survives deploys.
   // Secrets: NINTENDO_TOKEN_{US,EU,JP,AP}, NXAPI_CLIENT_ID, NXAPI_SHARED_SECRET, USER_AGENT,
-  // RUN_TOKEN, ACCESS_TEAM_DOMAIN and ACCESS_AUD (admin panel sign-in), AWS_ACCESS_KEY_ID and
+  // RUN_TOKEN, TOKEN_UPLOAD_TOKEN (splat-mitmproxy's iPad bullet token uploads, PUT /bullet-token),
+  // ACCESS_TEAM_DOMAIN and ACCESS_AUD (admin panel sign-in), AWS_ACCESS_KEY_ID and
   // AWS_SECRET_ACCESS_KEY (a DigitalOcean Spaces key that can write to the archive bucket),
   // optional SENTRY_DSN, CLOUDFLARE_CACHE_PURGE_ZONE_ID/API_TOKEN, and (production only) the
   // social account credentials.
@@ -39,6 +40,8 @@
       },
       "vars": {
         "ENVIRONMENT": "dev",
+        // The region whose account the iPad uploads bullet tokens for (North America).
+        "TOKEN_UPLOAD_REGION": "US",
         "ADMIN_HOSTNAME": "admin.dev.splatoon3.ink",
         "SITE_URL": "https://dev.splatoon3.ink",
         // The dev bucket's own custom domain, like assets.splatoon3.ink in production.
@@ -84,6 +87,8 @@
       },
       "vars": {
         "ENVIRONMENT": "production",
+        // The region whose account the iPad uploads bullet tokens for (North America).
+        "TOKEN_UPLOAD_REGION": "US",
         "ADMIN_HOSTNAME": "admin.splatoon3.ink",
         "SITE_URL": "https://splatoon3.ink",
         "ASSET_URL": "https://assets.splatoon3.ink",

@@ -69,6 +69,19 @@ describe('auth', () => {
     expect(fetch).toHaveBeenCalledOnce();
   });
 
+  it('serves a bullet token stored from elsewhere until it expires', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(Response.json({ bulletToken: 'fresh' })));
+    let local = new LocalAuth;
+
+    let expires = await local.storeBulletToken(fakeNsoClient(), { bulletToken: 'uploaded' });
+
+    // Two hours, less the five minutes every cached token gives up.
+    expect(expires).toBeGreaterThan(Date.now() + 114 * 60_000);
+    expect(expires).toBeLessThanOrEqual(Date.now() + 115 * 60_000);
+    expect(await local.bulletToken(fakeNsoClient())).toEqual({ bulletToken: 'uploaded' });
+    expect(fetch).not.toHaveBeenCalled();
+  });
+
   it('lets SplatNet clients use a configured provider', async () => {
     let provider = { bulletToken: vi.fn().mockResolvedValue({ bulletToken: 'remote' }), refresh: vi.fn() };
     configureAuth(provider);

@@ -32,17 +32,24 @@
           <template v-else-if="auth.alarmAt">
             Next at <span class="font-mono">{{ clock.time(auth.alarmAt, false) }}</span>
           </template>
-          <template v-if="(auth.enabled === false || auth.alarmAt) && auth.events?.[0]">
+          <template v-if="(auth.enabled === false || auth.alarmAt) && lastRenewal(auth)">
             ·
           </template>
           <RouterLink
-            v-if="auth.events?.[0]"
-            :to="{ name: 'timeline', query: { item: `auth:${region}:${auth.events[0].at}` } }"
+            v-if="lastRenewal(auth)"
+            :to="{ name: 'timeline', query: { item: `auth:${region}:${lastRenewal(auth).at}` } }"
             class="underline decoration-muted underline-offset-2 hover:decoration-ink"
           >
             Last renewal
           </RouterLink>
         </span>
+        <RouterLink
+          v-if="lastUpload(auth)"
+          :to="{ name: 'timeline', query: { item: `auth:${region}:${lastUpload(auth).at}` } }"
+          class="text-[13px] text-muted underline decoration-muted underline-offset-2 hover:decoration-ink"
+        >
+          iPad token uploaded {{ formatRelative(lastUpload(auth).at, store.now) }}
+        </RouterLink>
       </div>
       <button
         type="button"
@@ -84,9 +91,18 @@ const props = defineProps({
 // One switch covers every region; it counts as on while any region is still on.
 const scheduled = computed(() => Object.values(props.regions).some(auth => auth.enabled !== false));
 
+// The latest events come newest first, iPad uploads among the renewals.
+function lastRenewal(auth) {
+  return auth.events?.find(event => event.trigger !== 'upload') ?? null;
+}
+
+function lastUpload(auth) {
+  return auth.events?.find(event => event.trigger === 'upload') ?? null;
+}
+
 // The most recent renewal's error, if it failed.
 function failure(auth) {
-  let latest = auth.events?.[0];
+  let latest = lastRenewal(auth);
 
   return latest && !latest.ok ? latest.errors[0] ?? 'Last renewal failed' : null;
 }

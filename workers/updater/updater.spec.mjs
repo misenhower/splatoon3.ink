@@ -321,6 +321,25 @@ describe('RegionAuth', () => {
     expect(event).toMatchObject({ ok: true, errors: [], warnings: ['[znca-api] f: 503 Service Unavailable'] });
   });
 
+  it('caches an uploaded bullet token in place of the current one, and records the upload', async () => {
+    await env.PRIVATE.put('cache/nso.12345678.bulletToken.json', JSON.stringify({
+      expires: Date.now() + 3600_000,
+      data: { bulletToken: 'cached-token' },
+    }));
+    let us = regionAuth();
+
+    let { expires } = await us.storeUpload({ region: 'US', bulletToken: { bulletToken: 'ipad-token' } });
+
+    expect(expires).toBeGreaterThan(Date.now() + 110 * 60_000);
+    expect(await us.bulletToken({ region: 'US' })).toEqual({ bulletToken: 'ipad-token' });
+
+    let status = await us.status();
+    expect(status.events[0]).toMatchObject({ ok: true, trigger: 'upload', errors: [], warnings: [] });
+    // Uploads are not renewals.
+    expect(status.lastRefreshAt).toBeNull();
+    expect((await us.event({ at: status.events[0].at })).logs.lines[0].text).toMatch(/uploaded from the iPad/);
+  });
+
   it('counts a renewal that ended without a new bullet token as failed', async () => {
     // console.error is left alone: replacing it would skip the renewal's log capture.
     vi.spyOn(LocalAuth.prototype, 'refresh').mockImplementation(async () => {
@@ -334,6 +353,43 @@ describe('RegionAuth', () => {
 
     let [event] = (await us.status()).events;
     expect(event).toMatchObject({ ok: false, errors: ['[znca-api] f: 503 Service Unavailable'], warnings: [] });
+  });
+});
+
+describe('bullet token uploads', () => {
+  function upload(body, { method = 'PUT', token = 'test-upload-token' } = {}) {
+    return worker.fetch(new Request('https://updater.test/bullet-token', {
+      method,
+      headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+      body: typeof body === 'string' ? body : JSON.stringify(body),
+    }), env);
+  }
+
+  it('requires the upload token, which is not the run token', async () => {
+    expect((await upload({ bulletToken: 'x' }, { token: null })).status).toBe(401);
+    expect((await upload({ bulletToken: 'x' }, { token: 'test-run-token' })).status).toBe(401);
+    expect((await request('/status', { token: 'test-upload-token' })).status).toBe(401);
+  });
+
+  it('rejects anything but a bullet token response', async () => {
+    expect((await upload({ bulletToken: 'x' }, { method: 'POST' })).status).toBe(405);
+    expect((await upload('not json')).status).toBe(400);
+    expect((await upload({ token: 'x' })).status).toBe(400);
+    expect((await upload({ bulletToken: '' })).status).toBe(400);
+  });
+
+  it('caches the token for the North America account', async () => {
+    let body = { bulletToken: 'from-ipad', lang: 'en-US', is_noe_country: 'false' };
+    let response = await upload(body);
+
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({ ok: true, region: 'US', expires: expect.any(Number) });
+
+    let cached = await env.PRIVATE.get('cache/nso.12345678.bulletToken.json').then(object => object.json());
+    expect(cached).toMatchObject({ data: body, expires: expect.any(Number), cachedAt: expect.any(String) });
+
+    let [event] = (await env.REGION_AUTH.getByName('US').status()).events;
+    expect(event).toMatchObject({ trigger: 'upload', ok: true });
   });
 });
 

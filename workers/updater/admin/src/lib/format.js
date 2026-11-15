@@ -125,4 +125,5 @@ export const TRIGGER_LABELS = {
   scheduled: 'Scheduled',
   continuation: 'Continuation',
   manual: 'Manual',
+  upload: 'iPad upload',
 };

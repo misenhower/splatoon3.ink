@@ -20,6 +20,12 @@ Node runner (`npm run splatnet`, `npm run social`, …) uses the same code with 
   renewals are turned off in the admin panel (tokens are then obtained when an update needs
   one). A renewal counts as failed only if it ends without a new bullet token; a step that
   failed and was made up for by a later one is kept as a warning.
+- **iPad token uploads** (`PUT /bullet-token`): splat-mitmproxy on ghost captures the bullet
+  token the iPad's SplatNet 3 app receives (an hourly Shortcuts automation opens it) and
+  uploads it to both the dev and production Workers. It replaces the cached token of the
+  `TOKEN_UPLOAD_REGION` account (`US`, the North America account) until the next renewal or
+  upload, and shows on the admin timeline's Nintendo auth row as "iPad upload". It is an extra
+  source of tokens: nothing depends on it.
 - A cron trigger every five minutes only re-arms missing alarms. It never enables a lane.
 
 Failed runs are not retried: the lane's next slot runs again, 1–15 minutes later for the
@@ -49,7 +55,8 @@ runner does not report to Sentry.
    "Dev Data Assets" for `dev.splatoon3.ink`), or the fast lane's published-data check fails.
 3. Secrets (`npx wrangler secret put NAME --config workers/updater/wrangler.jsonc --env dev`):
    `NINTENDO_TOKEN_US`, `NINTENDO_TOKEN_EU`, `NINTENDO_TOKEN_JP`, `NINTENDO_TOKEN_AP`,
-   `NXAPI_CLIENT_ID`, `NXAPI_SHARED_SECRET`, `USER_AGENT`, `RUN_TOKEN`, `ACCESS_TEAM_DOMAIN`
+   `NXAPI_CLIENT_ID`, `NXAPI_SHARED_SECRET`, `USER_AGENT`, `RUN_TOKEN`, `TOKEN_UPLOAD_TOKEN`
+   (see iPad token uploads), `ACCESS_TEAM_DOMAIN`
    and `ACCESS_AUD` (see Admin panel), `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` (see
    Archive), optional `SENTRY_DSN` and
    `CLOUDFLARE_CACHE_PURGE_ZONE_ID` / `CLOUDFLARE_CACHE_PURGE_API_TOKEN`. Social account
@@ -91,6 +98,16 @@ curl -X POST -H "$AUTH" "$BASE/sentry-test"                                     
 Manual runs are queued and executed by the lane's alarm; poll `/status` for the result.
 A manual run interrupted mid-way is reported as failed rather than replayed, so social posts
 are never repeated automatically.
+
+## iPad token uploads
+
+`PUT /bullet-token` takes the body of a SplatNet 3 `/api/bullet_tokens` response, with
+`Authorization: Bearer $TOKEN_UPLOAD_TOKEN`. That token only allows uploads (it cannot reach
+the control endpoints), and uploads are disabled without it. splat-mitmproxy uses the same
+value for both environments, so set the same secret on dev and production.
+
+It answers `{ ok, region, expires }`, or 400 for a body without a `bulletToken`. Do not test
+it with a made-up token: whatever is uploaded replaces the region's working one.
 
 ## Archive
 

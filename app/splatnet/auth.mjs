@@ -7,8 +7,27 @@ import queryHashes from './queryHashes.json' with { type: 'json' };
 export const SPLATNET3_WEB_SERVICE_ID = '4834290508791808';
 const SPLATNET3_BASE_URL = 'https://api.lp1.av5ja.srv.nintendo.net';
 
+// We can assume a bullet token expires after two hours.
+const BULLET_TOKEN_TTL_SECONDS = 7200;
+
 // Serialize token acquisition per account (NSO session token), across all callers.
 const bulletTokenLimits = new Map();
+
+function tokenLimit(nsoClient) {
+  let key = nsoClient.cachePrefix;
+  let limit = bulletTokenLimits.get(key);
+
+  if (!limit) {
+    limit = pLimit(1);
+    bulletTokenLimits.set(key, limit);
+  }
+
+  return limit;
+}
+
+function bulletTokenCacheFor(nsoClient) {
+  return new ValueCache(`${nsoClient.cachePrefix}.bulletToken`);
+}
 
 /**
  * Obtains SplatNet 3 bullet tokens: Nintendo Account → Coral → web service token → bullet
@@ -26,16 +45,8 @@ export class LocalAuth {
    * @param {boolean} [options.useCache] false to obtain a fresh token
    */
   bulletToken(nsoClient, { language = 'en-US', useCache = true } = {}) {
-    const key = nsoClient.cachePrefix;
-    let tokenLimit = bulletTokenLimits.get(key);
-
-    if (!tokenLimit) {
-      tokenLimit = pLimit(1);
-      bulletTokenLimits.set(key, tokenLimit);
-    }
-
-    return tokenLimit(async () => {
-      let bulletTokenCache = new ValueCache(`${key}.bulletToken`);
+    return tokenLimit(nsoClient)(async () => {
+      let bulletTokenCache = bulletTokenCacheFor(nsoClient);
 
       let bulletToken = useCache
         ? await bulletTokenCache.getData()
@@ -47,6 +58,22 @@ export class LocalAuth {
       }
 
       return bulletToken;
+    });
+  }
+
+  /**
+   * Cache a bullet token obtained elsewhere (the iPad's SplatNet 3 app, through splat-mitmproxy),
+   * in place of the account's current one. It is kept as long as one created here.
+   * @param {import('./NsoClient.mjs').default} nsoClient The account the token belongs to
+   * @param {object} bulletToken The bullet token response
+   * @returns {Promise<number>} When the cached token expires (epoch milliseconds)
+   */
+  storeBulletToken(nsoClient, bulletToken) {
+    return tokenLimit(nsoClient)(async () => {
+      let expiry = calculateCacheExpiry(BULLET_TOKEN_TTL_SECONDS);
+      await bulletTokenCacheFor(nsoClient).setData(bulletToken, expiry);
+
+      return expiry;
     });
   }
 
@@ -85,8 +112,7 @@ export class LocalAuth {
 
     let bulletToken = await response.json();
 
-    // We can assume the token expires after 7200 seconds
-    let expiry = calculateCacheExpiry(7200);
+    let expiry = calculateCacheExpiry(BULLET_TOKEN_TTL_SECONDS);
     await bulletTokenCache.setData(bulletToken, expiry);
 
     console.debug(`Caching bullet token until: ${expiry}`);

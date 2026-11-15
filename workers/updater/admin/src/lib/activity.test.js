@@ -75,6 +75,19 @@ describe('buildActivity', () => {
     expect(byKey[`auth:US:${T0 - 25 * MINUTE}`]).toMatchObject({ row: 'auth', region: 'US', title: 'Nintendo auth · US', summary: 'HTTP 502' });
   });
 
+  it('shows iPad token uploads among the renewals, without a duration', () => {
+    let now = T0 + 10 * MINUTE;
+    let upload = { at: T0 - 5 * MINUTE, finishedAt: T0 - 5 * MINUTE + 40, ok: true, trigger: 'upload', errors: [], warnings: [] };
+    let items = buildActivity({
+      status: status(now, { auth: { US: { hasSessionToken: true, alarmAt: null } } }),
+      history: history({ auth: { US: { [upload.at]: upload } } }),
+    });
+
+    expect(items.find(item => item.key === `auth:US:${upload.at}`)).toMatchObject({
+      row: 'auth', state: 'ok', title: 'Nintendo auth · US', summary: 'iPad upload', manual: false,
+    });
+  });
+
   it('shows archive compressions, the one in progress, and the next when it is close', () => {
     let now = T0 + 10 * MINUTE;
     let done = { id: 'c1', trigger: 'scheduled', maxDays: 10, dryRun: false, startedAt: T0 - 9 * HOUR, finishedAt: T0 - 9 * HOUR + 43_000, ok: true, exitCode: 0 };
