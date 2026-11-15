@@ -98,7 +98,7 @@
         "bindings": [
           { "name": "SCHEDULER", "class_name": "Scheduler" },
           { "name": "REGION_AUTH", "class_name": "RegionAuth" }
-          // Once the production compressor is deployed (after spectre stops), add
+          // Once the production compressor is deployed (its daily run starts off), add
           // { "name": "COMPRESSOR", "class_name": "Compressor", "script_name": "splatoon3-ink-compressor" }
           // for the admin panel. Without it the panel leaves the archive out.
         ]

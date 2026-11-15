@@ -21,7 +21,9 @@
         "AWS_S3_ENDPOINT": "https://nyc3.digitaloceanspaces.com",
         "AWS_REGION": "nyc3",
         "AWS_S3_ARCHIVE_BUCKET": "splatoon3ink-archive-test",
-        "ENVIRONMENT": "dev"
+        "ENVIRONMENT": "dev",
+        // Whether the daily cron starts a run until the admin panel turns it on or off.
+        "AUTOMATIC_SCHEDULING_ENABLED": "true"
       },
       "triggers": { "crons": ["30 0 * * *"] },
       "containers": [
@@ -42,9 +44,11 @@
         "AWS_S3_ENDPOINT": "https://nyc3.digitaloceanspaces.com",
         "AWS_REGION": "nyc3",
         "AWS_S3_ARCHIVE_BUCKET": "splatoon3ink-archive",
-        "ENVIRONMENT": "production"
+        "ENVIRONMENT": "production",
+        // Off until cutover: spectre also compresses at 00:30 UTC. Turn it on from the admin
+        // panel once spectre has stopped.
+        "AUTOMATIC_SCHEDULING_ENABLED": "false"
       },
-      // Spectre also compresses at 00:30 UTC until cutover; deploy this only once it stops.
       "triggers": { "crons": ["30 0 * * *"] },
       "containers": [
         {

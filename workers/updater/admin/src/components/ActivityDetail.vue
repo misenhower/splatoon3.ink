@@ -92,6 +92,18 @@
       >
         {{ error }}
       </p>
+      <template v-if="item.event.warnings?.length">
+        <p
+          v-for="warning in item.event.warnings"
+          :key="warning"
+          class="rounded-lg border border-warn/50 bg-warn/10 px-3 py-2 text-warn"
+        >
+          {{ warning }}
+        </p>
+        <p class="text-muted">
+          A step failed along the way, but a later one made up for it and the renewal finished with new tokens.
+        </p>
+      </template>
       <p v-if="!item.event.ok" class="text-muted">
         The tokens from the last successful renewal keep working for about two hours, so one failed renewal does not stop updates.
       </p>

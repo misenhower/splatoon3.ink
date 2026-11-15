@@ -16,7 +16,10 @@ Node runner (`npm run splatnet`, `npm run social`, …) uses the same code with 
   Retries after five minutes, up to twice.
 - **RegionAuth** (one Durable Object per region, `US`/`EU`/`JP`/`AP`): the only place that logs
   in to Nintendo for its region. Both lanes get bullet tokens from it, so they share one token
-  and never log in at the same time. It renews credentials hourly at :35–:38.
+  and never log in at the same time. It renews credentials hourly at :35–:38, unless scheduled
+  renewals are turned off in the admin panel (tokens are then obtained when an update needs
+  one). A renewal counts as failed only if it ends without a new bullet token; a step that
+  failed and was made up for by a later one is kept as a warning.
 - A cron trigger every five minutes only re-arms missing alarms. It never enables a lane.
 
 Each lane runs one thing at a time; the lanes run independently of each other. Run limits
@@ -29,7 +32,8 @@ With `CLOUDFLARE_CACHE_PURGE_*` configured, data JSON is purged from the edge af
 
 With a `SENTRY_DSN` secret, errors go to Sentry (`@sentry/cloudflare`): a failed updater,
 social post or archive snapshot (reported by the shared `app/` code through `@sentry/core`), a
-lane run that fails outright, a failed credential renewal, and anything uncaught. The Node
+lane run that fails outright, a credential renewal that ends without a new bullet token, and
+anything uncaught. The Node
 runner does not report to Sentry.
 
 ## Setup (once per environment)
@@ -120,7 +124,9 @@ on any other hostname.
   up next). The two scroll together. Selecting anything in either shows its details and log
   lines. A combined log sits below.
 - **Controls**: per lane, run now, pause, and automatic scheduling; credential renewal per
-  region; archive compression now, or as a dry run.
+  region, and one switch for scheduled renewals in every region; archive compression now, or as
+  a dry run, and a switch for the daily run. Everything that runs on its own has a switch here
+  (social accounts have theirs on the Social page).
 - **Social**: the post log (what was posted, what failed), a posting switch per account, when
   each status last went to each account, and a preview of any status with a confirmed post by
   hand. A manual run from the panel never posts unless "Post to social" is ticked.

@@ -71,13 +71,19 @@ export default withSentry(sentryOptions, {
       return json(result, result.ok ? 202 : result.busy ? 409 : 400);
     }
 
+    if (route === 'POST /schedule') {
+      return json(await compressor(env).setScheduling({ enabled: url.searchParams.get('enabled') === 'true' }));
+    }
+
     return json({ ok: false, error: 'Not found' }, 404);
   },
 
   async scheduled(controller, env) {
     let result = await compressor(env).start({ trigger: 'scheduled' });
 
-    if (!result.ok) {
+    if (result.off) {
+      console.info(JSON.stringify({ event: 'compress-skipped', reason: 'scheduled runs are off' }));
+    } else if (!result.ok) {
       console.warn(JSON.stringify({ event: 'compress-skipped', ...result }));
     }
   },

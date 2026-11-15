@@ -231,6 +231,9 @@ export function createMockApi() {
     slow: { enabled: true, paused: false, manual: null, extra: [] },
   };
   let refreshed = {};
+  // The switches for scheduled credential renewals (every region) and the daily compression.
+  let authScheduled = true;
+  let archiveScheduled = true;
   let disabled = { threads: { at: Date.now() - 26 * HOUR } };
   let manualPosts = [];
   // Archive compressions started from the panel; each takes 40 seconds.
@@ -462,20 +465,23 @@ export function createMockApi() {
     from = Math.max(from, now - HISTORY_MS);
 
     for (let at = latest, count = 0; at >= from; at -= HOUR, count++) {
-      // The AP region trips once, two renewals ago, to show what a failure looks like.
+      // The AP region trips once, two renewals ago, to show what a failure looks like. US
+      // recovers from a step that failed (znca briefly unavailable), which is only a warning.
       let failed = region === 'AP' && count === 1;
+      let recovered = region === 'US' && count === 2;
 
       events.push({
         at,
-        finishedAt: at + 2200 + Math.round(random(at) * 1500),
+        finishedAt: at + 2200 + Math.round(random(at) * 1500) + (recovered ? 30_000 : 0),
         ok: !failed,
         trigger: 'scheduled',
         errors: failed ? ['Invalid bullet token response code: 502'] : [],
+        warnings: recovered ? ['[znca-api] f: 503 Service Unavailable'] : [],
       });
     }
 
     if (refreshed[region]) {
-      events.push({ at: refreshed[region], finishedAt: refreshed[region] + 2400, ok: true, trigger: 'manual', errors: [] });
+      events.push({ at: refreshed[region], finishedAt: refreshed[region] + 2400, ok: true, trigger: 'manual', errors: [], warnings: [] });
     }
 
     return events.filter(event => event.at >= from && event.at < to).sort((a, b) => b.at - a.at);
@@ -484,6 +490,7 @@ export function createMockApi() {
   function authLogs(region, event) {
     let lines = [
       { at: event.at + 30, level: 'info', text: `[NSO] [${region}] Renewing credentials...` },
+      ...event.warnings.map(text => ({ at: event.at + 600, level: 'error', text })),
       { at: event.at + 900, level: 'debug', text: `[NSO] [${region}] Got a web service token` },
     ];
 
@@ -501,8 +508,9 @@ export function createMockApi() {
 
     return {
       region,
-      alarmAt: hour + offset > now ? hour + offset : hour + HOUR + offset,
+      alarmAt: !authScheduled ? null : hour + offset > now ? hour + offset : hour + HOUR + offset,
       lastRefreshAt: events[0]?.finishedAt ?? null,
+      enabled: authScheduled,
       hasSessionToken: true,
       events,
     };
@@ -554,7 +562,13 @@ export function createMockApi() {
       }
     }
 
-    return { now, nextAt, current, runs: runs.sort((a, b) => b.startedAt - a.startedAt) };
+    return {
+      now,
+      enabled: archiveScheduled,
+      nextAt: archiveScheduled ? nextAt : null,
+      current,
+      runs: runs.sort((a, b) => b.startedAt - a.startedAt),
+    };
   }
 
   // What a compression printed: the [Archive Compressor] lines, as far as it has got by now.
@@ -710,6 +724,20 @@ export function createMockApi() {
       refreshed[body.region] = now;
 
       return { status: 200, body: { ok: true, ...authStatus(body.region, now) } };
+    }
+
+    if (pathname === '/auth/scheduling' || pathname === '/archive/scheduling') {
+      if (typeof body.enabled !== 'boolean') return { status: 400, body: { ok: false, error: 'Enabled must be a boolean.' } };
+
+      if (pathname === '/archive/scheduling') {
+        archiveScheduled = body.enabled;
+
+        return { status: 200, body: { ok: true, enabled: archiveScheduled } };
+      }
+
+      authScheduled = body.enabled;
+
+      return { status: 200, body: { ok: true, results: REGIONS.map(region => ({ ok: true, region, enabled: authScheduled })) } };
     }
 
     if (pathname === '/archive/run') {

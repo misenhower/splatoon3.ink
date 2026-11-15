@@ -317,6 +317,32 @@ describe('admin panel', () => {
     }), unbound)).status).toBe(400);
   });
 
+  it('turns the daily archive compression off and on', async () => {
+    expect(await (await post('/admin/api/archive/scheduling', { enabled: false })).json()).toEqual({ ok: true, enabled: false });
+
+    let status = await (await adminRequest(new Request(origin + '/admin/api/status'), adminEnv())).json();
+    expect(status.archive).toMatchObject({ enabled: false, nextAt: null });
+
+    expect((await post('/admin/api/archive/scheduling', { enabled: 'no' })).status).toBe(400);
+    expect(await (await post('/admin/api/archive/scheduling', { enabled: true })).json()).toEqual({ ok: true, enabled: true });
+  });
+
+  it('turns scheduled credential renewals off and on for every region', async () => {
+    let off = await (await post('/admin/api/auth/scheduling', { enabled: false })).json();
+    expect(off.ok).toBe(true);
+    expect(off.results.map(result => result.region)).toEqual(['US', 'EU', 'JP', 'AP']);
+
+    let status = await (await adminRequest(new Request(origin + '/admin/api/status'), adminEnv())).json();
+    expect(Object.values(status.auth).map(auth => auth.enabled)).toEqual([false, false, false, false]);
+    expect(status.auth.US.alarmAt).toBeNull();
+
+    expect((await post('/admin/api/auth/scheduling', {})).status).toBe(400);
+    await post('/admin/api/auth/scheduling', { enabled: true });
+
+    status = await (await adminRequest(new Request(origin + '/admin/api/status'), adminEnv())).json();
+    expect(status.auth.US).toMatchObject({ enabled: true, alarmAt: expect.any(Number) });
+  });
+
   it('rejects cross-origin and non-JSON actions', async () => {
     let body = { lane: 'fast', translations: false };
 

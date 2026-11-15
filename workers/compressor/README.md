@@ -26,8 +26,10 @@ the snapshots; this Worker never touches R2.
 - A container that stops without reporting (a crash, running out of memory) fails the run
   with "The container stopped before it reported how the run went"; its log shows how far it
   got. A run past three hours is stopped.
-- The updater's admin panel shows the runs (timeline and Controls) and can start one, through
-  its `COMPRESSOR` binding to this Worker's Durable Object.
+- The updater's admin panel shows the runs (timeline and Controls), can start one, and turns
+  the daily run on or off, through its `COMPRESSOR` binding to this Worker's Durable Object.
+  Until it is turned on or off there, the `AUTOMATIC_SCHEDULING_ENABLED` var decides: on in
+  dev, off in production.
 
 The compressor doesn't delete the source snapshots; `npm run data:archive:prune` does that,
 by hand.
@@ -42,7 +44,8 @@ by hand.
    container itself does not).
 3. The bucket is a var: dev uses `splatoon3ink-archive-test` and must never point at the
    production `splatoon3ink-archive`.
-4. Production: deploy only once spectre stops, which also compresses at 00:30 UTC.
+4. Production starts with the daily run off, because spectre also compresses at 00:30 UTC. Turn
+   it on from the admin panel once spectre has stopped.
 
 ## Commands
 
@@ -63,6 +66,7 @@ curl -H "$AUTH" "$BASE/run?id=RUN_ID"                 # one run with its log lin
 curl -X POST -H "$AUTH" "$BASE/run"                   # compress now (202, or 409 if running)
 curl -X POST -H "$AUTH" "$BASE/run?dryRun=true"       # list what would be compressed
 curl -X POST -H "$AUTH" "$BASE/run?maxDays=30"        # catch up on more days
+curl -X POST -H "$AUTH" "$BASE/schedule?enabled=false" # turn the daily run off (or on)
 ```
 
 To try the image locally (OrbStack), against dev's bucket only:

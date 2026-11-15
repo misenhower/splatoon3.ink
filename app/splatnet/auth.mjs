@@ -51,13 +51,17 @@ export class LocalAuth {
   }
 
   /**
-   * Renew every credential for the account ahead of time, bypassing the caches.
+   * Renew every credential for the account ahead of time, bypassing the caches. A step that
+   * fails is logged and the next one still runs: the bullet token step obtains whatever it
+   * needs that is missing, so it can make up for an earlier failure.
    * @param {import('./NsoClient.mjs').default} nsoClient
+   * @returns {Promise<boolean>} Whether it ended with a new bullet token
    */
   async refresh(nsoClient) {
     await safe(() => nsoClient.getCoralSession(false));
     await safe(() => nsoClient.getWebServiceToken(SPLATNET3_WEB_SERVICE_ID, false));
-    await safe(() => this.bulletToken(nsoClient, { useCache: false }));
+
+    return safe(() => this.bulletToken(nsoClient, { useCache: false }));
   }
 
   async _createBulletToken(nsoClient, webServiceToken, language, bulletTokenCache) {
@@ -91,11 +95,16 @@ export class LocalAuth {
   }
 }
 
+// Returns whether the step succeeded.
 async function safe(callable) {
   try {
     await callable();
+
+    return true;
   } catch (e) {
     console.error(e);
+
+    return false;
   }
 }
 

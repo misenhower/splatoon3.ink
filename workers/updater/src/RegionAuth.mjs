@@ -33,8 +33,8 @@ export function nextRefreshAt(region, now = Date.now()) {
  * so parallel lanes share one token and never log in to the same account at the same time.
  * It runs the same LocalAuth code as the Node runner; caches stay in private R2 storage.
  *
- * Storage: "region"; "lastRefreshAt"; "event:*" (the last 48 hours of renewals, each with what
- * it printed, for the admin panel).
+ * Storage: "region"; "scheduled" (false once scheduled renewals are turned off); "lastRefreshAt";
+ * "event:*" (the last 48 hours of renewals, each with what it printed, for the admin panel).
  */
 export class RegionAuth extends DurableObject {
   #auth = new LocalAuth;
@@ -68,33 +68,39 @@ export class RegionAuth extends DurableObject {
     return this.#auth.bulletToken(this.#nsoClient(region), { language, useCache });
   }
 
-  // Renewal logs its failures instead of throwing (the cached tokens usually still work), so
-  // the outcome recorded for the admin panel comes from what it printed.
+  // Renewal logs its failures instead of throwing (the cached tokens usually still work). It
+  // succeeded if it ended with a new bullet token: a step that failed along the way (znca
+  // briefly unavailable, say) is made up for by the next one, and is kept as a warning.
   async refresh({ region, trigger = 'manual' }) {
     await this.#remember(region);
 
     let startedAt = Date.now();
     let log = new RunLog;
     let failure = null;
+    let renewed = false;
 
     try {
       let nsoClient = this.#nsoClient(region);
 
-      await captureLogs(log, () => this.#auth.refresh(nsoClient));
+      renewed = await captureLogs(log, () => this.#auth.refresh(nsoClient));
     } catch (error) {
       failure = error;
       log.add('error', [error]);
     }
 
-    let errors = log.lines.filter(line => line.level === 'error').map(line => line.text);
+    let ok = renewed && !failure;
+    let problems = log.lines.filter(line => line.level === 'error').map(line => line.text);
+    // A renewal that failed without printing why still needs a reason.
+    let errors = ok ? [] : problems.length ? problems : ['The renewal did not end with a new bullet token'];
     let expired = await this.ctx.storage.list({ prefix: 'event:', end: `event:${stamp(Date.now() - HISTORY_MS)}` });
 
     await this.ctx.storage.put(`event:${stamp(startedAt)}`, {
       at: startedAt,
       finishedAt: Date.now(),
-      ok: errors.length === 0,
+      ok,
       trigger,
       errors,
+      warnings: ok ? problems : [],
       logs: log.toJSON(),
     });
     await this.ctx.storage.put('lastRefreshAt', Date.now());
@@ -146,6 +152,29 @@ export class RegionAuth extends DurableObject {
     return [...(await this.ctx.storage.list({ prefix: 'event:', reverse: true, limit })).values()];
   }
 
+  // Scheduled renewals are on unless turned off from the admin panel. Off, tokens are still
+  // obtained when an update needs one; they are just not renewed ahead of time.
+  async #scheduled() {
+    return (await this.ctx.storage.get('scheduled')) ?? true;
+  }
+
+  /**
+   * Turn scheduled renewals on or off.
+   * @param {{ region: string, enabled: boolean }} options
+   */
+  async setScheduling({ region, enabled }) {
+    await this.#remember(region);
+    await this.ctx.storage.put('scheduled', enabled);
+
+    if (!enabled) {
+      await this.ctx.storage.deleteAlarm();
+
+      return { ok: true, region, enabled };
+    }
+
+    return { ok: true, region, enabled, ...(await this.ensureArmed({ region })) };
+  }
+
   // Called by the cron watchdog: make sure the hourly refresh is scheduled.
   async ensureArmed({ region }) {
     await this.#remember(region);
@@ -154,6 +183,12 @@ export class RegionAuth extends DurableObject {
       await this.ctx.storage.deleteAlarm();
 
       return { region, armed: false, reason: 'no session token' };
+    }
+
+    if (!(await this.#scheduled())) {
+      await this.ctx.storage.deleteAlarm();
+
+      return { region, armed: false, reason: 'scheduled renewals are off' };
     }
 
     let alarmAt = await this.ctx.storage.getAlarm();
@@ -173,6 +208,7 @@ export class RegionAuth extends DurableObject {
       region,
       alarmAt: await this.ctx.storage.getAlarm(),
       lastRefreshAt: (await this.ctx.storage.get('lastRefreshAt')) ?? null,
+      enabled: await this.#scheduled(),
       hasSessionToken: !!regionTokens()[region ?? ''],
       // The latest few; the panel loads the rest by time span.
       events: await this.events({ limit: 8 }),
@@ -182,7 +218,8 @@ export class RegionAuth extends DurableObject {
   async alarm() {
     let region = await this.ctx.storage.get('region');
 
-    if (!region) {
+    // An alarm set before renewals were turned off.
+    if (!region || !(await this.#scheduled())) {
       return;
     }
 

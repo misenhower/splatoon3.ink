@@ -219,6 +219,30 @@ async function action(pathname, body, env) {
     return json(result, result.ok ? 202 : actionStatus(result));
   }
 
+  if (pathname === '/admin/api/archive/scheduling') {
+    if (!env.COMPRESSOR) {
+      return json({ ok: false, error: 'The archive compressor is not set up for this environment.' }, 400);
+    }
+
+    if (typeof body.enabled !== 'boolean') {
+      return json({ ok: false, error: 'Enabled must be a boolean.' }, 400);
+    }
+
+    return json(await env.COMPRESSOR.getByName('archive').setScheduling({ enabled: body.enabled }));
+  }
+
+  // One switch for every region's scheduled renewals.
+  if (pathname === '/admin/api/auth/scheduling') {
+    if (typeof body.enabled !== 'boolean') {
+      return json({ ok: false, error: 'Enabled must be a boolean.' }, 400);
+    }
+
+    let results = await Promise.all(REGIONS.map(region =>
+      env.REGION_AUTH.getByName(region).setScheduling({ region, enabled: body.enabled })));
+
+    return json({ ok: results.every(result => result.ok), results });
+  }
+
   if (pathname === '/admin/api/auth/refresh') {
     if (!REGIONS.includes(body.region)) {
       return json({ ok: false, error: `Region must be one of ${REGIONS.join(', ')}.` }, 400);
@@ -282,7 +306,8 @@ async function action(pathname, body, env) {
 }
 
 const ACTIONS = [
-  '/admin/api/run', '/admin/api/scheduling', '/admin/api/pause', '/admin/api/auth/refresh', '/admin/api/archive/run',
+  '/admin/api/run', '/admin/api/scheduling', '/admin/api/pause',
+  '/admin/api/auth/refresh', '/admin/api/auth/scheduling', '/admin/api/archive/run', '/admin/api/archive/scheduling',
   '/admin/api/social/account', '/admin/api/social/preview', '/admin/api/social/post',
   '/admin/api/data/purge', '/admin/api/data/verify',
 ];

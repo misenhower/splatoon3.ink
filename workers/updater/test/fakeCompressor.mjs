@@ -1,17 +1,26 @@
 // Stands in for the archive compressor Worker (workers/compressor/) in the Worker tests: the
 // updater's COMPRESSOR binding points at that Worker's Durable Object, which needs a container.
-// It keeps the same status(), run() and start() shapes, and records runs without running anything.
+// It keeps the same status(), run(), start() and setScheduling() shapes, and records runs without running anything.
 
 import { DurableObject } from 'cloudflare:workers';
 
 export class Compressor extends DurableObject {
   async status() {
+    let enabled = (await this.ctx.storage.get('scheduled')) ?? true;
+
     return {
       now: Date.now(),
-      nextAt: Date.UTC(2030, 0, 1, 0, 30),
+      enabled,
+      nextAt: enabled ? Date.UTC(2030, 0, 1, 0, 30) : null,
       current: (await this.ctx.storage.get('current')) ?? null,
       runs: (await this.ctx.storage.get('runs')) ?? [],
     };
+  }
+
+  async setScheduling({ enabled }) {
+    await this.ctx.storage.put('scheduled', enabled);
+
+    return { ok: true, enabled };
   }
 
   async run(id) {

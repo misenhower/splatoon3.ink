@@ -4,6 +4,7 @@ import worker from './src/index.mjs';
 import { LANES } from './src/Scheduler.mjs';
 import { LANE_SCHEDULES, nextSlot } from './src/schedule.mjs';
 import { nextRefreshAt } from './src/RegionAuth.mjs';
+import { LocalAuth } from '../../app/splatnet/auth.mjs';
 import { setupRuntime } from './src/runtime.mjs';
 import { verifyPublishedData } from './src/pipeline.mjs';
 
@@ -257,6 +258,54 @@ describe('RegionAuth', () => {
     expect(armed.alarmAt).toBe(nextRefreshAt('US', armed.alarmAt - 3600_000));
 
     expect(await eu.ensureArmed({ region: 'EU' })).toMatchObject({ armed: false, reason: 'no session token' });
+  });
+
+  it('stops renewing on a schedule while turned off, and picks up again when turned on', async () => {
+    let refresh = vi.spyOn(LocalAuth.prototype, 'refresh').mockResolvedValue(true);
+    let us = regionAuth();
+
+    await us.ensureArmed({ region: 'US' });
+    expect(await us.setScheduling({ region: 'US', enabled: false })).toMatchObject({ ok: true, enabled: false });
+    expect(await us.status()).toMatchObject({ enabled: false, alarmAt: null });
+
+    // The cron watchdog leaves it off, and an alarm set before it was turned off does nothing.
+    expect(await us.ensureArmed({ region: 'US' })).toMatchObject({ armed: false, reason: 'scheduled renewals are off' });
+    await runInDurableObject(us, instance => instance.alarm());
+    expect(refresh).not.toHaveBeenCalled();
+    expect(await us.status()).toMatchObject({ alarmAt: null });
+
+    expect(await us.setScheduling({ region: 'US', enabled: true })).toMatchObject({ ok: true, enabled: true, armed: true });
+    expect(await us.status()).toMatchObject({ enabled: true, alarmAt: expect.any(Number) });
+  });
+
+  it('counts a renewal that recovered from a failed step as renewed, with a warning', async () => {
+    // console.error is left alone: replacing it would skip the renewal's log capture.
+    vi.spyOn(LocalAuth.prototype, 'refresh').mockImplementation(async () => {
+      console.error(new Error('[znca-api] f: 503 Service Unavailable'));
+
+      return true;
+    });
+    let us = regionAuth();
+
+    await us.refresh({ region: 'US', trigger: 'scheduled' });
+
+    let [event] = (await us.status()).events;
+    expect(event).toMatchObject({ ok: true, errors: [], warnings: ['[znca-api] f: 503 Service Unavailable'] });
+  });
+
+  it('counts a renewal that ended without a new bullet token as failed', async () => {
+    // console.error is left alone: replacing it would skip the renewal's log capture.
+    vi.spyOn(LocalAuth.prototype, 'refresh').mockImplementation(async () => {
+      console.error(new Error('[znca-api] f: 503 Service Unavailable'));
+
+      return false;
+    });
+    let us = regionAuth();
+
+    await us.refresh({ region: 'US', trigger: 'scheduled' });
+
+    let [event] = (await us.status()).events;
+    expect(event).toMatchObject({ ok: false, errors: ['[znca-api] f: 503 Service Unavailable'], warnings: [] });
   });
 });
 

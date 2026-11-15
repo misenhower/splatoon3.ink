@@ -28,16 +28,34 @@ export class Compressor extends DurableObject {
   // While this object stays in memory, monitor() reports a crashed container's exit code.
   #watching = null;
 
+  // Whether the daily cron starts a run: set from the admin panel, else AUTOMATIC_SCHEDULING_ENABLED.
+  async #scheduled() {
+    return (await this.ctx.storage.get('scheduled')) ?? this.env.AUTOMATIC_SCHEDULING_ENABLED === 'true';
+  }
+
   /**
-   * @returns {Promise<{ now: number, nextAt: number, current: object|null, runs: object[] }>} The
-   *   run in progress, recent runs (newest first), and when the next scheduled run starts
+   * Turn the daily scheduled run on or off. Manual runs work either way.
+   * @param {{ enabled: boolean }} options
+   */
+  async setScheduling({ enabled }) {
+    await this.ctx.storage.put('scheduled', enabled);
+
+    return { ok: true, enabled };
+  }
+
+  /**
+   * @returns {Promise<{ now: number, enabled: boolean, nextAt: number|null, current: object|null, runs: object[] }>}
+   *   Whether scheduled runs are on, when the next one starts (null when off), the run in
+   *   progress, and recent runs (newest first)
    */
   async status() {
     let now = Date.now();
+    let enabled = await this.#scheduled();
 
     return {
       now,
-      nextAt: nextScheduledRun(now),
+      enabled,
+      nextAt: enabled ? nextScheduledRun(now) : null,
       current: (await this.ctx.storage.get('current')) ?? null,
       runs: (await this.ctx.storage.get('runs')) ?? [],
     };
@@ -69,6 +87,10 @@ export class Compressor extends DurableObject {
   async start({ trigger, maxDays = 10, dryRun = false }) {
     if (!Number.isInteger(maxDays) || maxDays < 1) {
       return { ok: false, error: 'maxDays must be a whole number of at least 1' };
+    }
+
+    if (trigger === 'scheduled' && !(await this.#scheduled())) {
+      return { ok: false, off: true, error: 'Scheduled runs are off' };
     }
 
     let current = await this.ctx.storage.get('current');

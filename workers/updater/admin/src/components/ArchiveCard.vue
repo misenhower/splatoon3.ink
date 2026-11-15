@@ -36,7 +36,8 @@
           Next run
         </dt>
         <dd class="mt-0.5">
-          <template v-if="archive.nextAt">
+          <span v-if="archive.enabled === false" class="text-muted">Off</span>
+          <template v-else-if="archive.nextAt">
             <span class="font-mono">{{ clock.time(archive.nextAt, false) }}</span>
             <span class="text-muted"> · {{ formatRelative(archive.nextAt, store.now) }}</span>
           </template>
@@ -47,6 +48,9 @@
 
     <p v-if="latest && !latest.ok && !archive.current" class="text-bad">
       {{ latest.error ?? 'The last run failed.' }}
+    </p>
+    <p v-if="archive.enabled === false" class="text-warn">
+      The daily run is off. Compress now still works.
     </p>
 
     <div class="flex flex-wrap items-center gap-2">
@@ -66,6 +70,13 @@
       >
         Dry run
       </button>
+      <ConfirmButton
+        :confirm-label="archive.enabled ? 'Stop the daily run?' : 'Start the daily run?'"
+        :disabled="!!store.busy || !!archive.error"
+        @confirmed="setScheduling(!archive.enabled)"
+      >
+        Turn daily run {{ archive.enabled ? 'off' : 'on' }}
+      </ConfirmButton>
     </div>
   </section>
 </template>
@@ -76,10 +87,11 @@ import { RouterLink } from 'vue-router';
 import { clock } from '../clock.js';
 import { formatRelative } from '../lib/format.js';
 import { act, store } from '../store.js';
+import ConfirmButton from './ConfirmButton.vue';
 import StateChip from './StateChip.vue';
 
 const props = defineProps({
-  // The status document's archive part: { nextAt, current, runs, error? }.
+  // The status document's archive part: { enabled, nextAt, current, runs, error? }.
   archive: { type: Object, required: true },
 });
 
@@ -91,6 +103,10 @@ const state = computed(() => {
 
   return latest.value.ok ? 'ok' : 'failed';
 });
+
+function setScheduling(enabled) {
+  act('archive:scheduling', '/archive/scheduling', { enabled }, `The daily archive compression turned ${enabled ? 'on' : 'off'}.`);
+}
 
 function compress(dryRun) {
   act('archive', '/archive/run', { dryRun }, dryRun ? 'Started a dry run of the compressor.' : 'Started compressing the archive.');

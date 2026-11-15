@@ -27,7 +27,7 @@ describe('auth', () => {
     let local = new LocalAuth;
     let bulletToken = vi.spyOn(local, 'bulletToken').mockResolvedValue({ bulletToken: 'b' });
 
-    await local.refresh(nso);
+    expect(await local.refresh(nso)).toBe(true);
 
     expect(nso.getCoralSession).toHaveBeenCalledWith(false);
     expect(nso.getWebServiceToken).toHaveBeenCalledWith(SPLATNET3_WEB_SERVICE_ID, false);
@@ -41,10 +41,20 @@ describe('auth', () => {
     let local = new LocalAuth;
     vi.spyOn(local, 'bulletToken').mockResolvedValue({ bulletToken: 'b' });
 
-    await local.refresh(nso);
+    // The bullet token was still renewed, so the renewal as a whole succeeded.
+    expect(await local.refresh(nso)).toBe(true);
 
     expect(nso.getWebServiceToken).toHaveBeenCalled();
     expect(local.bulletToken).toHaveBeenCalled();
+  });
+
+  it('reports a renewal that could not get a new bullet token', async () => {
+    let nso = fakeNsoClient();
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    let local = new LocalAuth;
+    vi.spyOn(local, 'bulletToken').mockRejectedValue(new Error('[znca-api] f: 503 Service Unavailable'));
+
+    expect(await local.refresh(nso)).toBe(false);
   });
 
   it('caches new bullet tokens in private storage', async () => {
