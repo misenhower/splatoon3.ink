@@ -8,10 +8,21 @@ vi.mock('../../common/prefixedConsole.mjs', () => ({
 describe('BufferTwitterClient', () => {
   let api;
   let media;
+  let channelCache;
   let generator;
   let status;
 
-  const client = () => new BufferTwitterClient({ api, media, channelId: 'twitter-1' });
+  const client = () => new BufferTwitterClient({ api, media, channelCache, channelId: 'twitter-1' });
+
+  // Stands in for ValueCache: holds one value with an optional expiry.
+  const memoryCache = () => {
+    let item = null;
+
+    return {
+      getData: vi.fn(async () => (item && !(item.expires && item.expires < new Date)) ? item.data : null),
+      setData: vi.fn(async (data, expires = null) => { item = { data, expires }; }),
+    };
+  };
 
   beforeEach(() => {
     api = {
@@ -24,6 +35,7 @@ describe('BufferTwitterClient', () => {
         url: 'https://images.example/image.png',
       }),
     };
+    channelCache = memoryCache();
     generator = { key: 'schedules' };
     status = {
       status: 'Map rotation',
@@ -76,5 +88,32 @@ describe('BufferTwitterClient', () => {
 
     await expect(client().send(status, generator)).rejects.toThrow('X/Twitter channel');
     expect(media.upload).not.toHaveBeenCalled();
+  });
+
+  it('checks the channel once a day across runs instead of on every run', async () => {
+    vi.useFakeTimers({ now: new Date('2026-11-10T00:00:00Z') });
+
+    try {
+      // Each run builds a new client, as sendStatuses does.
+      await client().send(status, generator);
+      await client().send(status, generator);
+      expect(api.getChannel).toHaveBeenCalledOnce();
+
+      vi.setSystemTime(new Date('2026-11-11T00:00:01Z'));
+      await client().send(status, generator);
+      expect(api.getChannel).toHaveBeenCalledTimes(2);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('checks again on the next run after a failed check', async () => {
+    api.getChannel.mockResolvedValueOnce({ id: 'twitter-1', service: 'twitter', isLocked: true });
+
+    await expect(client().send(status, generator)).rejects.toThrow('X/Twitter channel');
+    await client().send(status, generator);
+
+    expect(api.getChannel).toHaveBeenCalledTimes(2);
+    expect(channelCache.setData).toHaveBeenCalledOnce();
   });
 });

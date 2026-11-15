@@ -40,6 +40,7 @@ describe('social posting', () => {
     const otherFinished = Promise.withResolvers();
     const buffer = new BufferTwitterClient({
       channelId: 'twitter-1',
+      channelCache: { getData: async () => null, setData: async () => {} },
       api: {
         getChannel: vi.fn().mockReturnValue(channel.promise),
         createPost: vi.fn().mockResolvedValue({ id: 'post-1', status: 'scheduled' }),

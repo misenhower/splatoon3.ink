@@ -2,6 +2,11 @@ import Client from './Client.mjs';
 import BufferApi from '../buffer/BufferApi.mjs';
 import BufferMedia from '../buffer/BufferMedia.mjs';
 import prefixedConsole from '../../common/prefixedConsole.mjs';
+import ValueCache from '../../common/ValueCache.mjs';
+
+// Every Buffer request, queries included, counts against the API quota (2,000 per 30 days
+// on the Free plan), so a successful channel check is reused instead of repeated per run.
+const CHANNEL_CHECK_TTL_MS = 24 * 60 * 60 * 1000;
 
 export default class BufferTwitterClient extends Client {
   constructor({
@@ -12,6 +17,7 @@ export default class BufferTwitterClient extends Client {
     api,
     media,
     channelId,
+    channelCache,
   } = {}) {
     super();
     this.key = key;
@@ -20,6 +26,7 @@ export default class BufferTwitterClient extends Client {
     this.channelId = channelId ?? process.env[`${envPrefix}_CHANNEL_ID`];
     this.api = api ?? new BufferApi;
     this.media = media ?? new BufferMedia;
+    this.channelCache = channelCache ?? new ValueCache(`buffer.channel.${this.channelId}`);
     this.console = prefixedConsole('Social', this.name);
   }
 
@@ -59,7 +66,7 @@ export default class BufferTwitterClient extends Client {
   }
 
   async _checkChannel() {
-    if (this._channelChecked) return;
+    if (await this.channelCache.getData()) return;
 
     const channel = await this.api.getChannel(this.channelId);
 
@@ -68,6 +75,7 @@ export default class BufferTwitterClient extends Client {
       throw new Error('BUFFER_TWITTER_CHANNEL_ID must identify a connected, unlocked X/Twitter channel');
     }
 
-    this._channelChecked = true;
+    // Only success is cached; a channel locked later still fails at createPost.
+    await this.channelCache.setData(true, new Date(Date.now() + CHANNEL_CHECK_TTL_MS));
   }
 }
