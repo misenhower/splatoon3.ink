@@ -6,6 +6,7 @@ import { regionTokens } from '../../splatnet/NsoClient.mjs';
 import { storage } from '../../common/storage/index.mjs';
 import DataUpdater from './DataUpdater.mjs';
 
+// One region at a time saves festivals.json (see saveData).
 const limit = pLimit(1);
 
 function generateFestUrl(id) {
@@ -121,11 +122,14 @@ export default class FestivalUpdater extends DataUpdater
     return data;
   }
 
-  formatDataForWrite(data) {
-    return limit(() => this._formatDataForWrite(data));
+  // Every region saves into the same festivals.json, so one region at a time reads it, adds its
+  // own data and writes it back. Otherwise two regions can write at once (which R2 rejects), or
+  // one can read the file before another's write lands and leave that region out.
+  saveData(data) {
+    return limit(() => super.saveData(data));
   }
 
-  async _formatDataForWrite(data) {
+  async formatDataForWrite(data) {
     // Combine this region's data with the other regions' data.
     let result = {};
     try {
