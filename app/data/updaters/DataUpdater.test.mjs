@@ -83,6 +83,14 @@ describe('DataUpdater', () => {
       expect([...testBuckets().archive.objects.keys()]).toEqual(['2026-11-08.12-00-00.gear.json']);
     });
 
+    it('writes no snapshot when ARCHIVE_DATA is false', async () => {
+      vi.stubEnv('ARCHIVE_DATA', 'false');
+
+      await makeUpdater().saveData({ data: { a: 1 } });
+
+      expect(testBuckets().archive.objects.size).toBe(0);
+    });
+
     it('stamps a snapshot to the second when it is not hourly', async () => {
       vi.stubEnv('ARCHIVE_DATA', 'true');
       vi.useFakeTimers();

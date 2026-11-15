@@ -1,14 +1,11 @@
 import dotenv from 'dotenv';
 import consoleStamp from 'console-stamp';
-import cron from './cron.mjs';
 import { sendStatuses, testStatuses } from './social/index.mjs';
 import { update } from './data/index.mjs';
-import { warmCaches } from './splatnet/index.mjs';
 import MastodonClient from './social/clients/MastodonClient.mjs';
 import ImageWriter from './social/clients/ImageWriter.mjs';
 import BlueskyClient from './social/clients/BlueskyClient.mjs';
 import ThreadsClient from './social/clients/ThreadsClient.mjs';
-import { archiveData } from './data/DataArchiver.mjs';
 import { compressArchivesFromCli } from './data/ArchiveCompressor.mjs';
 import { pruneArchivesFromCli } from './data/ArchivePruner.mjs';
 import { reportArchiveStatsFromCli } from './data/ArchiveStats.mjs';
@@ -22,7 +19,6 @@ dotenv.config({ quiet: true });
 configureFilesystemStorage();
 
 const actions = {
-  cron,
   social: sendStatuses,
   socialTest: testStatuses,
   socialTestMastodon: () => testStatuses([new MastodonClient]),
@@ -31,8 +27,6 @@ const actions = {
   socialTestThreads: () => testStatuses([new ThreadsClient]),
   bufferChannels: listBufferChannels,
   splatnet: update,
-  warmCaches,
-  dataArchive: archiveData,
   archiveCompress: (...args) => compressArchivesFromCli(args),
   archivePrune: (...args) => pruneArchivesFromCli(args),
   archiveStats: (...args) => reportArchiveStatsFromCli(args),

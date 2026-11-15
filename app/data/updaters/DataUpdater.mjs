@@ -196,7 +196,7 @@ export default class DataUpdater
 
     // Write a secondary file for archival (a warning, not a failure, if it cannot be written).
     // The key is fixed now, so a snapshot written later still lands in this hour.
-    if (process.env.ARCHIVE_DATA) {
+    if (process.env.ARCHIVE_DATA === 'true') {
       let snapshot = { key: this.getArchivePath(this.filename), text: s, name: this.filename };
 
       if (this.limits.deferArchive) {

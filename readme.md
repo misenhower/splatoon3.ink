@@ -82,7 +82,7 @@ npm run screenshot:cloudflare -- --var SITE_URL:https://example.trycloudflare.co
 Local screenshots use `puppeteer-core` with an installed Chrome or Chromium (found
 automatically on macOS and common Linux paths; otherwise set `CHROME_PATH`). They always
 capture the built site in `dist/` through a temporary loopback server, regardless of
-`SITE_URL`. No Docker browser service is needed.
+`SITE_URL`.
 
 ```sh
 npm run build

@@ -7,9 +7,9 @@ const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 /**
  * The archive area for the Worker: each snapshot goes straight to an S3-compatible bucket
- * (DigitalOcean Spaces). The Node runner writes snapshots to storage/archive/ instead and
- * uploads them afterwards (DataArchiver); both end up with the same objects, so the archive
- * tools (compress, verify, prune) do not care which one wrote a file.
+ * (DigitalOcean Spaces). The Node runner keeps its snapshots in storage/archive/ instead and
+ * never uploads them, so a local run cannot touch the real archive. Both use the same keys,
+ * and the archive tools (compress, verify, prune) read the Space.
  *
  * Only writing is supported: nothing reads snapshots back through storage.
  */

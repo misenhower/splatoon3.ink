@@ -24,7 +24,6 @@ npm run splatnet       # Fast lane data (schedules, gear, co-op, festivals, stag
 npm run splatnet:all   # Both lanes: also X-Rank and Splatfest rankings
 npm run social         # Post status updates to social media
 npm run social:test    # Test social posting (writes to files)
-npm start              # Run the Node backend locally: splatnet → social → cron
 ```
 
 Cloudflare Worker (`workers/updater/`, see its README):
@@ -41,7 +40,7 @@ npm run compressor:deploy         # Deploy the dev archive compressor (workers/c
 
 **Frontend** (`src/`): Vue 3 + Vue Router + Pinia + Tailwind CSS + vue-i18n (14 languages). Path alias `@/` maps to `src/`. Pinia stores in `src/stores/` fetch from `/data/*.json` endpoints. The `useDataStore` orchestrates loading schedules, gear, coop, and festival data.
 
-**Backend** (`app/`): Node.js CLI dispatched through `app/index.mjs`. Commands map to actions (splatnet, social, cron, etc.).
+**Backend** (`app/`): Node.js CLI dispatched through `app/index.mjs`. Commands map to actions (splatnet, social, archive tools, etc.).
 
 **Data pipeline**: `NsoClient` (Nintendo auth) → `SplatNet3Client` (GraphQL queries) → DataUpdaters (`app/data/updaters/`) → storage → Frontend Pinia stores → Vue components. All file access goes through `storage()` (`app/common/storage/`), with `public` (data JSON, images, status screenshots), `private` (token and state caches), and `archive` areas keyed like the R2 objects. The Node runner maps them to `dist/` and `storage/`; the Worker will use R2 bindings. Bullet tokens come from `auth()` (`app/splatnet/auth.mjs`).
 
@@ -49,7 +48,7 @@ npm run compressor:deploy         # Deploy the dev archive compressor (workers/c
 
 **Admin panel** (`workers/updater/admin/`): a separate small Vue + Tailwind app (its own Vite config, not part of the public site's bundle), served by the updater Worker on its own hostname behind Cloudflare Access. Its API is `workers/updater/src/admin/routes.mjs`; `admin/mock/api.mjs` simulates that API for `npm run admin:dev` and must be kept in step with it. Pure logic lives in `admin/src/lib/` with tests alongside.
 
-**Scheduling**: In Cloudflare, `workers/updater/` runs two Scheduler Durable Object lanes (fast: time-sensitive data + social; slow: X-Rank, rankings, avatars) and one RegionAuth Durable Object per region for Nintendo tokens. `workers/compressor/` compresses each finished day of archive snapshots into a tar.zst once a day, running `app/data/ArchiveCompressor.mjs` in a Cloudflare Container (deploying it needs Docker or OrbStack). Locally, `app/cron.mjs` runs the same steps on a node-cron schedule.
+**Scheduling**: In Cloudflare, `workers/updater/` runs two Scheduler Durable Object lanes (fast: time-sensitive data + social; slow: X-Rank, rankings, avatars) and one RegionAuth Durable Object per region for Nintendo tokens. `workers/compressor/` compresses each finished day of archive snapshots into a tar.zst once a day, running `app/data/ArchiveCompressor.mjs` in a Cloudflare Container (deploying it needs Docker or OrbStack). Locally there is no scheduler: run `npm run splatnet` and `npm run social` by hand.
 
 ## Code Style
 
