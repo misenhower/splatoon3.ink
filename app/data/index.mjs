@@ -45,7 +45,7 @@ function updaterName(updater) {
  * @param {object} updater
  * @param {object} settings
  * @param {RunLimits} limits
- * @returns {Promise<{ name: string, ok: boolean, ms: number, error?: string }>} The updater's outcome and how long it took
+ * @returns {Promise<{ name: string, ok: boolean, ms: number, changed?: boolean, error?: string }>} The updater's outcome, how long it took, and whether its data changed
  */
 async function runUpdater(updater, settings, limits) {
   updater.settings = settings;
@@ -54,9 +54,9 @@ async function runUpdater(updater, settings, limits) {
   let startedAt = Date.now();
 
   try {
-    await updater.updateIfNeeded();
+    let outcome = await updater.updateIfNeeded();
 
-    return { name: updaterName(updater), ok: true, ms: Date.now() - startedAt };
+    return { name: updaterName(updater), ok: true, ms: Date.now() - startedAt, ...(outcome && { changed: outcome.changed }) };
   } catch (e) {
     console.error(e);
     Sentry.captureException(e);

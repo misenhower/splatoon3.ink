@@ -2,12 +2,17 @@ import * as Sentry from '@sentry/core';
 import { DurableObject } from 'cloudflare:workers';
 import { captureLogs, RunLog } from './log.mjs';
 import { runFastLane, runSlowLane } from './pipeline.mjs';
+import { RunLock } from './runLock.mjs';
 import { setupRuntime } from './runtime.mjs';
 import { HISTORY_MS, LANE_SCHEDULES, nextSlot } from './schedule.mjs';
 
 const MINUTE_MS = 60 * 1000;
 const MAX_POSTS = 300;
 const DELETE_BATCH = 128;
+// How soon a lane checks again while an earlier run still holds its lock (see runLock.mjs).
+const LOCK_RETRY_MS = 15 * 1000;
+const CUT_OFF = 'Cut off: Cloudflare replaced this Durable Object while the run was going, so it '
+  + 'could not save its results. Its log lines are in Workers Logs. Its slot ran again.';
 
 // Keys sort by time: "run:<start time>:<id>". A run's log lines are kept apart under "log:"
 // with the same suffix, so listing runs stays cheap.
@@ -57,7 +62,7 @@ function summarize(run) {
  * separate instances and run independently of each other.
  *
  * Storage: "lane"; "state" (automatic scheduling, next slot, last run);
- * "pending" (one queued manual run or continuation); "run:*" and "log:*" (the last 48 hours of runs and what
+ * "pending" (one queued manual run or continuation); "inflight" (the scheduled run going now); "run:*" and "log:*" (the last 48 hours of runs and what
  * they printed); "post:*" (the fast lane's social post log, which outlives the run history).
  */
 export class Scheduler extends DurableObject {
@@ -407,25 +412,56 @@ export class Scheduler extends DurableObject {
 
     this.#running = true;
 
+    let lock = new RunLock(this.env.PRIVATE, lane);
+    let locked = false;
+
     try {
       let config = LANES[lane];
       let state = await this.#state();
       let pending = await this.ctx.storage.get('pending');
       let due = state.enabled && (state.next ??= nextSlot(config.schedule)).at <= Date.now();
-      let run;
+      let ready = !due && !!pending && !(pending.notBefore > Date.now());
+
+      // Like the old cron, no run starts while an earlier one may still be going: one on an
+      // instance that Cloudflare replaced keeps running, and keeps posting (see runLock.mjs).
+      if (due || ready) {
+        let holder = await lock.holder();
+
+        if (holder) {
+          console.warn(JSON.stringify({ event: 'lane-wait', lane, holder }));
+          await this.ctx.storage.setAlarm(Date.now() + LOCK_RETRY_MS);
+
+          return;
+        }
+      }
+
+      let runs = [];
+      // A scheduled run that never saved its results; its slot is still due and runs below.
+      let cutOff = (due || ready) && await this.ctx.storage.get('inflight');
+
+      if (cutOff) {
+        runs.push({ ...cutOff, ok: false, interrupted: true, error: CUT_OFF });
+      }
 
       // One run per alarm, so a run always has the whole alarm's time; a scheduled slot that is
       // due goes before a queued run. Whatever is left due sets the next alarm to now.
       if (due) {
         let slot = state.next;
+        let id = crypto.randomUUID();
         // A slot saved before run options existed has none; it runs with the defaults.
-        let result = await this.#execute(lane, { ...config.options(slot.options), social: true }, 'scheduled');
+        let options = { ...config.options(slot.options), social: true };
 
-        run = { ...result, id: crypto.randomUUID(), trigger: 'scheduled', scheduledFor: slot.at, driftMs: result.startedAt - slot.at };
+        await this.ctx.storage.put('inflight', { id, trigger: 'scheduled', scheduledFor: slot.at, startedAt: Date.now(), ...options });
+        await lock.acquire({ id, trigger: 'scheduled', startedAt: Date.now() });
+        locked = true;
+
+        let result = await this.#execute(lane, options, 'scheduled');
+
+        runs.push({ ...result, id, trigger: 'scheduled', scheduledFor: slot.at, driftMs: result.startedAt - slot.at });
         state.next = nextSlot(config.schedule);
         // A queued run was not started.
         pending = null;
-      } else if (pending && !(pending.notBefore > Date.now())) {
+      } else if (ready) {
         let trigger = pending.continuationOf ? 'continuation' : 'manual';
         let result;
 
@@ -434,16 +470,19 @@ export class Scheduler extends DurableObject {
           result = { ok: false, error: 'Run was interrupted; check the results before retrying' };
         } else {
           await this.ctx.storage.put('pending', { ...pending, status: 'running', startedAt: Date.now() });
+          await lock.acquire({ id: pending.id, trigger, startedAt: Date.now() });
+          locked = true;
           result = await this.#execute(lane, { ...config.options(pending), social: pending.social }, trigger);
         }
 
-        run = { ...pending, ...result, id: pending.id, trigger, status: 'done' };
+        runs.push({ ...pending, ...result, id: pending.id, trigger, status: 'done' });
       } else {
         // An early alarm, or a continuation that is not due yet.
         pending = null;
       }
 
-      let followUp = run && this.#continuationOf(lane, run);
+      let run = (due || ready) && runs.at(-1);
+      let followUp = run && !run.interrupted && this.#continuationOf(lane, run);
 
       if (run) {
         state.lastRun = { ...summarize(run), postCount: run.posts?.length ?? 0 };
@@ -451,8 +490,12 @@ export class Scheduler extends DurableObject {
 
       // History, state, and the next alarm are saved together, without external I/O between.
       await this.ctx.storage.transaction(async txn => {
-        if (run) {
-          await this.#record(txn, run);
+        for (let recorded of runs) {
+          await this.#record(txn, recorded);
+        }
+
+        if (due || cutOff) {
+          await txn.delete('inflight');
         }
 
         if (pending && (await txn.get('pending'))?.id === pending.id) {
@@ -467,6 +510,10 @@ export class Scheduler extends DurableObject {
         await this.#save(txn, state);
       });
     } finally {
+      if (locked) {
+        await lock.release().catch(error => console.warn('Could not release the run lock:', describeError(error)));
+      }
+
       this.#running = false;
     }
   }

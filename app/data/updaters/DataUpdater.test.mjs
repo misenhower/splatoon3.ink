@@ -67,6 +67,12 @@ describe('DataUpdater', () => {
       expect(testBuckets().archive.objects.size).toBe(0);
     });
 
+    it('reports whether the published data changed', async () => {
+      expect(await makeUpdater().saveData({ data: { a: 1 } })).toBe(true);
+      expect(await makeUpdater().saveData({ data: { a: 1 } })).toBe(false);
+      expect(await makeUpdater().saveData({ data: { a: 2 } })).toBe(true);
+    });
+
     it('publishes data in a subdirectory', async () => {
       await makeUpdater({ directory: 'xrank', filename: 'xrank.detail.a-1.splatzones' }).saveData({});
 

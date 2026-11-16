@@ -101,12 +101,15 @@ export default class DataUpdater
     await this.downloadImages(data);
 
     // Write the data to disk
-    await this.saveData(data);
+    let changed = await this.saveData(data);
 
     // Update iCal data
     await this.updateCalendarEvents(data);
 
-    this.console.info('Done');
+    // Whether Nintendo had anything new, to see when fresh data really arrives.
+    this.console.info(changed ? 'Done (data changed)' : 'Done (no change)');
+
+    return { changed };
   }
 
   // Requests
@@ -189,10 +192,17 @@ export default class DataUpdater
 
   // File handling
 
+  /**
+   * @param {object} data
+   * @returns {Promise<boolean>} Whether the file's contents changed
+   */
   async saveData(data) {
     let s = await this.formatDataForWrite(data);
+    let path = this.getPath(this.filename);
+    let previous = await storage().public.readBytes(path);
+    let changed = previous === null || new TextDecoder().decode(previous) !== s;
 
-    await storage().public.writeText(this.getPath(this.filename), s);
+    await storage().public.writeText(path, s);
 
     // Write a secondary file for archival (a warning, not a failure, if it cannot be written).
     // The key is fixed now, so a snapshot written later still lands in this hour.
@@ -205,6 +215,8 @@ export default class DataUpdater
         await archiveSnapshot(snapshot, { warn: (...args) => this.console.warn(...args) });
       }
     }
+
+    return changed;
   }
 
   getPath(filename) {

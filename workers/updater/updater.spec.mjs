@@ -52,7 +52,8 @@ beforeEach(() => {
   vi.spyOn(LANES.slow, 'run').mockResolvedValue({ ok: true, unmocked: true });
 });
 
-afterEach(() => {
+afterEach(async () => {
+  await env.PRIVATE.delete(['locks/fast.json', 'locks/slow.json']);
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
   vi.useRealTimers();
@@ -186,6 +187,58 @@ describe('Scheduler', () => {
     expect(status.pending).toBeNull();
 
     await stub.setAutomaticScheduling({ lane: 'slow', enabled: false });
+  });
+
+  it('waits while another run holds the lane lock, then runs once it goes stale', async () => {
+    let run = vi.spyOn(LANES.fast, 'run').mockResolvedValue({ ok: true });
+    let stub = scheduler();
+    let { next } = await stub.setAutomaticScheduling({ lane: 'fast', enabled: true });
+
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(next.at);
+
+    // A run on a replaced instance, still going and still refreshing its lock.
+    await env.PRIVATE.put('locks/fast.json', JSON.stringify({ id: 'old', trigger: 'scheduled', startedAt: next.at - 60_000, heartbeatAt: next.at - 5000 }));
+    await runDurableObjectAlarm(stub);
+
+    let status = await stub.status();
+    expect(run).not.toHaveBeenCalled();
+    expect(status.next).toEqual(next);
+    expect(status.alarmAt).toBe(next.at + 15_000);
+
+    // Its heartbeat has stopped: the slot runs, and the lock is gone afterwards.
+    vi.setSystemTime(next.at + 50_000);
+    status = await runAlarm(stub);
+
+    expect(run).toHaveBeenCalledOnce();
+    expect(status.lastRun).toMatchObject({ ok: true, trigger: 'scheduled', scheduledFor: next.at });
+    expect(await env.PRIVATE.get('locks/fast.json')).toBeNull();
+
+    await stub.setAutomaticScheduling({ lane: 'fast', enabled: false });
+  });
+
+  it('records a scheduled run that never saved its results as cut off, then runs its slot', async () => {
+    let run = vi.spyOn(LANES.fast, 'run').mockResolvedValue({ ok: true });
+    let stub = scheduler();
+    let { next } = await stub.setAutomaticScheduling({ lane: 'fast', enabled: true });
+
+    await runInDurableObject(stub, async (instance, ctx) => {
+      await ctx.storage.put('inflight', { id: 'cut', trigger: 'scheduled', scheduledFor: next.at, startedAt: next.at, translations: false, social: true });
+    });
+
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(next.at + 61_000);
+
+    let status = await runAlarm(stub);
+    let [latest, cutOff] = status.history;
+
+    expect(run).toHaveBeenCalledOnce();
+    expect(cutOff).toMatchObject({ id: 'cut', ok: false, interrupted: true, scheduledFor: next.at });
+    expect(cutOff.error).toMatch(/^Cut off/);
+    expect(latest).toMatchObject({ ok: true, trigger: 'scheduled', scheduledFor: next.at });
+    expect(await runInDurableObject(stub, async (instance, ctx) => ctx.storage.get('inflight'))).toBeUndefined();
+
+    await stub.setAutomaticScheduling({ lane: 'fast', enabled: false });
   });
 
   it('queues a follow-up for an incomplete manual run', async () => {
