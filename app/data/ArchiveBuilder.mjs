@@ -15,8 +15,17 @@ import TarZstdWriter from './TarZstdWriter.mjs';
 
 const downloadLimit = 5;
 
+// A connection to the Space can be reset partway through a file ("aborted", ECONNRESET), and the
+// SDK does not retry a response body that breaks off, so each file is tried a few times.
+const downloadAttempts = 4;
+
+const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+
 export default class ArchiveBuilder
 {
+  // The wait before the second attempt at a file; later attempts wait longer.
+  retryDelayMs = 2000;
+
   constructor(s3Client, archiveWriter = new TarZstdWriter) {
     this._client = s3Client;
     this.archiveWriter = archiveWriter;
@@ -103,6 +112,25 @@ export default class ArchiveBuilder
     let destination = path.join(sourceDirectory, object.path);
     await fs.mkdir(path.dirname(destination), { recursive: true });
 
+    for (let attempt = 1; ; attempt++) {
+      try {
+        return await this.downloadObjectOnce(object, destination);
+      } catch (e) {
+        await fs.rm(destination, { force: true });
+
+        if (attempt >= downloadAttempts) {
+          throw e;
+        }
+
+        this.console.warn(
+          `Download of ${object.key} failed (${e?.code ?? e?.name ?? 'error'}: ${e?.message ?? e}), attempt ${attempt} of ${downloadAttempts}; retrying`,
+        );
+        await wait(this.retryDelayMs * 2 ** (attempt - 1));
+      }
+    }
+  }
+
+  async downloadObjectOnce(object, destination) {
     let response = await this.s3Client.send(new GetObjectCommand({
       Bucket: process.env.AWS_S3_ARCHIVE_BUCKET,
       Key: object.key,

@@ -250,6 +250,67 @@ describe('ArchiveCompressor', () => {
     await expect(fs.stat(temporaryDirectory)).rejects.toMatchObject({ code: 'ENOENT' });
   });
 
+  it('retries a file whose download breaks off', async () => {
+    vi.useRealTimers();
+    let s3Client = new FakeS3Client;
+    let send = s3Client.send.bind(s3Client);
+    let broken = 0;
+    s3Client.send = async command => {
+      if (command instanceof GetObjectCommand && command.input.Key === '2025/03/05/alpha.json' && broken++ < 2) {
+        s3Client.downloads.push(command.input.Key);
+        let body = new Readable({ read() {} });
+        body.push('alp');
+        setImmediate(() => body.destroy(Object.assign(new Error('aborted'), { code: 'ECONNRESET' })));
+
+        return { Body: body };
+      }
+
+      return send(command);
+    };
+    let archiveWriter = {
+      async write(sourceDirectory, archivePath) {
+        expect(await fs.readFile(`${sourceDirectory}/alpha.json`, 'utf8')).toBe('alpha\n');
+        await fs.writeFile(archivePath, 'archive');
+      },
+    };
+    let archiveBuilder = new ArchiveBuilder(s3Client, archiveWriter);
+    archiveBuilder.retryDelayMs = 0;
+    archiveBuilder._console = { log: vi.fn(), warn: vi.fn() };
+    let compressor = new ArchiveCompressor(s3Client, archiveBuilder);
+    compressor._console = { error: vi.fn(), log: vi.fn() };
+
+    await compressor.process();
+
+    expect(s3Client.downloads.filter(key => key === '2025/03/05/alpha.json')).toHaveLength(3);
+    expect(archiveBuilder._console.warn).toHaveBeenCalledTimes(2);
+    expect(archiveBuilder._console.warn.mock.calls[0][0]).toContain('ECONNRESET');
+    expect(s3Client.uploads.map(upload => upload.Key)).toEqual([archiveKey, manifestKey]);
+  });
+
+  it('gives up on a file after four failed downloads', async () => {
+    vi.useRealTimers();
+    let s3Client = new FakeS3Client;
+    let send = s3Client.send.bind(s3Client);
+    s3Client.send = async command => {
+      if (command instanceof GetObjectCommand && command.input.Key === '2025/03/05/alpha.json') {
+        s3Client.downloads.push(command.input.Key);
+        throw Object.assign(new Error('aborted'), { code: 'ECONNRESET' });
+      }
+
+      return send(command);
+    };
+    let archiveBuilder = new ArchiveBuilder(s3Client, { write: vi.fn() });
+    archiveBuilder.retryDelayMs = 0;
+    archiveBuilder._console = { log: vi.fn(), warn: vi.fn() };
+    let compressor = new ArchiveCompressor(s3Client, archiveBuilder);
+    compressor._console = { error: vi.fn(), log: vi.fn() };
+
+    await expect(compressor.process()).rejects.toThrow('aborted');
+
+    expect(s3Client.downloads.filter(key => key === '2025/03/05/alpha.json')).toHaveLength(4);
+    expect(s3Client.uploads).toEqual([]);
+  });
+
   it('continues S3 discovery across paginated listings', async () => {
     let s3Client = new PaginatedS3Client;
     let archiveWriter = {
