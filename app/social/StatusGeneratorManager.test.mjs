@@ -5,6 +5,9 @@ import BufferTwitterClient from './clients/BufferTwitterClient.mjs';
 import { defaultClients } from './index.mjs';
 
 vi.mock('@sentry/core', () => ({ captureException: vi.fn() }));
+vi.mock('../screenshots/ScreenshotHelper.mjs', () => ({
+  default: class { async open() {} async close() {} },
+}));
 vi.mock('../common/prefixedConsole.mjs', () => ({
   default: () => ({ log: vi.fn(), info: vi.fn(), error: vi.fn(), warn: vi.fn() }),
 }));
@@ -105,5 +108,43 @@ describe('social posting', () => {
     expect(captureException).toHaveBeenCalledExactlyOnceWith(
       new Error(`Cannot send ${postLocale} content to a ${accountLocale ?? 'en-US'} account`),
     );
+  });
+
+  it('skips an account whose last post time cannot be read, and posts to the others', async () => {
+    const failing = { key: 'bluesky', canSend: async () => true, send: vi.fn() };
+    const working = { key: 'mastodon', canSend: async () => true, send: vi.fn().mockResolvedValue() };
+    const generator = {
+      key: 'schedules',
+      shouldPost: vi.fn(async client => {
+        if (client === failing) throw new Error('put: We encountered an internal error.');
+
+        return true;
+      }),
+      getStatus: vi.fn().mockResolvedValue({ status: 'Rotation', media: [] }),
+      updatelastPostCache: vi.fn().mockResolvedValue(),
+    };
+    const manager = new StatusGeneratorManager([generator], [failing, working]);
+    vi.spyOn(manager, '_getAvailableClients').mockResolvedValue([failing, working]);
+
+    const events = await manager.sendStatuses();
+
+    expect(failing.send).not.toHaveBeenCalled();
+    expect(working.send).toHaveBeenCalledOnce();
+    expect(events.map(e => [e.type, e.client?.key])).toEqual([['error', 'bluesky'], ['posted', 'mastodon']]);
+    expect(captureException).toHaveBeenCalledOnce();
+  });
+
+  it('records a post that went out even when its time cannot be saved', async () => {
+    const generator = {
+      key: 'schedules',
+      updatelastPostCache: vi.fn().mockRejectedValue(new Error('put: We encountered an internal error.')),
+    };
+    const client = { key: 'twitter', send: vi.fn().mockResolvedValue() };
+    const manager = new StatusGeneratorManager();
+
+    await manager._sendToClient(generator, {}, client);
+
+    expect(manager.events.map(e => e.type)).toEqual(['posted', 'error']);
+    expect(manager.events[1].error).toMatch(/^Posted, but could not save the post time/);
   });
 });

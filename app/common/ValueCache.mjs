@@ -11,16 +11,29 @@ export default class ValueCache
     return `cache/${this._key}.json`;
   }
 
-  async _getRawItem() {
+  /**
+   * @param {{ strict?: boolean }} [options] strict: throw when the value cannot be read, instead
+   *   of answering null as if nothing were cached
+   * @returns {Promise<object|null>} The stored item
+   */
+  async _getRawItem({ strict = false } = {}) {
     try {
       return await storage().private.readJson(this.path);
-    } catch {
+    } catch (e) {
+      if (strict) {
+        throw e;
+      }
+
       return null;
     }
   }
 
-  async get() {
-    let item = await this._getRawItem();
+  /**
+   * @param {{ strict?: boolean }} [options]
+   * @returns {Promise<object|null>} The stored item, or null if missing or expired
+   */
+  async get(options) {
+    let item = await this._getRawItem(options);
 
     // If the cached value is already expired, return null
     if (item && item.expires && new Date(item.expires) < new Date) {
@@ -30,8 +43,12 @@ export default class ValueCache
     return item;
   }
 
-  async getData() {
-    let item = await this.get();
+  /**
+   * @param {{ strict?: boolean }} [options]
+   * @returns {Promise<unknown>} The stored value, or null if missing or expired
+   */
+  async getData(options) {
+    let item = await this.get(options);
 
     return item && item.data;
   }

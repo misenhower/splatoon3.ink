@@ -1,6 +1,7 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import ValueCache from './ValueCache.mjs';
 import { testBuckets } from '../test/storage.mjs';
+import { storage } from './storage/index.mjs';
 
 describe('ValueCache', () => {
   let cache;
@@ -59,6 +60,18 @@ describe('ValueCache', () => {
 
     it('returns null when no cache', async () => {
       expect(await cache.getData()).toBeNull();
+      expect(await cache.getData({ strict: true })).toBeNull();
+    });
+
+    it('throws a failed read only when strict', async () => {
+      const read = vi.spyOn(storage().private, 'readJson').mockRejectedValue(new Error('internal error'));
+
+      try {
+        expect(await cache.getData()).toBeNull();
+        await expect(cache.getData({ strict: true })).rejects.toThrow('internal error');
+      } finally {
+        read.mockRestore();
+      }
     });
   });
 

@@ -95,8 +95,16 @@ export default class StatusGeneratorManager
       let clients = [];
 
       for (let client of availableClients) {
-        if (force || await generator.shouldPost(client)) {
-          clients.push(client);
+        try {
+          if (force || await generator.shouldPost(client)) {
+            clients.push(client);
+          }
+        } catch (e) {
+          // Not knowing when this was last posted could mean posting it again, so this account
+          // waits for a later run.
+          this.console(generator, client).error('Could not check whether to post, skipping:', e);
+          Sentry.captureException(e);
+          this._record('error', generator, client, e);
         }
       }
 
@@ -152,12 +160,23 @@ export default class StatusGeneratorManager
       }
 
       await client.send(status, generator);
-      await generator.updatelastPostCache(client);
-      this._record('posted', generator, client);
     } catch (e) {
       this.console(generator, client).error('Error posting:', e);
       Sentry.captureException(e);
       this._record('error', generator, client, e);
+
+      return;
+    }
+
+    this._record('posted', generator, client);
+
+    try {
+      await generator.updatelastPostCache(client);
+    } catch (e) {
+      // The post went out; without its time saved, the next run will post it again.
+      this.console(generator, client).error('Posted, but could not save the post time:', e);
+      Sentry.captureException(e);
+      this._record('error', generator, client, new Error(`Posted, but could not save the post time: ${e?.message ?? e}`));
     }
   }
 }

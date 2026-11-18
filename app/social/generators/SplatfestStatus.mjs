@@ -73,7 +73,7 @@ export default class SplatfestStatus extends StatusGenerator
 
     let currentId = await this.getDataTime();
 
-    let cachedId = await this.lastPostCache(client).getData();
+    let cachedId = await this.lastPostCache(client).getData({ strict: true });
 
     return currentId && currentId !== cachedId;
   }

@@ -10,6 +10,8 @@ import { storage } from '../../common/storage/index.mjs';
 import SocialMessages from '../i18n/SocialMessages.mjs';
 import ImageDescriptions from '../ImageDescriptions.mjs';
 
+const SAVE_ATTEMPTS = 4;
+
 export default class StatusGenerator
 {
   key = null;
@@ -80,15 +82,33 @@ export default class StatusGenerator
 
   async shouldPost(client) {
     let currentTime = await this.getDataTime();
-    let cachedTime = await this.lastPostCache(client).getData();
+    // A last post time that cannot be read is an error, not "never posted": answering null
+    // here once posted everything again while R2 was failing reads.
+    let cachedTime = await this.lastPostCache(client).getData({ strict: true });
 
     return currentTime && (!cachedTime || (currentTime > cachedTime));
   }
 
+  // Wait before trying again to save a post's time; later attempts wait longer.
+  saveRetryDelayMs = 1000;
+
   async updatelastPostCache(client) {
     let currentTime = await this.getDataTime();
+    let cache = this.lastPostCache(client);
 
-    await this.lastPostCache(client).setData(currentTime);
+    // The post has already gone out, and a time that is not saved means posting it again on the
+    // next run, so a failed write is tried a few more times.
+    for (let attempt = 1; ; attempt++) {
+      try {
+        return await cache.setData(currentTime);
+      } catch (e) {
+        if (attempt >= SAVE_ATTEMPTS) {
+          throw e;
+        }
+
+        await new Promise(resolve => setTimeout(resolve, this.saveRetryDelayMs * 2 ** (attempt - 1)));
+      }
+    }
   }
 
   /** @param {ScreenshotHelper} screenshotHelper */
